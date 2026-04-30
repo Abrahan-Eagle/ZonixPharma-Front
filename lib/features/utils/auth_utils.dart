@@ -1,0 +1,258 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:zonix/features/services/auth/api_service.dart';
+
+const FlutterSecureStorage _storage = FlutterSecureStorage();
+final ApiService _apiService = ApiService();
+
+class AuthUtils {
+  // Método para verificar si el usuario está autenticado
+  static Future<bool> isAuthenticated() async {
+    try {
+      final token = await getToken();
+      final expiryDateStr = await getExpiryDate();
+
+      if (token != null && expiryDateStr != null) {
+        final expiryDate = DateTime.parse(expiryDateStr);
+        if (DateTime.now().isBefore(expiryDate)) {
+          return true; // El token es válido
+        } else {
+          await _storage.deleteAll(); // Eliminar token si ha expirado
+        }
+      }
+      return false; // No hay token o ha expirado
+    } catch (e) {
+      // Si hay error de encriptación (almacenamiento corrupto), limpiar y retornar false
+      logger.w('Error verificando autenticación, limpiando almacenamiento: $e');
+      try {
+        await _storage.deleteAll();
+      } catch (_) {
+        // Ignorar errores al limpiar
+      }
+      return false;
+    }
+  }
+
+  // Método para guardar el token y la fecha de expiración
+  static Future<void> saveToken(String token, int expiresIn) async {
+    await _storage.write(key: 'token', value: token);
+    final expiryDate = DateTime.now().add(Duration(seconds: expiresIn));
+    await _storage.write(key: 'expiryDate', value: expiryDate.toIso8601String());
+  }
+
+  // Método para obtener el token
+  static Future<String?> getToken() async {
+    try {
+      return await _storage.read(key: 'token');
+    } catch (e) {
+      // Si hay error de encriptación (BAD_DECRYPT), el almacenamiento está corrupto
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Almacenamiento seguro corrupto, limpiando: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {
+          // Ignorar errores al limpiar
+        }
+      }
+      return null;
+    }
+  }
+
+  // Método para obtener la fecha de expiración
+  static Future<String?> getExpiryDate() async {
+    try {
+      return await _storage.read(key: 'expiryDate');
+    } catch (e) {
+      // Si hay error de encriptación, retornar null
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo fecha de expiración: $e');
+      }
+      return null;
+    }
+  }
+
+  // Método para eliminar todos los tokens
+  static Future<void> clearTokens() async {
+    await _storage.deleteAll();
+  }
+
+  /// El API respondió 401: el token Sanctum ya no es válido (revocado, migrate:fresh, otro dispositivo).
+  /// Borra solo credenciales de sesión, sin `deleteAll()` (mantiene prefs como onboarding donde aplica).
+  static Future<void> invalidateSanctumSession() async {
+    try {
+      await _storage.delete(key: 'token');
+      await _storage.delete(key: 'expiryDate');
+    } catch (e) {
+      logger.w('invalidateSanctumSession: $e');
+    }
+  }
+
+  // Maneja el cierre de sesión
+  static Future<void> logout() async {
+    try {
+      final token = await _storage.read(key: 'token');
+      if (token != null) {
+        final response = await _apiService.logout(token);
+        if (response.statusCode == 200) {
+          await _storage.deleteAll();
+          logger.i('Sesión cerrada correctamente');
+        } else if (response.statusCode == 401 || response.statusCode == 404) {
+          // Token ya revocado o inválido (ej. tras eliminar cuenta): limpiar igual
+          await _storage.deleteAll();
+          logger.i('Sesión cerrada (token ya no válido)');
+        } else {
+          logger.e('Error: ${response.statusCode}');
+          await _storage.deleteAll();
+        }
+      }
+    } catch (e) {
+      logger.e('Error al cerrar sesión: $e');
+      try {
+        await _storage.deleteAll();
+      } catch (_) {}
+    }
+  }
+
+  // Método para guardar el userId como String
+  static Future<void> saveUserId(int userId) async {
+    await _storage.write(key: 'userId', value: userId.toString()); // Convertir a String
+  }
+
+ static Future<void> saveUserGoogleId(String userGoogleId) async {
+    await _storage.write(key: 'userGoogleId', value: userGoogleId);
+  }
+
+
+  // Método para obtener el userId como int
+  static Future<int?> getUserId() async {
+    try {
+      final userIdStr = await _storage.read(key: 'userId');
+      if (userIdStr != null) {
+        return int.tryParse(userIdStr); // Convertir a int
+      }
+      return null; // Retorna null si no se encuentra o no es un número válido
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo userId: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  static Future<void> saveProfileId(int profileId) async {
+    await _storage.write(key: 'profileId', value: profileId.toString());
+  }
+
+  static Future<int?> getProfileId() async {
+    try {
+      final v = await _storage.read(key: 'profileId');
+      if (v != null) return int.tryParse(v);
+      return null;
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo profileId: $e');
+        try { await _storage.deleteAll(); } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  static Future<String?> getUserGoogleId() async {
+    try {
+      return await _storage.read(key: 'userGoogleId');
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo userGoogleId: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  
+
+  // Métodos para guardar y obtener el nombre de usuario
+  static Future<void> saveUserName(String userName) async {
+    await _storage.write(key: 'userName', value: userName);
+  }
+
+  static Future<void> saveUserRole(String userRole) async {
+    await _storage.write(key: 'role', value: userRole);
+  }
+
+  static Future<String?> getUserName() async {
+    try {
+      return await _storage.read(key: 'userName');
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo userName: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  // Métodos para guardar y obtener el correo electrónico del usuario
+  static Future<void> saveUserEmail(String userEmail) async {
+    await _storage.write(key: 'userEmail', value: userEmail);
+  }
+
+  static Future<String?> getUserEmail() async {
+    try {
+      return await _storage.read(key: 'userEmail');
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo userEmail: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  // Métodos para guardar y obtener la URL de la foto del usuario
+  static Future<void> saveUserPhotoUrl(String? photoUrl) async {
+    // Solo guardar si la URL es válida y no está vacía
+    if (photoUrl != null && photoUrl.isNotEmpty && photoUrl != 'URL de foto no disponible') {
+      await _storage.write(key: 'userPhotoUrl', value: photoUrl);
+    } else {
+      // Guardar cadena vacía en lugar de texto descriptivo
+      await _storage.write(key: 'userPhotoUrl', value: '');
+    }
+  }
+
+  static Future<String?> getUserPhotoUrl() async {
+    try {
+      return await _storage.read(key: 'userPhotoUrl');
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo userPhotoUrl: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+
+  static Future<String?> getUserRole() async {
+    try {
+      return await _storage.read(key: 'role');
+    } catch (e) {
+      if (e.toString().contains('BAD_DECRYPT') || e.toString().contains('BadPaddingException')) {
+        logger.w('Error leyendo role: $e');
+        try {
+          await _storage.deleteAll();
+        } catch (_) {}
+      }
+      return null;
+    }
+  }
+}

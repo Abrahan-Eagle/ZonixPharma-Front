@@ -1,0 +1,93 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Permisos alineados con Zonix Eats (API, mapas, fotos/comprobantes, cámara/ML Kit).
+      Evitar permisos “fuertes” sin uso real mejora revisión en Play Store y la confianza del usuario.
+
+      Seguridad: restrinja en Google Cloud Console las claves declaradas en <meta-data> (Android package + SHA-1).
+    -->
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- Geolocator / mapas / direcciones (solo lo habitual; sin ubicación en segundo plano aquí) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- Android 13+ (API 33+): el usuario debe poder conceder notificaciones desde el sistema -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- Galería / comprobantes: API 33+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- API 32 y anteriores (image_picker, file_picker) -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
+
+    <!-- Escáner, documentos, ML Kit, mobile_scanner -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- Geolocator puede usar un foreground service al pedir/streaming de ubicación -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <!-- Android 14+: tipo “location” para ese servicio -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+
+    <!-- Pusher / red en segundo plano -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <!-- Vibración en notificaciones (canal FCM) -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application
+        android:usesCleartextTraffic="true"
+        android:label="ZonixEats"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:enableOnBackInvokedCallback="true"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- Restringir en Google Cloud (no commitear claves sin restricción de app) -->
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.ClientId"
+            android:value="608143949661-g749kjpeasc4ktj8frofrc9k6kge5g78.apps.googleusercontent.com"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.API_KEY"
+            android:value="AIzaSyCyVrcmdTiihm5kv0wuAG0xQvPtqL6Ih6s"/>
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2"/>
+
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="face"/>
+    </application>
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>
