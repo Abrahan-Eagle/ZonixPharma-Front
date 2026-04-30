@@ -1318,6 +1318,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   int _progressStep(Order order) {
     final s = order.status.toLowerCase();
     switch (s) {
+      case 'pending_prescription_validation':
       case 'pending_payment':
       case 'paid':
         return 0;
@@ -1541,7 +1542,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   bool _isTrackableStatus(String status) {
-    return status == 'pending_payment' ||
+    return status == 'pending_prescription_validation' ||
+        status == 'pending_payment' ||
         status == 'shipped' ||
         status == 'processing' ||
         status == 'paid';

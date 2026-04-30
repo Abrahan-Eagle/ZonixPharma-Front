@@ -96,7 +96,7 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                'Las zonas de entrega son configuradas por el administrador de Zonix Eats.',
+                                'Las zonas de entrega son configuradas por el administrador de Zonix Pharma.',
                                 style: TextStyle(
                                   color: isDark
                                       ? AppColors.white70

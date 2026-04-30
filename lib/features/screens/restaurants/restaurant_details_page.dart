@@ -555,7 +555,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content: Text(
-                                      'Aún no hay reseñas para este restaurante'),
+                                      'Aún no hay reseñas para esta farmacia'),
                                   duration: Duration(seconds: 2),
                                 ),
                               );
@@ -978,7 +978,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
   // ── COMPARTIR RESTAURANTE ──
   void _shareRestaurant() {
     final link = '$_baseShareUrl/restaurant/${widget.commerceId}';
-    final text = '🍽️ *${widget.nombreLocal}* en Zonix Eats!\n'
+    final text = '💊 *${widget.nombreLocal}* en Zonix Pharma!\n'
         '${widget.direccion.isNotEmpty ? '📍 ${widget.direccion}\n' : ''}'
         '${widget.telefono.isNotEmpty ? '📞 ${widget.telefono}\n' : ''}'
         '${widget.abierto ? '✅ Abierto ahora' : '⛔ Cerrado'}\n'
@@ -992,7 +992,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
     final text =
         '🛒 *${product.name}* - \$${product.price.toStringAsFixed(2)}\n'
         '${product.description.isNotEmpty ? '${product.description}\n' : ''}'
-        '🍽️ En *${widget.nombreLocal}* - Zonix Eats\n'
+        '💊 En *${widget.nombreLocal}* - Zonix Pharma\n'
         '\n👉 $link';
     SharePlus.instance.share(ShareParams(text: text));
   }
@@ -1010,8 +1010,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
       return;
     }
     final msg = Uri.encodeComponent(
-      'Hola ${widget.nombreLocal}, los contacto desde Zonix Eats. '
-      'Me gustaría hacer una consulta sobre su menú.',
+      'Hola ${widget.nombreLocal}, los contacto desde Zonix Pharma. '
+      'Me gustaría hacer una consulta sobre su catálogo de medicamentos.',
     );
     final uri = Uri.parse('${AppConfig.whatsappBaseUrl}/$normalized?text=$msg');
     if (await canLaunchUrl(uri)) {
@@ -1747,11 +1747,11 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                             fit: BoxFit.cover,
                             errorBuilder: (_, __, ___) => Container(
                                 color: textSecondary.withValues(alpha: 0.1),
-                                child: Icon(Icons.fastfood,
+                                child: Icon(Icons.local_pharmacy,
                                     size: 40, color: textSecondary)))
                         : Container(
                             color: textSecondary.withValues(alpha: 0.1),
-                            child: Icon(Icons.fastfood,
+                            child: Icon(Icons.local_pharmacy,
                                 size: 40, color: textSecondary)),
                   ),
                 ),

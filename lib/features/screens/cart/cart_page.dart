@@ -36,6 +36,10 @@ class CartPage extends StatelessWidget {
                         children: [
                           _buildMiCarritoHeader(context, totalItems),
                           const SizedBox(height: 16),
+                          if (cartService.requiresPrescription)
+                            _buildRxBanner(context, cartService),
+                          if (cartService.coldChainRequired)
+                            _buildColdChainBanner(context),
                           ...cartItems.map((item) => _buildCartItem(context, cartService, item)),
                           const SizedBox(height: 100),
                         ],
@@ -104,10 +108,84 @@ class CartPage extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Explora restaurantes y agrega productos',
+            'Explora farmacias cercanas y agrega medicinas',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.secondaryText(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRxBanner(BuildContext context, CartService cartService) {
+    final rxItems = cartService.prescriptionRequiredItems;
+    final names = rxItems.map((e) => e.nombre).take(3).join(', ');
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.brandTealDeep.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+            color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.receipt_long, color: AppColors.brandTealDeep),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Tu pedido requiere receta médica',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brandTealDeep,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  rxItems.length == 1
+                      ? '$names necesita una receta válida emitida por un médico colegiado.'
+                      : '${rxItems.length} medicamentos en tu carrito requieren receta. Podrás subirla al confirmar el pedido.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.primaryText(context),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildColdChainBanner(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.statusInfo.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.statusInfo.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.ac_unit, color: AppColors.statusInfo),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Tu pedido requiere cadena de frío. La farmacia te indicará si está disponible delivery con caja térmica o si debes retirar en tienda.',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.primaryText(context),
+              ),
             ),
           ),
         ],
@@ -147,13 +225,13 @@ class CartPage extends StatelessWidget {
                       height: 96,
                       fit: BoxFit.cover,
                       borderRadius: BorderRadius.circular(8),
-                      fallbackIcon: Icons.restaurant,
+                      fallbackIcon: Icons.local_pharmacy,
                     )
                   : Container(
                       color: Theme.of(context).brightness == Brightness.dark
                           ? AppColors.white.withValues(alpha: 0.06)
                           : AppColors.grayLight,
-                      child: Icon(Icons.restaurant, size: 40, color: AppColors.secondaryText(context).withValues(alpha: 0.3)),
+                      child: Icon(Icons.local_pharmacy, size: 40, color: AppColors.secondaryText(context).withValues(alpha: 0.3)),
                     ),
             ),
           ),

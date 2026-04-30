@@ -29,6 +29,18 @@ class CartService extends ChangeNotifier {
 
   UnmodifiableListView<CartItem> get items => UnmodifiableListView(_cart);
 
+  /// Pharma: si algún ítem del carrito es Rx (`requires_prescription = true`).
+  /// La UI debe pedir receta antes de crear la orden.
+  bool get requiresPrescription =>
+      _cart.any((item) => item.requiresPrescription);
+
+  /// Items del carrito que requieren receta (lista para mostrar en checkout).
+  List<CartItem> get prescriptionRequiredItems =>
+      _cart.where((item) => item.requiresPrescription).toList(growable: false);
+
+  /// Si algún ítem del carrito requiere cadena de frío.
+  bool get coldChainRequired => _cart.any((item) => item.coldChain);
+
   // Métodos locales del carrito
   /// Agrega un producto al carrito. Si el carrito tiene productos de otro comercio,
   /// los reemplaza automáticamente (regla: solo un comercio por carrito).
@@ -54,18 +66,20 @@ class CartService extends ChangeNotifier {
       if (current.stock != null && nextQuantity > current.stock!) {
         return const CartAddResult(CartAddStatus.blockedStock);
       }
-      _cart[existingIndex] = CartItem(
-        id: current.id,
-        nombre: current.nombre,
-        precio: current.precio,
+      // Si el ítem entrante trae flags farmacéuticos más recientes (caso
+      // típico: el primer add fue genérico y este trae datos del modelo
+      // Product completo), los preferimos sobre los actuales.
+      _cart[existingIndex] = current.copyWith(
         quantity: nextQuantity,
-        imagen: current.imagen,
-        image: current.image,
-        stock: current.stock,
-        category: current.category,
-        notes: current.notes,
-        commerceId: current.commerceId,
-        lineId: current.lineId,
+        requiresPrescription:
+            product.requiresPrescription || current.requiresPrescription,
+        prescriptionType: product.prescriptionType ?? current.prescriptionType,
+        controlledSubstance:
+            product.controlledSubstance || current.controlledSubstance,
+        coldChain: product.coldChain || current.coldChain,
+        activeIngredient: product.activeIngredient ?? current.activeIngredient,
+        concentration: product.concentration ?? current.concentration,
+        presentation: product.presentation ?? current.presentation,
       );
       notifyListeners();
       return const CartAddResult(CartAddStatus.updatedQuantity);
@@ -91,19 +105,7 @@ class CartService extends ChangeNotifier {
     if (index != -1) {
       final current = _cart[index];
       if (current.quantity > 1) {
-        _cart[index] = CartItem(
-          id: current.id,
-          nombre: current.nombre,
-          precio: current.precio,
-          quantity: current.quantity - 1,
-          imagen: current.imagen,
-          image: current.image,
-          stock: current.stock,
-          category: current.category,
-          notes: current.notes,
-          commerceId: current.commerceId,
-          lineId: current.lineId,
-        );
+        _cart[index] = current.copyWith(quantity: current.quantity - 1);
       } else {
         _cart.removeAt(index);
       }
@@ -118,19 +120,7 @@ class CartService extends ChangeNotifier {
       final nextQuantity = current.quantity + 1;
       if (nextQuantity > 100) return;
       if (current.stock != null && nextQuantity > current.stock!) return;
-      _cart[index] = CartItem(
-        id: current.id,
-        nombre: current.nombre,
-        precio: current.precio,
-        quantity: nextQuantity,
-        imagen: current.imagen,
-        image: current.image,
-        stock: current.stock,
-        category: current.category,
-        notes: current.notes,
-        commerceId: current.commerceId,
-        lineId: current.lineId,
-      );
+      _cart[index] = current.copyWith(quantity: nextQuantity);
       notifyListeners();
     }
   }
@@ -216,20 +206,7 @@ class CartService extends ChangeNotifier {
                 : item.id == productId);
         if (index != -1) {
           if (quantity > 0) {
-            final current = _cart[index];
-            _cart[index] = CartItem(
-              id: current.id,
-              nombre: current.nombre,
-              precio: current.precio,
-              quantity: quantity,
-              imagen: current.imagen,
-              image: current.image,
-              stock: current.stock,
-              category: current.category,
-              notes: current.notes,
-              commerceId: current.commerceId,
-              lineId: current.lineId,
-            );
+            _cart[index] = _cart[index].copyWith(quantity: quantity);
           } else {
             _cart.removeAt(index);
           }

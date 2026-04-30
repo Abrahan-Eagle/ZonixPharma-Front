@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:zonix/config/app_config.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 
-/// Widget de mapa usando OpenStreetMap tiles (como en Zonix Eats).
+/// Widget de mapa usando OpenStreetMap tiles (como en Zonix Pharma).
 /// [polylinePoints]: puntos para dibujar una ruta (ej. moto → cliente).
 class OsmMapWidget extends StatelessWidget {
   final LatLng center;

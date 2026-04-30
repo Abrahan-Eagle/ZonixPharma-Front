@@ -440,7 +440,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
       children: [
         TileLayer(
           urlTemplate: AppConfig.osmTileUrl,
-          userAgentPackageName: 'com.zonix.eats',
+          userAgentPackageName: 'com.zonix.pharma',
           maxZoom: 19,
         ),
         if (circles.isNotEmpty) CircleLayer(circles: circles),
@@ -864,7 +864,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               children: [
                 TileLayer(
                   urlTemplate: AppConfig.osmTileUrl,
-                  userAgentPackageName: 'com.zonix.eats',
+                  userAgentPackageName: 'com.zonix.pharma',
                 ),
                 PolylineLayer(polylines: [
                   Polyline(

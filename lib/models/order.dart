@@ -13,6 +13,9 @@ String canonicalOrderStatus(String rawStatus) {
   switch (normalized) {
     case 'pending':
       return 'pending_payment';
+    case 'awaiting_prescription':
+    case 'rx_pending':
+      return 'pending_prescription_validation';
     case 'confirmed':
       return 'paid';
     case 'preparing':
@@ -388,6 +391,8 @@ class Order {
 
   String get statusText {
     switch (status) {
+      case 'pending_prescription_validation':
+        return 'Esperando validación de receta';
       case 'pending_payment':
         return 'Pendiente de pago';
       case 'paid':
@@ -407,6 +412,8 @@ class Order {
 
   String get statusColor {
     switch (status) {
+      case 'pending_prescription_validation':
+        return '#56C7B8'; // brandTeal Pharma
       case 'pending_payment':
         return '#FFA500';
       case 'paid':

@@ -23,8 +23,9 @@ class MockLocationService extends LocationService {
     required double longitude,
     double radius = 5.0,
     String? type,
-  }) async => [
-        {'id': 1, 'name': 'Test Commerce', 'distance': 1.0},
+  }) async =>
+      [
+        {'id': 1, 'name': 'Test Pharmacy', 'distance': 1.0},
       ];
 }
 
@@ -32,52 +33,62 @@ class MockProductService implements ProductService {
   @override
   final String apiUrl = 'http://test.com/api/products';
 
-  @override
-  Future<List<Product>> fetchProducts({int? categoryId}) async {
-    return [
-      Product(
-        id: 1,
+  Product _otc(int id, String name) => Product(
+        id: id,
         commerceId: 1,
-        name: 'Hamburguesa',
-        description: 'Rica hamburguesa',
-        price: 50.0,
+        name: name,
+        description: 'Producto OTC de prueba',
+        price: 1.50,
         image: '',
-        category: 'Comida Rápida',
+        category: 'Analgésicos y antipiréticos',
         isAvailable: true,
         stock: 10,
-        tags: [],
-        allergens: [],
-        isVegetarian: false,
-        isVegan: false,
-        isGlutenFree: false,
-        preparationTime: 15,
+        tags: const [],
         rating: 4.5,
         reviewCount: 10,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
-      ),
-      Product(
-        id: 2,
+        activeIngredient: 'paracetamol',
+        dosageForm: 'tablet',
+        concentration: '500mg',
+        presentation: 'Caja x 20 tabletas',
+        manufacturer: 'Lab Demo',
+        healthRegistry: 'E.F. 12345',
+        requiresPrescription: false,
+        controlledSubstance: false,
+        coldChain: false,
+      );
+
+  Product _rx(int id, String name) => Product(
+        id: id,
         commerceId: 1,
-        name: 'Pizza',
-        description: 'Pizza grande',
-        price: 80.0,
+        name: name,
+        description: 'Antibiótico Rx demo',
+        price: 8.20,
         image: '',
-        category: 'Pizzería',
+        category: 'Antibióticos',
         isAvailable: true,
         stock: 5,
-        tags: [],
-        allergens: [],
-        isVegetarian: false,
-        isVegan: false,
-        isGlutenFree: false,
-        preparationTime: 20,
+        tags: const [],
         rating: 4.3,
         reviewCount: 8,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
-      ),
-    ];
+        activeIngredient: 'amoxicilina',
+        dosageForm: 'capsule',
+        concentration: '500mg',
+        presentation: 'Caja x 21 cápsulas',
+        manufacturer: 'Lab Demo',
+        healthRegistry: 'E.F. 67890',
+        requiresPrescription: true,
+        prescriptionType: 'common',
+        controlledSubstance: false,
+        coldChain: false,
+      );
+
+  @override
+  Future<List<Product>> fetchProducts({int? categoryId}) async {
+    return [_otc(1, 'Paracetamol 500mg'), _rx(2, 'Amoxicilina 500mg')];
   }
 
   @override
@@ -134,58 +145,13 @@ class MockProductService implements ProductService {
     );
   }
 
-  Future<Product?> fetchProduct(int id) async {
-    return Product(
-      id: id,
-      commerceId: 1,
-      name: 'Test Product',
-      description: 'Test',
-      price: 50.0,
-      image: '',
-      category: 'Test',
-      isAvailable: true,
-      stock: 1,
-      tags: [],
-      allergens: [],
-      isVegetarian: false,
-      isVegan: false,
-      isGlutenFree: false,
-      preparationTime: 10,
-      rating: 4.0,
-      reviewCount: 1,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-  }
+  Future<Product?> fetchProduct(int id) async => _otc(id, 'Producto $id');
 
-  Future<List<Product>> searchProducts(String query) async {
-    return [];
-  }
+  Future<List<Product>> searchProducts(String query) async => [];
 
   @override
-  Future<Product> getProductById(int productId) async {
-    return Product(
-      id: productId,
-      commerceId: 1,
-      name: 'Test Product',
-      description: 'Test',
-      price: 50.0,
-      image: '',
-      category: 'Test',
-      isAvailable: true,
-      stock: 1,
-      tags: [],
-      allergens: [],
-      isVegetarian: false,
-      isVegan: false,
-      isGlutenFree: false,
-      preparationTime: 10,
-      rating: 4.0,
-      reviewCount: 1,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-  }
+  Future<Product> getProductById(int productId) async =>
+      _otc(productId, 'Producto $productId');
 }
 
 void main() {
@@ -193,14 +159,17 @@ void main() {
     SharedPreferences.setMockInitialValues({});
     await dotenv.load(fileName: ".env");
   });
-  
-  testWidgets('Cliente puede ver productos y no ve acciones de comercio/delivery', (WidgetTester tester) async {
+
+  testWidgets('Buyer ve productos farmacéuticos sin acciones de comercio/delivery',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       MultiProvider(
         providers: [
           ChangeNotifierProvider<CartService>(create: (_) => CartService()),
-          ChangeNotifierProvider<LocationService>(create: (_) => MockLocationService()),
-          ChangeNotifierProvider<SearchRadiusProvider>(create: (_) => SearchRadiusProvider()),
+          ChangeNotifierProvider<LocationService>(
+              create: (_) => MockLocationService()),
+          ChangeNotifierProvider<SearchRadiusProvider>(
+              create: (_) => SearchRadiusProvider()),
         ],
         child: MaterialApp(
           home: ProductsPage(productService: MockProductService()),
@@ -210,11 +179,10 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     await tester.pump(const Duration(seconds: 3));
     await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Hamburguesa'), findsAtLeastNWidgets(1));
-    expect(find.text('Pizza'), findsAtLeastNWidgets(1));
-    // No debe haber botones de gestión de productos (solo para comercio)
+
+    expect(find.text('Paracetamol 500mg'), findsAtLeastNWidgets(1));
+    expect(find.text('Amoxicilina 500mg'), findsAtLeastNWidgets(1));
     expect(find.text('Agregar producto'), findsNothing);
-    // No debe haber acciones de delivery
     expect(find.text('Órdenes asignadas'), findsNothing);
   });
-} 
+}

@@ -269,7 +269,7 @@ class WelcomePage extends StatelessWidget {
                                             fit: StackFit.expand,
                                             children: [
                                               Image.asset(
-                                                'assets/onboarding/onboarding_eats.png',
+                                                'assets/onboarding/onboarding_pharma.png',
                                                 fit: BoxFit.cover,
                                               ),
                                               // Overlay atmósfera

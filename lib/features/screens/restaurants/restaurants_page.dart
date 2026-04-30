@@ -12,7 +12,7 @@ import 'restaurant_details_page.dart';
 import 'package:zonix/features/utils/debouncer.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
 
-/// Colores del template Stitch Zonix Eats - Restaurantes
+/// Colores del template Stitch Zonix Pharma - Farmacias
 class _TemplateColors {
   static const Color primary = AppColors.blue;
   static const Color bgDark = AppColors.backgroundDark;
@@ -139,7 +139,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
     if (!reset && !_hasMore) return;
 
     final nextPage = reset ? 1 : _currentPage + 1;
-    _logger.i('🔄 Cargando restaurantes page=$nextPage...');
+    _logger.i('🔄 Cargando farmacias page=$nextPage...');
 
     setState(() {
       if (!silent && reset) {
@@ -175,7 +175,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         _hasMore = result.hasMore;
         _isInitialLoading = false;
       });
-      _logger.d('✅ ${result.restaurants.length} restaurantes (page=$nextPage)');
+      _logger.d('✅ ${result.restaurants.length} farmacias (page=$nextPage)');
     } catch (e) {
       _logger.e('❌ $e');
       if (!mounted) return;
@@ -188,7 +188,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error cargando restaurantes: $e')),
+          SnackBar(content: Text('Error cargando farmacias: $e')),
         );
       }
     } finally {
@@ -250,7 +250,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
           const SizedBox(height: 16),
           Text(
             _searchQuery.isEmpty
-                ? 'No hay restaurantes disponibles'
+                ? 'No hay farmacias disponibles'
                 : 'No encontramos resultados',
             style: GoogleFonts.plusJakartaSans(
                 fontSize: 18,
@@ -419,7 +419,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                 ],
               ),
             ),
-            // Info del restaurante
+            // Info de la farmacia
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -533,7 +533,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
               style: GoogleFonts.plusJakartaSans(
                   color: isDark ? AppColors.white : AppColors.black87),
               decoration: InputDecoration(
-                hintText: 'Buscar comida o restaurantes',
+                hintText: 'Buscar medicinas o farmacias',
                 hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.gray),
                 filled: true,
                 fillColor: isDark ? _TemplateColors.cardDark : AppColors.white,
@@ -622,7 +622,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child: Text(
-              'Restaurantes destacados',
+              'Farmacias destacadas',
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

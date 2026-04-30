@@ -7,7 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:zonix/models/order.dart';
 import 'package:zonix/l10n/app_strings.dart';
 
-/// Genera el PDF del recibo siguiendo el template Zonix Eats (code.html).
+/// Genera el PDF del recibo siguiendo el template Zonix Pharma (code.html).
 /// Archivo separado para no mezclar lógica de PDF con la pantalla de detalle de orden.
 class ReceiptPdfBuilder {
   ReceiptPdfBuilder._();

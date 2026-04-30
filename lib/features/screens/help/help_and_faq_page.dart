@@ -67,7 +67,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.rocket_launch, color: AppColors.blue, size: 24),
-            tooltip: 'Zonix Eats',
+            tooltip: 'Zonix Pharma',
             onPressed: () {},
           ),
         ],
@@ -561,7 +561,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
 
   Future<void> _launchEmail(BuildContext context) async {
     final uri = Uri.parse(
-      'mailto:$_supportEmail?subject=${Uri.encodeComponent('Zonix Eats - Comentarios o soporte')}',
+      'mailto:$_supportEmail?subject=${Uri.encodeComponent('Zonix Pharma - Comentarios o soporte')}',
     );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);

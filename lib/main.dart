@@ -39,6 +39,7 @@ import 'package:zonix/features/services/location_service.dart';
 import 'package:zonix/features/services/notification_service.dart';
 import 'package:zonix/features/services/order_service.dart';
 import 'package:zonix/features/services/payment_service.dart';
+import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/features/utils/app_theme.dart';
 import 'package:zonix/features/utils/search_radius_provider.dart';
 import 'package:zonix/features/utils/user_provider.dart';
@@ -46,14 +47,15 @@ import 'package:zonix/models/commerce_product.dart';
 import 'package:zonix/models/order.dart';
 
 /*
- * ZONIX EATS - Aplicación Multi-Rol
+ * ZONIX PHARMA - Aplicación Multi-Rol (marketplace farmacéutico VE)
  *
  * Niveles de usuario (según roles):
- * 0 - Comprador (users): Productos, Carrito, Mis Órdenes, Restaurantes
- * 1 - Comercio: Dashboard, Órdenes, Productos, Reportes
+ * 0 - Comprador (users): Catálogo, Carrito, Mis Pedidos, Farmacias, Recetas
+ * 1 - Farmacia (commerce): Dashboard, Pedidos, Inventario (medicamentos + lotes), Reportes
  * 2 - Delivery: Entregas, Historial, Rutas, Ganancias
- * 3 - Empresa de Delivery: Dashboard, Agentes, Órdenes, Mapa
- * 4 - Admin: Dashboard, Usuarios, Órdenes, Analytics
+ * 3 - Empresa de Delivery: Dashboard, Agentes, Pedidos, Mapa
+ * 4 - Admin: Dashboard, Usuarios, Pedidos, Analytics, Catálogo
+ * 5 - Farmacéutico colegiado (pharmacist): Dashboard, Validación de recetas
  */
 
 /// Re-export para código que importa `showLocalNotification` desde main.
@@ -100,6 +102,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => CommerceAnalyticsService()),
         ChangeNotifierProvider(create: (_) => AdminService()),
         ChangeNotifierProvider(create: (_) => ConnectivityService()),
+        ChangeNotifierProvider(create: (_) => PrescriptionService()),
       ],
       child: isIntegrationTest
           ? const MyApp(isIntegrationTest: true)
@@ -142,7 +145,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      title: 'Zonix Eats',
+      title: 'Zonix Pharma',
       debugShowCheckedModeBanner: false,
       theme: buildStitchLightTheme(),
       darkTheme: buildStitchDarkTheme(),

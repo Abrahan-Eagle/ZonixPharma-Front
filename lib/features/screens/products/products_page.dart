@@ -533,11 +533,11 @@ class _ProductsPageState extends State<ProductsPage> {
                     imgUrl.toString(),
                     fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) => Image.asset(
-                        'assets/onboarding/onboarding_eats.png',
+                        'assets/onboarding/onboarding_pharma.png',
                         fit: BoxFit.cover),
                   )
                 else
-                  Image.asset('assets/onboarding/onboarding_eats.png',
+                  Image.asset('assets/onboarding/onboarding_pharma.png',
                       fit: BoxFit.cover),
                 // Gradiente como template: from-background-dark to-transparent
                 Container(
@@ -712,15 +712,47 @@ class _ProductsPageState extends State<ProductsPage> {
                         fontSize: 11,
                         color: isDark ? AppColors.white54 : AppColors.black54)),
                 const SizedBox(width: 8),
-                Text('•',
-                    style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? AppColors.white38 : AppColors.black38)),
-                const SizedBox(width: 8),
-                Text('${product.preparationTime} min',
-                    style: TextStyle(
-                        fontSize: 11,
-                        color: isDark ? AppColors.white54 : AppColors.black54)),
+                if (product.requiresPrescription) ...[
+                  Text('•',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? AppColors.white38 : AppColors.black38)),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.brandTealDeep.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      'Receta',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.brandTealDeep,
+                      ),
+                    ),
+                  ),
+                ] else if ((product.presentation ?? '').isNotEmpty) ...[
+                  Text('•',
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? AppColors.white38 : AppColors.black38)),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      product.presentation!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 11,
+                          color: isDark
+                              ? AppColors.white54
+                              : AppColors.black54),
+                    ),
+                  ),
+                ],
               ],
             ),
             const Spacer(),
@@ -742,22 +774,32 @@ class _ProductsPageState extends State<ProductsPage> {
                       return;
                     }
                     final result = cartService.addToCart(CartItem(
-                        id: product.id,
-                        nombre: product.name,
-                        precio: product.price,
-                        quantity: 1,
-                        image: product.image,
-                        stock: product.hasStockLimit ? product.stock : null,
-                        category: product.category,
-                        commerceId: product.commerceId));
+                      id: product.id,
+                      nombre: product.name,
+                      precio: product.price,
+                      quantity: 1,
+                      image: product.image,
+                      stock: product.hasStockLimit ? product.stock : null,
+                      category: product.category,
+                      commerceId: product.commerceId,
+                      requiresPrescription: product.requiresPrescription,
+                      prescriptionType: product.prescriptionType,
+                      controlledSubstance: product.controlledSubstance,
+                      coldChain: product.coldChain,
+                      activeIngredient: product.activeIngredient,
+                      concentration: product.concentration,
+                      presentation: product.presentation,
+                    ));
                     final message = switch (result.status) {
                       CartAddStatus.replacedCommerce =>
-                        'Carrito actualizado. Solo puedes tener productos de un comercio a la vez.',
+                        'Carrito actualizado. Solo puedes tener productos de una farmacia a la vez.',
                       CartAddStatus.blockedLimit =>
                         'No puedes agregar mas de 100 unidades',
                       CartAddStatus.blockedStock =>
                         'Cantidad no disponible por stock',
-                      _ => 'Producto agregado al carrito',
+                      _ => product.requiresPrescription
+                          ? 'Añadido. Recuerda subir la receta médica al pagar.'
+                          : 'Producto agregado al carrito',
                     };
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(message)),

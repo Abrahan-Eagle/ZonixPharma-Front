@@ -8,6 +8,7 @@ import 'package:zonix/features/services/promotion_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
 import 'package:zonix/features/screens/orders/order_confirmation_page.dart';
+import 'package:zonix/features/screens/prescriptions/prescription_upload_page.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -173,6 +174,88 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return parts.join(', ');
   }
 
+  Widget _buildCheckoutRxBanner(BuildContext context, CartService cartService) {
+    final rxItems = cartService.prescriptionRequiredItems;
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.brandTealDeep.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+            color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.receipt_long, color: AppColors.brandTealDeep),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Requiere receta médica',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brandTealDeep,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  'Tras confirmar el pedido te pediremos la foto o PDF de la receta. El farmacéutico colegiado de la farmacia la validará antes de cobrar.',
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: AppColors.brandTealDeep,
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Text(
+              '${rxItems.length} Rx',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCheckoutColdChainBanner(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.statusInfo.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.statusInfo.withValues(alpha: 0.4)),
+      ),
+      child: Row(
+        children: const [
+          Icon(Icons.ac_unit, color: AppColors.statusInfo),
+          SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              'Tu pedido requiere cadena de frío. Verifica con la farmacia si la entrega se hará con caja térmica o si será mejor retirar en tienda.',
+              style: TextStyle(fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _handleCheckout() async {
     setState(() {
       _loading = true;
@@ -216,12 +299,25 @@ class _CheckoutPageState extends State<CheckoutPage> {
         couponCode: _appliedCoupon?['code']?.toString(),
         idempotencyKey: _currentIdempotencyKey,
       );
+      // Si la orden quedó en estado `pending_prescription_validation`
+      // (productos Rx en el carrito), enviamos al buyer a subir la receta
+      // antes de mostrar la pantalla de confirmación.
+      final needsPrescription =
+          order.status == 'pending_prescription_validation';
       cartService.clearCart();
       _currentIdempotencyKey = null;
       if (!mounted) return;
       setState(() {
         _loading = false;
       });
+      if (needsPrescription) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => PrescriptionUploadPage(orderId: order.id),
+          ),
+        );
+        if (!mounted) return;
+      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (_) => OrderConfirmationPage(order: order),
@@ -262,6 +358,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            if (cartService.requiresPrescription)
+              _buildCheckoutRxBanner(context, cartService),
+            if (cartService.coldChainRequired)
+              _buildCheckoutColdChainBanner(context),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -287,11 +387,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         ),
                       ),
                       Text(
-                        'Zonix Eats',
+                        'Zonix Pharma',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.orange,
+                          color: AppColors.brandTeal,
                         ),
                       ),
                     ],

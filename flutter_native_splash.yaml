@@ -1,21 +1,22 @@
 flutter_native_splash:
-  color: "#fcb621"
+  # Paleta Pharma: surface light + surface dark.
+  color: "#F5F7FA"
   image: assets/images/splash_logo.png
   branding: assets/images/brand-android.png
   branding_mode: bottom
   branding_bottom_padding: 24
-  color_dark: "#ff6100"
+  color_dark: "#142033"
   image_dark: assets/images/splash_logo_dark.png
   branding_dark: assets/images/dart_dark-android.png
 
   android_12:
     image: assets/images/splash_logo.png
-    color: "#fcb621"
-    icon_background_color: "#fcb621"
+    color: "#F5F7FA"
+    icon_background_color: "#F5F7FA"
     branding: assets/images/brand-android.png
     image_dark: assets/images/splash_logo_dark.png
-    color_dark: "#ff6100"
-    icon_background_color_dark: "#ff6100"
+    color_dark: "#142033"
+    icon_background_color_dark: "#142033"
     branding_dark: assets/images/dart_dark-android.png
 
   android: true

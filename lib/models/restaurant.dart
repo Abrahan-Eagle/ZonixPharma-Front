@@ -3,6 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
 
+/// Modelo de farmacia (alias histórico `Restaurant` mantenido para no
+/// romper imports existentes en pantallas y servicios). En código nuevo
+/// usar `Pharmacy = Restaurant` o `Commerce` directamente.
+typedef Pharmacy = Restaurant;
+
 class Restaurant {
   final int id;
   final int profileId;
@@ -138,12 +143,12 @@ class Restaurant {
   String get name => businessName;
   bool get isOpen => open;
   String get cuisine => profile?['cuisine']?.toString() ?? '';
-  /// Formato template: "Italiana • Pizza • Pasta" - capitaliza y separa con •
+  /// Display del tipo de farmacia/establecimiento. Capitaliza y separa con •.
   String get cuisineDisplay {
     final raw = (businessType ?? cuisine).trim().isNotEmpty
         ? (businessType ?? cuisine)
-        : (description ?? 'Restaurante');
-    if (raw.isEmpty) return 'Restaurante';
+        : (description ?? 'Farmacia');
+    if (raw.isEmpty) return 'Farmacia';
     final parts = raw.split(RegExp(r'[,;_]')).map((s) {
       final t = s.trim().replaceAll('_', ' ');
       return t.isEmpty ? '' : '${t[0].toUpperCase()}${t.length > 1 ? t.substring(1).toLowerCase() : ''}';

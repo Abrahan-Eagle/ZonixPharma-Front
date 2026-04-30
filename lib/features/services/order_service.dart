@@ -89,7 +89,7 @@ class OrderService extends ChangeNotifier {
     }
     final commerceId = items.first.commerceId;
     if (commerceId == null) {
-      throw Exception('No se pudo identificar el comercio. Agrega productos desde el detalle del restaurante.');
+      throw Exception('No se pudo identificar el comercio. Agrega productos desde el detalle de la farmacia.');
     }
     if (deliveryType == 'delivery' && (deliveryAddress == null || deliveryAddress.trim().isEmpty)) {
       throw Exception('La dirección de entrega es requerida para envío a domicilio.');

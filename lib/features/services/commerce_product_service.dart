@@ -144,8 +144,35 @@ class CommerceProductService {
       );
       request.headers.addAll(headers);
 
-      // Solo enviar los campos requeridos y con el nombre correcto
-      final allowedFields = ['name', 'description', 'price', 'available', 'stock', 'category_id'];
+      // Campos comunes + farmacéuticos. Cualquier campo que el backend
+      // valide en `StoreProductRequest` debe estar aquí.
+      final allowedFields = [
+        'name',
+        'description',
+        'price',
+        'available',
+        'stock',
+        'category_id',
+        // Pharma
+        'active_ingredient',
+        'dosage_form',
+        'concentration',
+        'presentation',
+        'manufacturer',
+        'health_registry',
+        'barcode',
+        'atc_code',
+        'requires_prescription',
+        'prescription_type',
+        'controlled_substance',
+        'cold_chain',
+      ];
+      const boolFields = {
+        'available',
+        'requires_prescription',
+        'controlled_substance',
+        'cold_chain',
+      };
       for (final key in allowedFields) {
         if (data[key] != null) {
           if (key == 'price') {
@@ -153,7 +180,7 @@ class CommerceProductService {
             request.fields[key] = priceValue is num
                 ? priceValue.toString()
                 : double.tryParse(priceValue.toString().replaceAll(RegExp(r'[^0-9\.]'), ''))?.toString() ?? '0';
-          } else if (key == 'available') {
+          } else if (boolFields.contains(key)) {
             request.fields[key] = (data[key] is bool)
                 ? (data[key] ? '1' : '0')
                 : data[key].toString();
@@ -212,7 +239,33 @@ class CommerceProductService {
       request.headers.addAll(headers);
       request.fields['_method'] = 'PUT';
 
-      final allowedFields = ['name', 'description', 'price', 'available', 'stock', 'category_id'];
+      final allowedFields = [
+        'name',
+        'description',
+        'price',
+        'available',
+        'stock',
+        'category_id',
+        // Pharma
+        'active_ingredient',
+        'dosage_form',
+        'concentration',
+        'presentation',
+        'manufacturer',
+        'health_registry',
+        'barcode',
+        'atc_code',
+        'requires_prescription',
+        'prescription_type',
+        'controlled_substance',
+        'cold_chain',
+      ];
+      const boolFields = {
+        'available',
+        'requires_prescription',
+        'controlled_substance',
+        'cold_chain',
+      };
       for (final key in allowedFields) {
         if (data[key] != null) {
           if (key == 'price') {
@@ -220,7 +273,7 @@ class CommerceProductService {
             request.fields[key] = priceValue is num
                 ? priceValue.toString()
                 : double.tryParse(priceValue.toString().replaceAll(RegExp(r'[^0-9\.]'), ''))?.toString() ?? '0';
-          } else if (key == 'available') {
+          } else if (boolFields.contains(key)) {
             request.fields[key] = (data[key] is bool)
                 ? (data[key] ? '1' : '0')
                 : data[key].toString();

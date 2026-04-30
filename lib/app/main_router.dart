@@ -29,6 +29,8 @@ import 'package:zonix/features/screens/delivery_company/delivery_company_orders_
 import 'package:zonix/features/screens/location/location_search_page.dart';
 import 'package:zonix/features/screens/notifications/notifications_page.dart';
 import 'package:zonix/features/screens/orders/orders_page.dart';
+import 'package:zonix/features/screens/pharmacist/pending_validations_page.dart';
+import 'package:zonix/features/screens/pharmacist/pharmacist_dashboard_page.dart';
 import 'package:zonix/features/screens/products/products_page.dart';
 import 'package:zonix/features/screens/restaurants/restaurants_page.dart';
 import 'package:zonix/features/screens/restaurants/restaurant_details_page.dart';
@@ -191,7 +193,7 @@ class MainRouterState extends State<MainRouter> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'No se pudo abrir el restaurante: ${e.toString().replaceFirst('Exception: ', '')}',
+            'No se pudo abrir la farmacia: ${e.toString().replaceFirst('Exception: ', '')}',
           ),
         ),
       );
@@ -329,11 +331,11 @@ class MainRouterState extends State<MainRouter> {
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.receipt_long),
-            label: 'Mis Órdenes',
+            label: 'Mis Pedidos',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant),
-            label: 'Restaurantes',
+            icon: Icon(Icons.local_pharmacy),
+            label: 'Farmacias',
           ),
         ];
         break;
@@ -414,6 +416,22 @@ class MainRouterState extends State<MainRouter> {
           const BottomNavigationBarItem(
             icon: Icon(Icons.analytics),
             label: 'Analytics',
+          ),
+        ];
+        break;
+      case 5:
+        items = [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard),
+            label: 'Panel',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.fact_check),
+            label: 'Pendientes',
+          ),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Historial',
           ),
         ];
         break;
@@ -664,6 +682,23 @@ class MainRouterState extends State<MainRouter> {
                     return const AdminAnalyticsPage();
                   default:
                     return const AdminDashboardPage();
+                }
+              }
+
+              if (_selectedLevel == 5) {
+                switch (_bottomNavIndex) {
+                  case 0:
+                    return const PharmacistDashboardPage();
+                  case 1:
+                    return const PendingValidationsPage();
+                  case 2:
+                    // Por ahora reusamos la pantalla de pendientes como
+                    // historial; en una iteración posterior se añadirá una
+                    // pantalla `PrescriptionsHistoryPage` con filtros por
+                    // status approved/rejected/expired.
+                    return const PendingValidationsPage();
+                  default:
+                    return const PharmacistDashboardPage();
                 }
               }
 

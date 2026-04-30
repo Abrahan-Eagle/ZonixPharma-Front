@@ -61,11 +61,11 @@ class AppStrings {
   /// Compat: texto antiguo con IVA fijo; preferir [receiptTaxLabel] en PDF.
   static const String taxLabelIva = 'Impuestos (IVA 16%)';
   static const String totalFinalLabel = 'TOTAL FINAL';
-  static const String thanksZonixEats = '¡Gracias por elegir ZonixEATS!';
-  static const String footerSupportText = 'Esperamos que disfrutes tu pedido. Guarda este recibo. Para soporte, visita zonixeats.com/support.';
+  static const String thanksZonixEats = '¡Gracias por elegir Zonix Pharma!';
+  static const String footerSupportText = 'Esperamos que cuides tu salud. Guarda este recibo. Para soporte, visita zonixpharma.com/soporte.';
   static const String receiptHashLabel = 'Recibo #';
   static const String scanToVerify = 'Escanea para verificar';
-  static const String zonixEatsTagline = 'INTERSTELLAR GOURMET DELIVERY';
+  static const String zonixEatsTagline = 'TU FARMACIA EN TU BOLSILLO';
   // Métodos de pago (recibo)
   static const String paymentCash = 'Efectivo';
   static const String paymentTransfer = 'Transferencia';

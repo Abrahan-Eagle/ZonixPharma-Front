@@ -42,7 +42,7 @@ class AppConfig {
   static String get firebaseAppId => dotenv.env['FIREBASE_APP_ID'] ?? '';
 
   // App info (desde .env o constantes por defecto)
-  static String get appName => dotenv.env['APP_NAME'] ?? 'Zonix Eats';
+  static String get appName => dotenv.env['APP_NAME'] ?? 'Zonix Pharma';
   static String get appVersion => dotenv.env['APP_VERSION'] ?? '1.0.0';
   static String get appBuildNumber =>
       dotenv.env['APP_BUILD_NUMBER'] ?? '1';
@@ -92,9 +92,9 @@ class AppConfig {
       dotenv.env['WHATSAPP_BASE_URL'] ?? 'https://wa.me';
 
   static String get supportUrl =>
-      dotenv.env['SUPPORT_URL'] ?? 'https://zonixeats.com/soporte';
+      dotenv.env['SUPPORT_URL'] ?? 'https://zonixpharma.com/soporte';
   static String get supportEmail =>
-      dotenv.env['SUPPORT_EMAIL'] ?? 'soporte@zonixeats.com';
+      dotenv.env['SUPPORT_EMAIL'] ?? 'soporte@zonixpharma.com';
 
   /// Base pública para enlaces compartibles (HTTPS `.../r/{commerceId}`).
   /// Resolución alineada a entornos (local / tests / producción), igual que [apiUrl]:
@@ -145,9 +145,9 @@ class AppConfig {
     return (dotenv.env['PUBLIC_LINK_BASE'] ?? '').trim();
   }
 
-  /// Payload QR obligatorio en app: `zonix://restaurant/{commerceId}`.
+  /// Payload QR obligatorio en app: `zonix://pharmacy/{commerceId}`.
   static String buildCommerceDeepLink(int commerceId) =>
-      'zonix://restaurant/$commerceId';
+      'zonix://pharmacy/$commerceId';
 
   /// URL para compartir (HTTPS si [appLinkBase] está definido; si no, el mismo deep link).
   static String buildCommerceShareUrl(int commerceId) {

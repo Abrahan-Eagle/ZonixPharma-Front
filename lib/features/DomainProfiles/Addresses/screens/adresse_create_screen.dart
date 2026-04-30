@@ -319,7 +319,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         ),
         const SizedBox(height: 8),
         Text(
-          'Ingresa los detalles para tus entregas de Zonix Eats.',
+          'Ingresa los detalles para tus entregas de Zonix Pharma.',
           style: TextStyle(
             fontSize: 14,
             color: AppColors.secondaryText(context),

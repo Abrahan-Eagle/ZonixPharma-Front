@@ -229,7 +229,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Registra un número para recibir actualizaciones de tus pedidos en Zonix Eats.',
+                  'Registra un número para recibir actualizaciones de tus pedidos en Zonix Pharma.',
                   style: TextStyle(
                     fontSize: 12,
                     color: AppColors.secondaryText(context),

@@ -1,0 +1,235 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+
+import 'package:zonix/config/app_config.dart';
+import 'package:zonix/helpers/auth_helper.dart';
+import 'package:zonix/models/prescription.dart';
+
+/// Servicio buyer y pharmacist para recetas médicas (Rx).
+///
+/// Endpoints base:
+///   buyer:
+///     GET    /api/buyer/prescriptions
+///     POST   /api/buyer/prescriptions
+///     GET    /api/buyer/prescriptions/{id}
+///     DELETE /api/buyer/prescriptions/{id}
+///   pharmacist:
+///     GET   /api/pharmacist/prescriptions/pending
+///     GET   /api/pharmacist/prescriptions/{id}
+///     POST  /api/pharmacist/prescriptions/{id}/approve
+///     POST  /api/pharmacist/prescriptions/{id}/reject
+class PrescriptionService extends ChangeNotifier {
+  List<Prescription> _myPrescriptions = const [];
+  List<Prescription> _pendingForPharmacist = const [];
+  bool _isLoading = false;
+  String? _error;
+
+  List<Prescription> get myPrescriptions => _myPrescriptions;
+  List<Prescription> get pendingForPharmacist => _pendingForPharmacist;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+
+  // ── Buyer ────────────────────────────────────────────────────────────
+
+  Future<void> loadMyPrescriptions() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url = Uri.parse('${AppConfig.apiUrl}/api/buyer/prescriptions');
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        final list = (body is Map && body['data'] is List)
+            ? List<Map<String, dynamic>>.from(body['data'] as List)
+            : <Map<String, dynamic>>[];
+        _myPrescriptions = list.map(Prescription.fromJson).toList();
+      } else {
+        _error = _extractMessage(response, 'No se pudieron cargar las recetas.');
+      }
+    } catch (e) {
+      _error = 'Error al cargar recetas: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Prescription?> uploadPrescription({
+    required int orderId,
+    required String prescribingDoctorName,
+    String? prescribingDoctorLicense,
+    String? prescribingDoctorSpecialty,
+    DateTime? issuedAt,
+    String prescriptionType = Prescription.typeCommon,
+    required String filePath,
+    String? fileName,
+    String? fileMime,
+  }) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final token = await AuthHelper.getToken();
+      final url = Uri.parse('${AppConfig.apiUrl}/api/buyer/prescriptions');
+      final request = http.MultipartRequest('POST', url);
+      if (token != null && token.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+      request.headers['Accept'] = 'application/json';
+      request.fields['order_id'] = '$orderId';
+      request.fields['prescribing_doctor_name'] = prescribingDoctorName;
+      if (prescribingDoctorLicense != null && prescribingDoctorLicense.isNotEmpty) {
+        request.fields['prescribing_doctor_license'] = prescribingDoctorLicense;
+      }
+      if (prescribingDoctorSpecialty != null && prescribingDoctorSpecialty.isNotEmpty) {
+        request.fields['prescribing_doctor_specialty'] = prescribingDoctorSpecialty;
+      }
+      if (issuedAt != null) {
+        request.fields['issued_at'] = issuedAt.toIso8601String().substring(0, 10);
+      }
+      request.fields['prescription_type'] = prescriptionType;
+
+      final mime = fileMime ?? 'image/jpeg';
+      final mediaType = MediaType.parse(mime);
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        filePath,
+        filename: fileName,
+        contentType: mediaType,
+      ));
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['data'] is Map) {
+          final prescription = Prescription.fromJson(
+              Map<String, dynamic>.from(body['data'] as Map));
+          _myPrescriptions = [prescription, ..._myPrescriptions];
+          return prescription;
+        }
+      }
+      _error = _extractMessage(response, 'No se pudo enviar la receta.');
+      return null;
+    } catch (e) {
+      _error = 'Error al enviar la receta: $e';
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> deletePrescription(int prescriptionId) async {
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url = Uri.parse(
+          '${AppConfig.apiUrl}/api/buyer/prescriptions/$prescriptionId');
+      final response = await http.delete(url, headers: headers);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        _myPrescriptions =
+            _myPrescriptions.where((p) => p.id != prescriptionId).toList();
+        notifyListeners();
+        return true;
+      }
+      _error = _extractMessage(response, 'No se pudo eliminar la receta.');
+      notifyListeners();
+      return false;
+    } catch (e) {
+      _error = 'Error al eliminar la receta: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // ── Pharmacist ───────────────────────────────────────────────────────
+
+  Future<void> loadPendingForPharmacist() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url =
+          Uri.parse('${AppConfig.apiUrl}/api/pharmacist/prescriptions/pending');
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        final list = (body is Map && body['data'] is List)
+            ? List<Map<String, dynamic>>.from(body['data'] as List)
+            : <Map<String, dynamic>>[];
+        _pendingForPharmacist = list.map(Prescription.fromJson).toList();
+      } else {
+        _error = _extractMessage(response,
+            'No se pudieron cargar las recetas pendientes.');
+      }
+    } catch (e) {
+      _error = 'Error al cargar pendientes: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<Prescription?> approve(int prescriptionId) async {
+    return _decide(prescriptionId, approve: true);
+  }
+
+  Future<Prescription?> reject(int prescriptionId, String reason) async {
+    return _decide(prescriptionId, approve: false, reason: reason);
+  }
+
+  Future<Prescription?> _decide(
+    int prescriptionId, {
+    required bool approve,
+    String? reason,
+  }) async {
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final action = approve ? 'approve' : 'reject';
+      final url = Uri.parse(
+          '${AppConfig.apiUrl}/api/pharmacist/prescriptions/$prescriptionId/$action');
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(approve ? {} : {'reason': reason ?? ''}),
+      );
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['data'] is Map) {
+          final updated = Prescription.fromJson(
+              Map<String, dynamic>.from(body['data'] as Map));
+          _pendingForPharmacist = _pendingForPharmacist
+              .where((p) => p.id != prescriptionId)
+              .toList();
+          notifyListeners();
+          return updated;
+        }
+      }
+      _error = _extractMessage(response,
+          approve ? 'No se pudo aprobar la receta.' : 'No se pudo rechazar la receta.');
+      notifyListeners();
+      return null;
+    } catch (e) {
+      _error = 'Error: $e';
+      notifyListeners();
+      return null;
+    }
+  }
+
+  String _extractMessage(http.Response response, String fallback) {
+    try {
+      final body = jsonDecode(response.body);
+      if (body is Map) {
+        final msg = body['message'] ?? body['error'];
+        if (msg is String && msg.isNotEmpty) return msg;
+      }
+    } catch (_) {}
+    return fallback;
+  }
+}

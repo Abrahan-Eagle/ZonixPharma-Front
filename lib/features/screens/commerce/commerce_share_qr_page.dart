@@ -14,7 +14,7 @@ import 'package:zonix/features/utils/app_colors.dart';
 /// Logo en el centro del QR (misma ruta que [pubspec] assets).
 const String _kZonixQrLogoAsset = 'assets/images/logo_login.png';
 
-/// Pantalla comercio: tarjeta + QR (`zonix://restaurant/{id}` en el código). Enlaces http(s) al compartir.
+/// Pantalla comercio: tarjeta + QR (`zonix://pharmacy/{id}` en el código). Enlaces http(s) al compartir.
 class CommerceShareQrPage extends StatefulWidget {
   const CommerceShareQrPage({
     super.key,
@@ -45,9 +45,9 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
           ? AppConfig.buildCommerceShareUrl(widget.commerceId)
           : '';
 
-  String get _cardTitleLine => '${widget.businessName} — Zonix Eats';
+  String get _cardTitleLine => '${widget.businessName} — Zonix Pharma';
 
-  String get _cardSubtitleLine => 'Tu restaurante en Zonix Eats';
+  String get _cardSubtitleLine => 'Tu farmacia en Zonix Pharma';
 
   /// Pie al compartir imagen + texto: prioriza URL http(s) para WhatsApp.
   String get _shareText {
@@ -56,7 +56,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
     if (_webUrl.isNotEmpty) {
       return '$a\n$b\n$_webUrl';
     }
-    return '$a\n$b\n\nEscanea el QR de la imagen para abrir este comercio en Zonix Eats.';
+    return '$a\n$b\n\nEscanea el QR de la imagen para abrir esta farmacia en Zonix Pharma.';
   }
 
   String get _shareLinkOnlyText {
@@ -65,7 +65,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
     if (_webUrl.isNotEmpty) {
       return '$a\n$b\n$_webUrl';
     }
-    return '$a\n$b\n\nInstala Zonix Eats y escanea el QR del comercio para entrar.';
+    return '$a\n$b\n\nInstala Zonix Pharma y escanea el QR de la farmacia para entrar.';
   }
 
   @override
@@ -89,7 +89,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
     await SharePlus.instance.share(
       ShareParams(
         text: _shareLinkOnlyText,
-        subject: '${widget.businessName} — Zonix Eats',
+        subject: '${widget.businessName} — Zonix Pharma',
       ),
     );
   }
@@ -150,7 +150,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
           ShareParams(
             files: [XFile(file.path, mimeType: 'image/png')],
             text: _shareText,
-            subject: '${widget.businessName} — Zonix Eats',
+            subject: '${widget.businessName} — Zonix Pharma',
           ),
         );
       } finally {
@@ -279,7 +279,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                                       ),
                                       const SizedBox(height: 6),
                                       const Text(
-                                        'Tu restaurante en Zonix Eats',
+                                        'Tu farmacia en Zonix Pharma',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 14,
@@ -319,7 +319,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
-                        'Escanea este código para ver tu restaurante y pedir en Zonix Eats.',
+                        'Escanea este código para ver tu farmacia y pedir en Zonix Pharma.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -392,7 +392,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                     ),
                     icon: const Icon(Icons.link_rounded, size: 22),
                     label: const Text(
-                      'Compartir enlace del restaurante',
+                      'Compartir enlace de la farmacia',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,

@@ -703,7 +703,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
               children: [
                 TileLayer(
                   urlTemplate: AppConfig.osmTileUrl,
-                  userAgentPackageName: 'com.zonix.eats',
+                  userAgentPackageName: 'com.zonix.pharma',
                 ),
               ],
             ),

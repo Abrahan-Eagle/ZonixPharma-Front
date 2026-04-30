@@ -15,8 +15,8 @@ final Logger _fcmLogger = Logger();
 const FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
 /// ID del canal de notificaciones (sonido + vibración).
-const String fcmNotificationChannelId = 'zonix_eats_fcm';
-const String fcmNotificationChannelName = 'Notificaciones Zonix Eats';
+const String fcmNotificationChannelId = 'zonix_pharma_fcm';
+const String fcmNotificationChannelName = 'Notificaciones Zonix Pharma';
 DateTime? _lastForegroundLocalNotificationAt;
 
 /// true = usa res/raw/zonix_notification.mp3; false = sonido por defecto del sistema.
@@ -112,7 +112,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   if (androidPlugin != null) {
     await androidPlugin.createNotificationChannel(_buildFcmChannel());
   }
-  final title = message.notification?.title ?? message.data['title'] ?? 'Zonix Eats';
+  final title = message.notification?.title ?? message.data['title'] ?? 'Zonix Pharma';
   final body = message.notification?.body ?? message.data['body'] ?? 'Nueva notificación';
   final payload = message.data.isNotEmpty ? jsonEncode(message.data) : null;
   await plugin.show(
@@ -167,7 +167,7 @@ Future<void> initFcmToken() async {
 /// Registra listeners FCM de foreground / opened app (llamar tras [Firebase.initializeApp]).
 void registerFcmForegroundListeners() {
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    final title = message.notification?.title ?? message.data['title'] ?? 'Zonix Eats';
+    final title = message.notification?.title ?? message.data['title'] ?? 'Zonix Pharma';
     final body = message.notification?.body ?? message.data['body'] ?? 'Nueva notificación';
     final payload = message.data.isNotEmpty ? jsonEncode(message.data) : null;
     final now = DateTime.now();

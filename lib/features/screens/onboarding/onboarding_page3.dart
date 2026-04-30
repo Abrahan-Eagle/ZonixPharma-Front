@@ -61,10 +61,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                       iconColor: AppColors.onboardingPurpleAccent,
                     ),
                     const SizedBox(height: 24),
-                    // ZONIX EATS UNIVERSE
+                    // ZONIX PHARMA UNIVERSE
                     Center(
                       child: Text(
-                        'ZONIX EATS UNIVERSE',
+                        'ZONIX PHARMA UNIVERSE',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

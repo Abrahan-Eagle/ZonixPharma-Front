@@ -3,8 +3,9 @@ import 'package:zonix/features/utils/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:zonix/features/screens/location/location_search_page.dart';
-import 'package:zonix/features/screens/restaurants/storefront_qr_scanner_page.dart';
 import 'package:zonix/features/screens/notifications/notifications_page.dart';
+import 'package:zonix/features/screens/prescriptions/my_prescriptions_page.dart';
+import 'package:zonix/features/screens/restaurants/storefront_qr_scanner_page.dart';
 import 'package:zonix/features/screens/settings/settings_page_2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:zonix/features/services/location_service.dart';
@@ -90,6 +91,13 @@ class _BuyerShellState extends State<BuyerShell> {
     Navigator.push(
       context,
       MaterialPageRoute<void>(builder: (_) => const StorefrontQrScannerPage()),
+    );
+  }
+
+  void _onPrescriptionsTap() {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => const MyPrescriptionsPage()),
     );
   }
 
@@ -205,9 +213,20 @@ class _BuyerShellState extends State<BuyerShell> {
                 onPressed: _onStorefrontQrTap,
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-                tooltip: 'Escanear QR del restaurante',
+                tooltip: 'Escanear QR de la farmacia',
                 icon: Icon(
                   Icons.qr_code_scanner,
+                  color: isDark ? AppColors.white70 : AppColors.black54,
+                  size: 26,
+                ),
+              ),
+              IconButton(
+                onPressed: _onPrescriptionsTap,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+                tooltip: 'Mis recetas médicas',
+                icon: Icon(
+                  Icons.receipt_long,
                   color: isDark ? AppColors.white70 : AppColors.black54,
                   size: 26,
                 ),
@@ -278,7 +297,7 @@ class _BuyerShellState extends State<BuyerShell> {
       (icon: Icons.explore, label: 'Explorar'),
       (icon: Icons.shopping_cart, label: 'Carrito'),
       (icon: Icons.receipt_long, label: 'Órdenes'),
-      (icon: Icons.storefront, label: 'Restaurantes'),
+      (icon: Icons.local_pharmacy, label: 'Farmacias'),
       (icon: Icons.person, label: 'Perfil'),
       (icon: Icons.settings, label: 'Configuración'),
     ];

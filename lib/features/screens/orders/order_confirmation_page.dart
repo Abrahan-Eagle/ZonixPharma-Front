@@ -625,7 +625,7 @@ class OrderConfirmationPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Zonix Eats',
+                'Zonix Pharma',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,

@@ -778,6 +778,8 @@ class _OrdersPageState extends State<OrdersPage> {
 
   double _progressForStatus(String status) {
     switch (status) {
+      case 'pending_prescription_validation':
+        return 0.10;
       case 'pending_payment':
       case 'pending':
         return 0.2;

@@ -518,7 +518,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
 
       // -----------------------------
       // 1) Autocompletar texto de dirección
-      //    (inspirado en Zonix Eats OnboardingPage2)
+      //    (inspirado en Zonix Pharma OnboardingPage2)
       // -----------------------------
       String? mainStreet;
       String? crossStreet;
@@ -573,7 +573,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       if (mounted) {
         final addressParts = <String>[];
 
-        // Urbanización / subLocality primero (como en Zonix Eats)
+        // Urbanización / subLocality primero (como en Zonix Pharma)
         String? urb;
         if (placemark.subLocality != null &&
             placemark.subLocality!.isNotEmpty &&
@@ -1644,7 +1644,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Completa tus datos para crear tu experiencia única en Zonix Eats.',
+              'Completa tus datos para crear tu experiencia única en Zonix Pharma.',
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
@@ -2186,7 +2186,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 children: [
                   TileLayer(
                     urlTemplate: AppConfig.osmTileUrl,
-                    userAgentPackageName: 'com.zonix.eats',
+                    userAgentPackageName: 'com.zonix.pharma',
                   ),
                 ],
               )
@@ -2886,7 +2886,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   TileLayer(
                     urlTemplate:
                         AppConfig.osmTileUrl,
-                    userAgentPackageName: 'com.zonix.eats',
+                    userAgentPackageName: 'com.zonix.pharma',
                   ),
                 ],
               )
@@ -3115,7 +3115,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
 
 }
 
-/// Formatter para CI venezolana (V-12345678) inspirado en Zonix Eats.
+/// Formatter para CI venezolana (V-12345678) inspirado en Zonix Pharma.
 class _CIVenezuelaInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -3145,7 +3145,7 @@ class _CIVenezuelaInputFormatter extends TextInputFormatter {
   }
 }
 
-/// Formatter para RIF venezolano (V- o J-12345678-9) copiado de Zonix Eats.
+/// Formatter para RIF venezolano (V- o J-12345678-9) copiado de Zonix Pharma.
 class _RIFVenezuelaInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

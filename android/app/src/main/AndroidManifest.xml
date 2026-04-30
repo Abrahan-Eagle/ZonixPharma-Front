@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
-      Permisos alineados con Zonix Eats (API, mapas, fotos/comprobantes, cámara/ML Kit).
-      Evitar permisos “fuertes” sin uso real mejora revisión en Play Store y la confianza del usuario.
+      Permisos alineados con Zonix Pharma (API, mapas, fotos/comprobantes/recetas, cámara/ML Kit).
+      Evitar permisos "fuertes" sin uso real mejora revisión en Play Store y la confianza del usuario.
 
       Seguridad: restrinja en Google Cloud Console las claves declaradas en <meta-data> (Android package + SHA-1).
     -->
@@ -40,7 +40,7 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:label="ZonixEats"
+        android:label="Zonix Pharma"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true">
@@ -61,6 +61,14 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- Deep link Zonix Pharma: zonix://pharmacy/{id} -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="zonix" android:host="pharmacy"/>
             </intent-filter>
         </activity>
 

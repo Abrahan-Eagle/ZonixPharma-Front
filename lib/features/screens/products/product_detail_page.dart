@@ -5,20 +5,24 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zonix/features/services/cart_service.dart';
-import 'package:zonix/features/services/product_service.dart';
+import 'package:zonix/features/services/restaurant_service.dart';
 import 'package:zonix/models/product.dart';
 import 'package:zonix/models/cart_item.dart';
 import 'package:zonix/models/restaurant.dart';
-import 'package:zonix/features/services/restaurant_service.dart';
 import 'package:zonix/features/screens/restaurants/restaurant_details_page.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/config/app_config.dart';
 import 'package:logger/logger.dart';
 
-const Color _kPrimary = AppColors.blue;
-const Color _kAccent = AppColors.amber;
+const Color _kPrimary = AppColors.brandTeal;
+const Color _kAccent = AppColors.brandCtaAccent;
 
+/// Detalle de un producto / medicamento (Zonix Pharma).
+///
+/// Muestra información farmacéutica (principio activo, presentación,
+/// registro INHRR), badges Rx / cadena de frío / controlado y permite
+/// añadir el producto al carrito propagando los flags farmacéuticos.
 class ProductDetailPage extends StatefulWidget {
   final Product product;
 
@@ -33,28 +37,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   final TextEditingController _instructionsController = TextEditingController();
   int _quantity = 1;
   bool _isLoading = false;
-  bool _isHydratingProduct = false;
   late Future<Restaurant?> _restaurantFuture;
   Restaurant? _restaurant;
-  Product? _resolvedProduct;
-  final Set<int> _selectedExtraIds = {};
-  final Set<int> _selectedPreferenceIds = {};
   bool _isFavProduct = false;
   static const _favProdKey = 'favorite_products';
 
-  Product get _product => _resolvedProduct ?? widget.product;
+  Product get _product => widget.product;
 
   bool _isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
   Color _bgPrimary(BuildContext context) =>
-      _isDark(context) ? AppColors.backgroundDark : AppColors.white;
+      _isDark(context) ? AppColors.brandSurfaceDark : AppColors.white;
 
   Color _bgSecondary(BuildContext context) =>
-      _isDark(context) ? AppColors.grayDark : AppColors.grayLight;
+      _isDark(context) ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight;
 
   Color _borderColor(BuildContext context) =>
-      _isDark(context) ? AppColors.surfaceDarkLighter : AppColors.black12;
+      _isDark(context) ? AppColors.brandSurfaceDarkLighter : AppColors.brandStrokeLight;
 
   Color _textPrimary(BuildContext context) => AppColors.primaryText(context);
 
@@ -64,30 +64,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     super.initState();
-    _hydrateProductIfNeeded();
     _restaurantFuture = _loadRestaurant();
     _loadFav();
-  }
-
-  Future<void> _hydrateProductIfNeeded() async {
-    if (widget.product.extras.isNotEmpty || widget.product.preferences.isNotEmpty) {
-      return;
-    }
-
-    setState(() => _isHydratingProduct = true);
-    try {
-      final fullProduct = await ProductService().getProductById(widget.product.id);
-      if (!mounted) return;
-      setState(() {
-        _resolvedProduct = fullProduct;
-      });
-    } catch (e, stack) {
-      logger.w('No se pudo hidratar producto completo', error: e, stackTrace: stack);
-    } finally {
-      if (mounted) {
-        setState(() => _isHydratingProduct = false);
-      }
-    }
   }
 
   Future<void> _loadFav() async {
@@ -120,9 +98,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     final link = '${AppConfig.apiUrl}/product/${_product.id}';
     final restName = _restaurant?.nombreLocal ?? '';
     final text =
-        '🛒 *${_product.name}* - \$${_product.price.toStringAsFixed(2)}\n'
+        '💊 *${_product.name}* - \$${_product.price.toStringAsFixed(2)}\n'
         '${_product.description.isNotEmpty ? '${_product.description}\n' : ''}'
-        '${restName.isNotEmpty ? '🍽️ En *$restName* - Zonix Eats\n' : ''}'
+        '${restName.isNotEmpty ? '🏥 En *$restName* - Zonix Pharma\n' : ''}'
         '\n👉 $link';
     SharePlus.instance.share(ShareParams(text: text));
   }
@@ -133,45 +111,18 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     super.dispose();
   }
 
-  double get _extrasTotal {
-    double sum = 0;
-    for (final e in _product.extras) {
-      if (_selectedExtraIds.contains(e.id)) sum += e.price;
-    }
-    return sum;
-  }
-
-  double get _unitTotal => _product.price + _extrasTotal;
-
+  double get _unitTotal => _product.price;
   double get _total => _unitTotal * _quantity;
 
   String _buildNotes() {
-    final parts = <String>[];
-    if (_selectedExtraIds.isNotEmpty) {
-      final names = _product.extras
-          .where((e) => _selectedExtraIds.contains(e.id))
-          .map((e) => e.name)
-          .join(', ');
-      if (names.isNotEmpty) parts.add('Extras: $names');
-    }
-    if (_selectedPreferenceIds.isNotEmpty) {
-      final names = _product.preferences
-          .where((p) => _selectedPreferenceIds.contains(p.id))
-          .map((p) => p.name)
-          .join(', ');
-      if (names.isNotEmpty) parts.add('Preferencias: $names');
-    }
     final instructions = _instructionsController.text.trim();
-    if (instructions.isNotEmpty) {
-      parts.add('Instrucciones: $instructions');
-    }
-    return parts.isEmpty ? '' : parts.join('. ');
+    return instructions;
   }
 
   Future<Restaurant?> _loadRestaurant() async {
     if (_product.commerceId <= 0) {
       logger.w(
-          'Skipping restaurant load: invalid commerceId ${_product.commerceId}');
+          'Skipping pharmacy load: invalid commerceId ${_product.commerceId}');
       return null;
     }
 
@@ -180,7 +131,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       return await restaurantService
           .fetchRestaurantDetails2(_product.commerceId);
     } catch (e, stack) {
-      logger.e('Error loading restaurant', error: e, stackTrace: stack);
+      logger.e('Error loading pharmacy', error: e, stackTrace: stack);
       return null;
     }
   }
@@ -256,17 +207,15 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                             const SizedBox(height: 20),
                             _buildProductHeader(context, _total),
                             const SizedBox(height: 16),
-                            _buildDescription(context),
+                            _buildBadges(context),
                             const SizedBox(height: 16),
-                            _buildTags(context),
+                            _buildDescription(context),
                             const SizedBox(height: 24),
-                            _buildRestaurantLink(context),
+                            _buildPharmaInfo(context),
+                            const SizedBox(height: 16),
+                            _buildPharmacyLink(context),
                             const SizedBox(height: 24),
                             Divider(color: _borderColor(context), height: 1),
-                            const SizedBox(height: 24),
-                            _buildCustomizationSection(context),
-                            const SizedBox(height: 24),
-                            _buildPreferencesSection(context),
                             const SizedBox(height: 24),
                             _buildSpecialInstructions(context),
                           ],
@@ -340,7 +289,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   context: context,
                   icon: _isFavProduct ? Icons.favorite : Icons.favorite_border,
                   onTap: _toggleFav,
-                  iconColor: _isFavProduct ? AppColors.red : null,
+                  iconColor: _isFavProduct ? AppColors.statusError : null,
                 ),
                 const SizedBox(width: 8),
                 _circleButton(
@@ -442,6 +391,17 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             ),
           ],
         ),
+        if (_product.pharmaSummary.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            _product.pharmaSummary,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 13,
+              color: _textSecondary(context),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
         if (_product.category.isNotEmpty) ...[
           const SizedBox(height: 8),
           Container(
@@ -479,48 +439,191 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildTags(BuildContext context) {
-    final tags = <String>[];
-    if (_product.rating >= 4.5) tags.add('Popular');
-    if (_product.category.isNotEmpty) tags.add(_product.category);
-    if (_product.preparationTime > 0) {
-      tags.add(
-          '${_product.preparationTime}-${_product.preparationTime + 10} min');
+  Widget _buildBadges(BuildContext context) {
+    final badges = <_PharmaBadge>[];
+    if (_product.requiresPrescription) {
+      badges.add(_PharmaBadge(
+        icon: Icons.receipt_long,
+        label: 'Requiere receta',
+        color: AppColors.brandTealDeep,
+      ));
     }
-    if (tags.isEmpty) tags.addAll(['Popular', '20-30 min']);
+    if (_product.controlledSubstance) {
+      badges.add(_PharmaBadge(
+        icon: Icons.warning_amber_rounded,
+        label: 'Sustancia controlada',
+        color: AppColors.statusError,
+      ));
+    }
+    if (_product.coldChain) {
+      badges.add(_PharmaBadge(
+        icon: Icons.ac_unit,
+        label: 'Cadena de frío',
+        color: AppColors.statusInfo,
+      ));
+    }
+    if (badges.isEmpty) {
+      badges.add(_PharmaBadge(
+        icon: Icons.check_circle_outline,
+        label: 'Venta libre (OTC)',
+        color: AppColors.statusSuccess,
+      ));
+    }
 
     return Wrap(
-      spacing: 12,
+      spacing: 8,
       runSpacing: 8,
-      children: tags.asMap().entries.map((e) {
-        final isFirst = e.key == 0;
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color:
-                isFirst ? _kPrimary.withValues(alpha: 0.2) : AppColors.transparent,
-            border: Border.all(
-              color: isFirst
-                  ? _kPrimary.withValues(alpha: 0.3)
-                  : _borderColor(context),
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(999),
-          ),
-          child: Text(
-            e.value,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: isFirst ? _kPrimary : _textSecondary(context),
-            ),
-          ),
-        );
-      }).toList(),
+      children: badges
+          .map((b) => Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: b.color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: b.color.withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(b.icon, size: 14, color: b.color),
+                    const SizedBox(width: 6),
+                    Text(
+                      b.label,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: b.color,
+                      ),
+                    ),
+                  ],
+                ),
+              ))
+          .toList(),
     );
   }
 
-  Widget _buildRestaurantLink(BuildContext context) {
+  Widget _buildPharmaInfo(BuildContext context) {
+    final entries = <MapEntry<String, String>>[];
+    if ((_product.activeIngredient ?? '').isNotEmpty) {
+      entries.add(MapEntry('Principio activo', _product.activeIngredient!));
+    }
+    if ((_product.dosageForm ?? '').isNotEmpty) {
+      entries.add(MapEntry('Forma farmacéutica', _humanDosageForm(_product.dosageForm!)));
+    }
+    if ((_product.concentration ?? '').isNotEmpty) {
+      entries.add(MapEntry('Concentración', _product.concentration!));
+    }
+    if ((_product.presentation ?? '').isNotEmpty) {
+      entries.add(MapEntry('Presentación', _product.presentation!));
+    }
+    if ((_product.manufacturer ?? '').isNotEmpty) {
+      entries.add(MapEntry('Laboratorio', _product.manufacturer!));
+    }
+    if ((_product.healthRegistry ?? '').isNotEmpty) {
+      entries.add(MapEntry('Registro INHRR', _product.healthRegistry!));
+    }
+    if ((_product.barcode ?? '').isNotEmpty) {
+      entries.add(MapEntry('Código', _product.barcode!));
+    }
+    if ((_product.atcCode ?? '').isNotEmpty) {
+      entries.add(MapEntry('Código ATC', _product.atcCode!));
+    }
+    if (entries.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: _bgSecondary(context),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _borderColor(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Información farmacéutica',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: _textPrimary(context),
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...entries.map(
+            (e) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 130,
+                    child: Text(
+                      e.key,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        color: _textSecondary(context),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      e.value,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: _textPrimary(context),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _humanDosageForm(String dosageForm) {
+    switch (dosageForm) {
+      case 'tablet':
+        return 'Tabletas';
+      case 'capsule':
+        return 'Cápsulas';
+      case 'syrup':
+        return 'Jarabe';
+      case 'suspension':
+        return 'Suspensión';
+      case 'injection':
+        return 'Inyectable';
+      case 'cream':
+        return 'Crema';
+      case 'ointment':
+        return 'Ungüento';
+      case 'gel':
+        return 'Gel';
+      case 'drops':
+        return 'Gotas';
+      case 'patch':
+        return 'Parches';
+      case 'suppository':
+        return 'Supositorios';
+      case 'inhaler':
+        return 'Inhalador';
+      case 'powder':
+        return 'Polvo';
+      case 'solution':
+        return 'Solución';
+      case 'spray':
+        return 'Spray';
+      case 'device':
+        return 'Dispositivo';
+      default:
+        return dosageForm;
+    }
+  }
+
+  Widget _buildPharmacyLink(BuildContext context) {
     return FutureBuilder<Restaurant?>(
       future: _restaurantFuture,
       builder: (context, snapshot) {
@@ -554,7 +657,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child:
-                      const Icon(Icons.storefront, color: _kPrimary, size: 20),
+                      const Icon(Icons.local_pharmacy, color: _kPrimary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -573,8 +676,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       const SizedBox(height: 2),
                       Text(
                         _restaurant?.abierto == true
-                            ? 'Abierto · Ver menú completo'
-                            : 'Cerrado · Ver menú completo',
+                            ? 'Abierta · Ver catálogo completo'
+                            : 'Cerrada · Ver catálogo completo',
                         style: GoogleFonts.plusJakartaSans(
                             fontSize: 12, color: _textSecondary(context)),
                       ),
@@ -590,162 +693,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
     );
   }
 
-  Widget _buildCustomizationSection(BuildContext context) {
-    if (_isHydratingProduct) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            height: 18,
-            width: 18,
-            child: CircularProgressIndicator(strokeWidth: 2, color: _kPrimary),
-          ),
-        ),
-      );
-    }
-
-    if (_product.extras.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              'Personaliza tu orden',
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: _textPrimary(context),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: _bgSecondary(context),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                'Opcional',
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 12,
-                  color: _textSecondary(context),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ..._product.extras.map((e) => _buildOptionTile(
-              context,
-              e.name,
-              '+ \$${e.price.toStringAsFixed(2)}',
-              _selectedExtraIds.contains(e.id),
-              () => setState(() {
-                if (_selectedExtraIds.contains(e.id)) {
-                  _selectedExtraIds.remove(e.id);
-                } else {
-                  _selectedExtraIds.add(e.id);
-                }
-              }),
-            )),
-      ],
-    );
-  }
-
-  Widget _buildPreferencesSection(BuildContext context) {
-    if (_product.preferences.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Preferencias',
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: _textPrimary(context),
-          ),
-        ),
-        const SizedBox(height: 16),
-        ..._product.preferences.map((p) => _buildOptionTile(
-              context,
-              p.name,
-              null,
-              _selectedPreferenceIds.contains(p.id),
-              () => setState(() {
-                if (_selectedPreferenceIds.contains(p.id)) {
-                  _selectedPreferenceIds.remove(p.id);
-                } else {
-                  _selectedPreferenceIds.add(p.id);
-                }
-              }),
-            )),
-      ],
-    );
-  }
-
-  Widget _buildOptionTile(
-    BuildContext context,
-    String label,
-    String? price,
-    bool value,
-    VoidCallback onChanged,
-  ) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _bgSecondary(context),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: _borderColor(context)),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 20,
-            height: 20,
-            child: Checkbox(
-              value: value,
-              onChanged: (_) => onChanged(),
-              fillColor: WidgetStateProperty.all(AppColors.transparent),
-              checkColor: _kPrimary,
-              side: BorderSide(color: _borderColor(context)),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: _textPrimary(context),
-              ),
-            ),
-          ),
-          if (price != null)
-            Text(
-              price,
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: _kPrimary,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSpecialInstructions(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Instrucciones Especiales',
+          'Instrucciones para el farmacéutico',
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -766,7 +719,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             style: GoogleFonts.plusJakartaSans(
                 fontSize: 14, color: _textPrimary(context)),
             decoration: InputDecoration(
-              hintText: 'Ej: Salsa aparte, servilletas extra...',
+              hintText: 'Ej: prefiero genérico, dosis por blíster aparte...',
               hintStyle: GoogleFonts.plusJakartaSans(
                   color: _textSecondary(context), fontSize: 14),
               border: InputBorder.none,
@@ -814,7 +767,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDark ? _bgPrimary(context) : AppColors.grayLight,
+                color: isDark ? _bgPrimary(context) : AppColors.brandSurfaceLight,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -891,15 +844,24 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       category: _product.category,
                       notes: notes.isEmpty ? null : notes,
                       commerceId: _product.commerceId,
+                      requiresPrescription: _product.requiresPrescription,
+                      prescriptionType: _product.prescriptionType,
+                      controlledSubstance: _product.controlledSubstance,
+                      coldChain: _product.coldChain,
+                      activeIngredient: _product.activeIngredient,
+                      concentration: _product.concentration,
+                      presentation: _product.presentation,
                     ));
                     final message = switch (result.status) {
                       CartAddStatus.replacedCommerce =>
-                        'Carrito actualizado. Solo puedes tener productos de un comercio a la vez.',
+                        'Carrito actualizado. Solo puedes tener productos de una farmacia a la vez.',
                       CartAddStatus.blockedLimit =>
                         'No puedes agregar mas de 100 unidades',
                       CartAddStatus.blockedStock =>
                         'Cantidad no disponible por stock',
-                      _ => 'Producto añadido al carrito',
+                      _ => _product.requiresPrescription
+                          ? 'Añadido. Recuerda subir la receta médica al pagar.'
+                          : 'Producto añadido al carrito',
                     };
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(message)),
@@ -948,4 +910,11 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       ),
     );
   }
+}
+
+class _PharmaBadge {
+  final IconData icon;
+  final String label;
+  final Color color;
+  _PharmaBadge({required this.icon, required this.label, required this.color});
 }

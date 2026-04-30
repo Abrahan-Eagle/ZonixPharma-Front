@@ -281,7 +281,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                           initialZoom: 14,
                         ),
                         children: [
-                          TileLayer(urlTemplate: AppConfig.osmTileUrl, userAgentPackageName: 'com.zonix.eats'),
+                          TileLayer(urlTemplate: AppConfig.osmTileUrl, userAgentPackageName: 'com.zonix.pharma'),
                           if (_routePoints.length >= 2)
                             PolylineLayer(polylines: [
                               Polyline(points: _routePoints, color: AppColors.blue, strokeWidth: 4),

@@ -1,6 +1,13 @@
 /// Helpers para persistencia del índice de la bottom nav por rol.
 /// Usado por [MainRouter] en main.dart.
-/// level 0 = users, 1 = commerce, 2 = delivery/delivery_agent, 3 = delivery_company, 4 = admin.
+///
+/// Niveles:
+///   0 = users (Buyer / paciente)
+///   1 = commerce (Farmacia / Droguería)
+///   2 = delivery / delivery_agent
+///   3 = delivery_company
+///   4 = admin
+///   5 = pharmacist (farmacéutico colegiado responsable, Zonix Pharma)
 library bottom_nav_persistence;
 
 /// Clave de SharedPreferences para guardar el índice de la bottom nav de un rol.
@@ -11,7 +18,6 @@ String bottomNavStorageKey(String role) {
 }
 
 /// Nivel por defecto para el selector de rol en la app bar.
-/// users = 0, commerce = 1, delivery/delivery_agent = 2, delivery_company = 3, admin = 4.
 int defaultLevelForRole(String role) {
   switch (role) {
     case 'commerce':
@@ -23,6 +29,8 @@ int defaultLevelForRole(String role) {
       return 3;
     case 'admin':
       return 4;
+    case 'pharmacist':
+      return 5;
     case 'users':
     default:
       return 0;
@@ -41,6 +49,8 @@ List<int> levelsForRole(String role) {
       return [3];
     case 'admin':
       return [4];
+    case 'pharmacist':
+      return [5];
     case 'users':
     default:
       return [0];

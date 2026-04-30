@@ -822,7 +822,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                 Text('Seguridad Garantizada', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: primaryText)),
                 const SizedBox(height: 4),
                 Text(
-                  'Tus datos están protegidos con cifrado de grado bancario. Zonix Eats nunca almacena claves de acceso.',
+                  'Tus datos están protegidos con cifrado de grado bancario. Zonix Pharma nunca almacena claves de acceso.',
                   style: TextStyle(fontSize: 12, color: secondaryText, height: 1.35),
                 ),
               ],

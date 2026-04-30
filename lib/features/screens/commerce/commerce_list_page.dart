@@ -117,7 +117,7 @@ class _CommerceListPageState extends State<CommerceListPage> {
       builder: (ctx) => AlertDialog(
         title: const Text('Eliminar restaurante'),
         content: Text(
-          'Para eliminar "${c.businessName}", contacta al equipo de soporte de Zonix Eats.',
+          'Para eliminar "${c.businessName}", contacta al equipo de soporte de Zonix Pharma.',
         ),
         actions: [
           TextButton(
