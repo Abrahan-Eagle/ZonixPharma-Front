@@ -95,7 +95,7 @@ class OrderConfirmationPage extends StatelessWidget {
                               height: h,
                               fit: BoxFit.cover,
                               borderRadius: BorderRadius.circular(12),
-                              fallbackIcon: Icons.restaurant_rounded,
+                              fallbackIcon: Icons.local_pharmacy,
                               fallbackColor: AppColors.blue.withValues(alpha: 0.5),
                             );
                           },
@@ -370,7 +370,7 @@ class OrderConfirmationPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'El restaurante ya está preparando tu comida con ingredientes frescos.',
+                  'La farmacia ya está preparando tu pedido.',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 13,
                     height: 1.45,

@@ -548,7 +548,7 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
       };
 
   IconData _statusIcon(String status, bool hasDelivery) => switch (status) {
-        'processing' => hasDelivery ? Icons.store : Icons.restaurant,
+        'processing' => hasDelivery ? Icons.store : Icons.local_pharmacy,
         'shipped' => hasDelivery ? Icons.delivery_dining : Icons.assignment,
         'delivered' => Icons.check_circle,
         'cancelled' => Icons.cancel,

@@ -590,7 +590,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           if (i == 0) ...[
-                            Icon(Icons.restaurant_menu,
+                            Icon(Icons.local_pharmacy,
                                 size: 14,
                                 color: selected
                                     ? AppColors.white

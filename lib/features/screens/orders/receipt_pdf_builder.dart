@@ -15,7 +15,8 @@ class ReceiptPdfBuilder {
   static const PdfColor _zonixDark = PdfColor.fromInt(0xFF1A2E46);
   static const PdfColor _zonixBlue = PdfColor.fromInt(0xFF3299FF);
   static const PdfColor _zonixOrange = PdfColor.fromInt(0xFFFFC107);
-  static const PdfColor _zonixEats = PdfColor.fromInt(0xFFFF3D40);
+  /// Accent teal marca Zonix Pharma (#56C7B8).
+  static const PdfColor _zonixPharmaAccent = PdfColor.fromInt(0xFF56C7B8);
 
   static const Map<int, pw.TableColumnWidth> _tableColumnWidths = {
     0: pw.FlexColumnWidth(0.8),
@@ -198,11 +199,11 @@ class ReceiptPdfBuilder {
                     : pw.Align(
                         alignment: pw.Alignment.center,
                         child: pw.Text(
-                          'ZE',
+                          'ZP',
                           style: pw.TextStyle(
                             fontSize: 18,
                             fontWeight: pw.FontWeight.bold,
-                            color: _zonixEats,
+                            color: _zonixPharmaAccent,
                           ),
                         ),
                       ),
@@ -224,18 +225,18 @@ class ReceiptPdfBuilder {
                         ),
                       ),
                       pw.Text(
-                        ' EATS',
+                        ' PHARMA',
                         style: pw.TextStyle(
                           fontSize: 22,
                           fontWeight: pw.FontWeight.bold,
-                          color: _zonixEats,
+                          color: _zonixPharmaAccent,
                         ),
                       ),
                     ],
                   ),
                   pw.SizedBox(height: 2),
                   pw.Text(
-                    AppStrings.zonixEatsTagline,
+                    AppStrings.zonixPharmaTagline,
                     style: pw.TextStyle(
                       fontSize: 10,
                       color: PdfColors.grey300,
@@ -722,7 +723,7 @@ class ReceiptPdfBuilder {
               _footerLogo(logoImageBytes),
               pw.SizedBox(width: 8),
               pw.Text(
-                AppStrings.thanksZonixEats,
+                AppStrings.thanksZonixPharma,
                 style: pw.TextStyle(
                   fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
@@ -753,11 +754,11 @@ class ReceiptPdfBuilder {
                 ),
               ),
               pw.Text(
-                'EATS',
+                'PHARMA',
                 style: pw.TextStyle(
                   fontSize: 8,
                   fontWeight: pw.FontWeight.bold,
-                  color: _zonixEats,
+                  color: _zonixPharmaAccent,
                 ),
               ),
               pw.Text(
@@ -775,7 +776,7 @@ class ReceiptPdfBuilder {
             style: pw.TextStyle(
               fontSize: 9,
               fontWeight: pw.FontWeight.bold,
-              color: _zonixEats,
+              color: _zonixPharmaAccent,
             ),
           ),
         ],

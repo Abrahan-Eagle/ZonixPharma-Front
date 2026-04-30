@@ -242,6 +242,8 @@ class MainRouterState extends State<MainRouter> {
         return 'Delivery Company';
       case 4:
         return 'Admin';
+      case 5:
+        return 'Farmacéutico';
       default:
         return 'Desconocido';
     }
@@ -259,6 +261,8 @@ class MainRouterState extends State<MainRouter> {
         return Icons.local_shipping;
       case 4:
         return Icons.admin_panel_settings;
+      case 5:
+        return Icons.medical_services;
       default:
         return Icons.help_outline;
     }

@@ -505,7 +505,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
       case 'commerce':
         return [
           (title: 'Gestionar Pedidos', icon: Icons.receipt_long, searchKeyword: 'orden'),
-          (title: 'Productos y Menú', icon: Icons.restaurant_menu, searchKeyword: 'producto'),
+          (title: 'Productos y catálogo', icon: Icons.medication, searchKeyword: 'producto'),
           (title: 'Promociones', icon: Icons.campaign, searchKeyword: 'promoción'),
           (title: 'Reportes', icon: Icons.analytics, searchKeyword: 'reporte'),
         ];
@@ -594,14 +594,14 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
   }
 
   static final List<({String question, String answer})> _faqUsers = [
-    (question: '¿Cómo hago un pedido?', answer: 'Entra en Restaurantes o Productos, elige el restaurante y los platos. Añádelos al carrito (solo de un restaurante a la vez). En Checkout confirmas tu dirección y tipo de entrega. Después se crea la orden y podrás subir el comprobante de pago. El comercio validará el pago y preparará tu pedido.'),
-    (question: '¿Cómo cambio o agrego mi dirección de entrega?', answer: 'En Configuración (Mi perfil) → "Direcciones guardadas" puedes añadir o editar. La predeterminada se usa para buscar restaurantes; en cada pedido puedes elegir otra.'),
-    (question: '¿Qué métodos de pago puedo usar?', answer: 'Cada restaurante define los suyos: efectivo, transferencia, tarjeta, pago móvil, etc. Verás las opciones del comercio al subir el comprobante de pago en el detalle de la orden. Para transferencia o pago móvil deberás subir el comprobante en el tiempo indicado.'),
+    (question: '¿Cómo hago un pedido?', answer: 'Entra en Farmacias o Productos, elige la farmacia y los medicamentos o productos. Añádelos al carrito (solo de una farmacia a la vez). En el checkout confirmas tu dirección y tipo de entrega. Luego se crea la orden; si hay productos con receta, sube y valida la receta según las indicaciones. Después podrás subir el comprobante de pago. La farmacia validará el pago y preparará tu pedido.'),
+    (question: '¿Cómo cambio o agrego mi dirección de entrega?', answer: 'En Configuración (Mi perfil) → "Direcciones guardadas" puedes añadir o editar. La predeterminada se usa para buscar farmacias; en cada pedido puedes elegir otra.'),
+    (question: '¿Qué métodos de pago puedo usar?', answer: 'Cada farmacia define los suyos: efectivo, transferencia, tarjeta, pago móvil, etc. Verás las opciones del comercio al subir el comprobante de pago en el detalle de la orden. Para transferencia o pago móvil deberás subir el comprobante en el tiempo indicado.'),
     (question: '¿Cómo sigo mi pedido?', answer: 'En "Mis Órdenes" verás el estado: Pendiente de pago, Pagado, En preparación, Enviado, Entregado. Toca una orden para el detalle. Si hay repartidor, verás seguimiento en tiempo real.'),
     (question: '¿Cómo cancelo mi pedido en curso?', answer: 'Solo mientras esté en "Pendiente de pago". Después depende del comercio. Si tienes un problema, contacta soporte con el número de orden.'),
     (question: '¿Mi pedido llegó incompleto, qué hago?', answer: 'Contacta a soporte (correo o chat) e indica el número de orden y qué faltó. El equipo revisará con el comercio y te responderá.'),
     (question: '¿Cuánto tardan los reembolsos?', answer: 'Los reembolsos se gestionan de forma manual. Una vez aprobado, el tiempo depende del método de pago (transferencia suele ser 3-5 días hábiles). Consulta con soporte para tu caso.'),
-    (question: '¿Cómo uso un cupón o promoción?', answer: 'En el checkout verás un campo para el código. Introdúcelo y aplica; se descontará si es válido. Las promociones del restaurante pueden aplicarse automáticamente.'),
+    (question: '¿Cómo uso un cupón o promoción?', answer: 'En el checkout verás un campo para el código. Introdúcelo y aplica; se descontará si es válido (no aplica a líneas con medicamentos que requieren receta si la política del marketplace lo impide). Las promociones de la farmacia pueden aplicarse automáticamente.'),
     (question: '¿Cómo contacto a soporte?', answer: 'Correo a $_supportEmail o el enlace de soporte más abajo. Para un pedido, incluye el número de orden.'),
   ];
 

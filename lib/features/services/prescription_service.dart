@@ -34,6 +34,26 @@ class PrescriptionService extends ChangeNotifier {
 
   // ── Buyer ────────────────────────────────────────────────────────────
 
+  /// GET /api/buyer/prescriptions/{id}
+  Future<Prescription?> loadBuyerPrescriptionById(int id) async {
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url =
+          Uri.parse('${AppConfig.apiUrl}/api/buyer/prescriptions/$id');
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['data'] is Map) {
+          return Prescription.fromJson(
+              Map<String, dynamic>.from(body['data'] as Map));
+        }
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<void> loadMyPrescriptions() async {
     _isLoading = true;
     _error = null;

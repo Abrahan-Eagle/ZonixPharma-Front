@@ -99,6 +99,8 @@ class Order {
   final int restaurantReviewCount;
   /// Reseñas al repartidor para esta orden (`withCount` en API buyer).
   final int deliveryReviewCount;
+  /// Receta vinculada al pedido (Rx); backend: `prescription_id`.
+  final int? prescriptionId;
 
   Order({
     required this.id,
@@ -137,6 +139,7 @@ class Order {
     this.orderPayments = const [],
     this.restaurantReviewCount = 0,
     this.deliveryReviewCount = 0,
+    this.prescriptionId,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -198,6 +201,12 @@ class Order {
           .toList() ?? [],
       restaurantReviewCount: safeInt(json['restaurant_review_count'], 0),
       deliveryReviewCount: safeInt(json['delivery_review_count'], 0),
+      prescriptionId: () {
+        final raw = json['prescription_id'];
+        if (raw == null) return null;
+        final v = safeInt(raw, 0);
+        return v > 0 ? v : null;
+      }(),
     );
   }
 
@@ -240,6 +249,7 @@ class Order {
       'order_payments': orderPayments,
       'restaurant_review_count': restaurantReviewCount,
       'delivery_review_count': deliveryReviewCount,
+      if (prescriptionId != null) 'prescription_id': prescriptionId,
     };
   }
 
@@ -280,6 +290,7 @@ class Order {
     List<Map<String, dynamic>>? orderPayments,
     int? restaurantReviewCount,
     int? deliveryReviewCount,
+    int? prescriptionId,
   }) {
     return Order(
       id: id ?? this.id,
@@ -319,6 +330,7 @@ class Order {
       orderPayments: orderPayments ?? this.orderPayments,
       restaurantReviewCount: restaurantReviewCount ?? this.restaurantReviewCount,
       deliveryReviewCount: deliveryReviewCount ?? this.deliveryReviewCount,
+      prescriptionId: prescriptionId ?? this.prescriptionId,
     );
   }
 

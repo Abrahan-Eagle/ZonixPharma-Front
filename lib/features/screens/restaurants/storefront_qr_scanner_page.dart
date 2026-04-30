@@ -35,7 +35,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
     final parsed = StorefrontQrParser.parse(raw);
 
     if (parsed.kind == StorefrontQrKind.invalid) {
-      setState(() => _error = 'QR no reconocido. Usa el código del restaurante en Zonix.');
+      setState(() => _error = 'QR no reconocido. Usa el código de la farmacia en Zonix Pharma.');
       return;
     }
     if (parsed.kind == StorefrontQrKind.orderPickupOrDelivery) {
@@ -65,7 +65,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Inicia sesión para ver el menú de este restaurante.'),
+          content: Text('Inicia sesión para ver el catálogo de esta farmacia.'),
         ),
       );
       Navigator.of(context).pop();
@@ -86,7 +86,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
       if (mounted) {
         setState(() {
           _processing = false;
-          _error = 'No se pudo cargar el restaurante: $msg';
+          _error = 'No se pudo cargar la farmacia: $msg';
         });
         await _controller.start();
       }
@@ -100,7 +100,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
     return Scaffold(
       backgroundColor: isDark ? AppColors.backgroundDark : AppColors.white,
       appBar: AppBar(
-        title: const Text('Escanear restaurante'),
+        title: const Text('Escanear farmacia'),
         backgroundColor: isDark ? AppColors.backgroundDark : AppColors.white,
         foregroundColor: isDark ? AppColors.white : AppColors.stitchTextDark,
       ),

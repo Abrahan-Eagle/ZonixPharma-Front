@@ -687,7 +687,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
                         children: [
                           ElevatedButton.icon(
                             onPressed: _updating ? null : () => _updateStatus('processing'),
-                            icon: const Icon(Icons.restaurant),
+                            icon: const Icon(Icons.local_pharmacy),
                             label: const Text('Comenzar a preparar'),
                             style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
                           ),
@@ -703,7 +703,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
                     if (order.status == 'processing') ...[
                       const SizedBox(height: 16),
                       if (order.isPickup) ...[
-                        const Icon(Icons.restaurant, size: 48, color: AppColors.orange),
+                        const Icon(Icons.local_pharmacy, size: 48, color: AppColors.orange),
                         const SizedBox(height: 8),
                         Text(
                           'Preparando pedido',

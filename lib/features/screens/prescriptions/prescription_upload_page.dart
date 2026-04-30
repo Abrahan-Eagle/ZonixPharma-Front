@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -36,9 +37,8 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final source = await showModalBottomSheet<ImageSource>(
+  Future<void> _pickAttachment() async {
+    final source = await showModalBottomSheet<String>(
       context: context,
       builder: (context) => SafeArea(
         child: Wrap(
@@ -46,12 +46,17 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
             ListTile(
               leading: const Icon(Icons.photo_camera),
               title: const Text('Tomar foto de la receta'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
+              onTap: () => Navigator.pop(context, 'camera'),
             ),
             ListTile(
               leading: const Icon(Icons.photo_library),
               title: const Text('Elegir desde galería'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
+              onTap: () => Navigator.pop(context, 'gallery'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.picture_as_pdf),
+              title: const Text('Adjuntar PDF'),
+              onTap: () => Navigator.pop(context, 'pdf'),
             ),
           ],
         ),
@@ -59,7 +64,22 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
     );
     if (source == null) return;
 
-    final picked = await picker.pickImage(source: source, imageQuality: 85);
+    if (source == 'pdf') {
+      final r = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: const ['pdf'],
+      );
+      final path = r?.files.single.path;
+      if (path != null) {
+        setState(() => _selectedFile = File(path));
+      }
+      return;
+    }
+
+    final picker = ImagePicker();
+    final imgSource =
+        source == 'camera' ? ImageSource.camera : ImageSource.gallery;
+    final picked = await picker.pickImage(source: imgSource, imageQuality: 85);
     if (picked != null) {
       setState(() => _selectedFile = File(picked.path));
     }
@@ -225,7 +245,7 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
 
   Widget _photoPicker() {
     return InkWell(
-      onTap: _pickImage,
+      onTap: _pickAttachment,
       child: Container(
         height: 200,
         width: double.infinity,

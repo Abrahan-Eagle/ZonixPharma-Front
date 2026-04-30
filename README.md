@@ -1,6 +1,39 @@
-# Zonix Eats Frontend - Aplicación Flutter
+# Zonix Pharma — App móvil (Flutter)
 
-## 📋 Descripción General
+## Descripción
+
+**Zonix Pharma** es la aplicación móvil (Android / iOS) del marketplace farmacéutico Zonix: catálogo, carrito **uni-farmacia**, pedidos con estados Pharma (incl. `pending_prescription_validation`), recetas, panel farmacéutico, delivery y administración. Desarrollada en **Flutter** (Dart 3.5+), con **Pusher** y **FCM** para tiempo real.
+
+## Documentación técnica
+
+- **[AGENTS.md](AGENTS.md)** — convenciones, estructura `lib/`, roles y skills.
+- **`README.md` (resto del archivo)** — guías y notas históricas; el producto canónico es **Zonix Pharma**.
+
+## Setup rápido
+
+```bash
+flutter pub get
+cp .env.example .env
+flutter run
+flutter analyze
+flutter test
+```
+
+## Roles (7)
+
+| Código en BD | Rol estándar |
+| ------------ | ------------- |
+| `users` | Buyer |
+| `commerce` | Pharmacy |
+| `pharmacist` | Pharmacist |
+| `delivery_company` | Delivery Company |
+| `delivery_agent` | Delivery Agent |
+| `delivery` | Delivery autónomo |
+| `admin` | Admin |
+
+---
+
+## 📋 Descripción General *(histórico / detalle)*
 
 Frontend de la aplicación Zonix Eats desarrollado en Flutter. Aplicación móvil multi-plataforma para sistema de delivery de comida con soporte para múltiples roles de usuario.
 

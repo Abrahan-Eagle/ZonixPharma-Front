@@ -289,7 +289,7 @@ class SignInScreenState extends State<SignInScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
-            'Pide comida a velocidad de la luz.',
+            'Pide en tu farmacia de confianza, con la rapidez que mereces.',
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
@@ -383,7 +383,7 @@ class SignInScreenState extends State<SignInScreen> {
             size: 22,
           ),
           label: Text(
-            'Escanear QR de un restaurante',
+            'Escanear QR de una farmacia',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
               fontWeight: FontWeight.w600,

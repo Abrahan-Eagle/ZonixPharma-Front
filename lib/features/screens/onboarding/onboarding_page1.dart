@@ -123,7 +123,7 @@ class OnboardingPage1 extends StatelessWidget {
       children: [
         _buildBenefitCard(context, icon: Icons.bolt, title: 'Velocidad Luz', description: 'Entregas más rápidas que un cometa cruzando la galaxia.'),
         const SizedBox(height: 16),
-        _buildBenefitCard(context, icon: Icons.restaurant, title: 'Sabor Estelar', description: 'Los mejores restaurantes seleccionados de todo el sistema solar.'),
+        _buildBenefitCard(context, icon: Icons.local_pharmacy, title: 'Salud a un toque', description: 'Farmacias verificadas y catálogo claro para pedir con tranquilidad.'),
         const SizedBox(height: 16),
         _buildBenefitCard(context, icon: Icons.savings_outlined, title: 'Ahorro Galáctico', description: 'Ofertas y promociones que literalmente no son de este mundo.'),
       ],

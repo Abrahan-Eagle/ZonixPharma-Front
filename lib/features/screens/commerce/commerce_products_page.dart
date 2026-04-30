@@ -278,12 +278,12 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
                         height: 50,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => const Icon(
-                          Icons.restaurant,
+                          Icons.local_pharmacy,
                           size: 40,
                         ),
                       ),
                     )
-                  : const Icon(Icons.restaurant, size: 40),
+                  : const Icon(Icons.local_pharmacy, size: 40),
               title: Text(
                 product.name,
                 style: TextStyle(

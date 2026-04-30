@@ -594,8 +594,8 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
         ? const ['RECIBIDO', 'PREPARACIÓN', 'LISTO', 'RECOGIDO']
         : const ['RECIBIDO', 'PREPARACIÓN', 'EN CAMINO', 'ENTREGADO'];
     final icons = order.isPickup
-        ? const [Icons.check, Icons.restaurant, Icons.storefront, Icons.shopping_bag]
-        : const [Icons.check, Icons.restaurant, Icons.two_wheeler, Icons.inventory_2];
+        ? const [Icons.check, Icons.local_pharmacy, Icons.storefront, Icons.shopping_bag]
+        : const [Icons.check, Icons.local_pharmacy, Icons.two_wheeler, Icons.inventory_2];
     Widget circle(int i) {
       final done = i < currentStep;
       final active = i == currentStep;

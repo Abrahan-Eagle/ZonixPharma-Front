@@ -279,7 +279,7 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
   IconData _statusIcon(String status, bool hasDelivery) {
     switch (status) {
       case 'processing':
-        return hasDelivery ? Icons.qr_code_2 : Icons.restaurant;
+        return hasDelivery ? Icons.qr_code_2 : Icons.local_pharmacy;
       case 'shipped':
         return hasDelivery ? Icons.delivery_dining : Icons.assignment;
       case 'delivered':

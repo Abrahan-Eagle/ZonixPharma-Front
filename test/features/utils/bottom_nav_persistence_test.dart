@@ -24,11 +24,21 @@ void main() {
       expect(bottomNavStorageKey('delivery_agent'), 'bottomNavIndex_delivery_agent');
     });
 
+    test('rol pharmacist devuelve clave correcta', () {
+      expect(bottomNavStorageKey('pharmacist'), 'bottomNavIndex_pharmacist');
+    });
+
     test('cada rol tiene clave distinta (persistencia por rol)', () {
-      final keys = ['users', 'commerce', 'delivery', 'delivery_agent', 'delivery_company', 'admin']
-          .map((r) => bottomNavStorageKey(r))
-          .toSet();
-      expect(keys.length, 6);
+      final keys = [
+        'users',
+        'commerce',
+        'delivery',
+        'delivery_agent',
+        'delivery_company',
+        'admin',
+        'pharmacist',
+      ].map((r) => bottomNavStorageKey(r)).toSet();
+      expect(keys.length, 7);
     });
   });
 
@@ -52,6 +62,10 @@ void main() {
 
     test('admin tiene level 4', () {
       expect(defaultLevelForRole('admin'), 4);
+    });
+
+    test('pharmacist tiene level 5', () {
+      expect(defaultLevelForRole('pharmacist'), 5);
     });
 
     test('rol vacío o desconocido devuelve 0', () {
@@ -82,6 +96,10 @@ void main() {
       expect(levelsForRole('admin'), [4]);
     });
 
+    test('pharmacist solo tiene nivel 5', () {
+      expect(levelsForRole('pharmacist'), [5]);
+    });
+
     test('rol vacío o desconocido devuelve [0]', () {
       expect(levelsForRole(''), [0]);
       expect(levelsForRole('unknown'), [0]);
@@ -104,8 +122,10 @@ void main() {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setInt(bottomNavStorageKey('users'), 0);
       await prefs.setInt(bottomNavStorageKey('commerce'), 1);
+      await prefs.setInt(bottomNavStorageKey('pharmacist'), 2);
       expect(prefs.getInt(bottomNavStorageKey('users')), 0);
       expect(prefs.getInt(bottomNavStorageKey('commerce')), 1);
+      expect(prefs.getInt(bottomNavStorageKey('pharmacist')), 2);
     });
 
     test('clave inexistente devuelve null (app usará 0 por defecto)', () async {

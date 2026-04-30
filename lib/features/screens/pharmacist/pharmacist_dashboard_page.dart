@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:zonix/config/app_config.dart';
 import 'package:zonix/features/screens/pharmacist/pending_validations_page.dart';
+import 'package:zonix/features/screens/pharmacist/pharmacist_onboarding_page.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 
@@ -21,6 +22,7 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
   bool _loading = true;
   String? _error;
   Map<String, dynamic>? _data;
+  bool _onboardingPrompted = false;
 
   @override
   void initState() {
@@ -49,6 +51,26 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
       _error = 'Error: $e';
     } finally {
       if (mounted) setState(() => _loading = false);
+    }
+
+    if (mounted &&
+        _error == null &&
+        _data != null &&
+        _data!['pharmacist'] == null &&
+        !_onboardingPrompted) {
+      _onboardingPrompted = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        if (!mounted) return;
+        final done = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => const PharmacistOnboardingPage(),
+          ),
+        );
+        if (mounted && done == true) {
+          _load();
+        }
+      });
     }
   }
 

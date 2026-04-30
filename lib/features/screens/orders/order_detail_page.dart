@@ -14,11 +14,13 @@ import 'package:zonix/config/app_config.dart';
 import 'package:zonix/widgets/osm_map_widget.dart';
 import 'package:flutter_map/flutter_map.dart' show Marker;
 import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:zonix/l10n/app_strings.dart';
 import 'package:zonix/features/screens/orders/buyer_order_chat_page.dart';
 import 'package:zonix/features/screens/orders/buyer_disputes_page.dart';
 import 'package:zonix/features/screens/orders/order_rating_page.dart';
+import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/widgets/payment_timeline.dart';
 import 'package:zonix/widgets/app_skeleton.dart';
 
@@ -114,7 +116,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     final shouldSubscribe = s == 'shipped' ||
         s == 'processing' ||
         s == 'paid' ||
-        s == 'pending_payment';
+        s == 'pending_payment' ||
+        s == 'pending_prescription_validation';
     if (shouldSubscribe) {
       PusherService.instance.subscribeToOrderChat(widget.orderId);
       
@@ -163,8 +166,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           }
         }
         
-        if (eventName.contains('OrderStatusChanged') || 
-            eventName.contains('PaymentValidated')) {
+        if (eventName.contains('OrderStatusChanged') ||
+            eventName.contains('PaymentValidated') ||
+            eventName.contains('PrescriptionValidated') ||
+            eventName.contains('PrescriptionRejected') ||
+            eventName.contains('PrescriptionUploaded')) {
           _loadOrder();
           if (data['status'] == 'delivered' && mounted) {
             _showRatingAfterDelivery();
@@ -261,7 +267,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     }
     if (!mounted) return;
 
-    final dialogTitle = type == 'delivery' ? 'Pagar envío' : 'Pagar comida';
+    final dialogTitle = type == 'delivery' ? 'Pagar envío' : 'Pagar pedido';
     final result = await showDialog<Map<String, String>>(
       context: context,
       barrierDismissible: false,
@@ -301,7 +307,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       );
       await _loadOrder();
       if (mounted) {
-        final label = type == 'delivery' ? 'envío' : 'comida';
+        final label = type == 'delivery' ? 'envío' : 'pedido';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Comprobante de $label subido correctamente'), backgroundColor: AppColors.green),
         );
@@ -363,6 +369,72 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         setState(() => _updating = false);
       }
     }
+  }
+
+  Future<void> _openPrescriptionDetail(Order order) async {
+    final id = order.prescriptionId;
+    if (id == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Aún no hay receta vinculada. Súbela desde la pantalla de subir receta.',
+          ),
+        ),
+      );
+      return;
+    }
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => const Center(child: CircularProgressIndicator()),
+    );
+    final p =
+        await context.read<PrescriptionService>().loadBuyerPrescriptionById(id);
+    if (!mounted) return;
+    Navigator.of(context, rootNavigator: true).pop();
+    if (p == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo cargar la receta.')),
+      );
+      return;
+    }
+    final url = _imageUrl(p.imageUrl);
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Receta #${p.id}'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Médico: ${p.prescribingDoctorName}'),
+              Text('Estado: ${p.status}'),
+              if (url.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: () async {
+                    final uri = Uri.parse(url);
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  icon: const Icon(Icons.open_in_new),
+                  label: const Text('Abrir imagen o PDF'),
+                ),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
   }
 
   String _imageUrl(String? path) {
@@ -480,6 +552,25 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         surfaceColor: surfaceColor,
                         borderColor: borderColor,
                         badgeBg: badgeBg),
+                    if (order.prescriptionId != null ||
+                        order.status == 'pending_prescription_validation') ...[
+                      const SizedBox(height: 16),
+                      Card(
+                        color: surfaceColor,
+                        child: ListTile(
+                          leading: const Icon(Icons.receipt_long,
+                              color: AppColors.brandTeal),
+                          title: const Text('Receta médica'),
+                          subtitle: Text(
+                            order.status == 'pending_prescription_validation'
+                                ? 'En validación por el farmacéutico colegiado.'
+                                : 'Ver detalle de la receta adjunta.',
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => _openPrescriptionDetail(order),
+                        ),
+                      ),
+                    ],
                     if (_isTrackableStatus(order.status)) ...[
                       const SizedBox(height: 24),
                       _buildActiveOrderProgressSection(
@@ -944,7 +1035,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (useDoublePayment) ...[
-                      Text('Pago comida (comercio)',
+                      Text('Pago al comercio (pedido)',
                           style: TextStyle(
                               fontSize: 12,
                               color: textSecondary,
@@ -1006,7 +1097,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             child: ElevatedButton.icon(
                               onPressed: () => _uploadProof(order, type: 'food'),
                               icon: const Icon(Icons.receipt_long, size: 20),
-                              label: const Text('Pagar comida'),
+                              label: const Text('Pagar pedido'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.blue,
                                 foregroundColor: AppColors.white,
@@ -1021,7 +1112,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
                           child: Text(
-                            'Comprobante comida subido. Esperando validación del comercio.',
+                            'Comprobante del pedido subido. Esperando validación del comercio.',
                             style: TextStyle(fontSize: 12, color: AppColors.orange),
                           ),
                         )
@@ -1031,14 +1122,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Pago comida rechazado.', style: TextStyle(fontSize: 12, color: AppColors.red)),
+                              const Text('Pago del pedido rechazado.', style: TextStyle(fontSize: 12, color: AppColors.red)),
                               const SizedBox(height: 4),
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton.icon(
                                   onPressed: () => _uploadProof(order, type: 'food'),
                                   icon: const Icon(Icons.refresh, size: 18),
-                                  label: const Text('Re-subir comprobante comida'),
+                                  label: const Text('Re-subir comprobante del pedido'),
                                 ),
                               ),
                             ],
@@ -1047,7 +1138,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       else
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
-                          child: Text('Pago comida validado', style: TextStyle(fontSize: 12, color: AppColors.green)),
+                          child: Text('Pago del pedido validado', style: TextStyle(fontSize: 12, color: AppColors.green)),
                         ),
                       if (order.needsDeliveryPayment) ...[
                         const SizedBox(height: 8),
@@ -1344,8 +1435,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ? const ['RECIBIDO', 'PREPARACIÓN', 'LISTO', 'RECOGIDO']
         : const ['RECIBIDO', 'PREPARACIÓN', 'EN CAMINO', 'ENTREGADO'];
     final icons = order.isPickup
-        ? const [Icons.check, Icons.restaurant, Icons.storefront, Icons.shopping_bag]
-        : const [Icons.check, Icons.restaurant, Icons.two_wheeler, Icons.inventory_2];
+        ? const [Icons.check, Icons.local_pharmacy, Icons.storefront, Icons.shopping_bag]
+        : const [Icons.check, Icons.local_pharmacy, Icons.two_wheeler, Icons.inventory_2];
     Widget circle(int i) {
       final done = i < step;
       final active = i == step;

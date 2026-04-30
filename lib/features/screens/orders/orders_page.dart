@@ -104,6 +104,7 @@ class _OrdersPageState extends State<OrdersPage> {
             final mapped = <String, dynamic>{
               'type': _mapPusherEventToType(eventName),
               'data': eventData,
+              'rawEvent': eventName,
             };
             _handlePusherMessage(mapped);
           }
@@ -124,6 +125,11 @@ class _OrdersPageState extends State<OrdersPage> {
     if (eventName.contains('PaymentValidated')) {
       return 'payment_validated';
     }
+    if (eventName.contains('PrescriptionUploaded') ||
+        eventName.contains('PrescriptionValidated') ||
+        eventName.contains('PrescriptionRejected')) {
+      return 'prescription_event';
+    }
     if (eventName.contains('DeliveryLocationUpdated')) {
       return 'delivery_location_updated';
     }
@@ -133,6 +139,13 @@ class _OrdersPageState extends State<OrdersPage> {
   void _handlePusherMessage(Map<String, dynamic> message) {
     final type = message['type'];
     switch (type) {
+      case 'prescription_event':
+        _loadOrders();
+        _maybeShowPrescriptionNotification(
+          message['data'] as Map<String, dynamic>?,
+          rawEvent: message['rawEvent']?.toString() ?? '',
+        );
+        break;
       case 'order_status_changed':
       case 'order_created':
       case 'payment_validated':
@@ -202,8 +215,42 @@ class _OrdersPageState extends State<OrdersPage> {
     }
   }
 
+  void _maybeShowPrescriptionNotification(
+    Map<String, dynamic>? data, {
+    required String rawEvent,
+  }) {
+    if (!mounted || data == null) return;
+    final notifService = context.read<NotificationService>();
+    final orderId = data['order_id']?.toString() ?? '';
+    String title = 'Receta médica';
+    String msg = 'Actualización en tu receta (orden #$orderId).';
+    if (rawEvent.contains('PrescriptionValidated') ||
+        (data['status']?.toString() == 'approved')) {
+      title = 'Receta aprobada';
+      msg =
+          'La farmacia validó tu receta. Orden #$orderId: ya puedes continuar con el pago.';
+    } else if (rawEvent.contains('PrescriptionRejected') ||
+        (data['status']?.toString() == 'rejected')) {
+      title = 'Receta rechazada';
+      msg =
+          'Tu receta fue rechazada. Revisa la orden #$orderId o sube una nueva.';
+    } else if (rawEvent.contains('PrescriptionUploaded') ||
+        (data['status']?.toString() == 'pending_validation')) {
+      title = 'Receta recibida';
+      msg =
+          'Recibimos tu receta para la orden #$orderId. Esperando validación del farmacéutico.';
+    }
+    notifService.showInAppNotification(context, {
+      'title': title,
+      'message': msg,
+      'type': 'order',
+      'data': {'order_id': orderId},
+    });
+  }
+
   void _updateDeliveryLocation(Map<String, dynamic> message) {
-    debugPrint('Ubicación actualizada para orden ${message['order_id']}');
+    debugPrint(
+        'Ubicación de entrega actualizada (Pusher): ${message['order_id']}');
   }
 
   String _imageUrl(String? path) {
@@ -453,17 +500,17 @@ class _OrdersPageState extends State<OrdersPage> {
             const SizedBox(height: 20),
             Semantics(
               button: true,
-              label: 'Explorar restaurantes',
+              label: 'Explorar farmacias',
               child: FilledButton.icon(
                 onPressed: () => Navigator.pushNamed(context, '/restaurants'),
                 icon: const Icon(Icons.storefront, size: 20),
-                label: const Text('Explorar Restaurantes'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.accentButton(context)
-                    : _templatePrimary,
+                label: const Text('Explorar farmacias'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.accentButton(context)
+                      : _templatePrimary,
+                ),
               ),
-            ),
             ),
           ],
         ),

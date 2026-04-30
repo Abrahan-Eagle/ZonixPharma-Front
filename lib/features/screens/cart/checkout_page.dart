@@ -432,7 +432,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             ? AppColors.grayDark
                                             : AppColors.grayLight,
                                         child: const Icon(
-                                          Icons.fastfood,
+                                          Icons.local_pharmacy,
                                           color: AppColors.gray,
                                         ),
                                       ),

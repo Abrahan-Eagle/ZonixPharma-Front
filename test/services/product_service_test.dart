@@ -11,7 +11,17 @@ class ProductServiceMock extends ProductService {
   Future<List<Product>> fetchProducts({int? categoryId}) async {
     // Mock de respuesta exitosa
     final mockClient = MockClient((request) async {
-      return http.Response('[{"id":1,"name":"Mocked Product","is_available":true,"price":10.0,"description":"desc","image":"img.jpg","category":"cat","stock":5,"tags":[],"allergens":[],"is_vegetarian":false,"is_vegan":false,"is_gluten_free":false,"preparation_time":10,"rating":4.5,"review_count":2,"created_at":"2024-01-01T00:00:00.000Z","updated_at":"2024-01-01T00:00:00.000Z"}]', 200);
+      const payload = '[{'
+          '"id":1,"commerce_id":9,"name":"Ibuprofeno 400mg","description":"OTC",'
+          '"is_available":true,"price":10.0,"image":"img.jpg","category_name":"Analgesicos",'
+          '"stock":50,"tags":[],"rating":4.5,"review_count":2,'
+          '"created_at":"2024-01-01T00:00:00.000Z","updated_at":"2024-01-01T00:00:00.000Z",'
+          '"active_ingredient":"Ibuprofeno","dosage_form":"Comprimido","concentration":"400 mg",'
+          '"presentation":"Caja x 20","requires_prescription":false,"prescription_type":"common",'
+          '"controlled_substance":false,"cold_chain":false,'
+          '"health_registry":"DEMO-INHRR-001","atc_code":"M01AE01"'
+          '}]';
+      return http.Response(payload, 200);
     });
     final headers = {'Content-Type': 'application/json'};
     final response = await mockClient.get(
@@ -44,6 +54,10 @@ void main() {
         if (products.isNotEmpty) {
           expect(products.first, isNotNull);
           expect(products.first.name, isNotEmpty);
+          expect(products.first.commerceId, 9);
+          expect(products.first.activeIngredient, 'Ibuprofeno');
+          expect(products.first.requiresPrescription, false);
+          expect(products.first.coldChain, false);
         }
       } catch (e) {
         fail('Error al obtener productos: $e');

@@ -114,7 +114,7 @@ class NetworkImageWithFallback extends StatelessWidget {
       child: Center(
         child: isCompact
             ? Icon(
-                fallbackIcon ?? Icons.restaurant,
+                fallbackIcon ?? Icons.local_pharmacy,
                 size: height * 0.4,
                 color: materialColor.shade600,
               )
@@ -129,7 +129,7 @@ class NetworkImageWithFallback extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      fallbackIcon ?? Icons.restaurant,
+                      fallbackIcon ?? Icons.local_pharmacy,
                       size: height * 0.2,
                       color: materialColor.shade600,
                     ),
@@ -190,7 +190,7 @@ class ProductImage extends StatelessWidget {
       width: width,
       height: height,
       title: productName,
-      fallbackIcon: Icons.restaurant,
+      fallbackIcon: Icons.local_pharmacy,
       fallbackColor: Colors.orange,
       borderRadius: borderRadius,
     );
