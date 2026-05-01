@@ -105,7 +105,7 @@ class OnboardingPage1 extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          'Descubre un universo de sabor entregado directamente en tu puerta espacial.',
+          'Tu farmacia de confianza: medicamentos y cuidado de salud, con la claridad que mereces.',
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: bodySize,

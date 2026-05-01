@@ -111,7 +111,10 @@ void main() {
       expect(product.healthRegistry, 'E.F. 12345');
       expect(product.atcCode, 'J01CA04');
       expect(product.coldChain, false);
-      expect(product.pharmaSummary, 'amoxicilina · 500mg · Caja x 21 cápsulas');
+      expect(
+        product.pharmaSummary,
+        'amoxicilina · capsule · 500mg · Caja x 21 cápsulas',
+      );
     });
 
     test('cold_chain and controlled flags survive round-trip', () {

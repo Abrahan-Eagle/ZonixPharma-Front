@@ -67,6 +67,7 @@ class _PendingValidationsPageState extends State<PendingValidationsPage> {
       if (!mounted) return;
       _pusherSub?.cancel();
       _pusherSub = PusherService.instance.eventStream.listen((event) {
+        if (!mounted) return;
         final name = (event['canonicalEventName'] ?? event['eventName'])
                 ?.toString() ??
             '';
@@ -74,6 +75,7 @@ class _PendingValidationsPageState extends State<PendingValidationsPage> {
         final ch = event['channelName']?.toString() ?? '';
         for (final id in _commerceIds) {
           if (ch == 'private-commerce.$id') {
+            if (!mounted) return;
             context.read<PrescriptionService>().loadPendingForPharmacist();
             break;
           }
@@ -136,7 +138,7 @@ class _PendingValidationsPageState extends State<PendingValidationsPage> {
       child: ListTile(
         leading: const CircleAvatar(
           backgroundColor: AppColors.brandTeal,
-          child: Icon(Icons.receipt_long, color: Colors.white),
+          child: Icon(Icons.receipt_long, color: AppColors.white),
         ),
         title: Text('Receta #${p.id} · ${p.prescriptionTypeLabel}'),
         subtitle: Column(

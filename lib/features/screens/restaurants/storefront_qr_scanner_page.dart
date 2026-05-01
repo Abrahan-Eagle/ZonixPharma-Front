@@ -139,7 +139,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
                   ),
                 if (_error != null) const SizedBox(height: 12),
                 Text(
-                  'Apunta al QR del comercio (menú / escaparate).',
+                  'Apunta al QR del comercio (catálogo / escaparate).',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isDark ? AppColors.white70 : AppColors.gray,

@@ -68,13 +68,13 @@ class _PharmacistOnboardingPageState extends State<PharmacistOnboardingPage> {
         allowedExtensions: const ['pdf'],
       );
       final path = r?.files.single.path;
-      if (path != null) setState(() => _titleFile = File(path));
+      if (path != null && mounted) setState(() => _titleFile = File(path));
       return;
     }
     final picker = ImagePicker();
     final src = choice == 'camera' ? ImageSource.camera : ImageSource.gallery;
     final picked = await picker.pickImage(source: src, imageQuality: 85);
-    if (picked != null) setState(() => _titleFile = File(picked.path));
+    if (picked != null && mounted) setState(() => _titleFile = File(picked.path));
   }
 
   Future<void> _pickExpiry() async {
@@ -84,7 +84,7 @@ class _PharmacistOnboardingPageState extends State<PharmacistOnboardingPage> {
       firstDate: DateTime.now().add(const Duration(days: 1)),
       lastDate: DateTime.now().add(const Duration(days: 365 * 15)),
     );
-    if (d != null) setState(() => _expiresAt = d);
+    if (d != null && mounted) setState(() => _expiresAt = d);
   }
 
   Future<void> _submit() async {

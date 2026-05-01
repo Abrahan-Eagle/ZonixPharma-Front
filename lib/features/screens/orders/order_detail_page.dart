@@ -993,8 +993,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         : (_selectedPaymentMethodLabel ??
             (paymentLabel.isEmpty ? (approved ? 'Seleccionar pago' : 'Esperando aprobación') : paymentLabel));
 
-    final useDoublePayment = order.orderPayments.isNotEmpty && order.foodPayment != null;
-    final foodLine = useDoublePayment ? _paymentDisplayFromMap(order.foodPayment) : null;
+    final useDoublePayment =
+        order.orderPayments.isNotEmpty && order.commercePayment != null;
+    final foodLine =
+        useDoublePayment ? _paymentDisplayFromMap(order.commercePayment) : null;
     final deliveryLine = useDoublePayment && order.deliveryPaymentData != null
         ? _paymentDisplayFromMap(order.deliveryPaymentData)
         : null;
@@ -1089,7 +1091,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       ),
                     ],
                     if (order.status == 'pending_payment' && order.approvedForPayment) ...[
-                      if (!order.hasFoodProof)
+                      if (!order.hasCommerceProof)
                         Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: SizedBox(
@@ -1108,7 +1110,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             ),
                           ),
                         )
-                      else if (!order.foodValidated && !order.foodRejected)
+                      else if (!order.commerceValidated && !order.commerceRejected)
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
                           child: Text(
@@ -1116,7 +1118,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                             style: TextStyle(fontSize: 12, color: AppColors.orange),
                           ),
                         )
-                      else if (order.foodRejected)
+                      else if (order.commerceRejected)
                         Padding(
                           padding: const EdgeInsets.only(top: 8),
                           child: Column(

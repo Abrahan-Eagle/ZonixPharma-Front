@@ -26,6 +26,13 @@ class Restaurant {
   final double? latitude;
   final double? longitude;
 
+  /// Perfil del farmacéutico colegiado responsable (MPPS), si la API lo envía.
+  final int? pharmacistInChargeProfileId;
+  final String? healthPermit;
+  final String? healthPermitExpiry;
+  /// Categoría / tipo de establecimiento (además de [businessType]).
+  final String? pharmacyCategory;
+
   Restaurant({
     required this.id,
     required this.profileId,
@@ -43,6 +50,10 @@ class Restaurant {
     this.profile,
     this.latitude,
     this.longitude,
+    this.pharmacistInChargeProfileId,
+    this.healthPermit,
+    this.healthPermitExpiry,
+    this.pharmacyCategory,
   });
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
@@ -103,6 +114,12 @@ class Restaurant {
       profile: json['profile'] is Map ? Map<String, dynamic>.from(json['profile'] as Map) : null,
       latitude: lat,
       longitude: lng,
+      pharmacistInChargeProfileId: json['pharmacist_in_charge_profile_id'] != null
+          ? int.tryParse(json['pharmacist_in_charge_profile_id'].toString())
+          : null,
+      healthPermit: json['health_permit']?.toString(),
+      healthPermitExpiry: json['health_permit_expiry']?.toString(),
+      pharmacyCategory: json['pharmacy_category']?.toString(),
     );
   }
 
@@ -124,6 +141,10 @@ class Restaurant {
       'profile': profile,
       'latitude': latitude,
       'longitude': longitude,
+      'pharmacist_in_charge_profile_id': pharmacistInChargeProfileId,
+      'health_permit': healthPermit,
+      'health_permit_expiry': healthPermitExpiry,
+      'pharmacy_category': pharmacyCategory,
     };
   }
 
@@ -142,12 +163,16 @@ class Restaurant {
   // Getters adicionales para compatibilidad
   String get name => businessName;
   bool get isOpen => open;
-  String get cuisine => profile?['cuisine']?.toString() ?? '';
+  @Deprecated('Usar pharmacyCategory o cuisineDisplay')
+  String get cuisine =>
+      (pharmacyCategory ?? profile?['cuisine']?.toString() ?? '').trim();
+
   /// Display del tipo de farmacia/establecimiento. Capitaliza y separa con •.
   String get cuisineDisplay {
-    final raw = (businessType ?? cuisine).trim().isNotEmpty
-        ? (businessType ?? cuisine)
-        : (description ?? 'Farmacia');
+    final typeLine =
+        (businessType ?? pharmacyCategory ?? profile?['cuisine']?.toString() ?? '')
+            .trim();
+    final raw = typeLine.isNotEmpty ? typeLine : (description ?? 'Farmacia');
     if (raw.isEmpty) return 'Farmacia';
     final parts = raw.split(RegExp(r'[,;_]')).map((s) {
       final t = s.trim().replaceAll('_', ' ');

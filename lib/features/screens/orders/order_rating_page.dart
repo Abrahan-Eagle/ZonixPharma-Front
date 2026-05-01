@@ -124,7 +124,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
   Widget _buildRestaurantCard(
       BuildContext context, Color surface, bool isDark) {
     final commerceName =
-        widget.order.commerce?['business_name']?.toString() ?? 'Restaurante';
+        widget.order.commerce?['business_name']?.toString() ?? 'Farmacia';
 
     return Container(
       decoration: BoxDecoration(
@@ -149,7 +149,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
             ),
             const SizedBox(height: 4),
             Text(
-              '¿Qué te pareció la comida?',
+              '¿Qué te pareció el servicio y los productos?',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.secondaryText(context),
@@ -281,7 +281,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
   Future<void> _submitRating() async {
     if (_restaurantRating <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una calificación para la comida')),
+        const SnackBar(content: Text('Selecciona una calificación para la farmacia')),
       );
       return;
     }

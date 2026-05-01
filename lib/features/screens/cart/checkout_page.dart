@@ -42,6 +42,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void initState() {
     super.initState();
     _loadAddresses();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final cart = Provider.of<CartService>(context, listen: false);
+      if (cart.coldChainRequired) {
+        setState(() {
+          _deliveryType = 'pickup';
+          _calculatedDeliveryFee = null;
+        });
+      }
+    });
   }
 
   Future<void> _recalculateDeliveryFee() async {
@@ -450,6 +460,28 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
+                                  if (item.requiresPrescription) ...[
+                                    const SizedBox(height: 6),
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.brandTealDeep,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Text(
+                                          'Rx',
+                                          style: TextStyle(
+                                            color: AppColors.white,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                   if (item.notes != null &&
                                       item.notes!.isNotEmpty) ...[
                                     const SizedBox(height: 4),
@@ -535,44 +567,60 @@ class _CheckoutPageState extends State<CheckoutPage> {
               child: Row(
                 children: [
                   Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                          setState(() => _deliveryType = 'delivery');
-                          _recalculateDeliveryFee();
-                        },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 4),
-                        decoration: BoxDecoration(
-                          color: _deliveryType == 'delivery'
-                              ? AppColors.orange
-                              : AppColors.transparent,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.delivery_dining,
-                              size: 18,
-                              color: _deliveryType == 'delivery'
-                                  ? AppColors.white
-                                  : AppColors.secondaryText(context),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Domicilio',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: _deliveryType == 'delivery'
-                                    ? AppColors.white
-                                    : AppColors.secondaryText(context),
+                    child: Consumer<CartService>(
+                      builder: (context, cartService, _) {
+                        final coldBlock = cartService.coldChainRequired;
+                        return Tooltip(
+                          message: coldBlock
+                              ? 'Cadena de frío: estos productos solo admiten retiro en farmacia.'
+                              : '',
+                          child: Opacity(
+                            opacity: coldBlock ? 0.45 : 1,
+                            child: IgnorePointer(
+                              ignoring: coldBlock,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() => _deliveryType = 'delivery');
+                                  _recalculateDeliveryFee();
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 4),
+                                  decoration: BoxDecoration(
+                                    color: _deliveryType == 'delivery'
+                                        ? AppColors.orange
+                                        : AppColors.transparent,
+                                    borderRadius: BorderRadius.circular(999),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delivery_dining,
+                                        size: 18,
+                                        color: _deliveryType == 'delivery'
+                                            ? AppColors.white
+                                            : AppColors.secondaryText(context),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Domicilio',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: _deliveryType == 'delivery'
+                                              ? AppColors.white
+                                              : AppColors.secondaryText(context),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 4),

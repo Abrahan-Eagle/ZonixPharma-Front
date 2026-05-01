@@ -48,7 +48,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                     _buildRoleCard(
                       role: 'users',
                       title: 'Soy Cliente',
-                      subtitle: 'Quiero pedir comida deliciosa',
+                      subtitle: 'Quiero comprar mis medicamentos',
                       icon: Icons.shopping_bag_outlined,
                       iconColor: AppColors.blue,
                     ),

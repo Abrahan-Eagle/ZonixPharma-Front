@@ -372,7 +372,7 @@ class WelcomePage extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Explora sabores de toda la galaxia sin salir de casa.',
+                        'Explora farmacias y catálogo sin salir de casa.',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: MediaQuery.of(context).size.width < 360

@@ -29,5 +29,19 @@ void main() {
       expect(lot.isExpiringSoon(days: 60), true);
       expect(lot.isExpiringSoon(days: 7), false);
     });
+
+    test('invalid expiry_date yields null expiryDate and not expired', () {
+      final lot = MedicineLot.fromJson({
+        'id': 3,
+        'product_id': 1,
+        'lot_number': 'L-0003',
+        'expiry_date': 'not-a-date',
+        'quantity_received': 10,
+        'quantity_available': 10,
+      });
+      expect(lot.expiryDate, isNull);
+      expect(lot.isExpired, false);
+      expect(lot.isExpiringSoon(days: 60), false);
+    });
   });
 }

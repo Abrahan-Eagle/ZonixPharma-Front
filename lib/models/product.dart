@@ -252,6 +252,7 @@ class Product {
   String get pharmaSummary {
     final parts = <String>[
       if ((activeIngredient ?? '').isNotEmpty) activeIngredient!,
+      if ((dosageForm ?? '').isNotEmpty) dosageForm!,
       if ((concentration ?? '').isNotEmpty) concentration!,
       if ((presentation ?? '').isNotEmpty) presentation!,
     ];

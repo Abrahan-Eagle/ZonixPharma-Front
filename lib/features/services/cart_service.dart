@@ -342,21 +342,18 @@ class CartService extends ChangeNotifier {
         if (item.containsKey('id')) {
           return CartItem.fromJson(item);
         }
-        // Compatibilidad legacy: item mínimo con product_id y quantity
-        return CartItem(
-          id: item['product_id'] ?? 0,
-          nombre: item['nombre'] ?? 'Producto',
-          precio: (item['precio'] is num)
-              ? (item['precio'] as num).toDouble()
-              : 0.0,
-          quantity: item['quantity'] ?? 1,
-          imagen: item['image'] ?? item['imagen'],
-          image: item['image'] ?? item['imagen'],
-          stock: item['stock'] ?? item['stock_quantity'],
-          category: item['category'],
-          commerceId: item['commerce_id'],
-          lineId: item['line_id']?.toString(),
-        );
+        // Compatibilidad legacy: mismo parser que fromJson para conservar flags Pharma.
+        final legacy = Map<String, dynamic>.from(item);
+        legacy['id'] = legacy['product_id'] ?? legacy['id'] ?? 0;
+        legacy['nombre'] = legacy['nombre'] ?? 'Producto';
+        legacy['precio'] = (legacy['precio'] is num)
+            ? (legacy['precio'] as num).toDouble()
+            : double.tryParse('${legacy['precio'] ?? 0}') ?? 0.0;
+        legacy['quantity'] = legacy['quantity'] ?? 1;
+        legacy['image'] = legacy['image'] ?? legacy['imagen'];
+        legacy['imagen'] = legacy['imagen'] ?? legacy['image'];
+        legacy['stock'] = legacy['stock'] ?? legacy['stock_quantity'];
+        return CartItem.fromJson(legacy);
       }
       return CartItem(id: 0, nombre: 'Producto', precio: 0.0, quantity: 1);
     }).toList();

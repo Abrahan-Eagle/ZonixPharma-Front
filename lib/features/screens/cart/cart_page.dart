@@ -255,6 +255,27 @@ class CartPage extends StatelessWidget {
                               color: AppColors.primaryText(context),
                             ),
                           ),
+                          if (item.requiresPrescription) ...[
+                            const SizedBox(height: 6),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: AppColors.brandTealDeep,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'Rx',
+                                  style: TextStyle(
+                                    color: AppColors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                           if (item.notes != null && item.notes!.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Text(

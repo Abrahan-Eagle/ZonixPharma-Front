@@ -334,13 +334,37 @@ class Order {
     );
   }
 
-  Map<String, dynamic>? get foodPayment => orderPayments.cast<Map<String, dynamic>?>().firstWhere((p) => p?['type'] == 'food', orElse: () => null);
-  Map<String, dynamic>? get deliveryPaymentData => orderPayments.cast<Map<String, dynamic>?>().firstWhere((p) => p?['type'] == 'delivery', orElse: () => null);
-  bool get hasFoodProof => foodPayment?['payment_proof'] != null;
+  /// Pago al comercio (farmacia). El API aún usa `type: food` por compatibilidad legacy.
+  Map<String, dynamic>? get commercePayment => orderPayments
+      .cast<Map<String, dynamic>?>()
+      .firstWhere((p) => p?['type'] == 'food', orElse: () => null);
+
+  @Deprecated('Usar commercePayment')
+  Map<String, dynamic>? get foodPayment => commercePayment;
+
+  Map<String, dynamic>? get deliveryPaymentData => orderPayments
+      .cast<Map<String, dynamic>?>()
+      .firstWhere((p) => p?['type'] == 'delivery', orElse: () => null);
+
+  bool get hasCommerceProof => commercePayment?['payment_proof'] != null;
+
+  @Deprecated('Usar hasCommerceProof')
+  bool get hasFoodProof => hasCommerceProof;
+
   bool get hasDeliveryProof => deliveryPaymentData?['payment_proof'] != null;
-  bool get foodValidated => foodPayment?['validated_at'] != null;
+
+  bool get commerceValidated => commercePayment?['validated_at'] != null;
+
+  @Deprecated('Usar commerceValidated')
+  bool get foodValidated => commerceValidated;
+
   bool get deliveryValidated => deliveryPaymentData?['validated_at'] != null;
-  bool get foodRejected => foodPayment?['rejected_at'] != null;
+
+  bool get commerceRejected => commercePayment?['rejected_at'] != null;
+
+  @Deprecated('Usar commerceRejected')
+  bool get foodRejected => commerceRejected;
+
   bool get deliveryRejected => deliveryPaymentData?['rejected_at'] != null;
   bool get needsDeliveryPayment => deliveryType == 'delivery' && deliveryFee > 0 && deliveryPaymentData != null;
 

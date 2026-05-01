@@ -8,6 +8,8 @@ import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
 import 'package:zonix/models/order.dart';
 import 'package:zonix/features/screens/orders/order_detail_page.dart';
+import 'package:zonix/features/screens/prescriptions/my_prescriptions_page.dart';
+import 'package:zonix/features/screens/prescriptions/prescription_upload_page.dart';
 
 class OrderConfirmationPage extends StatelessWidget {
   const OrderConfirmationPage({
@@ -22,8 +24,10 @@ class OrderConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isPendingPayment =
-        order.status == 'pending_payment' || order.status == 'pending';
+    final isPendingRx =
+        order.status == 'pending_prescription_validation';
+    final isPendingPayment = !isPendingRx &&
+        (order.status == 'pending_payment' || order.status == 'pending');
     final scaffoldBg =
         isDark ? AppColors.stitchCanvasDark : AppColors.scaffoldBgLight;
     final surfaceCard =
@@ -34,8 +38,11 @@ class OrderConfirmationPage extends StatelessWidget {
     final etaShort = _shortEtaLine(order);
     final heroUrl = _heroImageUrl(order);
     final paymentLine = _paymentDisplayLine(order);
-    final headline =
-        isPendingPayment ? 'Pedido registrado' : '¡Pedido confirmado!';
+    final headline = isPendingRx
+        ? 'Esperando validación de receta'
+        : (isPendingPayment
+            ? 'Pedido registrado'
+            : '¡Pedido confirmado!');
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -57,6 +64,7 @@ class OrderConfirmationPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       _buildLeadCircle(
+                        isPendingRx: isPendingRx,
                         isPendingPayment: isPendingPayment,
                         accentGreen: accentGreen,
                       ),
@@ -102,7 +110,15 @@ class OrderConfirmationPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 32),
                       ],
-                      if (isPendingPayment)
+                      if (isPendingRx)
+                        _buildPrescriptionPendingCard(
+                          context,
+                          isDark: isDark,
+                          surfaceCard: surfaceCard,
+                          onSurface: onSurface,
+                          onSurfaceVariant: onSurfaceVariant,
+                        )
+                      else if (isPendingPayment)
                         _buildPendingUnifiedCard(
                           context,
                           isDark: isDark,
@@ -165,15 +181,22 @@ class OrderConfirmationPage extends StatelessWidget {
   /// Pendiente de pago: icono informativo (naranja). Ya pagado: éxito (verde + check).
   /// Círculo sólido, sin halo ni sombras difusas (evita aspecto “degradado”).
   Widget _buildLeadCircle({
+    required bool isPendingRx,
     required bool isPendingPayment,
     required Color accentGreen,
   }) {
-    final accent = isPendingPayment ? AppColors.orange : accentGreen;
-    final icon = isPendingPayment
-        ? Icons.receipt_long_rounded
-        : Icons.check_rounded;
-    final diameter = isPendingPayment ? 102.0 : 128.0;
-    final iconSize = isPendingPayment ? 48.0 : 56.0;
+    final accent = isPendingRx
+        ? AppColors.brandTealDeep
+        : (isPendingPayment ? AppColors.orange : accentGreen);
+    final icon = isPendingRx
+        ? Icons.medical_services_rounded
+        : (isPendingPayment
+            ? Icons.receipt_long_rounded
+            : Icons.check_rounded);
+    final diameter =
+        (isPendingRx || isPendingPayment) ? 102.0 : 128.0;
+    final iconSize =
+        (isPendingRx || isPendingPayment) ? 48.0 : 56.0;
     return Container(
       width: diameter,
       height: diameter,
@@ -186,6 +209,129 @@ class OrderConfirmationPage extends StatelessWidget {
         icon,
         color: AppColors.white,
         size: iconSize,
+      ),
+    );
+  }
+
+  Widget _buildPrescriptionPendingCard(
+    BuildContext context, {
+    required bool isDark,
+    required Color surfaceCard,
+    required Color onSurface,
+    required Color onSurfaceVariant,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(22),
+      decoration: BoxDecoration(
+        color: surfaceCard,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.slateBorder.withValues(alpha: isDark ? 0.35 : 0.2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: AppColors.brandTealDeep.withValues(alpha: isDark ? 0.25 : 0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.medical_services_rounded,
+                  color: AppColors.brandTealDeep,
+                  size: 26,
+                ),
+              ),
+              const SizedBox(width: 18),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Validación de receta pendiente',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        height: 1.2,
+                        color: onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Sube la receta médica para que el farmacéutico colegiado de la farmacia la revise. Luego podrás completar el pago.',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        height: 1.45,
+                        color: onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.brandTealDeep,
+                foregroundColor: AppColors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(Icons.upload_file_rounded, size: 20),
+              label: Text(
+                'Subir receta',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PrescriptionUploadPage(orderId: order.id),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.blue,
+                side: const BorderSide(color: AppColors.blue),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const Icon(Icons.folder_open_rounded, size: 20),
+              label: Text(
+                'Ver mis recetas',
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const MyPrescriptionsPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -349,7 +495,7 @@ class OrderConfirmationPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
-              Icons.room_service_rounded,
+              Icons.local_pharmacy,
               color: AppColors.orange,
               size: 26,
             ),

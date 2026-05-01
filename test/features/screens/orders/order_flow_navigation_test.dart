@@ -100,6 +100,22 @@ void main() {
       expect(find.text('Completa el pago'), findsOneWidget);
       expect(find.text('SEGUIR PEDIDO'), findsOneWidget);
     });
+
+    testWidgets('Muestra flujo Rx cuando pending_prescription_validation',
+        (WidgetTester tester) async {
+      final order =
+          _order(id: 16, status: 'pending_prescription_validation');
+      await tester.pumpWidget(
+        MaterialApp(
+          home: OrderConfirmationPage(order: order),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Esperando validación de receta'), findsOneWidget);
+      expect(find.text('Subir receta'), findsOneWidget);
+      expect(find.text('Ver mis recetas'), findsOneWidget);
+    });
   });
 
   group('Flujo de navegación - OrdersPage (unificado)', () {

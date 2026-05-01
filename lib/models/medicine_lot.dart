@@ -3,7 +3,8 @@ class MedicineLot {
   final int id;
   final int productId;
   final String lotNumber;
-  final DateTime expiryDate;
+  /// Nulo si la API envió una fecha inválida (evita usar [DateTime.now] como sustituto engañoso).
+  final DateTime? expiryDate;
   final DateTime? manufacturedAt;
   final int quantityReceived;
   final int quantityAvailable;
@@ -15,7 +16,7 @@ class MedicineLot {
     required this.id,
     required this.productId,
     required this.lotNumber,
-    required this.expiryDate,
+    this.expiryDate,
     this.manufacturedAt,
     required this.quantityReceived,
     required this.quantityAvailable,
@@ -46,7 +47,7 @@ class MedicineLot {
       id: parseInt(json['id']),
       productId: parseInt(json['product_id']),
       lotNumber: (json['lot_number'] ?? '').toString(),
-      expiryDate: parseDate(json['expiry_date']) ?? DateTime.now(),
+      expiryDate: parseDate(json['expiry_date']),
       manufacturedAt: parseDate(json['manufactured_at']),
       quantityReceived: parseInt(json['quantity_received']),
       quantityAvailable: parseInt(json['quantity_available']),
@@ -56,10 +57,12 @@ class MedicineLot {
     );
   }
 
-  bool get isExpired => expiryDate.isBefore(DateTime.now());
+  bool get isExpired =>
+      expiryDate != null && expiryDate!.isBefore(DateTime.now());
 
   bool isExpiringSoon({int days = 60}) {
+    if (expiryDate == null) return false;
     final threshold = DateTime.now().add(Duration(days: days));
-    return expiryDate.isBefore(threshold);
+    return expiryDate!.isBefore(threshold);
   }
 }

@@ -66,6 +66,7 @@ class _ValidationDetailPageState extends State<ValidationDetailPage> {
       },
     );
     if (reason == null || reason.isEmpty) return;
+    if (!mounted) return;
 
     setState(() => _busy = true);
     final result = await context

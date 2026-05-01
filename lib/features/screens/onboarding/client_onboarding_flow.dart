@@ -2056,7 +2056,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             ),
             const SizedBox(height: 8),
             Text(
-              '¿Dónde debemos llevar tu comida?',
+              '¿Dónde debemos llevar tu pedido?',
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
                 color: AppColors.white.withValues(alpha: 0.6),
