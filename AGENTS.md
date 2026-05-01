@@ -9,6 +9,16 @@
 
 ---
 
+## Brand y experiencia (fuente canónica)
+
+**Nombre en UI:** Zonix Pharma. **Producto:** marketplace farmacéutico digital del ecosistema Zonix (vertical **Pharma**, no Eats).
+
+**Identidad visual:** símbolo Z geométrico + wordmark + PHARMA en caps teal; **paleta, tipografía, do/don’t, grid de iconos (24px), modo oscuro y checklist de contraste** en el repo Backend: **[docs/BRAND_ZONIX_PHARMA.md](../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md)**.
+
+Implementación en código Flutter: `lib/features/utils/app_colors.dart`, `lib/features/utils/app_theme.dart`. `.cursorrules` remite aquí — no duplicar el párrafo largo de marca.
+
+---
+
 ## Project Overview
 
 | Métrica | Valor |
@@ -79,6 +89,18 @@ flutter build apk
 flutter build appbundle
 flutter build ios
 ```
+
+---
+
+## CI y quality gates
+
+| Paso | Comando / ubicación |
+| ---- | ------------------- |
+| Análisis estático | `flutter analyze --no-fatal-infos` en CI (falla ante error/warning; ver comentario en el workflow). |
+| Tests | `flutter test`. |
+| Workflow GitHub Actions | [`.github/workflows/ci.yml`](.github/workflows/ci.yml): se ejecuta en push/PR a `main`, `develop`, `dev` si el archivo existe en el remoto. |
+
+**Umbral recomendado:** mismo criterio que Backend `AGENTS.md` — nuevas pantallas bajo `lib/features/screens/**` sin violaciones nuevas de marca (colores vía `AppColors` / tema). Opcional futuro: regla `custom_lint` o script que rechace `Colors.` en ese árbol.
 
 ---
 

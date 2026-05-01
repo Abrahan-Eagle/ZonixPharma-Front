@@ -1,0 +1,42 @@
+# Flutter: análisis estático + tests (no build release).
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - dev
+  pull_request:
+    branches:
+      - main
+      - develop
+      - dev
+  workflow_dispatch:
+
+concurrency:
+  group: ci-flutter-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze_and_test:
+    name: flutter analyze + flutter test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # --no-fatal-infos: el repo aún tiene infos en screens (prefer_const, deprecated_member_use);
+      # objetivo de producto: ir a cero; el job falla ante error/warning.
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos
+
+      - name: Test
+        run: flutter test

@@ -9,11 +9,9 @@ alwaysApply: true
 
 ---
 
-## Brand canónico
+## Brand (referencia única)
 
-> Brand: **Zonix Pharma** (vertical farmacia/digital del ecosistema Zonix). Visual: símbolo Z geométrico (parte superior marina + diagonal + base teal con nodo), wordmark bold + PHARMA en caps teal con tracking amplio.
-> Colores HEX: Primary #1E2A5A, Deep teal #0F4C5C, Teal accent #56C7B8, Light mint #A8DCCB, Canvas #F5F7FA, Muted gray #C7CFD9, Dark surface #142033, Optional CTA #F2A65A.
-> Principios UX: modo tech-pharma ordenado — claridad regulatoria-amigable sin clichés médicos ruidosos; alta legibilidad móvil; no mezclar con Zonix Eats assets/claims en pantallas pharma.
+No duplicar aquí la guía de marca. **Fuente canónica (repo Backend):** [../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md](../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md). Resumen operativo: [AGENTS.md](AGENTS.md) sección **“Brand y experiencia (fuente canónica)”**.
 
 ---
 
