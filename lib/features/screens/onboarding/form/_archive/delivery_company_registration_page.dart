@@ -472,7 +472,9 @@ class _DeliveryCompanyRegistrationPageState
                 children: [
                   Icon(
                     _activo ? Icons.check_circle : Icons.cancel,
-                    color: _activo ? AppColors.green : AppColors.red,
+                    color: _activo
+                        ? AppColors.statusSuccess
+                        : AppColors.statusError,
                     size: isTablet ? 24 : 20,
                   ),
                   SizedBox(width: isTablet ? 16 : 12),
@@ -488,7 +490,7 @@ class _DeliveryCompanyRegistrationPageState
                   Switch(
                     value: _activo,
                     onChanged: (value) => setState(() => _activo = value),
-                    activeThumbColor: AppColors.green,
+                    activeThumbColor: AppColors.statusSuccess,
                   ),
                 ],
               ),
@@ -539,7 +541,8 @@ class _DeliveryCompanyRegistrationPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.onboardingCompanyBlue, width: 2),
+          borderSide: const BorderSide(
+              color: AppColors.onboardingCompanyBlue, width: 2),
         ),
         filled: true,
         fillColor: AppColors.inputBg,
@@ -566,14 +569,16 @@ class _DeliveryCompanyRegistrationPageState
       ),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: const Icon(Icons.arrow_drop_down, color: AppColors.onboardingCompanyBlue),
+        prefixIcon: const Icon(Icons.arrow_drop_down,
+            color: AppColors.onboardingCompanyBlue),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.borderLight),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.onboardingCompanyBlue, width: 2),
+          borderSide: const BorderSide(
+              color: AppColors.onboardingCompanyBlue, width: 2),
         ),
         filled: true,
         fillColor: AppColors.inputBg,
@@ -616,7 +621,8 @@ class _DeliveryCompanyRegistrationPageState
                 width: isTablet ? 24 : 20,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.onboardingCompanyBlue),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.onboardingCompanyBlue),
                 ),
               )
             : Text(
@@ -643,7 +649,7 @@ class _DeliveryCompanyRegistrationPageState
             content: Text(widget.isEditing
                 ? 'Empresa actualizada exitosamente'
                 : 'Empresa registrada exitosamente'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         Navigator.pop(context);
@@ -653,7 +659,7 @@ class _DeliveryCompanyRegistrationPageState
           SnackBar(
             content: Text(
                 'Error al ${widget.isEditing ? 'actualizar' : 'registrar'}: $e'),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       } finally {

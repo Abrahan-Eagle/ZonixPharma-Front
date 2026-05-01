@@ -40,10 +40,9 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
 
   String get _deepLink => AppConfig.buildCommerceDeepLink(widget.commerceId);
 
-  String get _webUrl =>
-      AppConfig.appLinkBase.isNotEmpty
-          ? AppConfig.buildCommerceShareUrl(widget.commerceId)
-          : '';
+  String get _webUrl => AppConfig.appLinkBase.isNotEmpty
+      ? AppConfig.buildCommerceShareUrl(widget.commerceId)
+      : '';
 
   String get _cardTitleLine => '${widget.businessName} — Zonix Pharma';
 
@@ -105,7 +104,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('No se pudo abrir el enlace: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -162,7 +161,7 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('No se pudo compartir la imagen: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -208,13 +207,14 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
     return CircleAvatar(
       radius: r,
       backgroundColor: AppColors.stitchBgCard,
-      child: Icon(Icons.storefront_rounded, size: r * 1.1, color: AppColors.stitchSlate),
+      child: Icon(Icons.storefront_rounded,
+          size: r * 1.1, color: AppColors.stitchSlate),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    const bg = Color(0xFF0B141A);
+    const bg = AppColors.brandSurfaceDark;
 
     return Scaffold(
       backgroundColor: bg,
@@ -229,7 +229,8 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                 child: Column(
                   children: [
                     const SizedBox(height: 8),
@@ -250,7 +251,8 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.black.withValues(alpha: 0.18),
+                                      color: AppColors.black
+                                          .withValues(alpha: 0.18),
                                       blurRadius: 24,
                                       offset: const Offset(0, 8),
                                     ),
@@ -294,11 +296,13 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                                         padding: const EdgeInsets.all(10),
                                         backgroundColor: AppColors.white,
                                         gapless: true,
-                                        errorCorrectionLevel: QrErrorCorrectLevel.Q,
+                                        errorCorrectionLevel:
+                                            QrErrorCorrectLevel.Q,
                                         embeddedImage: const AssetImage(
                                           _kZonixQrLogoAsset,
                                         ),
-                                        embeddedImageStyle: const QrEmbeddedImageStyle(
+                                        embeddedImageStyle:
+                                            const QrEmbeddedImageStyle(
                                           size: Size(52, 52),
                                         ),
                                       ),

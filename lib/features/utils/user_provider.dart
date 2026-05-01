@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:zonix/config/app_config.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart' show GoogleSignInAccount;
+import 'package:zonix/features/services/auth/google_sign_in_service.dart';
 import 'package:zonix/features/utils/auth_utils.dart';
 import 'package:zonix/features/services/pusher_service.dart';
 import 'package:zonix/features/services/commerce_data_service.dart';
@@ -428,7 +429,7 @@ class UserProvider with ChangeNotifier {
         await _unregisterFcmTokenWithToken(token);
       }
       await AuthUtils.logout();
-      await GoogleSignIn().signOut();
+      await GoogleSignInService.signOutGoogle();
     } catch (e) {
       debugPrint('Error al cerrar sesión: $e');
     }

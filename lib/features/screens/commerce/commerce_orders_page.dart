@@ -49,13 +49,17 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
     _tabController.addListener(_onTabChanged);
     _initOrders();
     _loadStatusCounts();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _subscribeToCommerceUpdates());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _subscribeToCommerceUpdates());
   }
 
   Future<void> _initOrders() async {
     final cached = await CommerceOrderService.getCachedOrders();
     if (cached != null && cached.isNotEmpty && mounted) {
-      setState(() { _orders = cached; _loading = false; });
+      setState(() {
+        _orders = cached;
+        _loading = false;
+      });
     }
     _refreshOrdersBackground();
   }
@@ -63,15 +67,26 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
   Future<void> _refreshOrdersBackground() async {
     if (!mounted) return;
     if (_orders.isEmpty) {
-      setState(() { _loading = true; _error = null; });
+      setState(() {
+        _loading = true;
+        _error = null;
+      });
     }
     try {
       final status = _currentFilter.isEmpty ? null : _currentFilter;
       final orders = await CommerceOrderService.getOrders(status: status);
-      if (mounted) setState(() { _orders = orders; _loading = false; });
+      if (mounted) {
+        setState(() {
+          _orders = orders;
+          _loading = false;
+        });
+      }
     } catch (e) {
       if (mounted && _orders.isEmpty) {
-        setState(() { _error = e.toString().replaceFirst('Exception: ', ''); _loading = false; });
+        setState(() {
+          _error = e.toString().replaceFirst('Exception: ', '');
+          _loading = false;
+        });
       }
     }
   }
@@ -82,7 +97,8 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
     _tabController.dispose();
     _pusherSubscription?.cancel();
     if (_pusherSubscribed && _commerceId > 0) {
-      PusherService.instance.unsubscribeFromChannel('private-commerce.$_commerceId');
+      PusherService.instance
+          .unsubscribeFromChannel('private-commerce.$_commerceId');
     }
     super.dispose();
   }
@@ -91,16 +107,18 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
     if (!AppConfig.enablePusher || _pusherSubscribed || !mounted) return;
     try {
       final data = await CommerceDataService.getCommerceData();
-      final id = data['id'] is int ? data['id'] as int : int.tryParse(data['id']?.toString() ?? '0') ?? 0;
+      final id = data['id'] is int
+          ? data['id'] as int
+          : int.tryParse(data['id']?.toString() ?? '0') ?? 0;
       if (id <= 0 || !mounted) return;
       _commerceId = id;
       final ok = await PusherService.instance.subscribeToCommerceChannel(id);
-      
+
       if (ok && mounted) {
         _pusherSubscription?.cancel();
-        _pusherSubscription = PusherService.instance.eventStream.listen((event) {
-          final rawEventName =
-              event['canonicalEventName']?.toString() ??
+        _pusherSubscription =
+            PusherService.instance.eventStream.listen((event) {
+          final rawEventName = event['canonicalEventName']?.toString() ??
               event['eventName']?.toString() ??
               '';
           final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
@@ -133,22 +151,28 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
                 ..showMaterialBanner(
                   MaterialBanner(
                     backgroundColor: AppColors.green.withValues(alpha: 0.15),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    leading: const Icon(Icons.notifications_active, color: AppColors.green, size: 28),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    leading: const Icon(Icons.notifications_active,
+                        color: AppColors.statusSuccess, size: 28),
                     content: Text(
                       '¡Nueva orden #$orderId recibida!',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     actions: [
                       TextButton(
-                        onPressed: () => ScaffoldMessenger.of(context).clearMaterialBanners(),
+                        onPressed: () => ScaffoldMessenger.of(context)
+                            .clearMaterialBanners(),
                         child: const Text('CERRAR'),
                       ),
                     ],
                   ),
                 );
               Future.delayed(const Duration(seconds: 8), () {
-                if (mounted) ScaffoldMessenger.of(context).clearMaterialBanners();
+                if (mounted) {
+                  ScaffoldMessenger.of(context).clearMaterialBanners();
+                }
               });
             }
           } else if (eventName.contains('PaymentValidated')) {
@@ -243,7 +267,7 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
   Color _onChipBackground(Color background) {
     return ThemeData.estimateBrightnessForColor(background) == Brightness.dark
         ? AppColors.white
-        : const Color(0xFF1C1B1F);
+        : AppColors.brandNavyDeep;
   }
 
   @override
@@ -279,12 +303,19 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
                     Text(label),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: key == 'pending_payment' ? AppColors.red : AppColors.orange,
+                        color: key == 'pending_payment'
+                            ? AppColors.statusError
+                            : AppColors.brandCtaAccent,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text('$count', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.white)),
+                      child: Text('$count',
+                          style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white)),
                     ),
                   ],
                 ),
@@ -309,7 +340,8 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -382,7 +414,8 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
               trailing: Chip(
                 label: Text(
                   order.statusText,
-                  style: TextStyle(fontSize: 11, color: _onChipBackground(statusBg)),
+                  style: TextStyle(
+                      fontSize: 11, color: _onChipBackground(statusBg)),
                 ),
                 backgroundColor: statusBg,
               ),

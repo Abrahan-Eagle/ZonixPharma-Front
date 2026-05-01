@@ -37,7 +37,8 @@ class RestaurantDetailsPage extends StatefulWidget {
   final double? longitude;
 
   /// Cabecera: prioriza [Restaurant.image] del detalle API; si no, [explicitLogoUrl] (lista manual).
-  static String? _resolveLogoUrl(Restaurant? restaurant, String? explicitLogoUrl) {
+  static String? _resolveLogoUrl(
+      Restaurant? restaurant, String? explicitLogoUrl) {
     final fromApi = restaurant?.image?.trim();
     if (fromApi != null && fromApi.isNotEmpty) return fromApi;
     final ex = explicitLogoUrl?.trim();
@@ -236,7 +237,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
       child: Icon(
         isFav ? Icons.favorite : Icons.favorite_border,
         size: 18,
-        color: isFav ? AppColors.red : fallbackColor,
+        color: isFav ? AppColors.statusError : fallbackColor,
       ),
     );
   }
@@ -245,10 +246,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
     final reviews = await _reviewsFuture;
     _totalReviews = reviews.length;
     if (_totalReviews > 0) {
-      _averageRating = reviews
-              .map((r) => safeDouble(r['rating']))
-              .reduce((a, b) => a + b) /
-          _totalReviews;
+      _averageRating =
+          reviews.map((r) => safeDouble(r['rating'])).reduce((a, b) => a + b) /
+              _totalReviews;
     } else {
       _averageRating = 0.0;
     }
@@ -445,7 +445,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                                         _toggleFavorite,
                                         isDark,
                                         iconColor: _isFavorite
-                                            ? AppColors.red
+                                            ? AppColors.statusError
                                             : null,
                                       ),
                                       const SizedBox(width: 8),
@@ -511,8 +511,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                                     fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                     color: widget.abierto
-                                        ? AppColors.green
-                                        : AppColors.red,
+                                        ? AppColors.statusSuccess
+                                        : AppColors.statusError,
                                     letterSpacing: 0.5,
                                   ),
                                 ),
@@ -659,7 +659,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
-                            color: AppColors.whatsappGreen.withValues(alpha: 0.1),
+                            color:
+                                AppColors.whatsappGreen.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Row(
@@ -750,8 +751,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                           boxShadow: sel
                               ? [
                                   BoxShadow(
-                                      color:
-                                          AppColors.black.withValues(alpha: 0.1),
+                                      color: AppColors.black
+                                          .withValues(alpha: 0.1),
                                       blurRadius: 6,
                                       offset: const Offset(0, 2))
                                 ]
@@ -910,8 +911,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                              onPressed: () {},
-                              child: const Text('Ver todas')),
+                              onPressed: () {}, child: const Text('Ver todas')),
                         ),
                     ],
                   ),
@@ -967,8 +967,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
         ),
         child: Icon(icon,
             size: 22,
-            color:
-                iconColor ?? (isDark ? AppColors.white : AppColors.stitchTextDark)),
+            color: iconColor ??
+                (isDark ? AppColors.white : AppColors.stitchTextDark)),
       ),
     );
   }
@@ -1127,7 +1127,9 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                   style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: widget.abierto ? AppColors.green : AppColors.red),
+                      color: widget.abierto
+                          ? AppColors.statusSuccess
+                          : AppColors.statusError),
                 ),
               ),
               if (widget.direccion.isNotEmpty) ...[
@@ -1538,8 +1540,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
             .where((i) => i.commerceId == widget.commerceId)
             .toList();
         final int total = commerceItems.fold(0, (s, i) => s + i.quantity);
-        final double amount = commerceItems
-            .fold<double>(0, (s, i) => s + ((i.precio ?? 0) * i.quantity));
+        final double amount = commerceItems.fold<double>(
+            0, (s, i) => s + ((i.precio ?? 0) * i.quantity));
         if (total == 0) return const SizedBox.shrink();
         return SafeArea(
           top: false,

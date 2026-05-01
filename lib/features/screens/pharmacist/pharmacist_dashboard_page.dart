@@ -45,7 +45,8 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
           _data = Map<String, dynamic>.from(body['data'] as Map);
         }
       } else {
-        _error = 'No se pudo cargar el dashboard (HTTP ${response.statusCode}).';
+        _error =
+            'No se pudo cargar el dashboard (HTTP ${response.statusCode}).';
       }
     } catch (e) {
       _error = 'Error: $e';
@@ -90,8 +91,7 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
                       .headlineSmall
                       ?.copyWith(fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
-              Text(label,
-                  style: Theme.of(context).textTheme.bodySmall),
+              Text(label, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),
@@ -127,8 +127,7 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
                         Text(_error!),
                         const SizedBox(height: 12),
                         OutlinedButton(
-                            onPressed: _load,
-                            child: const Text('Reintentar')),
+                            onPressed: _load, child: const Text('Reintentar')),
                       ],
                     ),
                   ),
@@ -142,7 +141,8 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: AppColors.statusError.withValues(alpha: 0.12),
+                            color:
+                                AppColors.statusError.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Row(
@@ -161,11 +161,8 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          _statCard(
-                              'Pendientes',
-                              '${stats['pending'] ?? 0}',
-                              Icons.pending_actions,
-                              AppColors.brandTeal),
+                          _statCard('Pendientes', '${stats['pending'] ?? 0}',
+                              Icons.pending_actions, AppColors.brandTeal),
                           const SizedBox(width: 8),
                           _statCard(
                               'Recibidas hoy',

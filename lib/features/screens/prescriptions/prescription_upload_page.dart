@@ -132,13 +132,14 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text(
-                'Receta enviada. El farmacéutico la revisará en breve.')),
+            content:
+                Text('Receta enviada. El farmacéutico la revisará en breve.')),
       );
       Navigator.of(context).pop(result);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(service.error ?? 'No se pudo enviar la receta.')),
+        SnackBar(
+            content: Text(service.error ?? 'No se pudo enviar la receta.')),
       );
     }
   }
@@ -210,14 +211,14 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<String>(
-                value: _prescriptionType,
-                decoration:
-                    const InputDecoration(labelText: 'Tipo de receta'),
+                initialValue: _prescriptionType,
+                decoration: const InputDecoration(labelText: 'Tipo de receta'),
                 items: const [
                   DropdownMenuItem(
                       value: Prescription.typeCommon, child: Text('Común')),
                   DropdownMenuItem(
-                      value: Prescription.typeRetained, child: Text('Retenida')),
+                      value: Prescription.typeRetained,
+                      child: Text('Retenida')),
                   DropdownMenuItem(
                       value: Prescription.typeSpecial, child: Text('Especial')),
                 ],
@@ -232,7 +233,7 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
                         width: 18,
                         height: 18,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
+                            strokeWidth: 2, color: AppColors.white))
                     : const Icon(Icons.send),
                 label: Text(_submitting ? 'Enviando...' : 'Enviar receta'),
               ),
@@ -255,9 +256,9 @@ class _PrescriptionUploadPageState extends State<PrescriptionUploadPage> {
           border: Border.all(color: AppColors.brandStrokeLight),
         ),
         child: _selectedFile == null
-            ? Column(
+            ? const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(Icons.cloud_upload,
                       size: 48, color: AppColors.brandTealDeep),
                   SizedBox(height: 8),

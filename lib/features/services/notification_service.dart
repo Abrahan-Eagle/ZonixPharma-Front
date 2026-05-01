@@ -210,13 +210,21 @@ class NotificationService extends ChangeNotifier {
   }
 
   // Get all notifications
-  Future<List<Map<String, dynamic>>> getNotifications({String? type, bool? read}) async {
+  Future<List<Map<String, dynamic>>> getNotifications({
+    String? type,
+    bool? read,
+    int page = 1,
+    int perPage = 50,
+  }) async {
     if (!ConnectivityService.isConnected && type == null && read == null) {
       final cached = await CacheService.getRawJson('notifications');
       if (cached != null) return List<Map<String, dynamic>>.from(jsonDecode(cached));
     }
     try {
-      final queryParams = <String, String>{};
+      final queryParams = <String, String>{
+        'page': '$page',
+        'per_page': '${perPage.clamp(1, 100)}',
+      };
       if (type != null) queryParams['type'] = type;
       if (read != null) queryParams['read'] = read.toString();
 

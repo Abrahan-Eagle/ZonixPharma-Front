@@ -48,9 +48,11 @@ class SignInScreenState extends State<SignInScreen> {
         _currentUser = await GoogleSignInService.getCurrentUser();
         if (_currentUser != null) {
           logger.i('Foto de usuario: ${_currentUser!.photoUrl}');
-          await _storage.write(key: 'userPhotoUrl', value: _currentUser!.photoUrl);
+          await _storage.write(
+              key: 'userPhotoUrl', value: _currentUser!.photoUrl);
           logger.i('Nombre de usuario: ${_currentUser!.displayName}');
-          await _storage.write(key: 'displayName', value: _currentUser!.displayName);
+          await _storage.write(
+              key: 'displayName', value: _currentUser!.displayName);
         }
       }
     } catch (e) {
@@ -74,7 +76,8 @@ class SignInScreenState extends State<SignInScreen> {
         await AuthUtils.saveUserName(user.displayName ?? '');
         await AuthUtils.saveUserEmail(user.email);
         final photoUrl = user.photoUrl;
-        await AuthUtils.saveUserPhotoUrl(photoUrl?.isNotEmpty == true ? photoUrl : '');
+        await AuthUtils.saveUserPhotoUrl(
+            photoUrl?.isNotEmpty == true ? photoUrl : '');
 
         if (!mounted) return;
 
@@ -249,8 +252,26 @@ class SignInScreenState extends State<SignInScreen> {
           // Patrón de estrellas: dispersas, tamaños variables (como screen.png)
           ...List.generate(60, (i) {
             final positions = [
-              20.0, 35.0, 55.0, 75.0, 100.0, 130.0, 155.0, 180.0, 205.0, 230.0,
-              260.0, 290.0, 320.0, 350.0, 380.0, 15.0, 45.0, 85.0, 120.0, 165.0,
+              20.0,
+              35.0,
+              55.0,
+              75.0,
+              100.0,
+              130.0,
+              155.0,
+              180.0,
+              205.0,
+              230.0,
+              260.0,
+              290.0,
+              320.0,
+              350.0,
+              380.0,
+              15.0,
+              45.0,
+              85.0,
+              120.0,
+              165.0,
             ];
             final x = (positions[i % 10] + (i ~/ 10) * 180) % 420;
             final y = (positions[(i + 5) % 10] + (i ~/ 10) * 220) % 850;
@@ -313,7 +334,7 @@ class SignInScreenState extends State<SignInScreen> {
               _loginError!,
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
-                color: AppColors.red,
+                color: AppColors.statusError,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -325,47 +346,47 @@ class SignInScreenState extends State<SignInScreen> {
           button: true,
           label: 'Continuar con Google',
           child: SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: Material(
-            color: AppColors.transparent,
-            borderRadius: BorderRadius.circular(28),
-            child: InkWell(
-              onTap: _handleSignIn,
+            width: double.infinity,
+            height: 56,
+            child: Material(
+              color: AppColors.transparent,
               borderRadius: BorderRadius.circular(28),
-              splashColor: _kPrimary.withValues(alpha: 0.15),
-              highlightColor: _kPrimary.withValues(alpha: 0.08),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(28),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withValues(alpha: 0.08),
-                      blurRadius: 16,
-                      offset: const Offset(0, 4),
-                    ),
-                    BoxShadow(
-                      color: AppColors.white.withValues(alpha: 0.1),
-                      blurRadius: 12,
-                      offset: const Offset(0, -2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    'Continuar con Google',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.stitchTextDark,
+              child: InkWell(
+                onTap: _handleSignIn,
+                borderRadius: BorderRadius.circular(28),
+                splashColor: _kPrimary.withValues(alpha: 0.15),
+                highlightColor: _kPrimary.withValues(alpha: 0.08),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(28),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black.withValues(alpha: 0.08),
+                        blurRadius: 16,
+                        offset: const Offset(0, 4),
+                      ),
+                      BoxShadow(
+                        color: AppColors.white.withValues(alpha: 0.1),
+                        blurRadius: 12,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Continuar con Google',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.stitchTextDark,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
         ),
         const SizedBox(height: 16),
         TextButton.icon(
@@ -404,5 +425,4 @@ class SignInScreenState extends State<SignInScreen> {
       ],
     );
   }
-
 }

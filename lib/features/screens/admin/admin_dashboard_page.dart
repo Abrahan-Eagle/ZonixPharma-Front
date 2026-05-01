@@ -40,7 +40,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _initData() async {
     final cachedStats = await AdminService.getCachedStats();
     if (cachedStats != null && cachedStats.isNotEmpty && mounted) {
-      setState(() { _stats = cachedStats; _isLoading = false; });
+      setState(() {
+        _stats = cachedStats;
+        _isLoading = false;
+      });
     }
     _loadData();
   }
@@ -48,7 +51,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _loadData() async {
     if (!mounted) return;
     if (_stats.isEmpty) {
-      setState(() { _isLoading = true; _error = null; });
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
     }
 
     final service = context.read<AdminService>();
@@ -142,7 +148,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.cloud_off_rounded, size: 64, color: AppColors.red),
+              const Icon(Icons.cloud_off_rounded,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(
                 'No se pudieron cargar los datos',
@@ -170,7 +177,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 icon: const Icon(Icons.refresh),
                 label: const Text('Reintentar'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.blue,
+                  backgroundColor: AppColors.brandTeal,
                   foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 24,
@@ -239,9 +246,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         : (_isDark
             ? AppColors.adminHealthNegativeEndDark
             : AppColors.adminHealthNegativeEndLight);
-    final Color accentColor = isHealthy ? AppColors.green : AppColors.red;
-    final Color textColor =
-        _isDark ? AppColors.white : AppColors.blueDark;
+    final Color accentColor =
+        isHealthy ? AppColors.statusSuccess : AppColors.red;
+    final Color textColor = _isDark ? AppColors.white : AppColors.blueDark;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -259,9 +266,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isHealthy
-                  ? Icons.check_circle_rounded
-                  : Icons.error_rounded,
+              isHealthy ? Icons.check_circle_rounded : Icons.error_rounded,
               color: accentColor,
               size: 28,
             ),
@@ -293,8 +298,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
           if (score > 0)
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: accentColor.withAlpha(38),
                 borderRadius: BorderRadius.circular(20),
@@ -336,21 +340,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     final metrics = <_Metric>[
       _Metric(Icons.people_alt_rounded, '$totalUsers', 'Total usuarios',
-          AppColors.blue),
+          AppColors.brandTeal),
       _Metric(Icons.receipt_long_rounded, '$ordersToday', 'Órdenes hoy',
-          AppColors.orange),
+          AppColors.brandCtaAccent),
       _Metric(Icons.payments_rounded, _shortCurrency(revenueToday),
-          'Ingresos hoy', AppColors.green),
+          'Ingresos hoy', AppColors.statusSuccess),
       _Metric(Icons.storefront_rounded, '$activeCommerces', 'Comercios',
-          AppColors.purple),
+          AppColors.brandTealDeep),
       _Metric(Icons.delivery_dining_rounded, '$activeDelivery',
-          'Delivery activos', AppColors.teal),
-      _Metric(Icons.timer_rounded, avgWait, 'Espera prom.', AppColors.amber),
+          'Delivery activos', AppColors.brandTeal),
+      _Metric(Icons.timer_rounded, avgWait, 'Espera prom.',
+          AppColors.statusWarning),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cols = Responsive.gridColumns(constraints.maxWidth, mobile: 2, tablet: 3, desktop: 4);
+        final cols = Responsive.gridColumns(constraints.maxWidth,
+            mobile: 2, tablet: 3, desktop: 4);
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -432,26 +438,27 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget _buildQuickActions() {
     final actions = <_QuickAction>[
       _QuickAction(
-          'Usuarios', Icons.people_alt_rounded, AppColors.blue, _goUsers),
-      _QuickAction(
-          'Comercios', Icons.storefront_rounded, AppColors.orange, _goCommerces),
-      _QuickAction(
-          'Órdenes', Icons.receipt_long_rounded, AppColors.green, _goOrders),
+          'Usuarios', Icons.people_alt_rounded, AppColors.brandTeal, _goUsers),
+      _QuickAction('Comercios', Icons.storefront_rounded,
+          AppColors.brandCtaAccent, _goCommerces),
+      _QuickAction('Órdenes', Icons.receipt_long_rounded,
+          AppColors.statusSuccess, _goOrders),
       _QuickAction('Config Delivery', Icons.delivery_dining_rounded,
-          AppColors.purple, _goDeliveryConfig),
+          AppColors.brandTealDeep, _goDeliveryConfig),
+      _QuickAction('Analytics', Icons.analytics_rounded, AppColors.brandTeal,
+          _goAnalytics),
       _QuickAction(
-          'Analytics', Icons.analytics_rounded, AppColors.teal, _goAnalytics),
-      _QuickAction(
-          'Disputas', Icons.gavel_rounded, AppColors.red, _goDisputes),
+          'Disputas', Icons.gavel_rounded, AppColors.statusError, _goDisputes),
       _QuickAction('Empresas Delivery', Icons.local_shipping_rounded,
           AppColors.orangeCoral, _goDeliveryCompanies),
       _QuickAction('Notificaciones', Icons.notifications_active_rounded,
-          AppColors.green, _goNotifications),
+          AppColors.statusSuccess, _goNotifications),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cols = Responsive.gridColumns(constraints.maxWidth, mobile: 3, tablet: 4, desktop: 5);
+        final cols = Responsive.gridColumns(constraints.maxWidth,
+            mobile: 3, tablet: 4, desktop: 5);
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -529,12 +536,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
 
     final total = safeInt(_stats['total_users'], 1);
     final roles = <_RoleEntry>[
-      _RoleEntry('Compradores', safeInt(dist['buyers']), AppColors.blue),
-      _RoleEntry('Comercios', safeInt(dist['commerce']), AppColors.orange),
-      _RoleEntry('Delivery', safeInt(dist['delivery']), AppColors.green),
+      _RoleEntry('Compradores', safeInt(dist['buyers']), AppColors.brandTeal),
       _RoleEntry(
-          'Emp. Delivery', safeInt(dist['delivery_company']), AppColors.purple),
-      _RoleEntry('Administradores', safeInt(dist['admin']), AppColors.red),
+          'Comercios', safeInt(dist['commerce']), AppColors.brandCtaAccent),
+      _RoleEntry(
+          'Delivery', safeInt(dist['delivery']), AppColors.statusSuccess),
+      _RoleEntry('Emp. Delivery', safeInt(dist['delivery_company']),
+          AppColors.brandTealDeep),
+      _RoleEntry(
+          'Administradores', safeInt(dist['admin']), AppColors.statusError),
     ];
 
     return Container(
@@ -671,25 +681,25 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       );
 
   void _goAnalytics() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminAnalyticsPage()));
+      context, MaterialPageRoute(builder: (_) => const AdminAnalyticsPage()));
 
   void _goCommerces() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminCommercesPage()));
+      context, MaterialPageRoute(builder: (_) => const AdminCommercesPage()));
 
   void _goOrders() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminOrdersPage()));
+      context, MaterialPageRoute(builder: (_) => const AdminOrdersPage()));
 
-  void _goDeliveryConfig() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminDeliveryConfigPage()));
+  void _goDeliveryConfig() => Navigator.push(context,
+      MaterialPageRoute(builder: (_) => const AdminDeliveryConfigPage()));
 
   void _goDisputes() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminDisputesPage()));
+      context, MaterialPageRoute(builder: (_) => const AdminDisputesPage()));
 
-  void _goDeliveryCompanies() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminDeliveryCompaniesPage()));
+  void _goDeliveryCompanies() => Navigator.push(context,
+      MaterialPageRoute(builder: (_) => const AdminDeliveryCompaniesPage()));
 
-  void _goNotifications() => Navigator.push(
-        context, MaterialPageRoute(builder: (_) => const AdminNotificationsPage()));
+  void _goNotifications() => Navigator.push(context,
+      MaterialPageRoute(builder: (_) => const AdminNotificationsPage()));
 }
 
 // ────────────────────────── Data holders ──────────────────────────

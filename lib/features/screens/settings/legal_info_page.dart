@@ -13,7 +13,8 @@ class LegalInfoPage extends StatelessWidget {
   String _legalBaseUrl() {
     final appDomain = dotenv.env['APP_DOMAIN']?.trim();
     if (appDomain != null && appDomain.isNotEmpty) {
-      final hasScheme = appDomain.startsWith('http://') || appDomain.startsWith('https://');
+      final hasScheme =
+          appDomain.startsWith('http://') || appDomain.startsWith('https://');
       return hasScheme ? appDomain : 'https://$appDomain';
     }
     return AppConfig.apiUrl;
@@ -41,7 +42,8 @@ class LegalInfoPage extends StatelessWidget {
         backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: theme.colorScheme.onSurface),
+          icon: Icon(Icons.arrow_back_ios_new,
+              color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -57,7 +59,8 @@ class LegalInfoPage extends StatelessWidget {
           _LegalTile(
             icon: Icons.privacy_tip_outlined,
             title: 'Política de privacidad',
-            onTap: () => _openUrl(context, '/politica-privacidad', 'Privacidad'),
+            onTap: () =>
+                _openUrl(context, '/politica-privacidad', 'Privacidad'),
           ),
           const Divider(height: 1),
           _LegalTile(
@@ -100,7 +103,7 @@ class _LegalTile extends StatelessWidget {
           color: AppColors.blue.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(icon, color: AppColors.blue, size: 22),
+        child: Icon(icon, color: AppColors.brandTeal, size: 22),
       ),
       title: Text(
         title,
@@ -110,7 +113,8 @@ class _LegalTile extends StatelessWidget {
           color: theme.colorScheme.onSurface,
         ),
       ),
-      trailing: Icon(Icons.open_in_new, size: 20, color: theme.colorScheme.onSurfaceVariant),
+      trailing: Icon(Icons.open_in_new,
+          size: 20, color: theme.colorScheme.onSurfaceVariant),
       onTap: onTap,
     );
   }

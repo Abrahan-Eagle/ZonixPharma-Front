@@ -49,7 +49,9 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
 
   Color _canvasBg(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return dark ? Theme.of(context).colorScheme.surface : AppColors.scaffoldBgLight;
+    return dark
+        ? Theme.of(context).colorScheme.surface
+        : AppColors.scaffoldBgLight;
   }
 
   @override
@@ -76,7 +78,8 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+                const Icon(Icons.error_outline,
+                    size: 64, color: AppColors.statusError),
                 const SizedBox(height: 16),
                 Text(
                   _error!,
@@ -150,7 +153,8 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
                         },
                         borderRadius: BorderRadius.circular(12),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
                           child: Row(
                             children: [
                               ClipRRect(
@@ -176,18 +180,24 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w700,
-                                        color: Theme.of(context).colorScheme.onSurface,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      lastMsgText.isNotEmpty ? lastMsgText : 'Sin mensajes',
+                                      lastMsgText.isNotEmpty
+                                          ? lastMsgText
+                                          : 'Sin mensajes',
                                       style: GoogleFonts.plusJakartaSans(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500,
-                                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
                                       ),
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
@@ -197,9 +207,10 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
                               ),
                               if (unread)
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: AppColors.blue,
+                                    color: AppColors.brandTeal,
                                     borderRadius: BorderRadius.circular(999),
                                   ),
                                   child: Text(
@@ -214,7 +225,9 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
                               else
                                 Icon(
                                   Icons.chevron_right,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                             ],
                           ),
@@ -254,7 +267,8 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble_outline, size: 72, color: muted.withValues(alpha: 0.85)),
+            Icon(Icons.chat_bubble_outline,
+                size: 72, color: muted.withValues(alpha: 0.85)),
             const SizedBox(height: 20),
             Text(
               'No hay conversaciones',

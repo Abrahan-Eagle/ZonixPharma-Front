@@ -79,7 +79,8 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
                 if (service.historyOrders.isEmpty)
                   _buildEmptyState()
                 else
-                  ...service.historyOrders.map((o) => _buildOrderCard(context, o)),
+                  ...service.historyOrders
+                      .map((o) => _buildOrderCard(context, o)),
               ],
             ),
           );
@@ -100,7 +101,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
           selected: selected,
           selectedColor: AppColors.orange.withValues(alpha: 0.2),
           labelStyle: TextStyle(
-            color: selected ? AppColors.orange : muted,
+            color: selected ? AppColors.brandCtaAccent : muted,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
           ),
           onSelected: (_) {
@@ -119,16 +120,19 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
 
     return Row(
       children: [
-        _summaryTile(context, 'Total', '$total', AppColors.orange),
+        _summaryTile(context, 'Total', '$total', AppColors.brandCtaAccent),
         const SizedBox(width: 8),
-        _summaryTile(context, 'Completadas', '$delivered', AppColors.green),
+        _summaryTile(
+            context, 'Completadas', '$delivered', AppColors.statusSuccess),
         const SizedBox(width: 8),
-        _summaryTile(context, 'Canceladas', '$cancelled', AppColors.red),
+        _summaryTile(
+            context, 'Canceladas', '$cancelled', AppColors.statusError),
       ],
     );
   }
 
-  Widget _summaryTile(BuildContext context, String label, String value, Color color) {
+  Widget _summaryTile(
+      BuildContext context, String label, String value, Color color) {
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -141,12 +145,14 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
           children: [
             Text(
               value,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+              style: TextStyle(
+                  fontSize: 24, fontWeight: FontWeight.bold, color: color),
             ),
             const SizedBox(height: 4),
             Text(
               label,
-              style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context)),
+              style: TextStyle(
+                  fontSize: 12, color: AppColors.secondaryText(context)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -157,7 +163,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
 
   Widget _buildOrderCard(BuildContext context, Order order) {
     final isDelivered = order.status == 'delivered';
-    final statusColor = isDelivered ? AppColors.green : AppColors.red;
+    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.red;
     final statusLabel = isDelivered ? 'Entregada' : 'Cancelada';
     final commerceName = order.commerce?['name']?.toString() ?? 'Comercio';
     final date = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
@@ -184,11 +190,13 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
                 Expanded(
                   child: Text(
                     'Orden #${order.orderNumber}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: statusColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
@@ -207,12 +215,14 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
             const SizedBox(height: 12),
             Row(
               children: [
-                Icon(Icons.store, size: 16, color: AppColors.secondaryText(context)),
+                Icon(Icons.store,
+                    size: 16, color: AppColors.secondaryText(context)),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
                     commerceName,
-                    style: TextStyle(color: AppColors.secondaryText(context), fontSize: 14),
+                    style: TextStyle(
+                        color: AppColors.secondaryText(context), fontSize: 14),
                   ),
                 ),
               ],
@@ -220,11 +230,13 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
             const SizedBox(height: 6),
             Row(
               children: [
-                Icon(Icons.access_time, size: 16, color: AppColors.secondaryText(context)),
+                Icon(Icons.access_time,
+                    size: 16, color: AppColors.secondaryText(context)),
                 const SizedBox(width: 6),
                 Text(
                   date,
-                  style: TextStyle(color: AppColors.secondaryText(context), fontSize: 13),
+                  style: TextStyle(
+                      color: AppColors.secondaryText(context), fontSize: 13),
                 ),
                 const Spacer(),
                 if (isDelivered)
@@ -233,7 +245,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: AppColors.green,
+                      color: AppColors.statusSuccess,
                     ),
                   ),
               ],
@@ -249,11 +261,13 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
       padding: const EdgeInsets.symmetric(vertical: 64),
       child: Column(
         children: [
-          Icon(Icons.history, size: 64, color: AppColors.secondaryText(context)),
+          Icon(Icons.history,
+              size: 64, color: AppColors.secondaryText(context)),
           const SizedBox(height: 16),
           Text(
             'No hay entregas en este período',
-            style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context)),
+            style: TextStyle(
+                fontSize: 16, color: AppColors.secondaryText(context)),
           ),
         ],
       ),
@@ -267,7 +281,8 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(error, textAlign: TextAlign.center),
             const SizedBox(height: 16),

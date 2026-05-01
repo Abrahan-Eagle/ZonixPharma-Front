@@ -15,6 +15,7 @@ class ReceiptPdfBuilder {
   static const PdfColor _zonixDark = PdfColor.fromInt(0xFF1A2E46);
   static const PdfColor _zonixBlue = PdfColor.fromInt(0xFF3299FF);
   static const PdfColor _zonixOrange = PdfColor.fromInt(0xFFFFC107);
+
   /// Accent teal marca Zonix Pharma (#56C7B8).
   static const PdfColor _zonixPharmaAccent = PdfColor.fromInt(0xFF56C7B8);
 
@@ -44,16 +45,18 @@ class ReceiptPdfBuilder {
   /// [MultiPage] con [header]/[footer] fijos por hoja.
   ///
   /// Totales al pie: modo **compacto** ([Spacer]+[Inseparable]) o **extendido** ([Flexible]→[LimitedBox]→[Stack]).
-  static Future<Uint8List?> build(Order order, {Uint8List? logoImageBytes}) async {
+  static Future<Uint8List?> build(Order order,
+      {Uint8List? logoImageBytes}) async {
     try {
       final orderIdDisplay =
           order.orderNumber.isNotEmpty ? order.orderNumber : '${order.id}';
       final dateStr = _formatDate(order.createdAt);
       final commerceAddress = order.commerce?['address']?.toString() ?? '';
 
-      final useSpacerFooter = order.items.length <= _maxItemsForSpacerSummaryFooter &&
-          (order.specialInstructions == null ||
-              order.specialInstructions!.trim().isEmpty);
+      final useSpacerFooter =
+          order.items.length <= _maxItemsForSpacerSummaryFooter &&
+              (order.specialInstructions == null ||
+                  order.specialInstructions!.trim().isEmpty);
 
       final pdf = pw.Document();
       pdf.addPage(
@@ -704,7 +707,8 @@ class ReceiptPdfBuilder {
     );
   }
 
-  static pw.Widget _buildFooter(String orderIdDisplay, Uint8List? logoImageBytes) {
+  static pw.Widget _buildFooter(
+      String orderIdDisplay, Uint8List? logoImageBytes) {
     return pw.Container(
       width: double.infinity,
       padding: const pw.EdgeInsets.fromLTRB(32, 20, 32, 24),

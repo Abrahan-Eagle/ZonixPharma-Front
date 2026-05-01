@@ -173,8 +173,7 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
             ? null
             : _atcCodeController.text.trim(),
         'requires_prescription': _requiresPrescription,
-        'prescription_type':
-            _requiresPrescription ? _prescriptionType : null,
+        'prescription_type': _requiresPrescription ? _prescriptionType : null,
         'controlled_substance': _controlledSubstance,
         'cold_chain': _coldChain,
       };
@@ -200,8 +199,8 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+            content:
+                Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
             backgroundColor: AppColors.statusError,
           ),
         );
@@ -241,8 +240,7 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
                               .surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color:
-                                Theme.of(context).colorScheme.outlineVariant,
+                            color: Theme.of(context).colorScheme.outlineVariant,
                           ),
                         ),
                         child: _imageFile != null
@@ -309,8 +307,7 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
                               labelText: 'Precio',
                               border: OutlineInputBorder(),
                             ),
-                            keyboardType:
-                                const TextInputType.numberWithOptions(
+                            keyboardType: const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
                             validator: (v) {
@@ -352,7 +349,7 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
-                      value: _dosageForm,
+                      initialValue: _dosageForm,
                       decoration: const InputDecoration(
                         labelText: 'Forma farmacéutica',
                         border: OutlineInputBorder(),
@@ -450,7 +447,7 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
                       Padding(
                         padding: const EdgeInsets.only(top: 8, bottom: 12),
                         child: DropdownButtonFormField<String>(
-                          value: _prescriptionType,
+                          initialValue: _prescriptionType,
                           decoration: const InputDecoration(
                             labelText: 'Tipo de receta',
                             border: OutlineInputBorder(),
@@ -463,7 +460,8 @@ class _CommerceProductFormPageState extends State<CommerceProductFormPage> {
                             DropdownMenuItem(
                                 value: 'special', child: Text('Especial')),
                           ],
-                          onChanged: (v) => setState(() => _prescriptionType = v),
+                          onChanged: (v) =>
+                              setState(() => _prescriptionType = v),
                         ),
                       ),
                     SwitchListTile(

@@ -194,7 +194,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
 
     final statusText = _order.statusText;
     final isDelivered = _order.isDelivered;
-    final statusColor = isDelivered ? AppColors.green : AppColors.red;
+    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.red;
 
     return Container(
       decoration: BoxDecoration(
@@ -545,7 +545,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
                   fontSize: 26,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
-                  color: AppColors.yellow,
+                  color: AppColors.statusWarning,
                 ),
               ),
             ],
@@ -733,7 +733,8 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('${_order.items.length} producto(s) agregados al carrito'),
+        content:
+            Text('${_order.items.length} producto(s) agregados al carrito'),
       ),
     );
   }
@@ -750,7 +751,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error al generar el PDF'),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
       return;
@@ -758,7 +759,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('PDF listo para guardar o compartir'),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
       ),
     );
   }

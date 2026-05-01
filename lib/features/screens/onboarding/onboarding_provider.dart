@@ -156,4 +156,3 @@ class OnboardingProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-

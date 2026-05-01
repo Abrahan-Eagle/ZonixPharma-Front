@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:zonix/features/services/commerce_list_service.dart';
 import '../../utils/app_colors.dart';
 
-/// Formulario para agregar un nuevo restaurante (multi-restaurante).
+/// Formulario para agregar una nueva farmacia (comercio).
 class CommerceAddRestaurantPage extends StatefulWidget {
   const CommerceAddRestaurantPage({super.key});
 
   @override
-  State<CommerceAddRestaurantPage> createState() => _CommerceAddRestaurantPageState();
+  State<CommerceAddRestaurantPage> createState() =>
+      _CommerceAddRestaurantPageState();
 }
 
 class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
@@ -17,12 +18,18 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
   final _addressController = TextEditingController();
   final _scheduleController = TextEditingController();
 
-  String _selectedBusinessType = 'restaurant';
+  String _selectedBusinessType = 'pharmacy';
   bool _open = false;
   bool _loading = false;
   String? _error;
 
-  static const _businessTypes = ['restaurant', 'cafe', 'bakery', 'fast_food', 'pizzeria', 'bar', 'food_truck'];
+  static const List<MapEntry<String, String>> _businessTypes = [
+    MapEntry('pharmacy', 'Farmacia'),
+    MapEntry('drogueria', 'Droguería'),
+    MapEntry('botica', 'Botica'),
+    MapEntry('cadena_farmacia', 'Cadena de farmacias'),
+    MapEntry('optica_farmacia', 'Óptica / farmacia'),
+  ];
 
   @override
   void dispose() {
@@ -48,7 +55,9 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
         taxId: _taxIdController.text.trim(),
         address: _addressController.text.trim(),
         open: _open,
-        schedule: _scheduleController.text.trim().isEmpty ? null : _scheduleController.text.trim(),
+        schedule: _scheduleController.text.trim().isEmpty
+            ? null
+            : _scheduleController.text.trim(),
       );
       if (mounted) {
         Navigator.pop(context, true);
@@ -67,8 +76,8 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agregar restaurante'),
-        backgroundColor: AppColors.purple,
+        title: const Text('Agregar farmacia'),
+        backgroundColor: AppColors.brandTealDeep,
         foregroundColor: AppColors.white,
       ),
       body: SingleChildScrollView(
@@ -84,16 +93,20 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
                   labelText: 'Nombre del negocio',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Requerido' : null,
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
                 initialValue: _selectedBusinessType,
                 decoration: const InputDecoration(
-                  labelText: 'Tipo de negocio',
+                  labelText: 'Tipo de establecimiento',
                   border: OutlineInputBorder(),
                 ),
-                items: _businessTypes.map((t) => DropdownMenuItem(value: t, child: Text(t))).toList(),
+                items: _businessTypes
+                    .map((e) => DropdownMenuItem<String>(
+                        value: e.key, child: Text(e.value)))
+                    .toList(),
                 onChanged: (v) => setState(() => _selectedBusinessType = v!),
               ),
               const SizedBox(height: 16),
@@ -103,7 +116,8 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
                   labelText: 'RIF / NIT / RUC',
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -113,7 +127,8 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
                   border: OutlineInputBorder(),
                 ),
                 maxLines: 2,
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Requerido' : null,
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -133,20 +148,26 @@ class _CommerceAddRestaurantPageState extends State<CommerceAddRestaurantPage> {
               ),
               if (_error != null) ...[
                 const SizedBox(height: 16),
-                Text(_error!, style: const TextStyle(color: AppColors.red)),
+                Text(_error!,
+                    style: const TextStyle(color: AppColors.statusError)),
               ],
               const SizedBox(height: 24),
               FilledButton(
                 onPressed: _loading ? null : _submit,
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.green,
+                  backgroundColor: AppColors.statusSuccess,
                   foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
                 child: _loading
-                    ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white))
-                    : const Text('Crear restaurante'),
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: AppColors.white))
+                    : const Text('Crear farmacia'),
               ),
             ],
           ),

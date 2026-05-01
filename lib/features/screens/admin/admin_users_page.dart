@@ -56,7 +56,11 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
   Future<void> _initUsers() async {
     final cached = await AdminService.getCachedUsers();
     if (cached != null && cached.isNotEmpty && mounted) {
-      setState(() { _allUsers = cached; _applySearch(); _isLoading = false; });
+      setState(() {
+        _allUsers = cached;
+        _applySearch();
+        _isLoading = false;
+      });
     }
     _loadUsers();
   }
@@ -74,9 +78,9 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
     });
     try {
       final users = await context.read<AdminService>().getUsers(
-        role: _selectedRole,
-        status: _selectedStatus,
-      );
+            role: _selectedRole,
+            status: _selectedStatus,
+          );
       if (!mounted) return;
       setState(() {
         _allUsers = users;
@@ -101,10 +105,12 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
         final name = safeString(u['name']).toLowerCase();
         final email = safeString(u['email']).toLowerCase();
         final profile = u['profile'];
-        final firstName =
-            profile is Map ? safeString(profile['first_name']).toLowerCase() : '';
-        final lastName =
-            profile is Map ? safeString(profile['last_name']).toLowerCase() : '';
+        final firstName = profile is Map
+            ? safeString(profile['first_name']).toLowerCase()
+            : '';
+        final lastName = profile is Map
+            ? safeString(profile['last_name']).toLowerCase()
+            : '';
         return name.contains(query) ||
             email.contains(query) ||
             firstName.contains(query) ||
@@ -260,7 +266,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
               selectedColor: AppColors.blue.withAlpha(40),
               labelStyle: TextStyle(
                 color: selected
-                    ? AppColors.blue
+                    ? AppColors.brandTeal
                     : (isDark ? AppColors.white70 : AppColors.gray),
                 fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -291,7 +297,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
               selectedColor: AppColors.orange.withAlpha(40),
               labelStyle: TextStyle(
                 color: selected
-                    ? AppColors.orange
+                    ? AppColors.brandCtaAccent
                     : (isDark ? AppColors.white70 : AppColors.gray),
                 fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
               ),
@@ -321,7 +327,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 56, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 56, color: AppColors.statusError),
               const SizedBox(height: 12),
               Text(
                 _error!,
@@ -364,7 +371,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
             itemCount: _filteredUsers.length,
             separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, i) => _buildUserCard(_filteredUsers[i], isDark),
+            itemBuilder: (context, i) =>
+                _buildUserCard(_filteredUsers[i], isDark),
           ),
         ),
       ),
@@ -504,7 +512,10 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                     height: 4,
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: Theme.of(ctx).colorScheme.outline.withValues(alpha: 0.45),
+                      color: Theme.of(ctx)
+                          .colorScheme
+                          .outline
+                          .withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -561,8 +572,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                   ),
                   items: _allRoles.entries
                       .map((e) =>
@@ -585,13 +596,13 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                 Row(
                   children: [
                     _statusActionButton(ctx, userId, 'active', 'Activo',
-                        AppColors.green, status),
+                        AppColors.statusSuccess, status),
                     const SizedBox(width: 8),
                     _statusActionButton(ctx, userId, 'suspended', 'Suspender',
-                        AppColors.orange, status),
+                        AppColors.brandCtaAccent, status),
                     const SizedBox(width: 8),
                     _statusActionButton(ctx, userId, 'banned', 'Banear',
-                        AppColors.red, status),
+                        AppColors.statusError, status),
                   ],
                 ),
                 const SizedBox(height: 24),
@@ -603,8 +614,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                     icon: const Icon(Icons.delete_outline),
                     label: const Text('Eliminar usuario'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.red,
-                      side: const BorderSide(color: AppColors.red),
+                      foregroundColor: AppColors.statusError,
+                      side: const BorderSide(color: AppColors.statusError),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)),
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -688,7 +699,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             child: const Text('Cancelar'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+            style:
+                FilledButton.styleFrom(backgroundColor: AppColors.statusError),
             onPressed: () async {
               Navigator.pop(ctx);
               try {
@@ -713,7 +725,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: isError ? AppColors.red : AppColors.green,
+        backgroundColor:
+            isError ? AppColors.statusError : AppColors.statusSuccess,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),

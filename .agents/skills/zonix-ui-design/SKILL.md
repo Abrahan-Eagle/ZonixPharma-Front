@@ -1,150 +1,266 @@
 ---
 name: zonix-ui-design
-description: Sistema de diseño visual de Zonix Eats. Paleta de colores, tipografía, cards, botones, y layouts para todas las pantallas.
-trigger: Cuando se diseñe o construya UI, pantallas, widgets, cards, botones, o cualquier componente visual de la app.
-scope: lib/features/screens/, lib/features/widgets/, lib/core/theme/
+description: Sistema de diseño visual de Zonix Pharma. Paleta fría Pharma (navy + teal + mint), tipografía Plus Jakarta Sans, cards de medicamento, badges Rx / cold chain / controlado, bottom nav por rol incluido pharmacist, layouts de receta médica.
+trigger: Cuando se diseñe o construya UI, pantallas, widgets, cards, botones, o cualquier componente visual de la app. Incluye pantallas Rx, validación farmacéutica, cold chain.
+scope: lib/features/screens/, lib/features/widgets/, lib/features/utils/app_colors.dart, lib/features/utils/app_theme.dart
 author: Zonix Team
-version: 2.0
+version: 3.0
 ---
 
-# 🎨 Zonix Eats — Sistema de Diseño (Flutter)
+# Zonix Pharma — Sistema de Diseño (Flutter)
 
-## 1. Paleta de Colores (del logo "burger espacial")
+> Marketplace farmacéutico digital del ecosistema Zonix (vertical Pharma, no Eats).
+> Fuente canónica de marca: [`docs/BRAND_ZONIX_PHARMA.md`](../../../../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md).
+> Tokens implementados: [`lib/features/utils/app_colors.dart`](../../../lib/features/utils/app_colors.dart).
+> Tema: [`lib/features/utils/app_theme.dart`](../../../lib/features/utils/app_theme.dart).
 
-| Token              | Hex                     | Uso                                                   |
-| ------------------ | ----------------------- | ----------------------------------------------------- |
-| `primary`          | `#3299FF`               | CTAs, botones primarios, iconos activos, tabs activas |
-| `background-dark`  | `#1A2E46`               | Scaffold modo oscuro, navbar                          |
-| `surface-dark`     | `#23262B`               | Cards en modo oscuro                                  |
-| `card-cream`       | `#F9F0E0`               | Cards modo claro, fondos suaves                       |
-| `accent-orange`    | `#FF9800`               | Botón principal checkout/carrito                      |
-| `accent-yellow`    | `#FFC107`               | Precios, badges "Nuevo", "Oferta"                     |
-| `success`          | `#43D675`               | Totales, disponible, precios destacados               |
-| `danger`           | `#FF4B3E`               | Eliminar, alertas, cerrar sesión                      |
-| `text-primary`     | `#FFFFFF`               | Texto sobre oscuro                                    |
-| `text-secondary`   | `rgba(255,255,255,0.7)` | Subtexto modo oscuro                                  |
-| `background-light` | `#F5F7F8`               | Scaffold modo claro                                   |
+## 1. Paleta de Colores (canónica)
 
-## 2. Tipografía y Bordes
+Usar SIEMPRE los tokens `AppColors.brand*` (o helpers `AppColors.scaffoldBg/cardBg/primaryText/secondaryText`). NUNCA `Colors.<name>` ni `Color(0x...)` en pantallas ni widgets.
 
-- **Font:** Plus Jakarta Sans (Google Fonts)
-- **Cards:** border-radius `16–20px`, sombra suave
-- **Botones primarios:** border-radius `16px` (pill: `28px`)
-- **Controles +/-:** Círculos, mínimo `36px` área táctil
-- **Padding lateral:** `20–24px`
-- **Max width mobile:** `360–414px`
+| Token                   | Hex       | Uso                                                           |
+| ----------------------- | --------- | ------------------------------------------------------------- |
+| `brandNavy`             | `#1E2A5A` | Primario: AppBar, headers, iconos activos, CTAs secundarios   |
+| `brandTealDeep`         | `#0F4C5C` | Acentos profundos, texto secundario sobre claro, badge Rx     |
+| `brandTeal`             | `#56C7B8` | CTA principal (carrito, pagar, validar), FAB, bottom-nav activo |
+| `brandMint`             | `#A8DCCB` | Highlights, badges OK, fondos decorativos                     |
+| `brandSurfaceLight`     | `#F5F7FA` | Canvas claro                                                  |
+| `brandMutedGray`        | `#C7CFD9` | Bordes, dividers, iconos secundarios                          |
+| `brandSurfaceDark`      | `#142033` | Canvas oscuro                                                 |
+| `brandCtaAccent`        | `#F2A65A` | CTAs puntuales (sub-acción positiva), warnings sutiles        |
 
-## 3. Componentes Clave
+### Estados semánticos
 
-### Card de Producto
+| Token            | Hex       | Uso                                        |
+| ---------------- | --------- | ------------------------------------------ |
+| `statusInfo`     | `#3B82F6` | Banner informativo, links secundarios      |
+| `statusSuccess`  | `#22C55E` | Totales, aprobación, disponibilidad        |
+| `statusWarning`  | `#F59E0B` | Advertencias (cold chain, TTL receta)      |
+| `statusError`    | `#EF4444` | Errores, receta rechazada, eliminar        |
 
-- Imagen: `80x80px`, borderRadius `20px`, placeholder con icono `shopping_bag`
-- Nombre: `18px`, semibold
-- Precio: verde `#43D675`, `20px`
-- Controles +/-: círculos con iconos, botón eliminar rojo
+### Aliases legacy
 
-### Botón Principal (CTA)
+`AppColors.blue`, `AppColors.orange`, `AppColors.red`, `AppColors.green`, `AppColors.purple`, etc. se mantienen como aliases mapeados a tokens Pharma solo para no romper pantallas antiguas. **Prohibido añadir usos nuevos de aliases** — migrar el archivo afectado a `brand*`.
 
-- Ancho completo, altura `~52px`
-- Naranja `#FF9800` para checkout/carrito
-- Azul `#3299FF` para acciones generales
-- Texto blanco, icono izquierdo
+## 2. Tipografía y bordes
 
-### Cards de Información
+- **Font:** Plus Jakarta Sans (via `google_fonts`).
+- **Cuerpo:** 14–16 px, line-height 1.4–1.5.
+- **Encabezados:** 18–26 px, weights 700–900.
+- **Cards:** `BorderRadius.circular(16)`–`20`, sombra suave.
+- **Botones primarios:** radius 16 (pill: 28).
+- **Controles +/-:** círculos, mínimo 36 px área táctil.
+- **Padding lateral:** 20–24 px.
+- **Ancho máximo mobile:** 360–414 px.
 
-- Fondo: `#F9F0E0` (claro) o `#23262B` (oscuro)
-- Bordes redondeados `16–20px`
-- Sombra suave
-- Padding `16–20px`
+## 3. Componentes clave
+
+### Card de medicamento (buyer)
+
+- Imagen: `100 px` alto, `width: double.infinity`, `borderRadius: 12`.
+- Nombre: 15 px, bold, `maxLines: 1`, ellipsis.
+- Chip categoría (si aplica): fondo `brandCtaAccent.withValues(alpha: 0.15)`, texto `brandCtaAccent`.
+- Rating: icono `star` (`brandTeal`), texto 11 px; envolver en `Expanded` para no desbordar cuando conviven con badges.
+- **Badge "Receta"** (obligatorio si `product.requiresPrescription`):
+  - Fondo `brandTealDeep.withValues(alpha: 0.12)`, texto `brandTealDeep`, weight 700, 10 px.
+- **Badge "Controlado"** (si `product.controlledSubstance`):
+  - Fondo `statusError.withValues(alpha: 0.12)`, texto `statusError`, weight 700.
+- **Badge "Cadena de frío"** (si `product.coldChain`):
+  - Fondo `statusInfo.withValues(alpha: 0.15)`, icono `ac_unit`, texto `statusInfo`.
+- Presentación / principio activo: 11 px, color secundario, `maxLines: 1`, ellipsis.
+- Precio: 18 px, weight 800, `brandCtaAccent` (fila anclada al final con `Expanded > Column(end) > Row`, precio en `Flexible`).
+- Botón + (añadir): círculo 32 px, icono `add` en `brandTeal` sobre fondo `grayLight`.
+
+### Botón principal (CTA)
+
+- Ancho completo, altura ≈52 px.
+- Color: `brandTeal` para acciones generales y pagar; `brandCtaAccent` para sub-acciones "claim" puntuales.
+- Texto blanco, icono izquierdo (si aplica), weight 700, radius 16.
+
+### Cards de información
+
+- Fondo: `AppColors.cardBg(context)` (auto light/dark).
+- Radius: 16–20.
+- Sombra suave (en light), border `white12` en dark.
+- Padding: 16–20.
 
 ### Badges
 
-- "Principal", "Activo" → azul `#3299FF`
-- "Oferta", "Nuevo" → amarillo `#FFC107`
-- Compactos, fondos sutiles
+- `Principal` / `Activo` → `brandTeal`.
+- `Nuevo` / `Promo` → `brandCtaAccent`.
+- `Receta` → `brandTealDeep`.
+- `Controlado` → `statusError`.
+- `Cadena de frío` → `statusInfo`.
+- Compactos: padding 6 h × 2 v, radius 6–8.
 
-### Empty States
+### Empty / Loading / Error
 
-- Icono grande centrado
-- Mensaje principal (bold)
-- Mensaje secundario (color secundario)
+- **Loading:** `Shimmer` en cards con `baseColor: grayDark` / `highlightColor: bgDark` (dark) y `gray` / `grayLight` (light).
+- **Vacío:** icono grande centrado, mensaje principal bold + secundario en `secondaryText(context)`, CTA si aplica.
+- **Error:** texto `statusError`, icono `error_outline`.
 
-## 4. Layouts por Pantalla
+## 4. Layouts por pantalla
 
-### Carrito
-
-```
-Header ("Carrito", 26px bold)
-├── Estado vacío: ilustración + "El carrito está vacío"
-├── Lista cards producto (imagen + info + controles +/-)
-├── Resumen de orden (Total Items + Total a pagar en verde)
-└── Barra fija inferior: Botón "Proceder al pago" (naranja)
-```
-
-### Checkout
+### Buyer — Catálogo (`products_page.dart`)
 
 ```
-AppBar ("Checkout" + ←)
-├── Resumen compra (cards items compactas)
-├── Tipo entrega: Recoger | Envío (radio/chips)
-├── Dirección (si Envío): cards seleccionables con check
-├── Desglose: Subtotal + Impuesto + Envío + Total (verde)
-└── Botón "Confirmar compra" (naranja, loading spinner)
+Scaffold (BuyerShell header + bottom nav buyer)
+├── SearchBar (grayDark/grayLight)
+├── Chips categorías (horizontal scroll)
+├── Banner promo (160 px, gradient + imagen)
+├── Sección "Lo más pedido" + grid 2 cols (childAspectRatio 0.62)
+└── Card medicamento (ver §3)
 ```
 
-### Detalle Producto
+### Buyer — Detalle de producto (`product_detail_page.dart`)
 
 ```
 AppBar (← + "Detalle" + ♡)
-├── Imagen: ~40% viewport, borderRadius inferior 20px
-├── Card info: nombre (22px) + precio (verde) + link restaurante (azul)
-├── Descripción (2–4 líneas)
-└── Barra fija: selector cantidad (- N +) + "Añadir al carrito" (azul pill)
+├── Imagen ~40% viewport, borderRadius inferior 20
+├── Card info: nombre 22px + precio brandCtaAccent + link farmacia brandNavy
+├── Badges: Receta / Controlado / Cadena de frío / Presentación
+├── Descripción / principio activo / posología (2–4 líneas)
+└── Barra fija: selector (- N +) + "Añadir al carrito" (brandTeal pill)
 ```
 
-### Mi Perfil / Settings
+### Buyer — Carrito (`cart_page.dart`)
 
 ```
-AppBar: "Mi Perfil" + 4 tabs pill (Persona|Publicaciones|Comercios|Más)
-├── Profile header: avatar circular + nombre + email
-├── Acciones: "Editar Perfil" (verde) + "Mis Pedidos" (outlined)
-├── Settings card: Documentos | Direcciones | Teléfonos
-├── Estadísticas: chips (Publicaciones N, Activas N)
-├── Legal: Términos + Privacidad
-└── Cerrar sesión (rojo outlined) + Eliminar cuenta (red text)
+Header "Carrito"
+├── Banner Rx (obligatorio si cartService.requiresPrescription):
+│   brandTealDeep suave + icono receipt_long + "Tu pedido incluye medicamentos Rx"
+├── Banner cold chain (si cartService.coldChainRequired):
+│   statusInfo suave + icono ac_unit + "Requiere cadena de frío"
+├── Lista cards producto (+/- controles, eliminar rojo)
+├── Resumen (Total items + Total en statusSuccess)
+└── CTA fija inferior: "Proceder al pago" (brandTeal)
 ```
 
-### Onboarding Carousel (4 pantallas)
+### Buyer — Checkout (`checkout_page.dart`)
 
 ```
-PageView con dots indicator + Atrás/Siguiente:
-0. Bienvenida: ilustración central + título + subtítulo
-1. Beneficios: iconos + 2–3 beneficios cortos
-2. Cómo funciona: iconos comida en círculo + descripción
-3. Selección rol: 3 cards (Cliente | Restaurante | Delivery) + Continuar
+AppBar ("Checkout" + ←)
+├── Resumen compra (cards compactas)
+├── Banner Rx + banner cold chain (mismos que cart)
+├── Tipo entrega: Recoger (brandNavy) | Envío (brandTeal)
+│   — cold chain restringe delivery sin equipo
+├── Dirección (si envío): cards seleccionables con check brandTeal
+├── Desglose: Subtotal + Envío + Total (statusSuccess)
+└── CTA "Confirmar compra" (brandTeal, spinner loading)
+    Bloquea si falta receta aprobada y ZONIX_PHARMA_BLOCK_RX_WITHOUT_PRESCRIPTION
 ```
 
-## 5. Navegación por Rol
+### Buyer — Recetas
 
-| Rol      | Bottom Nav                                                |
-| -------- | --------------------------------------------------------- |
-| Buyer    | Productos · Carrito · Mis Órdenes · Restaurantes · Config |
-| Commerce | Dashboard · Órdenes · Inventario · Reportes · Config      |
-| Delivery | Entregas · Historial · Rutas · Ganancias · Config         |
-| Admin    | Panel · Usuarios · Seguridad · Analytics · Config         |
+```
+PrescriptionUploadPage:
+├── AppBar "Subir receta"
+├── Preview imagen/PDF + botón cambiar
+├── Campos: tipo (common/retained/special), médico, paciente, fecha
+└── CTA "Enviar para validación" (brandTeal)
+
+MyPrescriptionsPage:
+├── Filtros: Pendiente | Aprobada | Rechazada | Expirada
+└── Cards con status color (warning/success/error/mutedGray)
+```
+
+### Pharmacist — Panel (`pharmacist_dashboard_page.dart`)
+
+```
+AppBar "Panel farmacéutico"
+├── Cards métricas grid 2×2: Pendientes, Validadas hoy, Rechazadas, TTL vencidas
+├── Acceso rápido "Pendientes"
+└── Últimas validaciones (lista)
+```
+
+### Pharmacist — Pendientes (`pending_validations_page.dart`)
+
+```
+Lista de recetas pendientes:
+├── Card por receta: imagen thumbnail + paciente + timer TTL
+└── Tap → ValidationDetailPage
+```
+
+### Pharmacist — Detalle (`validation_detail_page.dart`)
+
+```
+AppBar receta #ID
+├── Viewer imagen/PDF
+├── Datos: paciente, médico, productos Rx del pedido
+└── CTAs: "Aprobar" (statusSuccess) | "Rechazar" (statusError)
+   Modal rechazo con motivo (requerido).
+```
+
+### Commerce — Dashboard (`commerce_dashboard_page.dart`)
+
+```
+Header con nombre farmacia + pharmacist_in_charge
+├── Cards métricas: órdenes hoy, ingresos, productos Rx activos, lotes por vencer
+├── Lista últimas órdenes (con badge si requires_prescription)
+└── Alertas: stock bajo, recetas pendientes
+```
+
+### Admin — Dashboard (`admin_dashboard_page.dart`)
+
+```
+AppBar "Panel Admin"
+├── Cards métricas grid cols responsivas (childAspectRatio ≥0.68 con FittedBox)
+├── Gráficos: órdenes, revenue, delivery activos
+└── Banner "Salud del sistema" (gradient brandTeal/brandNavy)
+```
+
+## 5. Navegación por rol (bottom nav)
+
+Alineado con [`lib/app/main_router.dart`](../../../lib/app/main_router.dart).
+
+| Rol              | Nivel | Bottom Nav                                                        |
+| ---------------- | ----- | ----------------------------------------------------------------- |
+| Buyer (`users`)  | 0     | Productos · Carrito · Mis Pedidos · Farmacias · Config            |
+| Commerce         | 1     | Dashboard · Órdenes · Productos · Reportes · Config               |
+| Delivery         | 2     | Entregas · Historial · Rutas · Ganancias · Config                 |
+| Delivery Company | 3     | Dashboard · Agentes · Órdenes · Mapa · Config                     |
+| Admin            | 4     | Dashboard · Usuarios · Órdenes · Analytics · Config               |
+| Pharmacist       | 5     | Panel · Pendientes · Historial · Config                           |
+
+Color activo: `brandTeal`; inactivo: `brandMutedGray`; fondo: `brandNavy` (dark) / `brandSurfaceLight` (light).
 
 ## 6. Estados de UI
 
-Todas las pantallas deben manejar estos estados:
+Toda pantalla con datos debe manejar:
 
-1. **Loading:** Shimmer en imagen, skeleton en cards
-2. **Vacío:** Ilustración amigable + mensaje + CTA
-3. **Error:** Texto rojo debajo del componente afectado
-4. **Éxito:** Texto verde o SnackBar
-5. **Deshabilitado:** Botón gris + texto "No disponible"
+1. **Loading:** Shimmer / skeleton, nunca spinner a pantalla completa salvo transiciones.
+2. **Vacío:** Ilustración + mensaje + CTA (si aplica).
+3. **Error:** Texto `statusError` debajo del componente afectado.
+4. **Éxito:** `statusSuccess` o `SnackBar` con fondo `brandTeal`.
+5. **Deshabilitado:** Botón `brandMutedGray` + texto "No disponible".
 
-## 7. Cross-references
+## 7. Reglas farmacéuticas en UI
 
-- **Onboarding por rol:** `zonix-onboarding` § 1 (flujos de registro)
-- **Checkout layout:** `zonix-payments` § 5 (campos financieros en UI)
-- **Estados de orden en UI:** `zonix-order-lifecycle` § 1
+| Regla | UI esperada |
+| ----- | ----------- |
+| `product.requiresPrescription` | Badge "Receta" teal deep en card y detalle |
+| `product.controlledSubstance` | Badge rojo "Controlado" + sugerir pickup en detalle |
+| `product.coldChain` | Badge info "Cadena de frío" + advertencia en checkout |
+| `cartService.requiresPrescription` | Banner en cart_page y checkout_page; bloquear "Pagar" si el pedido no tiene receta aprobada |
+| `cartService.coldChainRequired` | Advertencia en checkout + restringir modo delivery sin equipo |
+| `order.status == 'pending_prescription_validation'` | Timeline ampliado en detalle de orden + empty "Esperando validación del farmacéutico" |
+| `prescription.status` | `pending_validation` (warning), `approved` (success), `rejected` (error), `expired` (muted) |
+
+## 8. Reglas de tokens (obligatorias)
+
+1. **Prohibido** `Colors.<name>` en `lib/features/screens/**` y `lib/features/widgets/**` (excepto `Colors.transparent`, `Colors.white*`, `Colors.black*` que ya están expuestos como `AppColors.white` / `AppColors.black*`).
+2. **Prohibido** `Color(0xAARRGGBB)` literal fuera de `app_colors.dart` y `app_theme.dart`.
+3. Usar siempre:
+   - `AppColors.brand*` (tokens Pharma).
+   - `AppColors.scaffoldBg(context)` / `cardBg(context)` / `primaryText(context)` / `secondaryText(context)` (helpers light/dark).
+   - `Theme.of(context).colorScheme.<role>` cuando el widget lo admita.
+4. **Migración** de aliases legacy: al tocar un archivo, sustituir `AppColors.blue` → `brandTeal`, `orange` → `brandCtaAccent`, `red` → `statusError`, `green` → `statusSuccess`, `yellow/amber` → `statusWarning` o `brandCtaAccent` según contexto.
+5. **Copy**: nunca "restaurante/cocina/cuisine/hamburguesa/pizza/eats" en UI. Usar "farmacia", "especialidad", "medicamento", "receta".
+
+## 9. Cross-references
+
+- **Brand canónica:** `docs/BRAND_ZONIX_PHARMA.md` (backend repo).
+- **Onboarding por rol (incluye pharmacist):** `zonix-onboarding`.
+- **Checkout / pagos:** `zonix-payments`.
+- **Estados de orden (incluye `pending_prescription_validation`):** `zonix-order-lifecycle`.
+- **Eventos en tiempo real:** `zonix-realtime-events`.

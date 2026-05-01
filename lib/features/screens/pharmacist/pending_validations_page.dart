@@ -68,9 +68,9 @@ class _PendingValidationsPageState extends State<PendingValidationsPage> {
       _pusherSub?.cancel();
       _pusherSub = PusherService.instance.eventStream.listen((event) {
         if (!mounted) return;
-        final name = (event['canonicalEventName'] ?? event['eventName'])
-                ?.toString() ??
-            '';
+        final name =
+            (event['canonicalEventName'] ?? event['eventName'])?.toString() ??
+                '';
         if (!name.contains('PrescriptionUploaded')) return;
         final ch = event['channelName']?.toString() ?? '';
         for (final id in _commerceIds) {

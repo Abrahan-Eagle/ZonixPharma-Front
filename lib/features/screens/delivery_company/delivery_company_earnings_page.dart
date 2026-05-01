@@ -9,10 +9,12 @@ class DeliveryCompanyEarningsPage extends StatefulWidget {
   const DeliveryCompanyEarningsPage({super.key});
 
   @override
-  State<DeliveryCompanyEarningsPage> createState() => _DeliveryCompanyEarningsPageState();
+  State<DeliveryCompanyEarningsPage> createState() =>
+      _DeliveryCompanyEarningsPageState();
 }
 
-class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPage> {
+class _DeliveryCompanyEarningsPageState
+    extends State<DeliveryCompanyEarningsPage> {
   String _selectedPeriod = 'Esta semana';
 
   @override
@@ -37,7 +39,8 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
             );
           }
           if (service.earningsError != null && service.earningsData.isEmpty) {
-            return _buildError(service.earningsError!, () => service.loadEarnings());
+            return _buildError(
+                service.earningsError!, () => service.loadEarnings());
           }
 
           final data = service.earningsData;
@@ -45,7 +48,9 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
           final weekEarnings = _num(data['week_earnings']);
           final monthEarnings = _num(data['month_earnings']);
           final totalEarnings = _num(data['total_earnings']);
-          final breakdown = (data['agents_breakdown'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+          final breakdown = (data['agents_breakdown'] as List?)
+                  ?.cast<Map<String, dynamic>>() ??
+              [];
 
           double highlighted;
           switch (_selectedPeriod) {
@@ -73,7 +78,8 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
                   const SizedBox(height: 16),
                   _buildMainEarnings(highlighted),
                   const SizedBox(height: 16),
-                  _buildSummaryRow(todayEarnings, weekEarnings, monthEarnings, totalEarnings),
+                  _buildSummaryRow(todayEarnings, weekEarnings, monthEarnings,
+                      totalEarnings),
                   const SizedBox(height: 20),
                   _buildSectionTitle('Desglose por agente'),
                   const SizedBox(height: 12),
@@ -102,7 +108,7 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
           selected: selected,
           selectedColor: AppColors.orange.withValues(alpha: 0.2),
           labelStyle: TextStyle(
-            color: selected ? AppColors.orange : cs.onSurfaceVariant,
+            color: selected ? AppColors.brandCtaAccent : cs.onSurfaceVariant,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
           ),
           onSelected: (_) => setState(() => _selectedPeriod = p),
@@ -116,32 +122,38 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: [AppColors.orange, AppColors.orangeCoral]),
+        gradient: const LinearGradient(
+            colors: [AppColors.brandCtaAccent, AppColors.orangeCoral]),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         children: [
-          Text(_selectedPeriod, style: const TextStyle(color: AppColors.white70, fontSize: 14)),
+          Text(_selectedPeriod,
+              style: const TextStyle(color: AppColors.white70, fontSize: 14)),
           const SizedBox(height: 6),
           Text(
             '\$${amount.toStringAsFixed(2)}',
-            style: const TextStyle(color: AppColors.white, fontSize: 32, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: AppColors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryRow(double today, double week, double month, double total) {
+  Widget _buildSummaryRow(
+      double today, double week, double month, double total) {
     return Row(
       children: [
-        _smallCard('Hoy', today, AppColors.green),
+        _smallCard('Hoy', today, AppColors.statusSuccess),
         const SizedBox(width: 6),
-        _smallCard('Semana', week, AppColors.blue),
+        _smallCard('Semana', week, AppColors.brandTeal),
         const SizedBox(width: 6),
-        _smallCard('Mes', month, AppColors.purple),
+        _smallCard('Mes', month, AppColors.brandTealDeep),
         const SizedBox(width: 6),
-        _smallCard('Total', total, AppColors.orange),
+        _smallCard('Total', total, AppColors.brandCtaAccent),
       ],
     );
   }
@@ -158,9 +170,13 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
         ),
         child: Column(
           children: [
-            Text(label, style: TextStyle(fontSize: 10, color: AppColors.secondaryText(context))),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 10, color: AppColors.secondaryText(context))),
             const SizedBox(height: 2),
-            Text('\$${value.toStringAsFixed(0)}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
+            Text('\$${value.toStringAsFixed(0)}',
+                style: TextStyle(
+                    fontSize: 13, fontWeight: FontWeight.bold, color: color)),
           ],
         ),
       ),
@@ -186,7 +202,8 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
           CircleAvatar(
             radius: 18,
             backgroundColor: AppColors.blue.withValues(alpha: 0.15),
-            child: const Icon(Icons.person, color: AppColors.blue, size: 18),
+            child:
+                const Icon(Icons.person, color: AppColors.brandTeal, size: 18),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -194,13 +211,18 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text('$deliveries entregas', style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context))),
+                Text('$deliveries entregas',
+                    style: TextStyle(
+                        fontSize: 12, color: AppColors.secondaryText(context))),
               ],
             ),
           ),
           Text(
             '\$${earnings.toStringAsFixed(2)}',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.green),
+            style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: AppColors.statusSuccess),
           ),
         ],
       ),
@@ -208,14 +230,19 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText(context)));
+    return Text(title,
+        style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryText(context)));
   }
 
   Widget _buildEmpty() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 32),
       child: Center(
-        child: Text('Sin datos de agentes', style: TextStyle(color: AppColors.secondaryText(context))),
+        child: Text('Sin datos de agentes',
+            style: TextStyle(color: AppColors.secondaryText(context))),
       ),
     );
   }
@@ -227,11 +254,15 @@ class _DeliveryCompanyEarningsPageState extends State<DeliveryCompanyEarningsPag
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(msg, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            ElevatedButton.icon(onPressed: retry, icon: const Icon(Icons.refresh), label: const Text('Reintentar')),
+            ElevatedButton.icon(
+                onPressed: retry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar')),
           ],
         ),
       ),

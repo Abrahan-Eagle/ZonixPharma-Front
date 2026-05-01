@@ -63,8 +63,18 @@ class _CommercePaymentMethodFormPageState
   String _documentPrefix = 'V';
   bool _loadingPhonesDocs = false;
 
-  static const List<String> _walletPlatforms = ['PayPal', 'Zelle', 'Binance Pay', 'Otro'];
-  static const List<String> _cardBrands = ['Visa', 'Mastercard', 'American Express', 'Otro'];
+  static const List<String> _walletPlatforms = [
+    'PayPal',
+    'Zelle',
+    'Binance Pay',
+    'Otro'
+  ];
+  static const List<String> _cardBrands = [
+    'Visa',
+    'Mastercard',
+    'American Express',
+    'Otro'
+  ];
 
   static String _formatDocDisplay(Document doc) {
     if (doc.type == 'ci' && doc.numberCi != null && doc.numberCi!.isNotEmpty) {
@@ -117,27 +127,37 @@ class _CommercePaymentMethodFormPageState
       if (mounted) {
         setState(() {
           _phones = phones;
-          _documents = documents.where((d) => d.type == 'ci' || d.type == 'rif').toList();
+          _documents = documents
+              .where((d) => d.type == 'ci' || d.type == 'rif')
+              .toList();
           _loadingPhonesDocs = false;
           if (_phones.isNotEmpty && _phoneController.text.trim().isNotEmpty) {
-            final current = _phoneController.text.trim().replaceAll(RegExp(r'\D'), '');
+            final current =
+                _phoneController.text.trim().replaceAll(RegExp(r'\D'), '');
             final matchList = _phones.where((p) {
-              final full = '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
+              final full =
+                  '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
               return full == current || full.endsWith(p.number);
             }).toList();
             if (matchList.isNotEmpty) {
               final p = matchList.first;
-              _selectedPhoneValue = '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
+              _selectedPhoneValue =
+                  '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
             }
           }
-          if (_documents.isEmpty || _documentController.text.trim().isNotEmpty) {
+          if (_documents.isEmpty ||
+              _documentController.text.trim().isNotEmpty) {
             _useManualDocument = true;
             final t = _documentController.text.trim();
             if (t.startsWith('J')) _documentPrefix = 'J';
           } else {
             final current = _documentController.text.trim();
-            final docList = _documents.where((d) => _formatOwnerIdFromDoc(d) == current).toList();
-            if (docList.isNotEmpty) _selectedDocumentOwnerId = _formatOwnerIdFromDoc(docList.first);
+            final docList = _documents
+                .where((d) => _formatOwnerIdFromDoc(d) == current)
+                .toList();
+            if (docList.isNotEmpty) {
+              _selectedDocumentOwnerId = _formatOwnerIdFromDoc(docList.first);
+            }
           }
         });
       }
@@ -173,7 +193,10 @@ class _CommercePaymentMethodFormPageState
     _last4Controller.text = (m?['last4'] ?? ref['last4'] ?? '') as String;
     _expMonthController.text = m?['exp_month']?.toString() ?? '';
     _expYearController.text = m?['exp_year']?.toString() ?? '';
-    _cardholderController.text = (m?['cardholder_name'] ?? ref['holder'] ?? m?['owner_name'] ?? '') as String;
+    _cardholderController.text = (m?['cardholder_name'] ??
+        ref['holder'] ??
+        m?['owner_name'] ??
+        '') as String;
     _brandController.text = (m?['brand'] ?? 'Visa') as String;
     if (m?['bank_id'] != null) _selectedBankId = safeInt(m!['bank_id']);
     _loadBanks();
@@ -183,14 +206,17 @@ class _CommercePaymentMethodFormPageState
   Future<void> _loadBanks() async {
     try {
       final url = Uri.parse('${AppConfig.apiUrl}/api/banks');
-      final response = await http.get(url, headers: await AuthHelper.getAuthHeaders());
+      final response =
+          await http.get(url, headers: await AuthHelper.getAuthHeaders());
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true && data['data'] is List) {
           if (mounted) {
             setState(() {
               _banks = List<Map<String, dynamic>>.from(data['data'] as List);
-              if (_selectedBankId == null && _banks.isNotEmpty && widget.method?['bank_id'] != null) {
+              if (_selectedBankId == null &&
+                  _banks.isNotEmpty &&
+                  widget.method?['bank_id'] != null) {
                 _selectedBankId = safeInt(widget.method!['bank_id']);
               }
             });
@@ -225,16 +251,20 @@ class _CommercePaymentMethodFormPageState
       final phoneVal = _selectedPhoneValue ?? _phoneController.text.trim();
       if (phoneVal.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ingresa o selecciona el teléfono de pago móvil'), backgroundColor: AppColors.red),
+          const SnackBar(
+              content: Text('Ingresa o selecciona el teléfono de pago móvil'),
+              backgroundColor: AppColors.statusError),
         );
         return;
       }
-      final docVal = _selectedDocumentOwnerId ?? _documentController.text.trim();
+      final docVal =
+          _selectedDocumentOwnerId ?? _documentController.text.trim();
       if (docVal.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Selecciona o ingresa Cédula/RIF (Ajustes > Documentos si aún no tienes)'),
-            backgroundColor: AppColors.red,
+            content: Text(
+                'Selecciona o ingresa Cédula/RIF (Ajustes > Documentos si aún no tienes)'),
+            backgroundColor: AppColors.statusError,
             duration: Duration(seconds: 4),
           ),
         );
@@ -245,7 +275,8 @@ class _CommercePaymentMethodFormPageState
     setState(() => _saving = true);
 
     try {
-      final currency = _type == 'mobile_payment' ? 'VES' : _currencyController.text.trim();
+      final currency =
+          _type == 'mobile_payment' ? 'VES' : _currencyController.text.trim();
       final referenceInfo = <String, dynamic>{
         'alias': _aliasController.text.trim(),
         'notes': _notesController.text.trim(),
@@ -261,7 +292,8 @@ class _CommercePaymentMethodFormPageState
             : _emailWalletController.text.trim();
       }
       if (_type == 'card') {
-        referenceInfo['exp'] = '${_expMonthController.text.padLeft(2, '0')}/${_expYearController.text}';
+        referenceInfo['exp'] =
+            '${_expMonthController.text.padLeft(2, '0')}/${_expYearController.text}';
         referenceInfo['holder'] = _cardholderController.text.trim();
       }
 
@@ -272,7 +304,8 @@ class _CommercePaymentMethodFormPageState
         'owner_name': _holderNameController.text.trim().isEmpty
             ? null
             : _holderNameController.text.trim(),
-        'owner_id': _formatOwnerIdForPayload(_selectedDocumentOwnerId ?? _documentController.text.trim()),
+        'owner_id': _formatOwnerIdForPayload(
+            _selectedDocumentOwnerId ?? _documentController.text.trim()),
         'is_default': _isDefault,
         'is_active': _isActive,
         'reference_info': referenceInfo,
@@ -282,7 +315,8 @@ class _CommercePaymentMethodFormPageState
 
       if (_type == 'mobile_payment') {
         final phoneVal = _selectedPhoneValue ?? _phoneController.text.trim();
-        payload['phone'] = phoneVal.isEmpty ? null : phoneVal.replaceAll(RegExp(r'\D'), '');
+        payload['phone'] =
+            phoneVal.isEmpty ? null : phoneVal.replaceAll(RegExp(r'\D'), '');
       }
 
       if (_type == 'bank_transfer') {
@@ -292,8 +326,12 @@ class _CommercePaymentMethodFormPageState
       }
 
       if (_type == 'card') {
-        payload['brand'] = _brandController.text.trim().isEmpty ? null : _brandController.text.trim();
-        payload['last4'] = _last4Controller.text.trim().isEmpty ? null : _last4Controller.text.trim();
+        payload['brand'] = _brandController.text.trim().isEmpty
+            ? null
+            : _brandController.text.trim();
+        payload['last4'] = _last4Controller.text.trim().isEmpty
+            ? null
+            : _last4Controller.text.trim();
         final month = int.tryParse(_expMonthController.text.trim());
         final year = int.tryParse(_expYearController.text.trim());
         if (month != null) payload['exp_month'] = month;
@@ -302,7 +340,9 @@ class _CommercePaymentMethodFormPageState
             ? null
             : _cardholderController.text.trim();
         payload['owner_name'] = _cardholderController.text.trim().isEmpty
-            ? _holderNameController.text.trim().isEmpty ? null : _holderNameController.text.trim()
+            ? _holderNameController.text.trim().isEmpty
+                ? null
+                : _holderNameController.text.trim()
             : _cardholderController.text.trim();
       }
 
@@ -326,7 +366,7 @@ class _CommercePaymentMethodFormPageState
             content: Text(
               e.toString().replaceFirst('Exception: ', ''),
             ),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -343,7 +383,8 @@ class _CommercePaymentMethodFormPageState
     final cardBg = AppColors.cardBg(context);
     final primaryText = AppColors.primaryText(context);
     final secondaryText = AppColors.secondaryText(context);
-    final borderColor = isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
+    final borderColor =
+        isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
     final inputBg = isDark ? AppColors.grayDark : AppColors.stitchBgCard;
 
     return Scaffold(
@@ -387,13 +428,19 @@ class _CommercePaymentMethodFormPageState
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: borderColor),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                   items: const [
                     DropdownMenuItem(value: 'card', child: Text('Tarjeta')),
-                    DropdownMenuItem(value: 'mobile_payment', child: Text('Pago móvil')),
-                    DropdownMenuItem(value: 'bank_transfer', child: Text('Transferencia bancaria')),
-                    DropdownMenuItem(value: 'digital_wallet', child: Text('Billetera digital')),
+                    DropdownMenuItem(
+                        value: 'mobile_payment', child: Text('Pago móvil')),
+                    DropdownMenuItem(
+                        value: 'bank_transfer',
+                        child: Text('Transferencia bancaria')),
+                    DropdownMenuItem(
+                        value: 'digital_wallet',
+                        child: Text('Billetera digital')),
                     DropdownMenuItem(value: 'other', child: Text('Otro')),
                   ],
                   onChanged: (v) {
@@ -402,7 +449,8 @@ class _CommercePaymentMethodFormPageState
                   },
                 ),
               ),
-            if (!isEdit || _type != 'mobile_payment') const SizedBox(height: 12),
+            if (!isEdit || _type != 'mobile_payment')
+              const SizedBox(height: 12),
             _card(
               context,
               cardBg,
@@ -413,7 +461,8 @@ class _CommercePaymentMethodFormPageState
               'Alias (nombre amigable) *',
               TextFormField(
                 controller: _aliasController,
-                decoration: _inputDecoration(inputBg, borderColor, 'Ej. Mi cuenta personal'),
+                decoration: _inputDecoration(
+                    inputBg, borderColor, 'Ej. Mi cuenta personal'),
                 validator: (v) =>
                     (v == null || v.trim().isEmpty) ? 'Ingresa un alias' : null,
               ),
@@ -429,7 +478,8 @@ class _CommercePaymentMethodFormPageState
               'Titular (nombre)',
               TextFormField(
                 controller: _holderNameController,
-                decoration: _inputDecoration(inputBg, borderColor, 'Nombre del titular'),
+                decoration: _inputDecoration(
+                    inputBg, borderColor, 'Nombre del titular'),
               ),
             ),
             const SizedBox(height: 12),
@@ -446,14 +496,16 @@ class _CommercePaymentMethodFormPageState
                 children: [
                   Row(
                     children: [
-                      Text('Tipo:', style: TextStyle(fontSize: 12, color: secondaryText)),
+                      Text('Tipo:',
+                          style: TextStyle(fontSize: 12, color: secondaryText)),
                       const SizedBox(width: 8),
                       DropdownButton<String>(
                         value: _documentPrefix,
                         isExpanded: false,
                         underline: const SizedBox(),
                         items: const [
-                          DropdownMenuItem(value: 'V', child: Text('V (Cédula)')),
+                          DropdownMenuItem(
+                              value: 'V', child: Text('V (Cédula)')),
                           DropdownMenuItem(value: 'J', child: Text('J (RIF)')),
                         ],
                         onChanged: (v) {
@@ -473,7 +525,8 @@ class _CommercePaymentMethodFormPageState
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: borderColor),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                       ),
                       hint: const Text('Seleccionar documento'),
                       items: [
@@ -481,7 +534,8 @@ class _CommercePaymentMethodFormPageState
                           final id = _formatOwnerIdFromDoc(d);
                           return DropdownMenuItem<String>(
                             value: id,
-                            child: Text(_formatDocDisplay(d), overflow: TextOverflow.ellipsis),
+                            child: Text(_formatDocDisplay(d),
+                                overflow: TextOverflow.ellipsis),
                           );
                         }),
                         const DropdownMenuItem<String>(
@@ -508,7 +562,9 @@ class _CommercePaymentMethodFormPageState
                       decoration: _inputDecoration(
                         inputBg,
                         borderColor,
-                        _documentPrefix == 'V' ? 'V-19.217.553' : 'J-19.217.553-0',
+                        _documentPrefix == 'V'
+                            ? 'V-19.217.553'
+                            : 'J-19.217.553-0',
                       ),
                     ),
                   if (_documents.isNotEmpty && _useManualDocument)
@@ -517,8 +573,11 @@ class _CommercePaymentMethodFormPageState
                       child: TextButton.icon(
                         onPressed: () => setState(() {
                           _useManualDocument = false;
-                          _selectedDocumentOwnerId = _documents.isNotEmpty ? _formatOwnerIdFromDoc(_documents.first) : null;
-                          _documentController.text = _selectedDocumentOwnerId ?? '';
+                          _selectedDocumentOwnerId = _documents.isNotEmpty
+                              ? _formatOwnerIdFromDoc(_documents.first)
+                              : null;
+                          _documentController.text =
+                              _selectedDocumentOwnerId ?? '';
                         }),
                         icon: const Icon(Icons.list, size: 18),
                         label: const Text('Elegir de mis documentos'),
@@ -542,14 +601,21 @@ class _CommercePaymentMethodFormPageState
                     // Evitar duplicados por id y valor solo si existe en items (evita assert del Dropdown)
                     final seenIds = <int>{};
                     final bankItems = _banks.where((b) {
-                      final id = b['id'] is int ? b['id'] as int : (b['id'] is num ? (b['id'] as num).toInt() : null);
+                      final id = b['id'] is int
+                          ? b['id'] as int
+                          : (b['id'] is num ? (b['id'] as num).toInt() : null);
                       if (id == null) return false;
                       if (seenIds.contains(id)) return false;
                       seenIds.add(id);
                       return true;
                     }).toList();
-                    final validBankIds = bankItems.map((b) => b['id'] is int ? b['id'] as int : (b['id'] as num).toInt()).toSet();
-                    final effectiveBankValue = _selectedBankId != null && validBankIds.contains(_selectedBankId)
+                    final validBankIds = bankItems
+                        .map((b) => b['id'] is int
+                            ? b['id'] as int
+                            : (b['id'] as num).toInt())
+                        .toSet();
+                    final effectiveBankValue = _selectedBankId != null &&
+                            validBankIds.contains(_selectedBankId)
                         ? _selectedBankId
                         : null;
                     return DropdownButtonFormField<int?>(
@@ -562,16 +628,21 @@ class _CommercePaymentMethodFormPageState
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide(color: borderColor),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 14),
                       ),
                       items: [
-                        const DropdownMenuItem<int?>(value: null, child: Text('Seleccionar banco')),
+                        const DropdownMenuItem<int?>(
+                            value: null, child: Text('Seleccionar banco')),
                         ...bankItems.map((b) {
-                          final id = b['id'] is int ? b['id'] as int : (b['id'] as num).toInt();
+                          final id = b['id'] is int
+                              ? b['id'] as int
+                              : (b['id'] as num).toInt();
                           final name = (b['name'] ?? '') as String;
                           return DropdownMenuItem<int?>(
                             value: id,
-                            child: Text(name, overflow: TextOverflow.ellipsis, maxLines: 1),
+                            child: Text(name,
+                                overflow: TextOverflow.ellipsis, maxLines: 1),
                           );
                         }),
                       ],
@@ -592,15 +663,22 @@ class _CommercePaymentMethodFormPageState
                 inputBg,
                 'Teléfono de pago móvil *',
                 _loadingPhonesDocs
-                    ? const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()))
+                    ? const Center(
+                        child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: CircularProgressIndicator()))
                     : _phones.isNotEmpty
                         ? Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               DropdownButtonFormField<String>(
-                                initialValue: _selectedPhoneValue == null && _phoneController.text.trim().isNotEmpty
+                                initialValue: _selectedPhoneValue == null &&
+                                        _phoneController.text.trim().isNotEmpty
                                     ? '__manual__'
-                                    : (_selectedPhoneValue != null && _selectedPhoneValue!.isNotEmpty ? _selectedPhoneValue : null),
+                                    : (_selectedPhoneValue != null &&
+                                            _selectedPhoneValue!.isNotEmpty
+                                        ? _selectedPhoneValue
+                                        : null),
                                 isExpanded: true,
                                 decoration: InputDecoration(
                                   filled: true,
@@ -609,15 +687,18 @@ class _CommercePaymentMethodFormPageState
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: BorderSide(color: borderColor),
                                   ),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 14),
                                 ),
                                 hint: const Text('Seleccionar teléfono'),
                                 items: [
                                   ..._phones.map((p) {
-                                    final full = '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
+                                    final full =
+                                        '${p.operatorCodeName.replaceAll(RegExp(r'\D'), '')}${p.number}';
                                     return DropdownMenuItem<String>(
                                       value: full,
-                                      child: Text(p.fullNumberDisplay, overflow: TextOverflow.ellipsis),
+                                      child: Text(p.fullNumberDisplay,
+                                          overflow: TextOverflow.ellipsis),
                                     );
                                   }),
                                   const DropdownMenuItem<String>(
@@ -627,18 +708,26 @@ class _CommercePaymentMethodFormPageState
                                 ],
                                 onChanged: (v) {
                                   setState(() {
-                                    _selectedPhoneValue = (v == null || v == '__manual__') ? null : v;
-                                    if (v != '__manual__' && v != null) _phoneController.text = v;
+                                    _selectedPhoneValue =
+                                        (v == null || v == '__manual__')
+                                            ? null
+                                            : v;
+                                    if (v != '__manual__' && v != null) {
+                                      _phoneController.text = v;
+                                    }
                                   });
                                 },
                               ),
-                              if (_selectedPhoneValue == null && _phones.isNotEmpty && _phoneController.text.trim().isNotEmpty)
+                              if (_selectedPhoneValue == null &&
+                                  _phones.isNotEmpty &&
+                                  _phoneController.text.trim().isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8),
                                   child: TextFormField(
                                     controller: _phoneController,
                                     keyboardType: TextInputType.phone,
-                                    decoration: _inputDecoration(inputBg, borderColor, 'Ej: 04121234567'),
+                                    decoration: _inputDecoration(inputBg,
+                                        borderColor, 'Ej: 04121234567'),
                                   ),
                                 ),
                             ],
@@ -646,10 +735,13 @@ class _CommercePaymentMethodFormPageState
                         : TextFormField(
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
-                            decoration: _inputDecoration(inputBg, borderColor, 'Ej: 04121234567'),
+                            decoration: _inputDecoration(
+                                inputBg, borderColor, 'Ej: 04121234567'),
                             validator: (v) {
                               if (_type != 'mobile_payment') return null;
-                              if (v == null || v.trim().isEmpty) return 'Ingresa el teléfono de pago móvil';
+                              if (v == null || v.trim().isEmpty) {
+                                return 'Ingresa el teléfono de pago móvil';
+                              }
                               return null;
                             },
                           ),
@@ -666,9 +758,10 @@ class _CommercePaymentMethodFormPageState
                 inputBg,
                 'Marca',
                 DropdownButtonFormField<String>(
-                  initialValue: _cardBrands.contains(_brandController.text.trim())
-                      ? _brandController.text.trim()
-                      : _cardBrands.first,
+                  initialValue:
+                      _cardBrands.contains(_brandController.text.trim())
+                          ? _brandController.text.trim()
+                          : _cardBrands.first,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: inputBg,
@@ -676,7 +769,8 @@ class _CommercePaymentMethodFormPageState
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: borderColor),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                   items: _cardBrands
                       .map((b) => DropdownMenuItem(value: b, child: Text(b)))
@@ -705,7 +799,9 @@ class _CommercePaymentMethodFormPageState
                   decoration: _inputDecoration(inputBg, borderColor, '4242'),
                   validator: (v) {
                     if (_type != 'card') return null;
-                    if (v == null || v.trim().length != 4) return 'Ingresa exactamente 4 dígitos';
+                    if (v == null || v.trim().length != 4) {
+                      return 'Ingresa exactamente 4 dígitos';
+                    }
                     return null;
                   },
                 ),
@@ -726,11 +822,14 @@ class _CommercePaymentMethodFormPageState
                         controller: _expMonthController,
                         keyboardType: TextInputType.number,
                         maxLength: 2,
-                        decoration: _inputDecoration(inputBg, borderColor, '12'),
+                        decoration:
+                            _inputDecoration(inputBg, borderColor, '12'),
                         validator: (v) {
                           if (_type != 'card') return null;
                           final n = int.tryParse(v ?? '');
-                          if (n == null || n < 1 || n > 12) return 'Mes inválido';
+                          if (n == null || n < 1 || n > 12) {
+                            return 'Mes inválido';
+                          }
                           return null;
                         },
                       ),
@@ -750,11 +849,14 @@ class _CommercePaymentMethodFormPageState
                         controller: _expYearController,
                         keyboardType: TextInputType.number,
                         maxLength: 4,
-                        decoration: _inputDecoration(inputBg, borderColor, '${DateTime.now().year + 2}'),
+                        decoration: _inputDecoration(
+                            inputBg, borderColor, '${DateTime.now().year + 2}'),
                         validator: (v) {
                           if (_type != 'card') return null;
                           final n = int.tryParse(v ?? '');
-                          if (n == null || n < DateTime.now().year) return 'Año inválido';
+                          if (n == null || n < DateTime.now().year) {
+                            return 'Año inválido';
+                          }
                           return null;
                         },
                       ),
@@ -774,10 +876,13 @@ class _CommercePaymentMethodFormPageState
                 TextFormField(
                   controller: _cardholderController,
                   textCapitalization: TextCapitalization.characters,
-                  decoration: _inputDecoration(inputBg, borderColor, 'JUAN PÉREZ'),
+                  decoration:
+                      _inputDecoration(inputBg, borderColor, 'JUAN PÉREZ'),
                   validator: (v) {
                     if (_type != 'card') return null;
-                    if (v == null || v.trim().isEmpty) return 'Ingresa el nombre del titular';
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Ingresa el nombre del titular';
+                    }
                     return null;
                   },
                 ),
@@ -796,10 +901,13 @@ class _CommercePaymentMethodFormPageState
                 TextFormField(
                   controller: _accountController,
                   keyboardType: TextInputType.number,
-                  decoration: _inputDecoration(inputBg, borderColor, 'Ej: 01050000000000001234'),
+                  decoration: _inputDecoration(
+                      inputBg, borderColor, 'Ej: 01050000000000001234'),
                   validator: (v) {
                     if (_type != 'bank_transfer') return null;
-                    if (v == null || v.trim().isEmpty) return 'Ingresa el número de cuenta';
+                    if (v == null || v.trim().isEmpty) {
+                      return 'Ingresa el número de cuenta';
+                    }
                     return null;
                   },
                 ),
@@ -818,7 +926,9 @@ class _CommercePaymentMethodFormPageState
                 DropdownButtonFormField<String>(
                   initialValue: () {
                     final t = _platformController.text.trim();
-                    return _walletPlatforms.contains(t) ? t : _walletPlatforms.first;
+                    return _walletPlatforms.contains(t)
+                        ? t
+                        : _walletPlatforms.first;
                   }(),
                   decoration: InputDecoration(
                     filled: true,
@@ -827,7 +937,8 @@ class _CommercePaymentMethodFormPageState
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: borderColor),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                   items: _walletPlatforms
                       .map((p) => DropdownMenuItem(value: p, child: Text(p)))
@@ -852,7 +963,8 @@ class _CommercePaymentMethodFormPageState
                 TextFormField(
                   controller: _emailWalletController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: _inputDecoration(inputBg, borderColor, 'usuario@ejemplo.com'),
+                  decoration: _inputDecoration(
+                      inputBg, borderColor, 'usuario@ejemplo.com'),
                 ),
               ),
             ],
@@ -867,13 +979,15 @@ class _CommercePaymentMethodFormPageState
               'Moneda principal (Bs / ref. USD)',
               _type == 'mobile_payment'
                   ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
                         color: inputBg,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: borderColor),
                       ),
-                      child: Text('Bs (VES)', style: TextStyle(fontSize: 16, color: primaryText)),
+                      child: Text('Bs (VES)',
+                          style: TextStyle(fontSize: 16, color: primaryText)),
                     )
                   : TextFormField(
                       controller: _currencyController,
@@ -891,7 +1005,8 @@ class _CommercePaymentMethodFormPageState
               'Notas / instrucciones para el cliente',
               TextFormField(
                 controller: _notesController,
-                decoration: _inputDecoration(inputBg, borderColor, 'Instrucciones opcionales...'),
+                decoration: _inputDecoration(
+                    inputBg, borderColor, 'Instrucciones opcionales...'),
                 maxLines: 2,
               ),
             ),
@@ -906,19 +1021,26 @@ class _CommercePaymentMethodFormPageState
               child: Column(
                 children: [
                   SwitchListTile(
-                    title: Text('Método activo', style: TextStyle(fontWeight: FontWeight.w600, color: primaryText)),
-                    subtitle: Text('Permitir pagos con este método', style: TextStyle(fontSize: 12, color: secondaryText)),
+                    title: Text('Método activo',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: primaryText)),
+                    subtitle: Text('Permitir pagos con este método',
+                        style: TextStyle(fontSize: 12, color: secondaryText)),
                     value: _isActive,
                     onChanged: (v) => setState(() => _isActive = v),
-                    activeThumbColor: AppColors.blue,
+                    activeThumbColor: AppColors.brandTeal,
                   ),
                   Divider(height: 1, color: borderColor),
                   SwitchListTile(
-                    title: Text('Predeterminado', style: TextStyle(fontWeight: FontWeight.w600, color: primaryText)),
-                    subtitle: Text('Usar para todos mis pedidos automáticamente', style: TextStyle(fontSize: 12, color: secondaryText)),
+                    title: Text('Predeterminado',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: primaryText)),
+                    subtitle: Text(
+                        'Usar para todos mis pedidos automáticamente',
+                        style: TextStyle(fontSize: 12, color: secondaryText)),
                     value: _isDefault,
                     onChanged: (v) => setState(() => _isDefault = v),
-                    activeThumbColor: AppColors.blue,
+                    activeThumbColor: AppColors.brandTeal,
                   ),
                 ],
               ),
@@ -933,14 +1055,16 @@ class _CommercePaymentMethodFormPageState
                     ? const SizedBox(
                         width: 22,
                         height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.blueDark),
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: AppColors.blueDark),
                       )
                     : const Icon(Icons.save, size: 22),
                 label: Text(_saving ? 'Guardando...' : 'Guardar método'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.yellow,
+                  backgroundColor: AppColors.statusWarning,
                   foregroundColor: AppColors.blueDark,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
@@ -951,7 +1075,8 @@ class _CommercePaymentMethodFormPageState
     );
   }
 
-  InputDecoration _inputDecoration(Color fillColor, Color borderColor, String hint) {
+  InputDecoration _inputDecoration(
+      Color fillColor, Color borderColor, String hint) {
     return InputDecoration(
       hintText: hint,
       filled: true,
@@ -966,7 +1091,7 @@ class _CommercePaymentMethodFormPageState
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.blue, width: 2),
+        borderSide: const BorderSide(color: AppColors.brandTeal, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );

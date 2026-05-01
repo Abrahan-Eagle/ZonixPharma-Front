@@ -55,20 +55,23 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
   @override
   void dispose() {
     _pusherSubscription?.cancel();
-    PusherService.instance.unsubscribeFromChannel('private-orders.${widget.orderId}');
+    PusherService.instance
+        .unsubscribeFromChannel('private-orders.${widget.orderId}');
     _textController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
   Future<void> _subscribeToPusher() async {
-    final ok = await PusherService.instance.subscribeToOrderChat(widget.orderId);
+    final ok =
+        await PusherService.instance.subscribeToOrderChat(widget.orderId);
 
     if (ok && mounted) {
       _pusherSubscription?.cancel();
       _pusherSubscription = PusherService.instance.eventStream.listen((event) {
         final eventName =
-            (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+            (event['canonicalEventName'] ?? event['eventName'])?.toString() ??
+                '';
         final channelName = event['channelName']?.toString() ?? '';
 
         if (channelName == 'private-orders.${widget.orderId}') {
@@ -198,8 +201,9 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
         _textController.text = text;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error al enviar: ${e.toString().replaceFirst('Exception: ', '')}'),
-            backgroundColor: AppColors.red,
+            content: Text(
+                'Error al enviar: ${e.toString().replaceFirst('Exception: ', '')}'),
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -208,7 +212,9 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
 
   Color _canvasBg(BuildContext context) {
     final dark = Theme.of(context).brightness == Brightness.dark;
-    return dark ? Theme.of(context).colorScheme.surface : AppColors.scaffoldBgLight;
+    return dark
+        ? Theme.of(context).colorScheme.surface
+        : AppColors.scaffoldBgLight;
   }
 
   @override
@@ -259,7 +265,7 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.blue,
+                    color: AppColors.brandTeal,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -278,7 +284,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
               width: 40,
               height: 40,
               color: AppColors.surfaceDarkLighter,
-              child: const Icon(Icons.storefront, color: AppColors.stitchSlate400, size: 22),
+              child: const Icon(Icons.storefront,
+                  color: AppColors.stitchSlate400, size: 22),
             ),
           ),
         ),
@@ -302,7 +309,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(
                 _error!,
@@ -351,7 +359,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.chat_bubble_outline, size: 72, color: muted.withValues(alpha: 0.85)),
+            Icon(Icons.chat_bubble_outline,
+                size: 72, color: muted.withValues(alpha: 0.85)),
             const SizedBox(height: 20),
             Text(
               'No hay mensajes. Escribe para contactar al comercio.',
@@ -402,7 +411,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
     if (time.length > 8 && time.contains('T')) {
       try {
         final dt = DateTime.parse(time);
-        time = '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
+        time =
+            '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}';
       } catch (_) {}
     }
 
@@ -435,7 +445,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
     return Align(
       alignment: isOwn ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
-        crossAxisAlignment: isOwn ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment:
+            isOwn ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           if (!isOwn && roleLabel.isNotEmpty)
             Padding(
@@ -455,7 +466,7 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             decoration: BoxDecoration(
-              color: isOwn ? AppColors.blue : incomingBg,
+              color: isOwn ? AppColors.brandTeal : incomingBg,
               borderRadius: borderRadius,
               boxShadow: [
                 BoxShadow(
@@ -495,7 +506,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                 ),
                 if (isOwn && read) ...[
                   const SizedBox(width: 4),
-                  const Icon(Icons.done_all, size: 14, color: AppColors.blue),
+                  const Icon(Icons.done_all,
+                      size: 14, color: AppColors.brandTeal),
                 ],
               ],
             ),
@@ -540,15 +552,17 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final glassTint = isDark
-        ? const Color(0xFF121C27).withValues(alpha: 0.82)
+        ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.82)
         : AppColors.white.withValues(alpha: 0.88);
-    final fillColor = isDark ? cs.surfaceContainerHigh : const Color(0xFFE8EDF0);
+    final fillColor =
+        isDark ? cs.surfaceContainerHigh : AppColors.brandSurfaceLight;
 
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          padding: EdgeInsets.fromLTRB(12, 12, 12, 12 + MediaQuery.paddingOf(context).bottom),
+          padding: EdgeInsets.fromLTRB(
+              12, 12, 12, 12 + MediaQuery.paddingOf(context).bottom),
           decoration: BoxDecoration(
             color: glassTint,
             border: Border(
@@ -562,7 +576,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                 onPressed: null,
                 style: IconButton.styleFrom(
                   foregroundColor: cs.onSurfaceVariant,
-                  disabledForegroundColor: cs.onSurfaceVariant.withValues(alpha: 0.5),
+                  disabledForegroundColor:
+                      cs.onSurfaceVariant.withValues(alpha: 0.5),
                 ),
                 icon: const Icon(Icons.add_circle_outline),
               ),
@@ -596,15 +611,17 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(999),
-                      borderSide: BorderSide(color: AppColors.blue.withValues(alpha: 0.35)),
+                      borderSide: BorderSide(
+                          color: AppColors.blue.withValues(alpha: 0.35)),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
                   ),
                 ),
               ),
               const SizedBox(width: 8),
               Material(
-                color: AppColors.blue,
+                color: AppColors.brandTeal,
                 elevation: 4,
                 shadowColor: AppColors.blue.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(999),
@@ -622,7 +639,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                               color: AppColors.white,
                             ),
                           )
-                        : const Icon(Icons.send, color: AppColors.white, size: 22),
+                        : const Icon(Icons.send,
+                            color: AppColors.white, size: 22),
                   ),
                 ),
               ),

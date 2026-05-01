@@ -140,7 +140,7 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
           selected: selected,
           selectedColor: AppColors.orange.withValues(alpha: 0.2),
           labelStyle: TextStyle(
-            color: selected ? AppColors.orange : muted,
+            color: selected ? AppColors.brandCtaAccent : muted,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
           ),
           onSelected: (_) {
@@ -163,20 +163,24 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
       children: [
         Row(
           children: [
-            _earningsCard(context, 'Hoy', todayEarnings, AppColors.green,
+            _earningsCard(
+                context, 'Hoy', todayEarnings, AppColors.statusSuccess,
                 highlighted: _selectedPeriod == 'Hoy'),
             const SizedBox(width: 10),
-            _earningsCard(context, 'Semana', weeklyEarnings, AppColors.blue,
+            _earningsCard(
+                context, 'Semana', weeklyEarnings, AppColors.brandTeal,
                 highlighted: _selectedPeriod == 'Esta semana'),
           ],
         ),
         const SizedBox(height: 10),
         Row(
           children: [
-            _earningsCard(context, 'Mes', monthlyEarnings, AppColors.purple,
+            _earningsCard(
+                context, 'Mes', monthlyEarnings, AppColors.brandTealDeep,
                 highlighted: _selectedPeriod == 'Este mes'),
             const SizedBox(width: 10),
-            _earningsCard(context, 'Total', totalEarnings, AppColors.orange),
+            _earningsCard(
+                context, 'Total', totalEarnings, AppColors.brandCtaAccent),
           ],
         ),
       ],
@@ -245,18 +249,22 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.delivery_dining, color: AppColors.blue, size: 22),
+                const Icon(Icons.delivery_dining,
+                    color: AppColors.brandTeal, size: 22),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '$deliveries',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Entregas',
-                      style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context)),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.secondaryText(context)),
                     ),
                   ],
                 ),
@@ -274,18 +282,22 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.timer_outlined, color: AppColors.orange, size: 22),
+                const Icon(Icons.timer_outlined,
+                    color: AppColors.brandCtaAccent, size: 22),
                 const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       '${avgTime.toStringAsFixed(0)} min',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       'Promedio',
-                      style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context)),
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.secondaryText(context)),
                     ),
                   ],
                 ),
@@ -297,7 +309,8 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
     );
   }
 
-  Widget _buildRecentFees(BuildContext context, List<double> fees, List<String> dates) {
+  Widget _buildRecentFees(
+      BuildContext context, List<double> fees, List<String> dates) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -341,7 +354,8 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
                     color: AppColors.green.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.receipt_long, color: AppColors.green, size: 20),
+                  child: const Icon(Icons.receipt_long,
+                      color: AppColors.statusSuccess, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -368,7 +382,7 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.green,
+                    color: AppColors.statusSuccess,
                   ),
                 ),
               ],
@@ -384,11 +398,13 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
       padding: const EdgeInsets.symmetric(vertical: 64),
       child: Column(
         children: [
-          Icon(Icons.account_balance_wallet_outlined, size: 64, color: AppColors.secondaryText(context)),
+          Icon(Icons.account_balance_wallet_outlined,
+              size: 64, color: AppColors.secondaryText(context)),
           const SizedBox(height: 16),
           Text(
             'Aún no tienes ganancias registradas',
-            style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context)),
+            style: TextStyle(
+                fontSize: 16, color: AppColors.secondaryText(context)),
           ),
         ],
       ),
@@ -402,7 +418,8 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(error, textAlign: TextAlign.center),
             const SizedBox(height: 16),

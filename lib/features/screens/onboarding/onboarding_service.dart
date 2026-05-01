@@ -25,12 +25,12 @@ class OnboardingService {
     String? role,
   }) async {
     final token = await _getToken();
-    
+
     if (token == null) {
       logger.e("Token no encontrado. No se puede completar el onboarding.");
       throw Exception("Token no encontrado.");
     }
-    
+
     try {
       // Por ahora marcamos completed_onboarding en true y, si se proporciona,
       // también actualizamos el rol del usuario (users / commerce).
@@ -54,12 +54,15 @@ class OnboardingService {
         debugPrint("Onboarding completado con éxito.");
         logger.i("Onboarding completado con éxito.");
       } else {
-        logger.e("Error al completar el onboarding: ${response.statusCode} - ${response.body}");
+        logger.e(
+            "Error al completar el onboarding: ${response.statusCode} - ${response.body}");
         String backendMessage = 'Error al completar el onboarding';
         try {
           final decoded = jsonDecode(response.body);
           if (decoded is Map<String, dynamic>) {
-            backendMessage = (decoded['message'] ?? decoded['error'] ?? backendMessage).toString();
+            backendMessage =
+                (decoded['message'] ?? decoded['error'] ?? backendMessage)
+                    .toString();
           }
         } catch (_) {}
         throw Exception("$backendMessage (${response.statusCode})");

@@ -33,7 +33,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
 
     if (_currentPage == onboardingPages.length - 1) {
       // Última página: el cierre visual del onboarding se maneja desde los
-      // flujos específicos de rol (Cliente / Restaurante) en OnboardingPage3
+      // flujos específicos de rol (Cliente / Farmacia) en OnboardingPage3
       // y CommerceRegistrationPage. Aquí no marcamos el onboarding como
       // completado para asegurarnos de que el usuario haya creado su perfil
       // y dirección/comercio en las pantallas correspondientes.
@@ -100,7 +100,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                         effect: ExpandingDotsEffect(
                           dotHeight: 6,
                           dotWidth: 6,
-                          activeDotColor: AppColors.blue,
+                          activeDotColor: AppColors.brandTeal,
                           dotColor: AppColors.blue.withValues(alpha: 0.2),
                           spacing: 8,
                           expansionFactor: 3,
@@ -228,7 +228,7 @@ class WelcomePage extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: AppColors.blue
+                                            color: AppColors.brandTeal
                                                 .withValues(alpha: 0.2),
                                             width: 1,
                                           ),
@@ -241,7 +241,7 @@ class WelcomePage extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
-                                            color: AppColors.blue
+                                            color: AppColors.brandTeal
                                                 .withValues(alpha: 0.1),
                                             width: 1,
                                           ),
@@ -257,7 +257,7 @@ class WelcomePage extends StatelessWidget {
                                               .blueDark, // replaces AppColors.blueDark
                                           boxShadow: [
                                             BoxShadow(
-                                              color: AppColors.blue
+                                              color: AppColors.brandTeal
                                                   .withValues(alpha: 0.25),
                                               blurRadius: 50,
                                               offset: const Offset(0, 20),
@@ -348,7 +348,7 @@ class WelcomePage extends StatelessWidget {
                                         ? 26.0
                                         : 28.0),
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.blue,
+                                color: AppColors.brandTeal,
                                 height: 1.25,
                               ),
                             ),
@@ -427,7 +427,7 @@ class WelcomePage extends StatelessWidget {
           Positioned(
               top: size.height * 0.05,
               right: size.width * 0.35,
-              child: _starDot(0.4, 2, color: AppColors.blue)),
+              child: _starDot(0.4, 2, color: AppColors.brandTeal)),
         ],
       ),
     );

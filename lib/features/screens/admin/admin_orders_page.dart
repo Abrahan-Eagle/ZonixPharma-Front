@@ -192,7 +192,10 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                         height: 4,
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.45),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withValues(alpha: 0.45),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -231,16 +234,15 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    _detailRow(Icons.storefront, 'Comercio',
-                        _commerceName(order)),
+                    _detailRow(
+                        Icons.storefront, 'Comercio', _commerceName(order)),
                     _detailRow(Icons.attach_money, 'Total',
                         '\$${safeDouble(order['total']).toStringAsFixed(2)}'),
                     _detailRow(Icons.calendar_today, 'Fecha',
                         _formatDate(order['created_at'])),
                     _detailRow(Icons.local_shipping, 'Delivery fee',
                         '\$${safeDouble(order['delivery_fee']).toStringAsFixed(2)}'),
-                    _detailRow(Icons.person, 'Comprador',
-                        _buyerName(order)),
+                    _detailRow(Icons.person, 'Comprador', _buyerName(order)),
                     const SizedBox(height: 20),
                     Text(
                       'Cambiar estado',
@@ -254,7 +256,9 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                       initialValue: currentStatus,
                       decoration: InputDecoration(
                         filled: true,
-                        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        fillColor: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -297,7 +301,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.blue,
+                        backgroundColor: AppColors.brandTeal,
                         foregroundColor: AppColors.white,
                         minimumSize: const Size.fromHeight(44),
                         shape: RoundedRectangleBorder(
@@ -365,7 +369,9 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
         title: const Text('Órdenes'),
-        backgroundColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHigh : AppColors.blueDark,
+        backgroundColor: isDark
+            ? Theme.of(context).colorScheme.surfaceContainerHigh
+            : AppColors.blueDark,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -378,8 +384,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: _statusFilters.entries.map((e) {
-                final selected =
-                    (_filterStatus ?? '') == e.key;
+                final selected = (_filterStatus ?? '') == e.key;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
                   child: _filterChip(e.value, selected, () {
@@ -404,15 +409,14 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppColors.blue : cs.surfaceContainerHighest,
+          color: selected ? AppColors.brandTeal : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: selected
-                ? AppColors.white
-                : AppColors.secondaryText(context),
+            color:
+                selected ? AppColors.white : AppColors.secondaryText(context),
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
             fontSize: 13,
           ),
@@ -509,7 +513,8 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
           color: AppColors.cardBg(context),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.25),
+            color:
+                Theme.of(context).colorScheme.outline.withValues(alpha: 0.25),
           ),
         ),
         child: Padding(
@@ -573,8 +578,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                           vertical: 3,
                         ),
                         decoration: BoxDecoration(
-                          color:
-                              _statusColor(status).withValues(alpha: 0.15),
+                          color: _statusColor(status).withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(

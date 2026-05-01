@@ -76,13 +76,15 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
           _deliveryIncidents = [];
         }
         final historyPayload = results[6]['data'];
-        _deliveryHistory = (historyPayload is Map && historyPayload['items'] is List)
-            ? List<Map<String, dynamic>>.from(historyPayload['items'])
-            : [];
+        _deliveryHistory =
+            (historyPayload is Map && historyPayload['items'] is List)
+                ? List<Map<String, dynamic>>.from(historyPayload['items'])
+                : [];
         final runbooksPayload = results[7]['data'];
-        _deliveryRunbooks = (runbooksPayload is Map && runbooksPayload['items'] is List)
-            ? List<Map<String, dynamic>>.from(runbooksPayload['items'])
-            : [];
+        _deliveryRunbooks =
+            (runbooksPayload is Map && runbooksPayload['items'] is List)
+                ? List<Map<String, dynamic>>.from(runbooksPayload['items'])
+                : [];
         _isLoading = false;
       });
     } catch (e) {
@@ -182,31 +184,32 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         Icons.receipt_long_rounded,
         '${safeInt(data['total_orders'])}',
         'Órdenes totales',
-        AppColors.blue,
+        AppColors.brandTeal,
       ),
       _OverviewItem(
         Icons.payments_rounded,
         _shortCurrency(safeDouble(data['total_revenue'])),
         'Ingresos totales',
-        AppColors.green,
+        AppColors.statusSuccess,
       ),
       _OverviewItem(
         Icons.people_alt_rounded,
         '${safeInt(data['total_customers'])}',
         'Clientes',
-        AppColors.orange,
+        AppColors.brandCtaAccent,
       ),
       _OverviewItem(
         Icons.shopping_bag_rounded,
         _shortCurrency(safeDouble(data['average_order_value'])),
         'Ticket promedio',
-        AppColors.purple,
+        AppColors.brandTealDeep,
       ),
     ];
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cols = Responsive.gridColumns(constraints.maxWidth, mobile: 2, tablet: 3, desktop: 4);
+        final cols = Responsive.gridColumns(constraints.maxWidth,
+            mobile: 2, tablet: 3, desktop: 4);
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -309,8 +312,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                 safeDouble(d is Map ? d['total'] ?? d['revenue'] : 0),
               ),
           ],
-          if (daily.isNotEmpty && monthly.isNotEmpty)
-            const Divider(height: 24),
+          if (daily.isNotEmpty && monthly.isNotEmpty) const Divider(height: 24),
           if (monthly.isNotEmpty) ...[
             _subsectionTitle('Ingresos mensuales'),
             const SizedBox(height: 8),
@@ -344,7 +346,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 14,
-              color: AppColors.green,
+              color: AppColors.statusSuccess,
             ),
           ),
         ],
@@ -509,7 +511,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 13,
-                      color: AppColors.orange,
+                      color: AppColors.brandCtaAccent,
                     ),
                   ),
                 ],
@@ -536,21 +538,22 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
       children: [
         if (financial is Map)
           _kpiGroup('Financieros', Icons.attach_money_rounded,
-              AppColors.green, financial),
+              AppColors.statusSuccess, financial),
         if (financial is Map) const SizedBox(height: 16),
         if (operational is Map)
           _kpiGroup('Operacionales', Icons.settings_rounded,
-              AppColors.blue, operational),
+              AppColors.brandTeal, operational),
         if (operational is Map) const SizedBox(height: 16),
         if (customer is Map)
-          _kpiGroup('Clientes', Icons.people_alt_rounded, AppColors.orange,
-              customer),
+          _kpiGroup('Clientes', Icons.people_alt_rounded,
+              AppColors.brandCtaAccent, customer),
       ],
     );
   }
 
   Widget _buildDeliveryObservabilitySection() {
-    final data = _deliveryObs['data'] is Map ? _deliveryObs['data'] : _deliveryObs;
+    final data =
+        _deliveryObs['data'] is Map ? _deliveryObs['data'] : _deliveryObs;
     final kpi = data['kpi'] is Map ? data['kpi'] as Map : {};
     final ordersTotal = safeInt(kpi['orders_total']);
     final unassigned = safeInt(kpi['unassigned_over_threshold']);
@@ -608,11 +611,15 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                   _obsChip('Sin asignar', '$unassigned'),
                   _obsChip('Tracking congelado', '$frozen'),
                   _obsChip('Timeout %', '${timeoutRatio.toStringAsFixed(2)}%'),
-                  _obsChip('Asignación promedio', '${avgAssign.toStringAsFixed(2)} min'),
-                  _obsChip('Entrega promedio', '${avgDelivery.toStringAsFixed(2)} min'),
-                  _obsChip('No respuesta agente', '${noResponse.toStringAsFixed(2)}%'),
+                  _obsChip('Asignación promedio',
+                      '${avgAssign.toStringAsFixed(2)} min'),
+                  _obsChip('Entrega promedio',
+                      '${avgDelivery.toStringAsFixed(2)} min'),
+                  _obsChip('No respuesta agente',
+                      '${noResponse.toStringAsFixed(2)}%'),
                   _obsChip('Éxito', '${successRatio.toStringAsFixed(2)}%'),
-                  _obsChip('Canceladas', '${cancelledRatio.toStringAsFixed(2)}%'),
+                  _obsChip(
+                      'Canceladas', '${cancelledRatio.toStringAsFixed(2)}%'),
                 ],
               ),
             ],
@@ -671,19 +678,21 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                               ? Icons.warning_amber_rounded
                               : Icons.info_outline_rounded,
                           color: safeString(incident['priority']) == 'high'
-                              ? AppColors.red
-                              : AppColors.orange,
+                              ? AppColors.statusError
+                              : AppColors.brandCtaAccent,
                           size: 18,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             '${safeString(incident['event_code'])} · orden #${safeInt(incident['order_id'])}',
-                            style: TextStyle(color: AppColors.primaryText(context)),
+                            style: TextStyle(
+                                color: AppColors.primaryText(context)),
                           ),
                         ),
                         TextButton(
-                          onPressed: () => _openIncidentOrders(safeString(incident['type'])),
+                          onPressed: () =>
+                              _openIncidentOrders(safeString(incident['type'])),
                           child: const Text('Ver órdenes'),
                         ),
                       ],
@@ -710,7 +719,8 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       '• ${safeString(snapshot['created_at'])} · TTA ${safeDouble(snapshot['avg_assignment_minutes']).toStringAsFixed(2)}m · TTD ${safeDouble(snapshot['avg_delivery_minutes']).toStringAsFixed(2)}m',
-                      style: TextStyle(color: AppColors.primaryText(context), fontSize: 12),
+                      style: TextStyle(
+                          color: AppColors.primaryText(context), fontSize: 12),
                     ),
                   ),
             ],
@@ -734,7 +744,8 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: Text(
                       '• ${safeString(rb['title'])} (${safeString(rb['severity'])})',
-                      style: TextStyle(color: AppColors.primaryText(context), fontSize: 12),
+                      style: TextStyle(
+                          color: AppColors.primaryText(context), fontSize: 12),
                     ),
                   ),
             ],
@@ -757,7 +768,9 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         text: TextSpan(
           style: TextStyle(color: AppColors.primaryText(context), fontSize: 13),
           children: [
-            TextSpan(text: '$label: ', style: const TextStyle(fontWeight: FontWeight.w600)),
+            TextSpan(
+                text: '$label: ',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
             TextSpan(text: value),
           ],
         ),
@@ -765,8 +778,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
     );
   }
 
-  Widget _kpiGroup(
-      String title, IconData icon, Color color, Map kpiMap) {
+  Widget _kpiGroup(String title, IconData icon, Color color, Map kpiMap) {
     return _card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -885,7 +897,8 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 64, color: AppColors.red),
+            const Icon(Icons.cloud_off_rounded,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(
               'No se pudieron cargar los datos',
@@ -913,7 +926,7 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
               icon: const Icon(Icons.refresh),
               label: const Text('Reintentar'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -1013,15 +1026,19 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
           child: SizedBox(
             height: MediaQuery.of(ctx).size.height * 0.7,
             child: items.isEmpty
-                ? const Center(child: Text('No hay órdenes para este incidente'))
+                ? const Center(
+                    child: Text('No hay órdenes para este incidente'))
                 : ListView.builder(
                     itemCount: items.length,
                     itemBuilder: (_, i) {
                       final order = items[i];
-                      final commerce = order['commerce'] is Map ? order['commerce'] as Map : {};
+                      final commerce = order['commerce'] is Map
+                          ? order['commerce'] as Map
+                          : {};
                       return ListTile(
                         title: Text('Orden #${safeInt(order['id'])}'),
-                        subtitle: Text('${safeString(order['status'])} · ${safeString(commerce['business_name'])}'),
+                        subtitle: Text(
+                            '${safeString(order['status'])} · ${safeString(commerce['business_name'])}'),
                       );
                     },
                   ),

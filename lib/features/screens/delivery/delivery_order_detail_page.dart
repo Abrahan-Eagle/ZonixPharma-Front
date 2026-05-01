@@ -21,7 +21,8 @@ class DeliveryOrderDetailPage extends StatefulWidget {
   const DeliveryOrderDetailPage({super.key, required this.order});
 
   @override
-  State<DeliveryOrderDetailPage> createState() => _DeliveryOrderDetailPageState();
+  State<DeliveryOrderDetailPage> createState() =>
+      _DeliveryOrderDetailPageState();
 }
 
 class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
@@ -74,13 +75,14 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     if (ok && mounted) {
       _pusherSub?.cancel();
       _pusherSub = PusherService.instance.eventStream.listen((event) {
-        final rawEventName =
-            event['canonicalEventName']?.toString() ??
+        final rawEventName = event['canonicalEventName']?.toString() ??
             event['eventName']?.toString() ??
             '';
         final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
         final channelName = event['channelName']?.toString() ?? '';
-        if (channelName == channel && eventName.contains('OrderStatusChanged') && mounted) {
+        if (channelName == channel &&
+            eventName.contains('OrderStatusChanged') &&
+            mounted) {
           _reloadOrder();
         }
       });
@@ -92,7 +94,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     _pusherSub?.cancel();
     _pusherSub = null;
     if (_pusherSubscribed) {
-      PusherService.instance.unsubscribeFromChannel('private-orders.${_orderId(_order)}');
+      PusherService.instance
+          .unsubscribeFromChannel('private-orders.${_orderId(_order)}');
       _pusherSubscribed = false;
     }
   }
@@ -109,7 +112,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
   // --- GPS + Route ---
 
   void _initGpsAndRoute() {
-    _tracker = DeliveryLocationTracker(context.read<DeliveryService>(), intervalSeconds: 20);
+    _tracker = DeliveryLocationTracker(context.read<DeliveryService>(),
+        intervalSeconds: 20);
     _gpsSub = _tracker!.positionStream.listen((pos) {
       if (mounted) setState(() => _agentPosition = pos);
     });
@@ -153,7 +157,9 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
       setState(() {
         _routePoints = points;
         _routeDistanceKm = _dbl(result['distance']);
-        _routeEtaMin = (result['duration'] is num) ? (result['duration'] as num).toInt() : null;
+        _routeEtaMin = (result['duration'] is num)
+            ? (result['duration'] as num).toInt()
+            : null;
         _routeLoading = false;
       });
       _fitMap();
@@ -185,7 +191,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     if (points.length >= 2) {
       try {
         final bounds = LatLngBounds.fromPoints(points);
-        _mapController.fitCamera(CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(60)));
+        _mapController.fitCamera(CameraFit.bounds(
+            bounds: bounds, padding: const EdgeInsets.all(60)));
       } catch (_) {}
     } else if (points.length == 1) {
       _mapController.move(points.first, 15);
@@ -195,20 +202,27 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
   Future<void> _openGoogleMapsNav() async {
     final dest = _currentDestination();
     if (dest == null) return;
-    final gNav = Uri.parse('google.navigation:q=${dest.latitude},${dest.longitude}&mode=d');
+    final gNav = Uri.parse(
+        'google.navigation:q=${dest.latitude},${dest.longitude}&mode=d');
     if (await canLaunchUrl(gNav)) {
       await launchUrl(gNav);
     } else {
-      final web = Uri.parse('${AppConfig.googleMapsDirUrl}&destination=${dest.latitude},${dest.longitude}');
+      final web = Uri.parse(
+          '${AppConfig.googleMapsDirUrl}&destination=${dest.latitude},${dest.longitude}');
       await launchUrl(web, mode: LaunchMode.externalApplication);
     }
   }
 
   // --- Actions ---
 
-  Future<void> _openScanAndPop(BuildContext context, int orderId, String scanType) async {
+  Future<void> _openScanAndPop(
+      BuildContext context, int orderId, String scanType) async {
     final navigator = Navigator.of(context);
-    final ok = await Navigator.push<bool>(context, MaterialPageRoute<bool>(builder: (_) => QrScannerPage(orderId: orderId, scanType: scanType)));
+    final ok = await Navigator.push<bool>(
+        context,
+        MaterialPageRoute<bool>(
+            builder: (_) =>
+                QrScannerPage(orderId: orderId, scanType: scanType)));
     if (ok == true && mounted) navigator.pop(true);
   }
 
@@ -219,10 +233,12 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     if (!mounted) return;
     setState(() => _notifyingArrival = false);
     if (ok) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cliente notificado. Escanea su QR.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cliente notificado. Escanea su QR.')));
       _openScanAndPop(context, orderId, 'delivery');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al notificar llegada. Intenta de nuevo.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Error al notificar llegada. Intenta de nuevo.')));
     }
   }
 
@@ -234,13 +250,19 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     final status = order['status']?.toString() ?? '';
     final hasDelivery = order['order_delivery'] != null;
     final commerce = order['commerce'] as Map<String, dynamic>?;
-    final commerceName = commerce?['business_name']?.toString() ?? commerce?['name']?.toString() ?? 'Comercio';
+    final commerceName = commerce?['business_name']?.toString() ??
+        commerce?['name']?.toString() ??
+        'Comercio';
     final commerceAddress = commerce?['address']?.toString() ?? '';
     final profile = order['profile'] as Map<String, dynamic>?;
     final user = profile?['user'] as Map<String, dynamic>?;
-    final customerName = '${user?['name'] ?? ''} ${user?['last_name'] ?? ''}'.trim();
-    final customerPhone = profile?['phone']?.toString() ?? user?['phone']?.toString() ?? '';
-    final deliveryAddress = order['delivery_address']?.toString() ?? order['shipping_address']?.toString() ?? 'Sin dirección';
+    final customerName =
+        '${user?['name'] ?? ''} ${user?['last_name'] ?? ''}'.trim();
+    final customerPhone =
+        profile?['phone']?.toString() ?? user?['phone']?.toString() ?? '';
+    final deliveryAddress = order['delivery_address']?.toString() ??
+        order['shipping_address']?.toString() ??
+        'Sin dirección';
     final total = _dbl(order['total']);
     final deliveryFee = _dbl(order['delivery_fee']);
     final subtotal = _dbl(order['subtotal']);
@@ -252,7 +274,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     final notes = order['notes']?.toString() ?? '';
     final etaMin = safeInt(order['estimated_delivery_time'], 0);
     final hasEta = etaMin > 0;
-    final showMap = hasDelivery && (status == 'processing' || status == 'shipped');
+    final showMap =
+        hasDelivery && (status == 'processing' || status == 'shipped');
     final dest = _currentDestination();
     final isGoingToCommerce = status == 'processing';
 
@@ -277,14 +300,21 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                       FlutterMap(
                         mapController: _mapController,
                         options: MapOptions(
-                          initialCenter: _agentPosition ?? dest ?? const LatLng(10.16, -68.01),
+                          initialCenter: _agentPosition ??
+                              dest ??
+                              const LatLng(10.16, -68.01),
                           initialZoom: 14,
                         ),
                         children: [
-                          TileLayer(urlTemplate: AppConfig.osmTileUrl, userAgentPackageName: 'com.zonix.pharma'),
+                          TileLayer(
+                              urlTemplate: AppConfig.osmTileUrl,
+                              userAgentPackageName: 'com.zonix.pharma'),
                           if (_routePoints.length >= 2)
                             PolylineLayer(polylines: [
-                              Polyline(points: _routePoints, color: AppColors.blue, strokeWidth: 4),
+                              Polyline(
+                                  points: _routePoints,
+                                  color: AppColors.brandTeal,
+                                  strokeWidth: 4),
                             ]),
                           MarkerLayer(markers: [
                             if (_agentPosition != null)
@@ -293,8 +323,13 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                                 width: 36,
                                 height: 36,
                                 child: Container(
-                                  decoration: BoxDecoration(color: AppColors.blue, shape: BoxShape.circle, border: Border.all(color: AppColors.white, width: 2)),
-                                  child: const Icon(Icons.delivery_dining, color: AppColors.white, size: 20),
+                                  decoration: BoxDecoration(
+                                      color: AppColors.brandTeal,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                          color: AppColors.white, width: 2)),
+                                  child: const Icon(Icons.delivery_dining,
+                                      color: AppColors.white, size: 20),
                                 ),
                               ),
                             if (dest != null)
@@ -304,18 +339,33 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                                 height: 36,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: isGoingToCommerce ? AppColors.orange : AppColors.green,
+                                    color: isGoingToCommerce
+                                        ? AppColors.brandCtaAccent
+                                        : AppColors.statusSuccess,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: AppColors.white, width: 2),
+                                    border: Border.all(
+                                        color: AppColors.white, width: 2),
                                   ),
-                                  child: Icon(isGoingToCommerce ? Icons.store : Icons.person_pin_circle, color: AppColors.white, size: 20),
+                                  child: Icon(
+                                      isGoingToCommerce
+                                          ? Icons.store
+                                          : Icons.person_pin_circle,
+                                      color: AppColors.white,
+                                      size: 20),
                                 ),
                               ),
                           ]),
                         ],
                       ),
                       if (_routeLoading)
-                        const Positioned(top: 8, right: 8, child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2))),
+                        const Positioned(
+                            top: 8,
+                            right: 8,
+                            child: SizedBox(
+                                width: 24,
+                                height: 24,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2))),
                     ],
                   ),
                 ),
@@ -324,10 +374,14 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
               Row(
                 children: [
                   if (_routeDistanceKm != null)
-                    _chipInfo(Icons.straighten, '${_routeDistanceKm!.toStringAsFixed(1)} km', AppColors.blue),
+                    _chipInfo(
+                        Icons.straighten,
+                        '${_routeDistanceKm!.toStringAsFixed(1)} km',
+                        AppColors.brandTeal),
                   if (_routeEtaMin != null) ...[
                     const SizedBox(width: 8),
-                    _chipInfo(Icons.timer, '~$_routeEtaMin min', AppColors.orange),
+                    _chipInfo(Icons.timer, '~$_routeEtaMin min',
+                        AppColors.brandCtaAccent),
                   ],
                   const Spacer(),
                   ElevatedButton.icon(
@@ -335,18 +389,23 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                     icon: const Icon(Icons.navigation, size: 18),
                     label: const Text('Navegar'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.green,
+                      backgroundColor: AppColors.statusSuccess,
                       foregroundColor: AppColors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 4),
               Text(
-                isGoingToCommerce ? 'Ruta hacia el comercio' : 'Ruta hacia el cliente',
-                style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context)),
+                isGoingToCommerce
+                    ? 'Ruta hacia el comercio'
+                    : 'Ruta hacia el cliente',
+                style: TextStyle(
+                    fontSize: 12, color: AppColors.secondaryText(context)),
               ),
             ],
 
@@ -354,51 +413,77 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
               const SizedBox(height: 12),
               Text(
                 'ETA para el cliente: ~$etaMin min',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: AppColors.primaryText(context)),
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primaryText(context)),
               ),
             ],
             const SizedBox(height: 20),
 
-            _buildSection(context, icon: Icons.store, title: 'Comercio', children: [
-              _buildRow(context, 'Nombre', commerceName),
-              if (commerceAddress.isNotEmpty) _buildRow(context, 'Dirección', commerceAddress),
-            ]),
-            const SizedBox(height: 12),
-
-            _buildSection(context, icon: Icons.person, title: 'Cliente', children: [
-              if (customerName.isNotEmpty) _buildRow(context, 'Nombre', customerName),
-              if (customerPhone.isNotEmpty) _buildRow(context, 'Teléfono', customerPhone),
-              _buildRow(context, 'Dirección entrega', deliveryAddress),
-            ]),
-            const SizedBox(height: 12),
-
-            _buildSection(context, icon: Icons.shopping_bag, title: 'Productos (${items.length})', children: items.map<Widget>((item) {
-              final product = item['product'] as Map<String, dynamic>?;
-              final productName = product?['name']?.toString() ?? 'Producto';
-              final qty = item['quantity']?.toString() ?? '1';
-              final price = _dbl(item['price']);
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(children: [
-                  Text('${qty}x ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Expanded(child: Text(productName)),
-                  Text('\$${price.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w500)),
+            _buildSection(context,
+                icon: Icons.store,
+                title: 'Comercio',
+                children: [
+                  _buildRow(context, 'Nombre', commerceName),
+                  if (commerceAddress.isNotEmpty)
+                    _buildRow(context, 'Dirección', commerceAddress),
                 ]),
-              );
-            }).toList()),
+            const SizedBox(height: 12),
+
+            _buildSection(context,
+                icon: Icons.person,
+                title: 'Cliente',
+                children: [
+                  if (customerName.isNotEmpty)
+                    _buildRow(context, 'Nombre', customerName),
+                  if (customerPhone.isNotEmpty)
+                    _buildRow(context, 'Teléfono', customerPhone),
+                  _buildRow(context, 'Dirección entrega', deliveryAddress),
+                ]),
+            const SizedBox(height: 12),
+
+            _buildSection(context,
+                icon: Icons.shopping_bag,
+                title: 'Productos (${items.length})',
+                children: items.map<Widget>((item) {
+                  final product = item['product'] as Map<String, dynamic>?;
+                  final productName =
+                      product?['name']?.toString() ?? 'Producto';
+                  final qty = item['quantity']?.toString() ?? '1';
+                  final price = _dbl(item['price']);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(children: [
+                      Text('${qty}x ',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Expanded(child: Text(productName)),
+                      Text('\$${price.toStringAsFixed(2)}',
+                          style: const TextStyle(fontWeight: FontWeight.w500)),
+                    ]),
+                  );
+                }).toList()),
             const SizedBox(height: 12),
 
             if (notes.isNotEmpty) ...[
-              _buildSection(context, icon: Icons.notes, title: 'Notas', children: [Text(notes)]),
+              _buildSection(context,
+                  icon: Icons.notes, title: 'Notas', children: [Text(notes)]),
               const SizedBox(height: 12),
             ],
 
-            _buildSection(context, icon: Icons.receipt_long, title: 'Resumen', children: [
-              if (subtotal > 0) _buildRow(context, 'Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
-              if (deliveryFee > 0) _buildRow(context, 'Delivery fee', '\$${deliveryFee.toStringAsFixed(2)}'),
-              const Divider(),
-              _buildRow(context, 'Total', '\$${total.toStringAsFixed(2)}', bold: true),
-            ]),
+            _buildSection(context,
+                icon: Icons.receipt_long,
+                title: 'Resumen',
+                children: [
+                  if (subtotal > 0)
+                    _buildRow(context, 'Subtotal',
+                        '\$${subtotal.toStringAsFixed(2)}'),
+                  if (deliveryFee > 0)
+                    _buildRow(context, 'Delivery fee',
+                        '\$${deliveryFee.toStringAsFixed(2)}'),
+                  const Divider(),
+                  _buildRow(context, 'Total', '\$${total.toStringAsFixed(2)}',
+                      bold: true),
+                ]),
             const SizedBox(height: 24),
 
             if (canScanPickup) ...[
@@ -414,9 +499,15 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
                 width: double.infinity,
                 child: ElevatedButton.icon(
                   onPressed: () => _openScanAndPop(context, orderId, 'pickup'),
-                  icon: const Icon(Icons.qr_code_scanner, color: AppColors.white),
-                  label: const Text('Escanear QR de recogida', style: TextStyle(color: AppColors.white, fontSize: 16)),
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.orange, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                  icon:
+                      const Icon(Icons.qr_code_scanner, color: AppColors.white),
+                  label: const Text('Escanear QR de recogida',
+                      style: TextStyle(color: AppColors.white, fontSize: 16)),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.brandCtaAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
               ),
             ],
@@ -432,12 +523,26 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: _notifyingArrival ? null : () => _arrivedAndScan(orderId),
+                  onPressed:
+                      _notifyingArrival ? null : () => _arrivedAndScan(orderId),
                   icon: _notifyingArrival
-                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white))
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2, color: AppColors.white))
                       : const Icon(Icons.location_on, color: AppColors.white),
-                  label: Text(_notifyingArrival ? 'Notificando...' : 'Llegué al destino', style: const TextStyle(color: AppColors.white, fontSize: 16)),
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.green, padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                  label: Text(
+                      _notifyingArrival
+                          ? 'Notificando...'
+                          : 'Llegué al destino',
+                      style: const TextStyle(
+                          color: AppColors.white, fontSize: 16)),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.statusSuccess,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
                 ),
               ),
             ],
@@ -452,11 +557,15 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
   Widget _chipInfo(IconData icon, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(16)),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16)),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
         Icon(icon, size: 14, color: color),
         const SizedBox(width: 4),
-        Text(text, style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: color)),
+        Text(text,
+            style: TextStyle(
+                fontSize: 13, fontWeight: FontWeight.bold, color: color)),
       ]),
     );
   }
@@ -467,16 +576,25 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     final icon = _statusIcon(status, hasDelivery);
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12), border: Border.all(color: color.withValues(alpha: 0.3))),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.3))),
       child: Row(children: [
         Icon(icon, color: color, size: 32),
         const SizedBox(width: 12),
-        Expanded(child: Text(label, style: TextStyle(color: color, fontSize: 18, fontWeight: FontWeight.bold))),
+        Expanded(
+            child: Text(label,
+                style: TextStyle(
+                    color: color, fontSize: 18, fontWeight: FontWeight.bold))),
       ]),
     );
   }
 
-  Widget _buildSection(BuildContext context, {required IconData icon, required String title, required List<Widget> children}) {
+  Widget _buildSection(BuildContext context,
+      {required IconData icon,
+      required String title,
+      required List<Widget> children}) {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
@@ -505,7 +623,8 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
     );
   }
 
-  Widget _buildRow(BuildContext context, String label, String value, {bool bold = false}) {
+  Widget _buildRow(BuildContext context, String label, String value,
+      {bool bold = false}) {
     final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
@@ -532,15 +651,18 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
   }
 
   Color _statusColor(String status, bool hasDelivery) => switch (status) {
-        'processing' => hasDelivery ? AppColors.orange : AppColors.textMutedGray,
-        'shipped' => hasDelivery ? AppColors.blue : AppColors.orange,
-        'delivered' => AppColors.green,
-        'cancelled' => AppColors.red,
+        'processing' =>
+          hasDelivery ? AppColors.brandCtaAccent : AppColors.textMutedGray,
+        'shipped' =>
+          hasDelivery ? AppColors.brandTeal : AppColors.brandCtaAccent,
+        'delivered' => AppColors.statusSuccess,
+        'cancelled' => AppColors.statusError,
         _ => AppColors.textMutedGray,
       };
 
   String _statusLabel(String status, bool hasDelivery) => switch (status) {
-        'processing' => hasDelivery ? 'Ir al comercio — escanea QR' : 'Preparando',
+        'processing' =>
+          hasDelivery ? 'Ir al comercio — escanea QR' : 'Preparando',
         'shipped' => hasDelivery ? 'En camino al cliente' : 'Disponible',
         'delivered' => 'Entregada',
         'cancelled' => 'Cancelada',
@@ -570,10 +692,12 @@ class DeliveryOrderDetailLoaderPage extends StatefulWidget {
   const DeliveryOrderDetailLoaderPage({super.key, required this.orderId});
 
   @override
-  State<DeliveryOrderDetailLoaderPage> createState() => _DeliveryOrderDetailLoaderPageState();
+  State<DeliveryOrderDetailLoaderPage> createState() =>
+      _DeliveryOrderDetailLoaderPageState();
 }
 
-class _DeliveryOrderDetailLoaderPageState extends State<DeliveryOrderDetailLoaderPage> {
+class _DeliveryOrderDetailLoaderPageState
+    extends State<DeliveryOrderDetailLoaderPage> {
   Map<String, dynamic>? _order;
   bool _loading = true;
   String? _error;
@@ -598,14 +722,19 @@ class _DeliveryOrderDetailLoaderPageState extends State<DeliveryOrderDetailLoade
 
   @override
   Widget build(BuildContext context) {
-    if (_loading) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (_loading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     if (_error != null || _order == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Orden')),
-        body: Center(child: Column(mainAxisSize: MainAxisSize.min, children: [
+        body: Center(
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text(_error ?? 'Orden no encontrada'),
           const SizedBox(height: 16),
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Volver')),
+          TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Volver')),
         ])),
       );
     }

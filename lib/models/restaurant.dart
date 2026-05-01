@@ -167,6 +167,9 @@ class Restaurant {
   String get cuisine =>
       (pharmacyCategory ?? profile?['cuisine']?.toString() ?? '').trim();
 
+  /// Alias semántico Pharma (mismo valor que [cuisineDisplay]).
+  String get pharmacyTypeDisplay => cuisineDisplay;
+
   /// Display del tipo de farmacia/establecimiento. Capitaliza y separa con •.
   String get cuisineDisplay {
     final typeLine =

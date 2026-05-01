@@ -59,7 +59,8 @@ class _CommerceDeliveryZonesPageState extends State<CommerceDeliveryZonesPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -101,9 +102,8 @@ class _CommerceDeliveryZonesPageState extends State<CommerceDeliveryZonesPage> {
                 padding: const EdgeInsets.all(16),
                 itemCount: _zones.length,
                 itemBuilder: (context, i) {
-                  final z = _zones[i] is Map
-                      ? _zones[i] as Map
-                      : <String, dynamic>{};
+                  final z =
+                      _zones[i] is Map ? _zones[i] as Map : <String, dynamic>{};
                   final name = z['name'] ?? 'Zona ${z['id'] ?? ''}';
                   final radius = z['radius'] ?? 0;
                   final fee = safeDouble(z['delivery_fee']);
@@ -111,7 +111,8 @@ class _CommerceDeliveryZonesPageState extends State<CommerceDeliveryZonesPage> {
                   return Card(
                     margin: const EdgeInsets.only(bottom: 8),
                     child: ListTile(
-                      leading: const Icon(Icons.location_on, color: AppColors.blue),
+                      leading: const Icon(Icons.location_on,
+                          color: AppColors.brandTeal),
                       title: Text(name.toString()),
                       subtitle: Text(
                         'Radio: $radius km · Tarifa: \$${fee.toStringAsFixed(2)}'
@@ -130,7 +131,8 @@ class _CommerceDeliveryZonesPageState extends State<CommerceDeliveryZonesPage> {
         padding: const EdgeInsets.all(16),
         child: Text(
           'Las zonas de entrega son configuradas por el administrador.',
-          style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
+          style:
+              TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
           textAlign: TextAlign.center,
         ),
       ),

@@ -30,7 +30,7 @@ class _CommerceDeliveryZoneFormPageState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.location_on, size: 64, color: AppColors.blue),
+              Icon(Icons.location_on, size: 64, color: AppColors.brandTeal),
               SizedBox(height: 24),
               Text(
                 'Zonas de delivery',

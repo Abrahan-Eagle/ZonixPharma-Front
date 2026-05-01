@@ -67,7 +67,8 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
   void _subscribeToRealtimeDisputes() {
     _pusherSub?.cancel();
     _pusherSub = PusherService.instance.eventStream.listen((event) async {
-      final eventName = (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+      final eventName =
+          (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
       if (!eventName.contains('NotificationCreated')) return;
 
       final eventData = event['data'] is Map<String, dynamic>
@@ -97,7 +98,9 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
 
   List<Map<String, dynamic>> get _filteredItems {
     if (_selectedStatus == 'all') return _items;
-    return _items.where((item) => (item['status'] ?? '').toString() == _selectedStatus).toList();
+    return _items
+        .where((item) => (item['status'] ?? '').toString() == _selectedStatus)
+        .toList();
   }
 
   bool _isRecentlyResolved(Map<String, dynamic> item) {
@@ -138,12 +141,19 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                 DropdownButtonFormField<String>(
                   initialValue: selectedType,
                   items: const [
-                    DropdownMenuItem(value: 'payment_issue', child: Text('Problema de pago')),
-                    DropdownMenuItem(value: 'delivery_problem', child: Text('Problema de entrega')),
-                    DropdownMenuItem(value: 'quality_issue', child: Text('Problema de calidad')),
+                    DropdownMenuItem(
+                        value: 'payment_issue',
+                        child: Text('Problema de pago')),
+                    DropdownMenuItem(
+                        value: 'delivery_problem',
+                        child: Text('Problema de entrega')),
+                    DropdownMenuItem(
+                        value: 'quality_issue',
+                        child: Text('Problema de calidad')),
                     DropdownMenuItem(value: 'other', child: Text('Otro')),
                   ],
-                  onChanged: (v) => setLocalState(() => selectedType = v ?? 'other'),
+                  onChanged: (v) =>
+                      setLocalState(() => selectedType = v ?? 'other'),
                   decoration: const InputDecoration(labelText: 'Tipo'),
                 ),
                 const SizedBox(height: 12),
@@ -152,7 +162,8 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                   maxLines: 4,
                   decoration: const InputDecoration(
                     labelText: 'Descripción',
-                    hintText: 'Describe el problema con el mayor detalle posible',
+                    hintText:
+                        'Describe el problema con el mayor detalle posible',
                   ),
                 ),
               ],
@@ -171,13 +182,16 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                       final description = descriptionController.text.trim();
                       if (orderId == null || orderId <= 0) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Ingresa un ID de orden válido')),
+                          const SnackBar(
+                              content: Text('Ingresa un ID de orden válido')),
                         );
                         return;
                       }
                       if (description.length < 10) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('La descripción debe tener al menos 10 caracteres')),
+                          const SnackBar(
+                              content: Text(
+                                  'La descripción debe tener al menos 10 caracteres')),
                         );
                         return;
                       }
@@ -195,8 +209,9 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                         if (!ctx.mounted) return;
                         ScaffoldMessenger.of(ctx).showSnackBar(
                           SnackBar(
-                            content: Text(e.toString().replaceFirst('Exception: ', '')),
-                            backgroundColor: AppColors.red,
+                            content: Text(
+                                e.toString().replaceFirst('Exception: ', '')),
+                            backgroundColor: AppColors.statusError,
                           ),
                         );
                       } finally {
@@ -239,7 +254,8 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                 ? ListView(
                     children: [
                       const SizedBox(height: 120),
-                      const Icon(Icons.error_outline, color: AppColors.red, size: 48),
+                      const Icon(Icons.error_outline,
+                          color: AppColors.statusError, size: 48),
                       const SizedBox(height: 8),
                       Center(child: Text(_error!)),
                       const SizedBox(height: 8),
@@ -255,9 +271,12 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                     ? ListView(
                         children: const [
                           SizedBox(height: 120),
-                          Icon(Icons.support_agent, size: 48, color: AppColors.gray),
+                          Icon(Icons.support_agent,
+                              size: 48, color: AppColors.gray),
                           SizedBox(height: 8),
-                          Center(child: Text('Aún no tienes disputas registradas')),
+                          Center(
+                              child:
+                                  Text('Aún no tienes disputas registradas')),
                         ],
                       )
                     : Column(
@@ -270,11 +289,17 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                                 labelText: 'Filtrar por estado',
                               ),
                               items: const [
-                                DropdownMenuItem(value: 'all', child: Text('Todos')),
-                                DropdownMenuItem(value: 'pending', child: Text('Pendiente')),
-                                DropdownMenuItem(value: 'in_review', child: Text('En revisión')),
-                                DropdownMenuItem(value: 'resolved', child: Text('Resuelta')),
-                                DropdownMenuItem(value: 'closed', child: Text('Cerrada')),
+                                DropdownMenuItem(
+                                    value: 'all', child: Text('Todos')),
+                                DropdownMenuItem(
+                                    value: 'pending', child: Text('Pendiente')),
+                                DropdownMenuItem(
+                                    value: 'in_review',
+                                    child: Text('En revisión')),
+                                DropdownMenuItem(
+                                    value: 'resolved', child: Text('Resuelta')),
+                                DropdownMenuItem(
+                                    value: 'closed', child: Text('Cerrada')),
                               ],
                               onChanged: (v) {
                                 if (v == null) return;
@@ -288,78 +313,109 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                                 ? ListView(
                                     children: const [
                                       SizedBox(height: 120),
-                                      Icon(Icons.filter_alt_off, size: 44, color: AppColors.gray),
+                                      Icon(Icons.filter_alt_off,
+                                          size: 44, color: AppColors.gray),
                                       SizedBox(height: 8),
-                                      Center(child: Text('No hay disputas con ese filtro')),
+                                      Center(
+                                          child: Text(
+                                              'No hay disputas con ese filtro')),
                                     ],
                                   )
                                 : ListView.separated(
-                                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16, 8, 16, 96),
                                     itemCount: _filteredItems.length,
-                                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                                    separatorBuilder: (_, __) =>
+                                        const SizedBox(height: 12),
                                     itemBuilder: (_, i) {
                                       final item = _filteredItems[i];
-                          final status = (item['status'] ?? '').toString();
-                          final type = (item['type'] ?? '').toString();
-                          final description = (item['description'] ?? '').toString();
-                          final orderId = item['order_id']?.toString() ?? '—';
-                                      final recentlyResolved = _isRecentlyResolved(item);
+                                      final status =
+                                          (item['status'] ?? '').toString();
+                                      final type =
+                                          (item['type'] ?? '').toString();
+                                      final description =
+                                          (item['description'] ?? '')
+                                              .toString();
+                                      final orderId =
+                                          item['order_id']?.toString() ?? '—';
+                                      final recentlyResolved =
+                                          _isRecentlyResolved(item);
 
-                          return Card(
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(12),
-                              leading: const Icon(Icons.report_problem_outlined),
-                              onTap: () {
-                                final disputeId = item['id'];
-                                if (disputeId is! int) return;
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) => BuyerDisputeDetailPage(disputeId: disputeId),
-                                  ),
-                                );
-                              },
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text('Orden #$orderId · ${DisputeService.typeLabel(type)}'),
-                                  ),
-                                  if (recentlyResolved)
-                                    Container(
-                                      margin: const EdgeInsets.only(left: 8),
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.green.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(999),
-                                      ),
-                                      child: const Text(
-                                        'Resuelta hoy',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w700,
-                                          color: AppColors.green,
+                                      return Card(
+                                        child: ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.all(12),
+                                          leading: const Icon(
+                                              Icons.report_problem_outlined),
+                                          onTap: () {
+                                            final disputeId = item['id'];
+                                            if (disputeId is! int) return;
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (_) =>
+                                                    BuyerDisputeDetailPage(
+                                                        disputeId: disputeId),
+                                              ),
+                                            );
+                                          },
+                                          title: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                    'Orden #$orderId · ${DisputeService.typeLabel(type)}'),
+                                              ),
+                                              if (recentlyResolved)
+                                                Container(
+                                                  margin: const EdgeInsets.only(
+                                                      left: 8),
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors.green
+                                                        .withValues(
+                                                            alpha: 0.15),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            999),
+                                                  ),
+                                                  child: const Text(
+                                                    'Resuelta hoy',
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: AppColors
+                                                          .statusSuccess,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                          subtitle: Text(
+                                            description,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          trailing: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.grayLight,
+                                              borderRadius:
+                                                  BorderRadius.circular(999),
+                                            ),
+                                            child: Text(
+                                              DisputeService.statusLabel(
+                                                  status),
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              subtitle: Text(
-                                description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: AppColors.grayLight,
-                                  borderRadius: BorderRadius.circular(999),
-                                ),
-                                child: Text(
-                                  DisputeService.statusLabel(status),
-                                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ),
-                          );
+                                      );
                                     },
                                   ),
                           ),

@@ -62,7 +62,8 @@ class _CommercePromotionsPageState extends State<CommercePromotionsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -121,8 +122,10 @@ class _CommercePromotionsPageState extends State<CommercePromotionsPage> {
                       trailing: Chip(
                         label: Text(active ? 'Activa' : 'Inactiva'),
                         backgroundColor: active
-                            ? AppColors.green
-                            : Theme.of(context).colorScheme.surfaceContainerHighest,
+                            ? AppColors.statusSuccess
+                            : Theme.of(context)
+                                .colorScheme
+                                .surfaceContainerHighest,
                         labelStyle: TextStyle(
                           color: active
                               ? AppColors.white
@@ -135,7 +138,9 @@ class _CommercePromotionsPageState extends State<CommercePromotionsPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CommercePromotionFormPage(
-                                promotionId: id is int ? id : int.tryParse(id.toString()),
+                                promotionId: id is int
+                                    ? id
+                                    : int.tryParse(id.toString()),
                                 initialData: Map<String, dynamic>.from(p),
                               ),
                             ),
@@ -159,7 +164,7 @@ class _CommercePromotionsPageState extends State<CommercePromotionsPage> {
           );
           if (result == true) _loadData();
         },
-        backgroundColor: AppColors.orange,
+        backgroundColor: AppColors.brandCtaAccent,
         child: const Icon(Icons.add),
       ),
     );

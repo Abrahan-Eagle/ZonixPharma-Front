@@ -45,12 +45,14 @@ class PaymentMethodDetailPage extends StatelessWidget {
     final primaryText = AppColors.primaryText(context);
     final cardBg = AppColors.cardBg(context);
     final secondaryText = AppColors.secondaryText(context);
-    final borderColor = isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
+    final borderColor =
+        isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
 
     return Scaffold(
       backgroundColor: bg,
       appBar: AppBar(
-        title: Text(_appBarTitle(), style: const TextStyle(color: AppColors.white)),
+        title: Text(_appBarTitle(),
+            style: const TextStyle(color: AppColors.white)),
         backgroundColor: AppColors.stitchNavBg,
         foregroundColor: AppColors.white,
         elevation: 0,
@@ -67,11 +69,21 @@ class PaymentMethodDetailPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (_type == 'card') _buildCardDetail(context, cardBg, primaryText, secondaryText, borderColor, isDark),
-            if (_type == 'mobile_payment') _buildMobileDetail(context, cardBg, primaryText, secondaryText, borderColor),
-            if (_type == 'bank_transfer') _buildTransferDetail(context, cardBg, primaryText, secondaryText, borderColor, isDark),
-            if (_type == 'digital_wallet' || _type == 'paypal') _buildWalletDetail(context, cardBg, primaryText, secondaryText, borderColor, isDark),
-            if (_type == 'cash' || _type == 'other') _buildGenericDetail(context, cardBg, primaryText, secondaryText, borderColor),
+            if (_type == 'card')
+              _buildCardDetail(context, cardBg, primaryText, secondaryText,
+                  borderColor, isDark),
+            if (_type == 'mobile_payment')
+              _buildMobileDetail(
+                  context, cardBg, primaryText, secondaryText, borderColor),
+            if (_type == 'bank_transfer')
+              _buildTransferDetail(context, cardBg, primaryText, secondaryText,
+                  borderColor, isDark),
+            if (_type == 'digital_wallet' || _type == 'paypal')
+              _buildWalletDetail(context, cardBg, primaryText, secondaryText,
+                  borderColor, isDark),
+            if (_type == 'cash' || _type == 'other')
+              _buildGenericDetail(
+                  context, cardBg, primaryText, secondaryText, borderColor),
             const SizedBox(height: 24),
             _buildActions(context),
           ],
@@ -120,7 +132,11 @@ class PaymentMethodDetailPage extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [AppColors.blueDark, AppColors.blueDarkMid, AppColors.blue],
+              colors: [
+                AppColors.blueDark,
+                AppColors.blueDarkMid,
+                AppColors.blue
+              ],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -223,9 +239,15 @@ class PaymentMethodDetailPage extends StatelessWidget {
           secondaryText,
           borderColor,
           [
-            _InfoRow('Nombre del titular', holder.toString(), Icons.person, 'Como aparece en el plástico'),
-            _InfoRow('Vencimiento', exp.toString(), Icons.calendar_today, 'Fecha de expiración'),
-            _InfoRow('Estado', method['is_active'] != false ? 'Activa' : 'Inactiva', Icons.verified_user, 'Condición de la tarjeta'),
+            _InfoRow('Nombre del titular', holder.toString(), Icons.person,
+                'Como aparece en el plástico'),
+            _InfoRow('Vencimiento', exp.toString(), Icons.calendar_today,
+                'Fecha de expiración'),
+            _InfoRow(
+                'Estado',
+                method['is_active'] != false ? 'Activa' : 'Inactiva',
+                Icons.verified_user,
+                'Condición de la tarjeta'),
           ],
         ),
       ],
@@ -291,7 +313,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
                               color: AppColors.white.withValues(alpha: 0.2),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.contactless, color: AppColors.white, size: 40),
+                            child: const Icon(Icons.contactless,
+                                color: AppColors.white, size: 40),
                           ),
                         ),
                       ),
@@ -306,7 +329,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
                   children: [
                     Text(
                       'Pago Móvil Guardado',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: primaryText),
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: primaryText),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -327,9 +353,15 @@ class PaymentMethodDetailPage extends StatelessWidget {
           secondaryText,
           borderColor,
           [
-            _InfoRow('Banco', (ref['bank'] ?? method['bank'] ?? '—').toString(), Icons.account_balance, ''),
-            _InfoRow('Número de Teléfono', (method['phone'] ?? '—').toString(), Icons.smartphone, ''),
-            _InfoRow('Documento (RIF/CI)', _formatOwnerIdDisplay((method['owner_id'] ?? '—').toString()), Icons.badge, ''),
+            _InfoRow('Banco', (ref['bank'] ?? method['bank'] ?? '—').toString(),
+                Icons.account_balance, ''),
+            _InfoRow('Número de Teléfono', (method['phone'] ?? '—').toString(),
+                Icons.smartphone, ''),
+            _InfoRow(
+                'Documento (RIF/CI)',
+                _formatOwnerIdDisplay((method['owner_id'] ?? '—').toString()),
+                Icons.badge,
+                ''),
             _InfoRow('Alias del método', alias.toString(), Icons.label, ''),
           ],
         ),
@@ -349,7 +381,9 @@ class PaymentMethodDetailPage extends StatelessWidget {
     List<_InfoRow> rows,
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final headerBg = isDark ? AppColors.grayDark.withValues(alpha: 0.5) : AppColors.stitchBgCard;
+    final headerBg = isDark
+        ? AppColors.grayDark.withValues(alpha: 0.5)
+        : AppColors.stitchBgCard;
 
     return Container(
       decoration: BoxDecoration(
@@ -364,7 +398,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: headerBg,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(11)),
             ),
             child: Text(
               'Datos del método',
@@ -381,7 +416,9 @@ class PaymentMethodDetailPage extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
-                border: isLast ? null : Border(bottom: BorderSide(color: borderColor, width: 1)),
+                border: isLast
+                    ? null
+                    : Border(bottom: BorderSide(color: borderColor, width: 1)),
               ),
               child: Row(
                 children: [
@@ -392,7 +429,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
                       color: AppColors.blue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(e.value.icon, color: AppColors.blue, size: 22),
+                    child: Icon(e.value.icon,
+                        color: AppColors.brandTeal, size: 22),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -410,7 +448,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
                   Expanded(
                     child: Text(
                       e.value.value,
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: primaryText),
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: primaryText),
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.end,
                     ),
@@ -451,13 +492,16 @@ class PaymentMethodDetailPage extends StatelessWidget {
             border: Border.all(color: borderColor),
             color: cardBg,
           ),
-                child: Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: isDark ? AppColors.blueDark : AppColors.stitchSlate.withValues(alpha: 0.3),
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
+          child: Column(
+            children: [
+              Container(
+                height: 100,
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? AppColors.blueDark
+                      : AppColors.stitchSlate.withValues(alpha: 0.3),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(11)),
                 ),
                 padding: const EdgeInsets.all(16),
                 child: Row(
@@ -468,9 +512,14 @@ class PaymentMethodDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.white,
                         borderRadius: BorderRadius.circular(8),
-                        boxShadow: [BoxShadow(color: AppColors.black.withValues(alpha: 0.1), blurRadius: 4)],
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.black.withValues(alpha: 0.1),
+                              blurRadius: 4)
+                        ],
                       ),
-                      child: const Icon(Icons.account_balance, color: AppColors.blueDark, size: 28),
+                      child: const Icon(Icons.account_balance,
+                          color: AppColors.blueDark, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -482,7 +531,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
                           Text(
                             bank.toString(),
                             style: TextStyle(
-                              color: isDark ? AppColors.white : AppColors.blueDark,
+                              color:
+                                  isDark ? AppColors.white : AppColors.blueDark,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -507,12 +557,20 @@ class PaymentMethodDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _detailRow('Número de Cuenta', account.toString(), primaryText, secondaryText),
+                    _detailRow('Número de Cuenta', account.toString(),
+                        primaryText, secondaryText),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Expanded(child: _detailCol('Titular', holder.toString(), primaryText, secondaryText)),
-                        Expanded(child: _detailCol('RIF / Cédula', _formatOwnerIdDisplay(rif.toString()), primaryText, secondaryText)),
+                        Expanded(
+                            child: _detailCol('Titular', holder.toString(),
+                                primaryText, secondaryText)),
+                        Expanded(
+                            child: _detailCol(
+                                'RIF / Cédula',
+                                _formatOwnerIdDisplay(rif.toString()),
+                                primaryText,
+                                secondaryText)),
                       ],
                     ),
                   ],
@@ -529,7 +587,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
           secondaryText,
           borderColor,
           [
-            _InfoRow('Fecha de Registro', _formatDate(method['created_at']), Icons.calendar_today, ''),
+            _InfoRow('Fecha de Registro', _formatDate(method['created_at']),
+                Icons.calendar_today, ''),
             _InfoRow('Estado', 'Verificada', Icons.verified, ''),
           ],
         ),
@@ -537,22 +596,30 @@ class PaymentMethodDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _detailRow(String label, String value, Color primary, Color secondary) {
+  Widget _detailRow(
+      String label, String value, Color primary, Color secondary) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: secondary)),
+        Text(label.toUpperCase(),
+            style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w600, color: secondary)),
         const SizedBox(height: 4),
-        Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: primary)),
+        Text(value,
+            style: TextStyle(
+                fontSize: 16, fontWeight: FontWeight.w500, color: primary)),
       ],
     );
   }
 
-  Widget _detailCol(String label, String value, Color primary, Color secondary) {
+  Widget _detailCol(
+      String label, String value, Color primary, Color secondary) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label.toUpperCase(), style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: secondary)),
+        Text(label.toUpperCase(),
+            style: TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w600, color: secondary)),
         const SizedBox(height: 4),
         Text(value, style: TextStyle(fontSize: 14, color: primary)),
       ],
@@ -601,9 +668,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(12),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 4),
                             decoration: BoxDecoration(
-                              color: AppColors.yellow,
+                              color: AppColors.statusWarning,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Text(
@@ -626,18 +694,25 @@ class PaymentMethodDetailPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.account_balance_wallet, color: AppColors.blue, size: 22),
+                        const Icon(Icons.account_balance_wallet,
+                            color: AppColors.brandTeal, size: 22),
                         const SizedBox(width: 8),
                         Text(
                           'Plataforma Digital',
-                          style: TextStyle(fontSize: 12, color: secondaryText, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: secondaryText,
+                              fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
                       platform.toString(),
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: primaryText),
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: primaryText),
                     ),
                     const Divider(height: 24),
                     Row(
@@ -648,14 +723,22 @@ class PaymentMethodDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(email.toString(), style: TextStyle(fontWeight: FontWeight.w600, color: primaryText), overflow: TextOverflow.ellipsis),
-                              Text(holder.toString(), style: TextStyle(fontSize: 14, color: secondaryText), overflow: TextOverflow.ellipsis),
+                              Text(email.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: primaryText),
+                                  overflow: TextOverflow.ellipsis),
+                              Text(holder.toString(),
+                                  style: TextStyle(
+                                      fontSize: 14, color: secondaryText),
+                                  overflow: TextOverflow.ellipsis),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.green.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
@@ -663,9 +746,14 @@ class PaymentMethodDetailPage extends StatelessWidget {
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.verified, size: 14, color: AppColors.green),
+                              Icon(Icons.verified,
+                                  size: 14, color: AppColors.statusSuccess),
                               SizedBox(width: 4),
-                              Text('Verificada', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.green)),
+                              Text('Verificada',
+                                  style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.statusSuccess)),
                             ],
                           ),
                         ),
@@ -687,7 +775,11 @@ class PaymentMethodDetailPage extends StatelessWidget {
           [
             _InfoRow('Proveedor', '$platform', Icons.business, ''),
             _InfoRow('Alias', alias.toString(), Icons.label, ''),
-            _InfoRow('Estado', method['is_active'] != false ? 'Activo' : 'Inactivo', Icons.info_outline, ''),
+            _InfoRow(
+                'Estado',
+                method['is_active'] != false ? 'Activo' : 'Inactivo',
+                Icons.info_outline,
+                ''),
           ],
         ),
       ],
@@ -716,7 +808,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
       [
         _InfoRow('Alias', alias.toString(), Icons.label, ''),
         _InfoRow('Tipo', typeLabel, Icons.category, ''),
-        _InfoRow('Estado', method['is_active'] != false ? 'Activo' : 'Inactivo', Icons.toggle_on, ''),
+        _InfoRow('Estado', method['is_active'] != false ? 'Activo' : 'Inactivo',
+            Icons.toggle_on, ''),
       ],
     );
   }
@@ -742,9 +835,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.grayDark.withValues(alpha: 0.5)
-                : AppColors.stitchBgCard,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(11)),
+                  ? AppColors.grayDark.withValues(alpha: 0.5)
+                  : AppColors.stitchBgCard,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(11)),
             ),
             child: Text(
               'Información',
@@ -768,7 +862,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
                       color: AppColors.blue.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(e.value.icon, color: AppColors.blue, size: 22),
+                    child: Icon(e.value.icon,
+                        color: AppColors.brandTeal, size: 22),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -776,14 +871,28 @@ class PaymentMethodDetailPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(e.value.label, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryText), overflow: TextOverflow.ellipsis),
+                        Text(e.value.label,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: primaryText),
+                            overflow: TextOverflow.ellipsis),
                         if (e.value.subtitle.isNotEmpty)
-                          Text(e.value.subtitle, style: TextStyle(fontSize: 12, color: secondaryText), overflow: TextOverflow.ellipsis),
+                          Text(e.value.subtitle,
+                              style:
+                                  TextStyle(fontSize: 12, color: secondaryText),
+                              overflow: TextOverflow.ellipsis),
                       ],
                     ),
                   ),
                   Expanded(
-                    child: Text(e.value.value, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: primaryText), overflow: TextOverflow.ellipsis, textAlign: TextAlign.end),
+                    child: Text(e.value.value,
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: primaryText),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end),
                   ),
                 ],
               ),
@@ -794,7 +903,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _securityBadge(Color primaryText, Color secondaryText, Color cardBg, Color borderColor) {
+  Widget _securityBadge(
+      Color primaryText, Color secondaryText, Color cardBg, Color borderColor) {
     const Color green100 = AppColors.greenLight100;
 
     return Container(
@@ -812,18 +922,24 @@ class PaymentMethodDetailPage extends StatelessWidget {
               color: green100,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.verified_user, color: AppColors.green, size: 26),
+            child: const Icon(Icons.verified_user,
+                color: AppColors.statusSuccess, size: 26),
           ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Seguridad Garantizada', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: primaryText)),
+                Text('Seguridad Garantizada',
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: primaryText)),
                 const SizedBox(height: 4),
                 Text(
                   'Tus datos están protegidos con cifrado de grado bancario. Zonix Pharma nunca almacena claves de acceso.',
-                  style: TextStyle(fontSize: 12, color: secondaryText, height: 1.35),
+                  style: TextStyle(
+                      fontSize: 12, color: secondaryText, height: 1.35),
                 ),
               ],
             ),
@@ -856,9 +972,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
                 icon: const Icon(Icons.star_border, size: 20),
                 label: const Text('Establecer como predeterminado'),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.blue,
-                  side: const BorderSide(color: AppColors.blue),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  foregroundColor: AppColors.brandTeal,
+                  side: const BorderSide(color: AppColors.brandTeal),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
                 ),
               ),
             ),
@@ -872,9 +989,10 @@ class PaymentMethodDetailPage extends StatelessWidget {
               icon: const Icon(Icons.edit_outlined, size: 22),
               label: const Text('Editar información'),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
                 elevation: 1,
               ),
             ),
@@ -885,10 +1003,15 @@ class PaymentMethodDetailPage extends StatelessWidget {
             height: 48,
             child: TextButton.icon(
               onPressed: () => _confirmDelete(context),
-              icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.red),
-              label: const Text('Eliminar este método', style: TextStyle(color: AppColors.red, fontWeight: FontWeight.w600, fontSize: 15)),
+              icon: const Icon(Icons.delete_outline,
+                  size: 20, color: AppColors.statusError),
+              label: const Text('Eliminar este método',
+                  style: TextStyle(
+                      color: AppColors.statusError,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15)),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.red,
+                foregroundColor: AppColors.statusError,
               ),
             ),
           ),
@@ -903,7 +1026,9 @@ class PaymentMethodDetailPage extends StatelessWidget {
           .setDefaultPaymentMethod(safeInt(method['id']));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Método establecido como predeterminado'), backgroundColor: AppColors.green),
+          const SnackBar(
+              content: Text('Método establecido como predeterminado'),
+              backgroundColor: AppColors.statusSuccess),
         );
         Navigator.pop(context, true);
       }
@@ -912,7 +1037,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceFirst('Exception: ', '')),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -946,7 +1071,8 @@ class PaymentMethodDetailPage extends StatelessWidget {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+            style:
+                FilledButton.styleFrom(backgroundColor: AppColors.statusError),
             child: const Text('Eliminar'),
           ),
         ],
@@ -955,12 +1081,14 @@ class PaymentMethodDetailPage extends StatelessWidget {
     if (confirm != true) return;
     if (!context.mounted) return;
     try {
-      await Provider.of<PaymentService>(context, listen: false).deletePaymentMethod(safeInt(method['id']));
+      await Provider.of<PaymentService>(context, listen: false)
+          .deletePaymentMethod(safeInt(method['id']));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Método eliminado'),
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor:
+                Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
         );
         Navigator.pop(context, true);
@@ -970,7 +1098,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceFirst('Exception: ', '')),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -990,7 +1118,20 @@ class PaymentMethodDetailPage extends StatelessWidget {
   }
 
   String _month(int m) {
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const months = [
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic'
+    ];
     return months[m - 1];
   }
 }

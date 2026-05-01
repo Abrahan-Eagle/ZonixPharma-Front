@@ -84,8 +84,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     if (!mounted) return;
     setState(() {
       _deliveryFeeLoading = false;
-      _calculatedDeliveryFee = result != null ? safeDouble(result['delivery_fee']) : null;
-      _deliveryTimeMinutes = result != null ? safeInt(result['delivery_time_minutes']) : null;
+      _calculatedDeliveryFee =
+          result != null ? safeDouble(result['delivery_fee']) : null;
+      _deliveryTimeMinutes =
+          result != null ? safeInt(result['delivery_time_minutes']) : null;
     });
   }
 
@@ -121,8 +123,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
       final location = await LocationService().getCurrentLocation();
       if (!mounted) return;
       final address = location['address'] as String?;
-      final lat = location['latitude'] != null ? safeDouble(location['latitude']) : null;
-      final lng = location['longitude'] != null ? safeDouble(location['longitude']) : null;
+      final lat = location['latitude'] != null
+          ? safeDouble(location['latitude'])
+          : null;
+      final lng = location['longitude'] != null
+          ? safeDouble(location['longitude'])
+          : null;
       final addressText = address?.trim().isNotEmpty == true
           ? address!
           : (lat != null && lng != null
@@ -192,18 +198,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
       decoration: BoxDecoration(
         color: AppColors.brandTealDeep.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
+        border:
+            Border.all(color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(Icons.receipt_long, color: AppColors.brandTealDeep),
           const SizedBox(width: 10),
-          Expanded(
+          const Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Requiere receta médica',
                   style: TextStyle(
@@ -222,8 +228,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           ),
           const SizedBox(width: 8),
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             decoration: BoxDecoration(
               color: AppColors.brandTealDeep,
               borderRadius: BorderRadius.circular(999),
@@ -231,7 +236,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
             child: Text(
               '${rxItems.length} Rx',
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
               ),
@@ -251,8 +256,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.statusInfo.withValues(alpha: 0.4)),
       ),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           Icon(Icons.ac_unit, color: AppColors.statusInfo),
           SizedBox(width: 10),
           Expanded(
@@ -288,15 +293,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
         }
         if (_deliveryFeeLoading || _calculatedDeliveryFee == null) {
           setState(() {
-            _error = 'Aun no se pudo calcular la tarifa de delivery. Revisa la direccion e intenta de nuevo.';
+            _error =
+                'Aun no se pudo calcular la tarifa de delivery. Revisa la direccion e intenta de nuevo.';
             _loading = false;
           });
           return;
         }
       }
-      final deliveryFee = _deliveryType == 'delivery'
-          ? (_calculatedDeliveryFee ?? 0.0)
-          : 0.0;
+      final deliveryFee =
+          _deliveryType == 'delivery' ? (_calculatedDeliveryFee ?? 0.0) : 0.0;
       final order = await orderService.createOrder(
         cartService.items.toList(),
         deliveryType: _deliveryType,
@@ -348,11 +353,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
     final cartItems = cartService.items;
     final subtotal = cartItems.fold<double>(
         0, (sum, item) => sum + (item.precio ?? 0) * item.quantity);
-    final delivery = _deliveryType == 'delivery'
-        ? (_calculatedDeliveryFee ?? 0.0)
-        : 0.0;
-    final totalPayment = (subtotal + delivery - _couponDiscount)
-        .clamp(0.0, double.infinity);
+    final delivery =
+        _deliveryType == 'delivery' ? (_calculatedDeliveryFee ?? 0.0) : 0.0;
+    final totalPayment =
+        (subtotal + delivery - _couponDiscount).clamp(0.0, double.infinity);
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
@@ -409,7 +413,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const SizedBox(height: 12),
                   ...cartService.items.map(
                     (item) {
-                      final imageUrl = (item.image ?? item.imagen ?? '').toString();
+                      final imageUrl =
+                          (item.image ?? item.imagen ?? '').toString();
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 6),
                         padding: const EdgeInsets.all(8),
@@ -469,7 +474,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                             horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
                                           color: AppColors.brandTealDeep,
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         child: const Text(
                                           'Rx',
@@ -505,8 +511,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                         ),
                                       ),
                                       IconButton(
-                                        visualDensity:
-                                            VisualDensity.compact,
+                                        visualDensity: VisualDensity.compact,
                                         icon: const Icon(
                                           Icons.remove_circle_outline,
                                           size: 20,
@@ -518,8 +523,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       ),
                                       Text('${item.quantity}'),
                                       IconButton(
-                                        visualDensity:
-                                            VisualDensity.compact,
+                                        visualDensity: VisualDensity.compact,
                                         icon: const Icon(
                                           Icons.add_circle_outline,
                                           size: 20,
@@ -535,7 +539,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
-                                      color: AppColors.amber,
+                                      color: AppColors.statusWarning,
                                     ),
                                   ),
                                 ],
@@ -588,7 +592,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       vertical: 10, horizontal: 4),
                                   decoration: BoxDecoration(
                                     color: _deliveryType == 'delivery'
-                                        ? AppColors.orange
+                                        ? AppColors.brandCtaAccent
                                         : AppColors.transparent,
                                     borderRadius: BorderRadius.circular(999),
                                   ),
@@ -610,7 +614,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           fontWeight: FontWeight.w600,
                                           color: _deliveryType == 'delivery'
                                               ? AppColors.white
-                                              : AppColors.secondaryText(context),
+                                              : AppColors.secondaryText(
+                                                  context),
                                         ),
                                       ),
                                     ],
@@ -626,17 +631,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const SizedBox(width: 4),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () =>
-                          setState(() {
-                            _deliveryType = 'pickup';
-                            _calculatedDeliveryFee = null;
-                          }),
+                      onTap: () => setState(() {
+                        _deliveryType = 'pickup';
+                        _calculatedDeliveryFee = null;
+                      }),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 4),
                         decoration: BoxDecoration(
                           color: _deliveryType == 'pickup'
-                              ? AppColors.green
+                              ? AppColors.statusSuccess
                               : AppColors.transparent,
                           borderRadius: BorderRadius.circular(999),
                         ),
@@ -736,13 +740,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 child: Row(
                   children: [
                     const Icon(Icons.check_circle,
-                        color: AppColors.green, size: 20),
+                        color: AppColors.statusSuccess, size: 20),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Cupón aplicado: -\$${_couponDiscount.toStringAsFixed(2)}',
                         style: const TextStyle(
-                            color: AppColors.green, fontWeight: FontWeight.w600),
+                            color: AppColors.statusSuccess,
+                            fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -756,8 +761,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 children: [
                   const Text(
                     'Dirección de entrega',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                   TextButton(
                     onPressed: () {
@@ -773,8 +777,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                         builder: (ctx) {
                           return Padding(
                             padding: EdgeInsets.only(
-                              bottom:
-                                  MediaQuery.of(ctx).viewInsets.bottom + 16,
+                              bottom: MediaQuery.of(ctx).viewInsets.bottom + 16,
                               top: 16,
                               left: 16,
                               right: 16,
@@ -803,9 +806,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           ? const SizedBox(
                                               width: 24,
                                               height: 24,
-                                              child:
-                                                  CircularProgressIndicator(
-                                                      strokeWidth: 2))
+                                              child: CircularProgressIndicator(
+                                                  strokeWidth: 2))
                                           : const Icon(Icons.my_location),
                                       title: const Text(
                                           'Ubicación GPS del dispositivo'),
@@ -911,7 +913,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
                       child: const Icon(
                         Icons.location_on,
-                        color: AppColors.orange,
+                        color: AppColors.brandCtaAccent,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -1027,7 +1029,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   const Icon(
                     Icons.check_circle,
                     size: 18,
-                    color: AppColors.green,
+                    color: AppColors.statusSuccess,
                   ),
                 ],
               ),
@@ -1044,7 +1046,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
               ),
               child: Column(
                 children: [
-                  _buildSummaryRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
+                  _buildSummaryRow(
+                      'Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
                   _buildSummaryRow(
                     'Costo de envío',
                     _deliveryType == 'delivery' && _deliveryFeeLoading
@@ -1054,7 +1057,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             : '\$${delivery.toStringAsFixed(2)}'),
                     isDiscount: delivery <= 0 && !_deliveryFeeLoading,
                   ),
-                  if (_deliveryType == 'delivery' && _deliveryTimeMinutes != null && _deliveryTimeMinutes! > 0)
+                  if (_deliveryType == 'delivery' &&
+                      _deliveryTimeMinutes != null &&
+                      _deliveryTimeMinutes! > 0)
                     _buildSummaryRow(
                       'Tiempo estimado',
                       '~${_deliveryTimeMinutes!} min',
@@ -1077,7 +1082,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
             ),
             if (_error != null) ...[
               const SizedBox(height: 8),
-              Text(_error!, style: const TextStyle(color: AppColors.red)),
+              Text(_error!,
+                  style: const TextStyle(color: AppColors.statusError)),
             ],
             const SizedBox(height: 16),
             SizedBox(
@@ -1087,17 +1093,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 label: 'Confirmar pedido y crear orden',
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.orange,
+                    backgroundColor: AppColors.brandCtaAccent,
                     foregroundColor: AppColors.white,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
                   ),
                   onPressed: (_loading ||
                           (_deliveryType == 'delivery' &&
-                              (_deliveryFeeLoading || _calculatedDeliveryFee == null)))
+                              (_deliveryFeeLoading ||
+                                  _calculatedDeliveryFee == null)))
                       ? null
                       : _handleCheckout,
                   child: _loading
@@ -1111,24 +1118,24 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           ),
                         )
                       : const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            'Confirmar Pedido',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Confirmar Pedido',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 8),
-                          Icon(
-                            Icons.chevron_right,
-                            size: 20,
-                            color: AppColors.white,
-                          ),
-                        ],
-                      ),
+                            SizedBox(width: 8),
+                            Icon(
+                              Icons.chevron_right,
+                              size: 20,
+                              color: AppColors.white,
+                            ),
+                          ],
+                        ),
                 ),
               ),
             ),
@@ -1165,7 +1172,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
         orderAmount: orderAmount,
         commerceId: commerceId,
       );
-      final discount = safeDouble(result['discount_amount'] ?? result['discount']);
+      final discount =
+          safeDouble(result['discount_amount'] ?? result['discount']);
       setState(() {
         _appliedCoupon = result;
         _couponDiscount = discount;
@@ -1175,7 +1183,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(e.toString().replaceFirst('Exception: ', '')),
-              backgroundColor: AppColors.red),
+              backgroundColor: AppColors.statusError),
         );
       }
     } finally {
@@ -1185,8 +1193,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   Widget _buildSummaryRow(String label, String value,
       {bool isTotal = false, bool isDiscount = false}) {
-    final color =
-        isTotal ? AppColors.green : (isDiscount ? AppColors.red : null);
+    final color = isTotal
+        ? AppColors.statusSuccess
+        : (isDiscount ? AppColors.statusError : null);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(

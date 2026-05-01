@@ -24,8 +24,7 @@ class OrderConfirmationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isPendingRx =
-        order.status == 'pending_prescription_validation';
+    final isPendingRx = order.status == 'pending_prescription_validation';
     final isPendingPayment = !isPendingRx &&
         (order.status == 'pending_payment' || order.status == 'pending');
     final scaffoldBg =
@@ -40,9 +39,7 @@ class OrderConfirmationPage extends StatelessWidget {
     final paymentLine = _paymentDisplayLine(order);
     final headline = isPendingRx
         ? 'Esperando validación de receta'
-        : (isPendingPayment
-            ? 'Pedido registrado'
-            : '¡Pedido confirmado!');
+        : (isPendingPayment ? 'Pedido registrado' : '¡Pedido confirmado!');
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -59,7 +56,8 @@ class OrderConfirmationPage extends StatelessWidget {
               ),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: _kMaxContentWidth),
+                  constraints:
+                      const BoxConstraints(maxWidth: _kMaxContentWidth),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -104,7 +102,8 @@ class OrderConfirmationPage extends StatelessWidget {
                               fit: BoxFit.cover,
                               borderRadius: BorderRadius.circular(12),
                               fallbackIcon: Icons.local_pharmacy,
-                              fallbackColor: AppColors.blue.withValues(alpha: 0.5),
+                              fallbackColor:
+                                  AppColors.blue.withValues(alpha: 0.5),
                             );
                           },
                         ),
@@ -187,16 +186,12 @@ class OrderConfirmationPage extends StatelessWidget {
   }) {
     final accent = isPendingRx
         ? AppColors.brandTealDeep
-        : (isPendingPayment ? AppColors.orange : accentGreen);
+        : (isPendingPayment ? AppColors.brandCtaAccent : accentGreen);
     final icon = isPendingRx
         ? Icons.medical_services_rounded
-        : (isPendingPayment
-            ? Icons.receipt_long_rounded
-            : Icons.check_rounded);
-    final diameter =
-        (isPendingRx || isPendingPayment) ? 102.0 : 128.0;
-    final iconSize =
-        (isPendingRx || isPendingPayment) ? 48.0 : 56.0;
+        : (isPendingPayment ? Icons.receipt_long_rounded : Icons.check_rounded);
+    final diameter = (isPendingRx || isPendingPayment) ? 102.0 : 128.0;
+    final iconSize = (isPendingRx || isPendingPayment) ? 48.0 : 56.0;
     return Container(
       width: diameter,
       height: diameter,
@@ -240,7 +235,8 @@ class OrderConfirmationPage extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.brandTealDeep.withValues(alpha: isDark ? 0.25 : 0.12),
+                  color: AppColors.brandTealDeep
+                      .withValues(alpha: isDark ? 0.25 : 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -309,8 +305,8 @@ class OrderConfirmationPage extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.blue,
-                side: const BorderSide(color: AppColors.blue),
+                foregroundColor: AppColors.brandTeal,
+                side: const BorderSide(color: AppColors.brandTeal),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -372,12 +368,13 @@ class OrderConfirmationPage extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.orange.withValues(alpha: isDark ? 0.2 : 0.12),
+                  color:
+                      AppColors.orange.withValues(alpha: isDark ? 0.2 : 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
                   Icons.receipt_long_rounded,
-                  color: AppColors.orange,
+                  color: AppColors.brandCtaAccent,
                   size: 26,
                 ),
               ),
@@ -439,7 +436,7 @@ class OrderConfirmationPage extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 2),
-          child: Icon(icon, size: 18, color: AppColors.blue),
+          child: Icon(icon, size: 18, color: AppColors.brandTeal),
         ),
         const SizedBox(width: 10),
         Expanded(
@@ -496,7 +493,7 @@ class OrderConfirmationPage extends StatelessWidget {
             ),
             child: const Icon(
               Icons.local_pharmacy,
-              color: AppColors.orange,
+              color: AppColors.brandCtaAccent,
               size: 26,
             ),
           ),
@@ -563,8 +560,7 @@ class OrderConfirmationPage extends StatelessWidget {
     required String etaShort,
     required String paymentLine,
   }) {
-    final hasPaymentLabel =
-        paymentLine.trim().isNotEmpty && paymentLine != '—';
+    final hasPaymentLabel = paymentLine.trim().isNotEmpty && paymentLine != '—';
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -592,7 +588,9 @@ class OrderConfirmationPage extends StatelessWidget {
             onSurfaceVariant: onSurfaceVariant,
             surfaceCard: surfaceCard,
             isDark: isDark,
-            icon: hasPaymentLabel ? Icons.credit_card_rounded : Icons.payments_rounded,
+            icon: hasPaymentLabel
+                ? Icons.credit_card_rounded
+                : Icons.payments_rounded,
             valueFontSize: hasPaymentLabel ? 13 : 14,
             valueFontWeight: FontWeight.w700,
             maxLines: 2,
@@ -647,7 +645,7 @@ class OrderConfirmationPage extends StatelessWidget {
               if (icon != null) ...[
                 Padding(
                   padding: const EdgeInsets.only(top: 2),
-                  child: Icon(icon, size: 18, color: AppColors.blue),
+                  child: Icon(icon, size: 18, color: AppColors.brandTeal),
                 ),
                 const SizedBox(width: 8),
               ],
@@ -699,7 +697,7 @@ class OrderConfirmationPage extends StatelessWidget {
               initiallyExpanded: false,
               tilePadding: EdgeInsets.zero,
               collapsedIconColor: onSurfaceVariant,
-              iconColor: AppColors.blue,
+              iconColor: AppColors.brandTeal,
               title: Text(
                 'Productos (${order.items.length})',
                 style: GoogleFonts.plusJakartaSans(
@@ -776,7 +774,7 @@ class OrderConfirmationPage extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.4,
-                  color: AppColors.blue,
+                  color: AppColors.brandTeal,
                 ),
               ),
             ],
@@ -817,7 +815,7 @@ class OrderConfirmationPage extends StatelessWidget {
                       height: 52,
                       child: FilledButton.icon(
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.blue,
+                          backgroundColor: AppColors.brandTeal,
                           foregroundColor: AppColors.white,
                           elevation: 4,
                           shadowColor: AppColors.blue.withValues(alpha: 0.35),
@@ -849,14 +847,15 @@ class OrderConfirmationPage extends StatelessWidget {
                     const SizedBox(height: 4),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).popUntil((route) => route.isFirst);
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
                       },
                       child: Text(
                         'Volver al inicio',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.blue,
+                          color: AppColors.brandTeal,
                         ),
                       ),
                     ),

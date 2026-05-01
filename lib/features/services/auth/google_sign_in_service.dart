@@ -1,21 +1,64 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:flutter/services.dart' show PlatformException;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:zonix/features/utils/auth_utils.dart';
 import 'package:zonix/features/services/auth/api_service.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:zonix/features/utils/auth_utils.dart';
 
 const FlutterSecureStorage _storage = FlutterSecureStorage();
-final GoogleSignIn _googleSignIn = GoogleSignIn();
 final Logger logger = Logger();
 final ApiService _apiService = ApiService();
+
+GoogleSignIn? _googleSignInCached;
+
+/// Misma instancia tras [dotenv.load] para que `serverClientId` (id_token) sea coherente con signOut.
+GoogleSignIn _googleSignIn() {
+  _googleSignInCached ??= GoogleSignIn(
+    scopes: const [
+      'email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ],
+    serverClientId: _readGoogleSignInServerClientId(),
+  );
+  return _googleSignInCached!;
+}
+
+/// ID cliente OAuth **Web** (mismo valor que `GOOGLE_CLIENT_ID` en Laravel si validáis `aud` del id_token).
+String? _readGoogleSignInServerClientId() {
+  if (!dotenv.isInitialized) return null;
+  final v = dotenv.env['GOOGLE_SIGN_IN_SERVER_CLIENT_ID']?.trim();
+  if (v == null || v.isEmpty) return null;
+  return v;
+}
+
+void _logGoogleSignInDeveloperHint(Object error) {
+  if (!kDebugMode) return;
+  final webIdSet = dotenv.isInitialized &&
+      (dotenv.env['GOOGLE_SIGN_IN_SERVER_CLIENT_ID']?.trim().isNotEmpty ?? false);
+  logger.i(
+    'Google Sign-In debug: GOOGLE_SIGN_IN_SERVER_CLIENT_ID '
+    '${webIdSet ? "definido (debe ser cliente OAuth Web, no el del JSON Android)" : "no definido"}.',
+  );
+  if (error is! PlatformException) return;
+  if (error.code != 'sign_in_failed') return;
+  final msg = error.message ?? '';
+  if (!msg.contains('10')) return;
+  logger.w(
+    'ApiException 10 (DEVELOPER_ERROR): en Firebase añade SHA-1 y SHA-256 del keystore de firma para '
+    'com.zonix.eats (applicationId Android actual), descarga google-services.json de nuevo; en Google Cloud verifica el cliente OAuth '
+    'Android. Ejecuta: bash android/print_firebase_registration_sha.sh. Checklist en .env.example.',
+  );
+}
 
 class GoogleSignInService {
   // Método para iniciar sesión con Google
   static Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
-      final user = await _googleSignIn.signIn();
+      final user = await _googleSignIn().signIn();
       if (user == null) {
         logger.i('Inicio de sesión cancelado');
         return null; // Retorna null si el usuario cancela la autenticación
@@ -104,6 +147,7 @@ class GoogleSignInService {
       }
     } catch (error) {
       logger.e('Error durante el inicio de sesión con Google: $error');
+      _logGoogleSignInDeveloperHint(error);
       await AuthUtils.clearTokens();
       return null; // Retorna null si hay una excepción
     }
@@ -112,7 +156,7 @@ class GoogleSignInService {
   // Método para obtener el usuario autenticado actualmente
   static Future<GoogleSignInAccount?> getCurrentUser() async {
     try {
-      final GoogleSignInAccount? user = await _googleSignIn.signInSilently();
+      final GoogleSignInAccount? user = await _googleSignIn().signInSilently();
       if (user != null) {
         logger.i('Usuario autenticado silenciosamente');
         return user; // Devuelve el usuario autenticado directamente
@@ -121,15 +165,25 @@ class GoogleSignInService {
       }
     } catch (error) {
       logger.e('Error al intentar autenticar de forma silenciosa: $error');
+      _logGoogleSignInDeveloperHint(error);
       return null;
     }
     return null; // Devuelve null si no hay usuario autenticado
   }
 
   // Método para cerrar sesión
+  /// Cierra sesión Google usando la misma configuración que el sign-in (p. ej. [user_provider]).
+  static Future<void> signOutGoogle() async {
+    try {
+      await _googleSignIn().signOut();
+    } catch (error) {
+      logger.e('Error al cerrar sesión Google: $error');
+    }
+  }
+
   Future<void> signOut() async {
     try {
-      await _googleSignIn.signOut();
+      await _googleSignIn().signOut();
       await _storage.deleteAll(); // Eliminar los tokens almacenados
       logger.i('Sesión cerrada exitosamente.');
     } catch (error) {

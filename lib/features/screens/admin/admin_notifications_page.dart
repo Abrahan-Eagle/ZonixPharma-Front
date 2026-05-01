@@ -23,13 +23,14 @@ class _AdminNotificationsPageState extends State<AdminNotificationsPage> {
   bool get _isDark => Theme.of(context).brightness == Brightness.dark;
 
   static const _types = <String, _TypeMeta>{
-    'info':
-        _TypeMeta('Información', Icons.info_outline_rounded, AppColors.blue),
-    'warning':
-        _TypeMeta('Advertencia', Icons.warning_amber_rounded, AppColors.orange),
-    'error': _TypeMeta('Error', Icons.error_outline_rounded, AppColors.red),
-    'success':
-        _TypeMeta('Éxito', Icons.check_circle_outline_rounded, AppColors.green),
+    'info': _TypeMeta(
+        'Información', Icons.info_outline_rounded, AppColors.brandTeal),
+    'warning': _TypeMeta(
+        'Advertencia', Icons.warning_amber_rounded, AppColors.brandCtaAccent),
+    'error':
+        _TypeMeta('Error', Icons.error_outline_rounded, AppColors.statusError),
+    'success': _TypeMeta(
+        'Éxito', Icons.check_circle_outline_rounded, AppColors.statusSuccess),
   };
 
   static const _targets = <String, String>{
@@ -167,7 +168,7 @@ class _AdminNotificationsPageState extends State<AdminNotificationsPage> {
                     label:
                         Text(_isSending ? 'Enviando…' : 'Enviar notificación'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.blue,
+                      backgroundColor: AppColors.brandTeal,
                       foregroundColor: AppColors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -369,7 +370,8 @@ class _AdminNotificationsPageState extends State<AdminNotificationsPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: isError ? AppColors.red : AppColors.green,
+        backgroundColor:
+            isError ? AppColors.statusError : AppColors.statusSuccess,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),

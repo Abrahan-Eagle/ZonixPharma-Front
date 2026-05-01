@@ -101,9 +101,8 @@ class _QrScannerPageState extends State<QrScannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final title = widget.scanType == 'pickup'
-        ? 'Escanear recogida'
-        : 'Escanear entrega';
+    final title =
+        widget.scanType == 'pickup' ? 'Escanear recogida' : 'Escanear entrega';
 
     return Scaffold(
       appBar: AppBar(title: Text(title)),
@@ -130,14 +129,16 @@ class _QrScannerPageState extends State<QrScannerPage> {
                       widget.scanType == 'pickup'
                           ? 'Apunta al QR del comercio'
                           : 'Apunta al QR del cliente',
-                      style: const TextStyle(color: AppColors.white, fontSize: 16),
+                      style:
+                          const TextStyle(color: AppColors.white, fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                   if (_error != null) ...[
                     const SizedBox(height: 8),
                     Text(
                       _error!,
-                      style: const TextStyle(color: AppColors.red, fontSize: 14),
+                      style: const TextStyle(
+                          color: AppColors.statusError, fontSize: 14),
                       textAlign: TextAlign.center,
                     ),
                   ],

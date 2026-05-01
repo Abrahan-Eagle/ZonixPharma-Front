@@ -7,7 +7,7 @@ import 'package:zonix/features/screens/settings/commerce_data_page.dart';
 import 'package:zonix/features/screens/commerce/commerce_add_restaurant_page.dart';
 import 'package:zonix/features/screens/commerce/commerce_detail_page.dart';
 
-/// Pantalla "Mis Comercios" - lista de comercios del usuario (multi-restaurante).
+/// Pantalla "Mis Comercios" - lista de farmacias del usuario (multi-sede).
 /// Diseño Stitch: cards con icono, badge Principal, stats en pills, botones Ver|Editar|Eliminar.
 /// Si [embedded] es true, solo muestra el contenido sin Scaffold/AppBar (para Mi Perfil).
 
@@ -115,7 +115,7 @@ class _CommerceListPageState extends State<CommerceListPage> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Eliminar restaurante'),
+        title: const Text('Eliminar farmacia'),
         content: Text(
           'Para eliminar "${c.businessName}", contacta al equipo de soporte de Zonix Pharma.',
         ),
@@ -187,7 +187,7 @@ class _CommerceListPageState extends State<CommerceListPage> {
                   size: 80, color: _stitchPrimary.withValues(alpha: 0.4)),
               const SizedBox(height: 24),
               Text(
-                'No tienes restaurantes registrados',
+                'No tienes farmacias registradas',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -197,7 +197,7 @@ class _CommerceListPageState extends State<CommerceListPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Agrega tu primer restaurante con el botón de abajo',
+                'Agrega tu primera farmacia con el botón de abajo',
                 style: TextStyle(
                     fontSize: 14, color: theme.colorScheme.onSurfaceVariant),
                 textAlign: TextAlign.center,
@@ -279,7 +279,7 @@ class _CommerceListPageState extends State<CommerceListPage> {
                 const Icon(Icons.add_circle, size: 20, color: AppColors.white),
                 const SizedBox(width: 8),
                 Text(
-                  'Agregar Restaurante',
+                  'Agregar farmacia',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -552,7 +552,7 @@ class _CommerceCard extends StatelessWidget {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.red,
+                              color: AppColors.statusError,
                             ),
                           ),
                         ),

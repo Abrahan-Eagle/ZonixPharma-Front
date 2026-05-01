@@ -13,7 +13,8 @@ class CommerceProfileEditPage extends StatefulWidget {
   final Map<String, dynamic> initialData;
 
   @override
-  State<CommerceProfileEditPage> createState() => _CommerceProfileEditPageState();
+  State<CommerceProfileEditPage> createState() =>
+      _CommerceProfileEditPageState();
 }
 
 class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
@@ -30,13 +31,14 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
   @override
   void initState() {
     super.initState();
-    _nameController.text = (widget.initialData['business_name'] ?? '').toString();
-    _typeController.text = (widget.initialData['business_type'] ?? '').toString();
+    _nameController.text =
+        (widget.initialData['business_name'] ?? '').toString();
+    _typeController.text =
+        (widget.initialData['business_type'] ?? '').toString();
     _addressController.text = (widget.initialData['address'] ?? '').toString();
     final s = widget.initialData['schedule'];
-    _scheduleController.text = s is Map
-        ? (s['raw'] ?? '').toString()
-        : (s ?? '').toString();
+    _scheduleController.text =
+        s is Map ? (s['raw'] ?? '').toString() : (s ?? '').toString();
   }
 
   @override
@@ -58,7 +60,9 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+          SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: AppColors.statusError),
         );
       }
     }
@@ -90,7 +94,7 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Datos guardados correctamente'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         Navigator.pop(context, true);
@@ -146,9 +150,13 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error_outline, color: AppColors.red),
+                      const Icon(Icons.error_outline,
+                          color: AppColors.statusError),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: AppColors.red))),
+                      Expanded(
+                          child: Text(_error!,
+                              style: const TextStyle(
+                                  color: AppColors.statusError))),
                     ],
                   ),
                 ),
@@ -166,16 +174,18 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
                               : null),
                       child: _imagePath == null &&
                               (imageUrl == null || imageUrl.isEmpty)
-                          ? const Icon(Icons.store, size: 48, color: AppColors.textMutedGray)
+                          ? const Icon(Icons.store,
+                              size: 48, color: AppColors.textMutedGray)
                           : null,
                     ),
                     Positioned(
                       right: 0,
                       bottom: 0,
                       child: CircleAvatar(
-                        backgroundColor: AppColors.blue,
+                        backgroundColor: AppColors.brandTeal,
                         child: IconButton(
-                          icon: const Icon(Icons.camera_alt, color: AppColors.white),
+                          icon: const Icon(Icons.camera_alt,
+                              color: AppColors.white),
                           onPressed: _pickImage,
                         ),
                       ),

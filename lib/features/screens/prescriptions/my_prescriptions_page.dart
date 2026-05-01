@@ -55,8 +55,7 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
                     const Icon(Icons.error_outline,
                         size: 48, color: AppColors.statusError),
                     const SizedBox(height: 8),
-                    Text(service.error!,
-                        textAlign: TextAlign.center),
+                    Text(service.error!, textAlign: TextAlign.center),
                     const SizedBox(height: 16),
                     OutlinedButton(
                       onPressed: () => service.loadMyPrescriptions(),
@@ -92,15 +91,14 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
                     leading: CircleAvatar(
                       backgroundColor: _statusColor(p.status),
                       child: const Icon(Icons.receipt_long,
-                          color: Colors.white),
+                          color: AppColors.white),
                     ),
                     title: Text('Receta #${p.id} · ${p.prescriptionTypeLabel}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Médico: ${p.prescribingDoctorName}'),
-                        if (p.orderId != null)
-                          Text('Pedido: #${p.orderId}'),
+                        if (p.orderId != null) Text('Pedido: #${p.orderId}'),
                         Text('Estado: ${p.statusLabel}'),
                         if (p.rejectionReason != null &&
                             p.rejectionReason!.isNotEmpty)

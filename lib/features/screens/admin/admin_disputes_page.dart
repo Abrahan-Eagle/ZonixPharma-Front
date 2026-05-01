@@ -264,7 +264,10 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
                         height: 4,
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.45),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withValues(alpha: 0.45),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -321,7 +324,9 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
                       width: double.infinity,
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
@@ -351,7 +356,9 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
                             color: AppColors.secondaryText(context),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          fillColor: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
@@ -386,7 +393,9 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
                             color: AppColors.secondaryText(context),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          fillColor: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
@@ -431,7 +440,7 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.green,
+                          backgroundColor: AppColors.statusSuccess,
                           foregroundColor: AppColors.white,
                           minimumSize: const Size.fromHeight(44),
                           shape: RoundedRectangleBorder(
@@ -489,7 +498,9 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
         title: const Text('Disputas'),
-        backgroundColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHigh : AppColors.blueDark,
+        backgroundColor: isDark
+            ? Theme.of(context).colorScheme.surfaceContainerHigh
+            : AppColors.blueDark,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -572,11 +583,11 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
         children: [
           Row(
             children: [
-              _statItem('Pendientes', '$pending', AppColors.orange),
+              _statItem('Pendientes', '$pending', AppColors.brandCtaAccent),
               _statDivider(),
-              _statItem('Resueltas', '$resolved', AppColors.green),
+              _statItem('Resueltas', '$resolved', AppColors.statusSuccess),
               _statDivider(),
-              _statItem('Total', '$total', AppColors.blue),
+              _statItem('Total', '$total', AppColors.brandTeal),
             ],
           ),
           const SizedBox(height: 10),
@@ -591,13 +602,17 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
               _statItem(
                 '>24h',
                 '$pendingOlderThan24h',
-                pendingOlderThan24h > 0 ? AppColors.orange : AppColors.green,
+                pendingOlderThan24h > 0
+                    ? AppColors.brandCtaAccent
+                    : AppColors.statusSuccess,
               ),
               _statDivider(),
               _statItem(
                 '>72h',
                 '$pendingOlderThan72h',
-                pendingOlderThan72h > 0 ? AppColors.red : AppColors.green,
+                pendingOlderThan72h > 0
+                    ? AppColors.statusError
+                    : AppColors.statusSuccess,
               ),
             ],
           ),
@@ -744,7 +759,7 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppColors.blue : cs.surfaceContainerHighest,
+          color: selected ? AppColors.brandTeal : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(

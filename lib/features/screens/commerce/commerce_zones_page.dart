@@ -86,13 +86,13 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                         decoration: BoxDecoration(
                           color: AppColors.blue.withAlpha(15),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: AppColors.blue.withAlpha(40)),
+                          border:
+                              Border.all(color: AppColors.blue.withAlpha(40)),
                         ),
                         child: Row(
                           children: [
                             const Icon(Icons.info_outline,
-                                color: AppColors.blue, size: 20),
+                                color: AppColors.brandTeal, size: 20),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
@@ -165,17 +165,20 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: (isActive ? AppColors.green : AppColors.red)
+                  color: (isActive
+                          ? AppColors.statusSuccess
+                          : AppColors.statusError)
                       .withAlpha(25),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   isActive ? 'Activa' : 'Inactiva',
                   style: TextStyle(
-                    color: isActive ? AppColors.green : AppColors.red,
+                    color: isActive
+                        ? AppColors.statusSuccess
+                        : AppColors.statusError,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
@@ -192,10 +195,8 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                 _feeChip('Base', '\$${baseFee.toStringAsFixed(2)}'),
               if (perKmFee > 0)
                 _feeChip('Por km', '\$${perKmFee.toStringAsFixed(2)}'),
-              if (minFee > 0)
-                _feeChip('Mín', '\$${minFee.toStringAsFixed(2)}'),
-              if (maxFee > 0)
-                _feeChip('Máx', '\$${maxFee.toStringAsFixed(2)}'),
+              if (minFee > 0) _feeChip('Mín', '\$${minFee.toStringAsFixed(2)}'),
+              if (maxFee > 0) _feeChip('Máx', '\$${maxFee.toStringAsFixed(2)}'),
             ],
           ),
         ],

@@ -7,5 +7,3 @@ import 'client_onboarding_flow.dart';
 class CommerceOnboardingFlow extends ClientOnboardingFlow {
   const CommerceOnboardingFlow({super.key}) : super(isCommerce: true);
 }
-
-

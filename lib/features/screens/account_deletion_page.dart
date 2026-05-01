@@ -18,7 +18,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
 
   final TextEditingController _reasonController = TextEditingController();
   final TextEditingController _feedbackController = TextEditingController();
-  final TextEditingController _confirmationCodeController = TextEditingController();
+  final TextEditingController _confirmationCodeController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String? selectedReason;
@@ -78,7 +79,9 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
 
       await AccountDeletionService.requestAccountDeletion(
         reason: selectedReason,
-        feedback: _feedbackController.text.isNotEmpty ? _feedbackController.text : null,
+        feedback: _feedbackController.text.isNotEmpty
+            ? _feedbackController.text
+            : null,
         immediate: immediateDeletion,
       );
 
@@ -148,7 +151,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
       ),
     );
   }
@@ -157,7 +160,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
       ),
     );
   }
@@ -183,7 +186,11 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
           child: AppBar(
             backgroundColor: AppColors.transparent,
             elevation: 0,
-            title: const Text('Eliminar Cuenta', style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold, fontSize: 24)),
+            title: const Text('Eliminar Cuenta',
+                style: TextStyle(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24)),
             iconTheme: const IconThemeData(color: AppColors.white),
           ),
         ),
@@ -199,7 +206,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                     color: AppColors.red.withValues(alpha: 0.08),
                     shadowColor: AppColors.red.withValues(alpha: 0.15),
                     elevation: 8,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     child: const Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
@@ -207,14 +215,14 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.warning, color: AppColors.red),
+                              Icon(Icons.warning, color: AppColors.statusError),
                               SizedBox(width: 8),
                               Text(
                                 'Advertencia importante',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.red,
+                                  color: AppColors.statusError,
                                 ),
                               ),
                             ],
@@ -222,7 +230,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                           SizedBox(height: 8),
                           Text(
                             'La eliminación de tu cuenta es permanente e irreversible. Todos tus datos, pedidos, reseñas y configuraciones serán eliminados definitivamente.',
-                            style: TextStyle(color: AppColors.red),
+                            style: TextStyle(color: AppColors.statusError),
                           ),
                         ],
                       ),
@@ -243,7 +251,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                     color: AppColors.cardBg(context),
                     shadowColor: AppColors.red.withValues(alpha: 0.10),
                     elevation: 8,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     child: const Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
@@ -286,7 +295,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
           children: [
             const Row(
               children: [
-                Icon(Icons.schedule, color: AppColors.orange),
+                Icon(Icons.schedule, color: AppColors.brandCtaAccent),
                 SizedBox(width: 8),
                 Text(
                   'Estado de eliminación',
@@ -302,7 +311,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
             if (requestedAt != null)
               Text('Solicitado: ${_formatDate(DateTime.parse(requestedAt))}'),
             if (scheduledFor != null)
-              Text('Programado para: ${_formatDate(DateTime.parse(scheduledFor))}'),
+              Text(
+                  'Programado para: ${_formatDate(DateTime.parse(scheduledFor))}'),
           ],
         ),
       ),
@@ -324,7 +334,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Razón de eliminación
             DropdownButtonFormField<String>(
               initialValue: selectedReason,
@@ -333,19 +343,21 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                 labelText: 'Razón de eliminación *',
                 border: OutlineInputBorder(),
               ),
-              items: deletionReasons.map((reason) => DropdownMenuItem(
-                value: reason,
-                child: Text(reason, overflow: TextOverflow.ellipsis),
-              )).toList(),
+              items: deletionReasons
+                  .map((reason) => DropdownMenuItem(
+                        value: reason,
+                        child: Text(reason, overflow: TextOverflow.ellipsis),
+                      ))
+                  .toList(),
               onChanged: (String? value) {
                 setState(() {
                   selectedReason = value;
                 });
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Feedback opcional
             TextField(
               controller: _feedbackController,
@@ -356,13 +368,14 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
               ),
               maxLines: 3,
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Eliminación inmediata
             SwitchListTile(
               title: const Text('Eliminación inmediata'),
-              subtitle: const Text('Eliminar la cuenta de inmediato (no recomendado)'),
+              subtitle: const Text(
+                  'Eliminar la cuenta de inmediato (no recomendado)'),
               value: immediateDeletion,
               onChanged: (bool value) {
                 setState(() {
@@ -370,16 +383,17 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                 });
               },
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Botón de solicitar eliminación
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: isRequestingDeletion ? null : _requestAccountDeletion,
+                onPressed:
+                    isRequestingDeletion ? null : _requestAccountDeletion,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.red,
+                  backgroundColor: AppColors.statusError,
                   foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -418,18 +432,19 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
               'Puedes cancelarla o confirmarla.',
             ),
             const SizedBox(height: 16),
-            
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: isCancellingDeletion ? null : _cancelDeletionRequest,
+                    onPressed:
+                        isCancellingDeletion ? null : _cancelDeletionRequest,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.textMutedGray,
                       foregroundColor: AppColors.white,
                     ),
                     child: isCancellingDeletion
-                        ? const CircularProgressIndicator(color: AppColors.white)
+                        ? const CircularProgressIndicator(
+                            color: AppColors.white)
                         : const Text('Cancelar'),
                   ),
                 ),
@@ -438,7 +453,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                   child: ElevatedButton(
                     onPressed: _showConfirmationDialog,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.red,
+                      backgroundColor: AppColors.statusError,
                       foregroundColor: AppColors.white,
                     ),
                     child: const Text('Confirmar'),
@@ -489,12 +504,14 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
             child: const Text('Cancelar'),
           ),
           ElevatedButton(
-            onPressed: isConfirmingDeletion ? null : () {
-              Navigator.of(context).pop();
-              _confirmAccountDeletion();
-            },
+            onPressed: isConfirmingDeletion
+                ? null
+                : () {
+                    Navigator.of(context).pop();
+                    _confirmAccountDeletion();
+                  },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.red,
+              backgroundColor: AppColors.statusError,
               foregroundColor: AppColors.white,
             ),
             child: isConfirmingDeletion
@@ -509,4 +526,4 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
   }
-} 
+}

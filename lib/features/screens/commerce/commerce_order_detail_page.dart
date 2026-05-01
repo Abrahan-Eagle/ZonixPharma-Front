@@ -20,7 +20,8 @@ class CommerceOrderDetailPage extends StatefulWidget {
   final CommerceOrder? order;
 
   @override
-  State<CommerceOrderDetailPage> createState() => _CommerceOrderDetailPageState();
+  State<CommerceOrderDetailPage> createState() =>
+      _CommerceOrderDetailPageState();
 }
 
 class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
@@ -48,35 +49,38 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
     } else {
       _loading = false;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) => _subscribeToOrderUpdates());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _subscribeToOrderUpdates());
   }
 
   @override
   void dispose() {
     _pusherSubscription?.cancel();
     if (_pusherSubscribed) {
-      PusherService.instance.unsubscribeFromChannel('private-orders.${widget.orderId}');
+      PusherService.instance
+          .unsubscribeFromChannel('private-orders.${widget.orderId}');
     }
     super.dispose();
   }
 
   Future<void> _subscribeToOrderUpdates() async {
     if (!AppConfig.enablePusher || _pusherSubscribed || !mounted) return;
-    final ok = await PusherService.instance.subscribeToOrderChat(widget.orderId);
-    
+    final ok =
+        await PusherService.instance.subscribeToOrderChat(widget.orderId);
+
     if (ok && mounted) {
       _pusherSubscription?.cancel();
       _pusherSubscription = PusherService.instance.eventStream.listen((event) {
-        final rawEventName =
-            event['canonicalEventName']?.toString() ??
+        final rawEventName = event['canonicalEventName']?.toString() ??
             event['eventName']?.toString() ??
             '';
         final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
         final channelName = event['channelName']?.toString() ?? '';
 
         if (channelName == 'private-orders.${widget.orderId}') {
-          if ((eventName.contains('OrderStatusChanged') || 
-               eventName.contains('PaymentValidated')) && mounted) {
+          if ((eventName.contains('OrderStatusChanged') ||
+                  eventName.contains('PaymentValidated')) &&
+              mounted) {
             _loadOrder();
           }
         }
@@ -165,7 +169,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_statusUpdatedMessage(status, _order)),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -174,7 +178,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_userFacingError(e)),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -201,7 +205,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Orden rechazada'),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -210,7 +214,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_userFacingError(e)),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -222,7 +226,8 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
   Future<void> _validatePayment(bool isValid) async {
     setState(() => _updating = true);
     try {
-      final response = await CommerceOrderService.validatePayment(widget.orderId, isValid);
+      final response =
+          await CommerceOrderService.validatePayment(widget.orderId, isValid);
       await _loadOrder();
       if (!mounted) return;
 
@@ -232,7 +237,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(allValidated ? 'Pago validado' : msg),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         if (allValidated) {
@@ -240,7 +245,9 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Pago rechazado'), backgroundColor: AppColors.red),
+          const SnackBar(
+              content: Text('Pago rechazado'),
+              backgroundColor: AppColors.statusError),
         );
         if (_order?.isCancelled == true) {
           Navigator.pop(context);
@@ -252,7 +259,7 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_userFacingError(e)),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
         await _loadOrder();
@@ -284,7 +291,12 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
       case 'digital_wallet':
         return 'Billetera digital';
       default:
-        return type.replaceAll('_', ' ').split(' ').map((e) => e.isEmpty ? e : '${e[0].toUpperCase()}${e.substring(1)}').join(' ');
+        return type
+            .replaceAll('_', ' ')
+            .split(' ')
+            .map(
+                (e) => e.isEmpty ? e : '${e[0].toUpperCase()}${e.substring(1)}')
+            .join(' ');
     }
   }
 
@@ -310,9 +322,11 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
-              Text(_error ?? 'Orden no encontrada', textAlign: TextAlign.center),
+              Text(_error ?? 'Orden no encontrada',
+                  textAlign: TextAlign.center),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadOrder,
@@ -356,10 +370,167 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
               physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16),
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _FulfillmentModeBanner(order: order),
-                    const SizedBox(height: 12),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _FulfillmentModeBanner(order: order),
+                  const SizedBox(height: 12),
+                  Card(
+                    color: surfaceCard,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Cliente',
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          const SizedBox(height: 4),
+                          Text(order.customerName,
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w500)),
+                          Text('Tel: ${order.customerPhone}'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text('Productos',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  ...order.items.map((item) {
+                    final qty = _parseNum(item['quantity'] ?? 1);
+                    final price =
+                        _parseNum(item['unit_price'] ?? item['price'] ?? 0);
+                    final name = item['product']?['name'] ?? 'Producto';
+                    return Card(
+                      color: surfaceCard,
+                      margin: const EdgeInsets.only(bottom: 4),
+                      child: ListTile(
+                        title: Text(name),
+                        subtitle: Text(
+                            '${qty.toInt()} x \$${price.toStringAsFixed(2)}'),
+                        trailing: Text(
+                          '\$${(qty * price).toStringAsFixed(2)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    );
+                  }),
+                  if (order.notes != null &&
+                      order.notes!.trim().isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    Text('Personalización del pedido',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Card(
+                      color: surfaceCard,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(Icons.note_alt_outlined,
+                                size: 20, color: AppColors.statusWarning),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                order.notes!,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  height: 1.35,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  Card(
+                    color: surfaceCard,
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          _TotalRow('Subtotal',
+                              '\$${order.total.toStringAsFixed(2)}'),
+                          _TotalRow('Estado', order.statusText),
+                          _TotalRow('Tipo', order.deliveryTypeText),
+                          if (order.estimatedDeliveryMinutes != null &&
+                              order.estimatedDeliveryMinutes! > 0)
+                            _TotalRow(
+                              order.isPickup
+                                  ? 'Tiempo estimado (listo)'
+                                  : 'Tiempo estimado de entrega',
+                              '~${order.estimatedDeliveryMinutes} min',
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (order.isPendingPayment && !order.approvedForPayment) ...[
+                    const SizedBox(height: 16),
+                    Text('Acciones',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _updating
+                              ? null
+                              : () async {
+                                  setState(() => _updating = true);
+                                  try {
+                                    await CommerceOrderService
+                                        .approveForPayment(widget.orderId);
+                                    await _loadOrder();
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content:
+                                            Text('Orden aprobada para pago'),
+                                        backgroundColor:
+                                            AppColors.statusSuccess,
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    if (!context.mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(_userFacingError(e)),
+                                        backgroundColor: AppColors.statusError,
+                                      ),
+                                    );
+                                  } finally {
+                                    if (mounted) {
+                                      setState(() => _updating = false);
+                                    }
+                                  }
+                                },
+                          icon: const Icon(Icons.check_circle_outline),
+                          label: const Text('Aprobar para pago'),
+                        ),
+                        OutlinedButton.icon(
+                          onPressed: () => _rejectOrder(),
+                          icon: const Icon(Icons.cancel_outlined),
+                          label: const Text('Rechazar orden'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.statusError,
+                            side:
+                                const BorderSide(color: AppColors.statusError),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (order.hasPaymentProof && !order.isPaymentValidated) ...[
+                    const SizedBox(height: 16),
+                    Text('Comprobante de pago',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 8),
                     Card(
                       color: surfaceCard,
                       child: Padding(
@@ -367,442 +538,348 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Cliente',
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(order.customerName,
-                                style: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500)),
-                            Text('Tel: ${order.customerPhone}'),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text('Productos',
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    ...order.items.map((item) {
-                      final qty = _parseNum(item['quantity'] ?? 1);
-                      final price = _parseNum(item['unit_price'] ?? item['price'] ?? 0);
-                      final name = item['product']?['name'] ?? 'Producto';
-                      return Card(
-                        color: surfaceCard,
-                        margin: const EdgeInsets.only(bottom: 4),
-                        child: ListTile(
-                          title: Text(name),
-                          subtitle: Text('${qty.toInt()} x \$${price.toStringAsFixed(2)}'),
-                          trailing: Text(
-                            '\$${(qty * price).toStringAsFixed(2)}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      );
-                    }),
-                    if (order.notes != null && order.notes!.trim().isNotEmpty) ...[
-                      const SizedBox(height: 16),
-                      Text('Personalización del pedido',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 8),
-                      Card(
-                        color: surfaceCard,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(Icons.note_alt_outlined,
-                                  size: 20, color: AppColors.amber),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  order.notes!,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    height: 1.35,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 16),
-                    Card(
-                      color: surfaceCard,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            _TotalRow('Subtotal',
-                                '\$${order.total.toStringAsFixed(2)}'),
-                            _TotalRow('Estado', order.statusText),
-                            _TotalRow('Tipo', order.deliveryTypeText),
-                            if (order.estimatedDeliveryMinutes != null &&
-                                order.estimatedDeliveryMinutes! > 0)
-                              _TotalRow(
-                                order.isPickup
-                                    ? 'Tiempo estimado (listo)'
-                                    : 'Tiempo estimado de entrega',
-                                '~${order.estimatedDeliveryMinutes} min',
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (order.isPendingPayment && !order.approvedForPayment) ...[
-                      const SizedBox(height: 16),
-                      Text('Acciones',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 8),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _updating
-                                ? null
-                                : () async {
-                                    setState(() => _updating = true);
-                                    try {
-                                      await CommerceOrderService
-                                          .approveForPayment(widget.orderId);
-                                      await _loadOrder();
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Orden aprobada para pago'),
-                                          backgroundColor: AppColors.green,
-                                        ),
-                                      );
-                                    } catch (e) {
-                                      if (!context.mounted) return;
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                          SnackBar(
-                                            content: Text(_userFacingError(e)),
-                                            backgroundColor: AppColors.red,
-                                          ),
-                                        );
-                                    } finally {
-                                      if (mounted) {
-                                        setState(() => _updating = false);
-                                      }
-                                    }
-                                  },
-                            icon: const Icon(Icons.check_circle_outline),
-                            label: const Text('Aprobar para pago'),
-                          ),
-                          OutlinedButton.icon(
-                            onPressed: () => _rejectOrder(),
-                            icon: const Icon(Icons.cancel_outlined),
-                            label: const Text('Rechazar orden'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.red,
-                              side: const BorderSide(color: AppColors.red),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    if (order.hasPaymentProof && !order.isPaymentValidated) ...[
-                      const SizedBox(height: 16),
-                      Text('Comprobante de pago',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 8),
-                      Card(
-                        color: surfaceCard,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Datos para conciliar (método, referencia, monto)
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: AppColors.amber.withValues(alpha: 0.12),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: AppColors.amber.withValues(alpha: 0.4),
-                                  ),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Datos para conciliar',
-                                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.amber,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    _TotalRow('Método de pago', _paymentMethodLabel(order.paymentMethod)),
-                                    _TotalRow('Referencia / Nº operación', order.referenceNumber?.isNotEmpty == true ? order.referenceNumber! : '—'),
-                                    _TotalRow('Monto de la orden', '\$${order.total.toStringAsFixed(2)}'),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      'Datos del comprador',
-                                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    _TotalRow('Nombre', order.customerName),
-                                    _TotalRow('Email', order.customerEmail),
-                                    _TotalRow('Teléfono', order.customerPhone),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              if (order.paymentProof != null &&
-                                  order.paymentProof!.isNotEmpty)
-                                Builder(
-                                  builder: (ctx) {
-                                    final proofUrl = _imageUrl(order.paymentProof);
-                                    final isPdf = proofUrl.toLowerCase().endsWith('.pdf');
-                                    if (isPdf) {
-                                      return const Row(
-                                        children: [
-                                          Icon(Icons.picture_as_pdf, size: 48, color: AppColors.red),
-                                          SizedBox(width: 12),
-                                          Text('Comprobante (PDF)'),
-                                        ],
-                                      );
-                                    }
-                                    return GestureDetector(
-                                      onTap: () {
-                                        showDialog<void>(
-                                          context: ctx,
-                                          builder: (_) => Dialog(
-                                            child: InteractiveViewer(
-                                              child: Image.network(
-                                                proofUrl,
-                                                fit: BoxFit.contain,
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          proofUrl,
-                                          height: 200,
-                                          width: double.infinity,
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (_, __, ___) => const Icon(
-                                            Icons.receipt,
-                                            size: 64,
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              if (order.isPendingPayment) ...[
-                                const SizedBox(height: 12),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton.icon(
-                                    onPressed: _updating ? null : () => _validatePayment(true),
-                                    icon: const Icon(Icons.check_circle),
-                                    label: const Text('Validar pago'),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColors.green,
-                                      padding: const EdgeInsets.symmetric(vertical: 14),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: OutlinedButton.icon(
-                                    onPressed: _updating
-                                        ? null
-                                        : () async {
-                                            final confirmed = await showDialog<bool>(
-                                              context: context,
-                                              builder: (ctx) => AlertDialog(
-                                                title: const Text('Rechazar pago'),
-                                                content: const Text(
-                                                    '¿Estás seguro de que quieres rechazar este comprobante de pago?'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () => Navigator.pop(ctx, false),
-                                                    child: const Text('Cancelar'),
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () => Navigator.pop(ctx, true),
-                                                    style: TextButton.styleFrom(foregroundColor: AppColors.red),
-                                                    child: const Text('Sí, rechazar'),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                            if (confirmed == true) _validatePayment(false);
-                                          },
-                                    icon: const Icon(Icons.close),
-                                    label: const Text('Rechazar pago'),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: AppColors.red,
-                                      side: const BorderSide(color: AppColors.red),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                    if (order.isPaid) ...[
-                      const SizedBox(height: 16),
-                      Text('Pago recibido',
-                          style: Theme.of(context).textTheme.titleMedium),
-                      const SizedBox(height: 8),
-                      if (order.paymentMethod != null || order.referenceNumber != null)
-                        Card(
-                          color: surfaceCard,
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              children: [
-                                _TotalRow('Método', _paymentMethodLabel(order.paymentMethod)),
-                                if (order.referenceNumber != null && order.referenceNumber!.isNotEmpty)
-                                  _TotalRow('Referencia', order.referenceNumber!),
-                              ],
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _updating ? null : () => _updateStatus('processing'),
-                            icon: const Icon(Icons.local_pharmacy),
-                            label: const Text('Comenzar a preparar'),
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: _updating ? null : () => _updateStatus('cancelled'),
-                            icon: const Icon(Icons.close),
-                            label: const Text('Cancelar'),
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
-                          ),
-                        ],
-                      ),
-                    ],
-                    if (order.status == 'processing') ...[
-                      const SizedBox(height: 16),
-                      if (order.isPickup) ...[
-                        const Icon(Icons.local_pharmacy, size: 48, color: AppColors.orange),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Preparando pedido',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Cuando el pedido esté listo, notifica al cliente para que pase a recogerlo.',
-                          style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton.icon(
-                            onPressed: _updating ? null : () => _updateStatus('shipped'),
-                            icon: const Icon(Icons.notifications_active),
-                            label: const Text('Pedido listo para recoger'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.blue,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                      ],
-                      if (order.isDelivery) ...[
-                        if (_pickupQrPayload != null) ...[
-                          Text(
-                            'Muestra este QR al repartidor',
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 12),
-                          Center(
-                            child: Container(
+                            // Datos para conciliar (método, referencia, monto)
+                            Container(
+                              width: double.infinity,
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppColors.white,
-                                borderRadius: BorderRadius.circular(12),
+                                color: AppColors.amber.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: AppColors.amber.withValues(alpha: 0.4),
+                                ),
                               ),
-                              child: QrImageView(
-                                data: _pickupQrPayload!,
-                                version: QrVersions.auto,
-                                size: 200,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Datos para conciliar',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.statusWarning,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _TotalRow('Método de pago',
+                                      _paymentMethodLabel(order.paymentMethod)),
+                                  _TotalRow(
+                                      'Referencia / Nº operación',
+                                      order.referenceNumber?.isNotEmpty == true
+                                          ? order.referenceNumber!
+                                          : '—'),
+                                  _TotalRow('Monto de la orden',
+                                      '\$${order.total.toStringAsFixed(2)}'),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Datos del comprador',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  _TotalRow('Nombre', order.customerName),
+                                  _TotalRow('Email', order.customerEmail),
+                                  _TotalRow('Teléfono', order.customerPhone),
+                                ],
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                        ],
-                        if (_pickupQrPayload == null)
-                          Text(
-                            'El repartidor escaneará el QR para recoger el pedido',
-                            style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
-                            textAlign: TextAlign.center,
-                          ),
-                      ],
-                      const SizedBox(height: 8),
-                      ElevatedButton.icon(
-                        onPressed: _updating ? null : () => _updateStatus('cancelled'),
-                        icon: const Icon(Icons.close),
-                        label: const Text('Cancelar orden'),
-                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.red),
+                            const SizedBox(height: 16),
+                            if (order.paymentProof != null &&
+                                order.paymentProof!.isNotEmpty)
+                              Builder(
+                                builder: (ctx) {
+                                  final proofUrl =
+                                      _imageUrl(order.paymentProof);
+                                  final isPdf =
+                                      proofUrl.toLowerCase().endsWith('.pdf');
+                                  if (isPdf) {
+                                    return const Row(
+                                      children: [
+                                        Icon(Icons.picture_as_pdf,
+                                            size: 48,
+                                            color: AppColors.statusError),
+                                        SizedBox(width: 12),
+                                        Text('Comprobante (PDF)'),
+                                      ],
+                                    );
+                                  }
+                                  return GestureDetector(
+                                    onTap: () {
+                                      showDialog<void>(
+                                        context: ctx,
+                                        builder: (_) => Dialog(
+                                          child: InteractiveViewer(
+                                            child: Image.network(
+                                              proofUrl,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.network(
+                                        proofUrl,
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (_, __, ___) =>
+                                            const Icon(
+                                          Icons.receipt,
+                                          size: 64,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            if (order.isPendingPayment) ...[
+                              const SizedBox(height: 12),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton.icon(
+                                  onPressed: _updating
+                                      ? null
+                                      : () => _validatePayment(true),
+                                  icon: const Icon(Icons.check_circle),
+                                  label: const Text('Validar pago'),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.statusSuccess,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 14),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  onPressed: _updating
+                                      ? null
+                                      : () async {
+                                          final confirmed =
+                                              await showDialog<bool>(
+                                            context: context,
+                                            builder: (ctx) => AlertDialog(
+                                              title:
+                                                  const Text('Rechazar pago'),
+                                              content: const Text(
+                                                  '¿Estás seguro de que quieres rechazar este comprobante de pago?'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(ctx, false),
+                                                  child: const Text('Cancelar'),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(ctx, true),
+                                                  style: TextButton.styleFrom(
+                                                      foregroundColor: AppColors
+                                                          .statusError),
+                                                  child: const Text(
+                                                      'Sí, rechazar'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                          if (confirmed == true) {
+                                            _validatePayment(false);
+                                          }
+                                        },
+                                  icon: const Icon(Icons.close),
+                                  label: const Text('Rechazar pago'),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppColors.statusError,
+                                    side: const BorderSide(
+                                        color: AppColors.statusError),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
-                    ],
-                    if (order.status == 'shipped' && order.isPickup) ...[
-                      const SizedBox(height: 16),
-                      const Icon(Icons.storefront, size: 48, color: AppColors.green),
+                    ),
+                  ],
+                  if (order.isPaid) ...[
+                    const SizedBox(height: 16),
+                    Text('Pago recibido',
+                        style: Theme.of(context).textTheme.titleMedium),
+                    const SizedBox(height: 8),
+                    if (order.paymentMethod != null ||
+                        order.referenceNumber != null)
+                      Card(
+                        color: surfaceCard,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            children: [
+                              _TotalRow('Método',
+                                  _paymentMethodLabel(order.paymentMethod)),
+                              if (order.referenceNumber != null &&
+                                  order.referenceNumber!.isNotEmpty)
+                                _TotalRow('Referencia', order.referenceNumber!),
+                            ],
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: _updating
+                              ? null
+                              : () => _updateStatus('processing'),
+                          icon: const Icon(Icons.local_pharmacy),
+                          label: const Text('Comenzar a preparar'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.statusSuccess),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: _updating
+                              ? null
+                              : () => _updateStatus('cancelled'),
+                          icon: const Icon(Icons.close),
+                          label: const Text('Cancelar'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.statusError),
+                        ),
+                      ],
+                    ),
+                  ],
+                  if (order.status == 'processing') ...[
+                    const SizedBox(height: 16),
+                    if (order.isPickup) ...[
+                      const Icon(Icons.local_pharmacy,
+                          size: 48, color: AppColors.brandCtaAccent),
                       const SizedBox(height: 8),
                       Text(
-                        'Esperando al cliente',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        'Preparando pedido',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'El cliente fue notificado. Cuando llegue y recoja su pedido, confirma la entrega.',
-                        style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
+                        'Cuando el pedido esté listo, notifica al cliente para que pase a recogerlo.',
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.secondaryText(context)),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: _updating ? null : () => _updateStatus('delivered'),
-                          icon: const Icon(Icons.check_circle),
-                          label: const Text('Entregar al cliente'),
+                          onPressed:
+                              _updating ? null : () => _updateStatus('shipped'),
+                          icon: const Icon(Icons.notifications_active),
+                          label: const Text('Pedido listo para recoger'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.green,
+                            backgroundColor: AppColors.brandTeal,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                         ),
                       ),
+                      const SizedBox(height: 12),
                     ],
+                    if (order.isDelivery) ...[
+                      if (_pickupQrPayload != null) ...[
+                        Text(
+                          'Muestra este QR al repartidor',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        Center(
+                          child: Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: QrImageView(
+                              data: _pickupQrPayload!,
+                              version: QrVersions.auto,
+                              size: 200,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                      if (_pickupQrPayload == null)
+                        Text(
+                          'El repartidor escaneará el QR para recoger el pedido',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.secondaryText(context)),
+                          textAlign: TextAlign.center,
+                        ),
+                    ],
+                    const SizedBox(height: 8),
+                    ElevatedButton.icon(
+                      onPressed:
+                          _updating ? null : () => _updateStatus('cancelled'),
+                      icon: const Icon(Icons.close),
+                      label: const Text('Cancelar orden'),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.statusError),
+                    ),
                   ],
-                ),
+                  if (order.status == 'shipped' && order.isPickup) ...[
+                    const SizedBox(height: 16),
+                    const Icon(Icons.storefront,
+                        size: 48, color: AppColors.statusSuccess),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Esperando al cliente',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'El cliente fue notificado. Cuando llegue y recoja su pedido, confirma la entrega.',
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.secondaryText(context)),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed:
+                            _updating ? null : () => _updateStatus('delivered'),
+                        icon: const Icon(Icons.check_circle),
+                        label: const Text('Entregar al cliente'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.statusSuccess,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
+          ),
           if (_updating)
             Positioned.fill(
               child: Container(
@@ -837,7 +914,7 @@ class _FulfillmentModeBanner extends StatelessWidget {
           children: [
             Icon(
               pickup ? Icons.storefront_outlined : Icons.delivery_dining,
-              color: pickup ? AppColors.green : AppColors.blue,
+              color: pickup ? AppColors.statusSuccess : AppColors.brandTeal,
               size: 28,
             ),
             const SizedBox(width: 12),
@@ -846,7 +923,9 @@ class _FulfillmentModeBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    pickup ? 'Modo: recoger en tienda' : 'Modo: envío a domicilio',
+                    pickup
+                        ? 'Modo: recoger en tienda'
+                        : 'Modo: envío a domicilio',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                           color: cs.onSurface,
@@ -956,7 +1035,7 @@ class _RejectOrderDialogState extends State<_RejectOrderDialog> {
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, _controller.text.trim()),
-          style: TextButton.styleFrom(foregroundColor: AppColors.red),
+          style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
           child: const Text('Rechazar orden'),
         ),
       ],

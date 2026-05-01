@@ -165,8 +165,12 @@ class _BuyerShellState extends State<BuyerShell> {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          isLocationOff ? Icons.location_off : Icons.location_on,
-                          color: isLocationOff ? AppColors.orange : _primary,
+                          isLocationOff
+                              ? Icons.location_off
+                              : Icons.location_on,
+                          color: isLocationOff
+                              ? AppColors.brandCtaAccent
+                              : _primary,
                           size: 22,
                         ),
                       ),
@@ -176,12 +180,16 @@ class _BuyerShellState extends State<BuyerShell> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isLocationOff ? 'Toca para activar' : 'Entregando a',
+                              isLocationOff
+                                  ? 'Toca para activar'
+                                  : 'Entregando a',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: isLocationOff
-                                    ? AppColors.orange
-                                    : (isDark ? AppColors.white54 : AppColors.black54),
+                                    ? AppColors.brandCtaAccent
+                                    : (isDark
+                                        ? AppColors.white54
+                                        : AppColors.black54),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -191,8 +199,10 @@ class _BuyerShellState extends State<BuyerShell> {
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 color: isLocationOff
-                                    ? AppColors.orange
-                                    : (isDark ? AppColors.white : AppColors.backgroundDark),
+                                    ? AppColors.brandCtaAccent
+                                    : (isDark
+                                        ? AppColors.white
+                                        : AppColors.backgroundDark),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -202,7 +212,8 @@ class _BuyerShellState extends State<BuyerShell> {
                       ),
                       Icon(
                         isLocationOff ? Icons.settings : Icons.expand_more,
-                        color: isLocationOff ? AppColors.orange : _primary,
+                        color:
+                            isLocationOff ? AppColors.brandCtaAccent : _primary,
                         size: 20,
                       ),
                     ],
@@ -257,22 +268,19 @@ class _BuyerShellState extends State<BuyerShell> {
                                 ? const EdgeInsets.symmetric(
                                     horizontal: 5, vertical: 2)
                                 : const EdgeInsets.all(4),
-                            constraints:
-                                const BoxConstraints(minWidth: 16, minHeight: 16),
+                            constraints: const BoxConstraints(
+                                minWidth: 16, minHeight: 16),
                             decoration: BoxDecoration(
                               color: _badgeRed,
                               shape: unread > 9
                                   ? BoxShape.rectangle
                                   : BoxShape.circle,
-                              borderRadius: unread > 9
-                                  ? BorderRadius.circular(10)
-                                  : null,
+                              borderRadius:
+                                  unread > 9 ? BorderRadius.circular(10) : null,
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              unread > 99
-                                  ? '99+'
-                                  : '$unread',
+                              unread > 99 ? '99+' : '$unread',
                               style: const TextStyle(
                                 color: AppColors.white,
                                 fontSize: 10,
@@ -345,7 +353,7 @@ class _BuyerShellState extends State<BuyerShell> {
                         item.icon,
                         size: 24,
                         color: selected
-                            ? AppColors.blue
+                            ? AppColors.brandTeal
                             : AppColors.secondaryText(context),
                       ),
                       const SizedBox(height: 4),
@@ -356,7 +364,7 @@ class _BuyerShellState extends State<BuyerShell> {
                           fontWeight:
                               selected ? FontWeight.w600 : FontWeight.w500,
                           color: selected
-                              ? AppColors.blue
+                              ? AppColors.brandTeal
                               : AppColors.secondaryText(context),
                         ),
                       ),

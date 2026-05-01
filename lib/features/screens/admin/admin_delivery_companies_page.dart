@@ -148,11 +148,12 @@ class _AdminDeliveryCompaniesPageState
                   ),
                 ),
                 Text(
-                  safeString(company['company_name'],
                   safeString(
-                    company['business_name'],
-                    safeString(company['name'], 'Empresa'),
-                  )),
+                      company['company_name'],
+                      safeString(
+                        company['business_name'],
+                        safeString(company['name'], 'Empresa'),
+                      )),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -232,7 +233,9 @@ class _AdminDeliveryCompaniesPageState
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
         title: const Text('Empresas de delivery'),
-        backgroundColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHigh : AppColors.blueDark,
+        backgroundColor: isDark
+            ? Theme.of(context).colorScheme.surfaceContainerHigh
+            : AppColors.blueDark,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -260,7 +263,8 @@ class _AdminDeliveryCompaniesPageState
                       )
                     : null,
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                fillColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -371,8 +375,8 @@ class _AdminDeliveryCompaniesPageState
             children: [
               CircleAvatar(
                 backgroundColor: AppColors.purple.withValues(alpha: 0.15),
-                child:
-                    const Icon(Icons.local_shipping, color: AppColors.purple),
+                child: const Icon(Icons.local_shipping,
+                    color: AppColors.brandTealDeep),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -408,12 +412,13 @@ class _AdminDeliveryCompaniesPageState
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.people, size: 14, color: AppColors.blue),
+                    const Icon(Icons.people,
+                        size: 14, color: AppColors.brandTeal),
                     const SizedBox(width: 4),
                     Text(
                       '$agentCount',
                       style: const TextStyle(
-                        color: AppColors.blue,
+                        color: AppColors.brandTeal,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
@@ -501,7 +506,8 @@ class _AgentsListState extends State<_AgentsList> {
           leading: CircleAvatar(
             radius: 16,
             backgroundColor: AppColors.green.withValues(alpha: 0.15),
-            child: const Icon(Icons.person, size: 16, color: AppColors.green),
+            child: const Icon(Icons.person,
+                size: 16, color: AppColors.statusSuccess),
           ),
           title: Text(
             name.isNotEmpty ? name : 'Agente #${safeInt(a['id'])}',

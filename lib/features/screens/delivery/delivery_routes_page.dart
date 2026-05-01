@@ -38,9 +38,7 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
     try {
       final map = json.decode(s);
       if (map is Map) {
-        return map['address']?.toString() ??
-            map['street']?.toString() ??
-            s;
+        return map['address']?.toString() ?? map['street']?.toString() ?? s;
       }
     } catch (_) {}
     return s;
@@ -84,7 +82,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
       appBar: AppBar(
         title: const Text('Rutas activas'),
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: () => _loadData()),
+          IconButton(
+              icon: const Icon(Icons.refresh), onPressed: () => _loadData()),
         ],
       ),
       body: Consumer<DeliveryService>(
@@ -126,8 +125,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
     final commerceName = order?['commerce_name']?.toString() ??
         route['commerce_name']?.toString() ??
         'Comercio';
-    final deliveryAddress = _parseAddress(
-        order?['delivery_address'] ?? route['delivery_address']);
+    final deliveryAddress =
+        _parseAddress(order?['delivery_address'] ?? route['delivery_address']);
     final estimatedTime = safeInt(route['estimated_time']);
     final distance = _parseNum(route['total_distance']);
     final status = route['status']?.toString() ?? 'assigned';
@@ -179,7 +178,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: sColor.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
@@ -196,7 +196,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
               ],
             ),
             const Divider(height: 24),
-            _infoRow(Icons.store, 'Comercio', route['commerce_address']?.toString() ?? commerceName),
+            _infoRow(Icons.store, 'Comercio',
+                route['commerce_address']?.toString() ?? commerceName),
             const SizedBox(height: 4),
             _infoRow(Icons.location_on, 'Entregar en', deliveryAddress),
             const SizedBox(height: 8),
@@ -207,7 +208,7 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
                     context,
                     Icons.timer_outlined,
                     '$estimatedTime min',
-                    AppColors.orange,
+                    AppColors.brandCtaAccent,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -216,7 +217,7 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
                     context,
                     Icons.straighten,
                     '${distance.toStringAsFixed(1)} km',
-                    AppColors.blue,
+                    AppColors.brandTeal,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -225,7 +226,7 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
                     context,
                     Icons.attach_money,
                     '\$${total.toStringAsFixed(2)}',
-                    AppColors.green,
+                    AppColors.statusSuccess,
                   ),
                 ),
               ],
@@ -250,24 +251,35 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
     return Row(
       children: [
         if (hasCommerce && status == 'assigned')
-          Expanded(child: _navButton('Ir al comercio', Icons.store, AppColors.orange, commerceLat, commerceLng)),
-        if (hasCommerce && status == 'assigned' && hasCustomer) const SizedBox(width: 8),
+          Expanded(
+              child: _navButton('Ir al comercio', Icons.store,
+                  AppColors.brandCtaAccent, commerceLat, commerceLng)),
+        if (hasCommerce && status == 'assigned' && hasCustomer)
+          const SizedBox(width: 8),
         if (hasCustomer && status == 'shipped')
-          Expanded(child: _navButton('Ir al cliente', Icons.person_pin_circle, AppColors.green, customerLat, customerLng)),
+          Expanded(
+              child: _navButton('Ir al cliente', Icons.person_pin_circle,
+                  AppColors.statusSuccess, customerLat, customerLng)),
       ],
     );
   }
 
-  Widget _navButton(String label, IconData icon, Color color, double lat, double lng) {
+  Widget _navButton(
+      String label, IconData icon, Color color, double lat, double lng) {
     return SizedBox(
       height: 56,
       child: ElevatedButton.icon(
         onPressed: () => _openGoogleMapsNav(lat, lng),
         icon: Icon(icon, size: 22, color: AppColors.white),
-        label: Text(label, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.white)),
+        label: Text(label,
+            style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.white)),
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
     );
@@ -278,7 +290,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
     if (await canLaunchUrl(gNav)) {
       await launchUrl(gNav);
     } else {
-      final web = Uri.parse('${AppConfig.googleMapsDirUrl}&destination=$lat,$lng');
+      final web =
+          Uri.parse('${AppConfig.googleMapsDirUrl}&destination=$lat,$lng');
       await launchUrl(web, mode: LaunchMode.externalApplication);
     }
   }
@@ -290,7 +303,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
         const SizedBox(width: 6),
         Text(
           '$label: ',
-          style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
+          style:
+              TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
         ),
         Expanded(
           child: Text(
@@ -343,7 +357,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
           const SizedBox(height: 16),
           Text(
             'No tienes rutas activas',
-            style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context)),
+            style: TextStyle(
+                fontSize: 16, color: AppColors.secondaryText(context)),
           ),
         ],
       ),
@@ -357,7 +372,8 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(error, textAlign: TextAlign.center),
             const SizedBox(height: 16),

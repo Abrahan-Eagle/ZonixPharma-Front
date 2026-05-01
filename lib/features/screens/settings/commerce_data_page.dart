@@ -18,7 +18,7 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
   final _taxIdController = TextEditingController();
   final _addressController = TextEditingController();
   final _phoneController = TextEditingController();
-  
+
   String? _logoUrl;
   bool _open = false;
   String _schedule = '';
@@ -75,11 +75,11 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
-    setState(() { 
-      _loading = true; 
-      _error = null; 
-      _success = null; 
+
+    setState(() {
+      _loading = true;
+      _error = null;
+      _success = null;
     });
 
     try {
@@ -95,10 +95,11 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
       };
 
       final result = await CommerceDataService.updateCommerceData(data);
-      
+
       setState(() {
         _loading = false;
-        _success = result['message'] ?? 'Datos del comercio actualizados correctamente.';
+        _success = result['message'] ??
+            'Datos del comercio actualizados correctamente.';
       });
 
       // Limpiar mensaje de éxito después de 3 segundos
@@ -160,7 +161,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
         _success = null;
       });
 
-      final imageUrl = await CommerceDataService.uploadCommerceImage(pickedFile.path);
+      final imageUrl =
+          await CommerceDataService.uploadCommerceImage(pickedFile.path);
 
       if (!mounted) return;
       setState(() {
@@ -174,11 +176,13 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
         _loading = false;
         _error = null;
       });
-      final message = e is Exception ? e.toString().replaceFirst('Exception: ', '') : e.toString();
+      final message = e is Exception
+          ? e.toString().replaceFirst('Exception: ', '')
+          : e.toString();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Error al subir logo: $message'),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
     }
@@ -190,7 +194,7 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Datos del comercio'),
-          backgroundColor: AppColors.purple,
+          backgroundColor: AppColors.brandTealDeep,
           foregroundColor: AppColors.white,
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -200,7 +204,7 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Datos del comercio'),
-        backgroundColor: AppColors.purple,
+        backgroundColor: AppColors.brandTealDeep,
         foregroundColor: AppColors.white,
       ),
       body: Padding(
@@ -212,22 +216,26 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
               // Logo del comercio
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
                       const Text(
                         'Logo del Comercio',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
                       CircleAvatar(
                         radius: 50,
-                        backgroundImage: _logoUrl != null ? NetworkImage(_logoUrl!) : null,
-                        child: _logoUrl == null 
-                          ? const Icon(Icons.store, size: 50, color: AppColors.textMutedGray)
-                          : null,
+                        backgroundImage:
+                            _logoUrl != null ? NetworkImage(_logoUrl!) : null,
+                        child: _logoUrl == null
+                            ? const Icon(Icons.store,
+                                size: 50, color: AppColors.textMutedGray)
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
@@ -235,7 +243,7 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                         icon: const Icon(Icons.upload),
                         label: const Text('Subir logo'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.blue,
+                          backgroundColor: AppColors.brandTeal,
                           foregroundColor: AppColors.white,
                         ),
                       ),
@@ -248,7 +256,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
               // Información básica
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -256,7 +265,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                     children: [
                       const Text(
                         'Información Básica',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -266,7 +276,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.store),
                         ),
-                        validator: (v) => v == null || v.isEmpty ? 'Campo requerido' : null,
+                        validator: (v) =>
+                            v == null || v.isEmpty ? 'Campo requerido' : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -286,12 +297,15 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                           prefixIcon: Icon(Icons.receipt),
                         ),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^[vVeE0-9]+')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^[vVeE0-9]+')),
                           LengthLimitingTextInputFormatter(10),
                         ],
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Campo requerido';
-                          if (!RegExp(r'^[vVeE][0-9]{7,9}$').hasMatch(v.trim())) return 'Formato válido: V12345678 o E12345678';
+                          if (!RegExp(r'^[vVeE][0-9]{7,9}$').hasMatch(v.trim())) {
+                            return 'Formato válido: V12345678 o E12345678';
+                          }
                           return null;
                         },
                       ),
@@ -304,7 +318,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
               // Información de contacto
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -312,7 +327,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                     children: [
                       const Text(
                         'Información de Contacto',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -325,7 +341,9 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                         validator: (v) {
                           if (v == null || v.isEmpty) return 'Campo requerido';
                           if (v.trim().length < 5) return 'Mínimo 5 caracteres';
-                          if (v.trim().length > 200) return 'Máximo 200 caracteres';
+                          if (v.trim().length > 200) {
+                            return 'Máximo 200 caracteres';
+                          }
                           return null;
                         },
                         maxLines: 2,
@@ -342,11 +360,15 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                           if (v == null || v.isEmpty) return 'Campo requerido';
                           if (v.trim().length < 10) return 'Mínimo 10 dígitos';
                           if (v.trim().length > 15) return 'Máximo 15 dígitos';
-                          if (!RegExp(r'^[0-9]+$').hasMatch(v)) return 'Solo números';
+                          if (!RegExp(r'^[0-9]+$').hasMatch(v)) {
+                            return 'Solo números';
+                          }
                           return null;
                         },
                         keyboardType: TextInputType.phone,
-                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                       ),
                     ],
                   ),
@@ -357,7 +379,8 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
               // Estado del comercio
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -365,19 +388,22 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                     children: [
                       const Text(
                         'Estado del Comercio',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          const Icon(Icons.power_settings_new, color: AppColors.blue),
+                          const Icon(Icons.power_settings_new,
+                              color: AppColors.brandTeal),
                           const SizedBox(width: 12),
-                          const Text('Comercio abierto', style: TextStyle(fontSize: 16)),
+                          const Text('Comercio abierto',
+                              style: TextStyle(fontSize: 16)),
                           const Spacer(),
                           Switch(
                             value: _open,
                             onChanged: (v) => setState(() => _open = v),
-                            activeThumbColor: AppColors.green,
+                            activeThumbColor: AppColors.statusSuccess,
                           ),
                         ],
                       ),
@@ -404,32 +430,39 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.red,
+                    color: AppColors.statusError,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.red),
+                    border: Border.all(color: AppColors.statusError),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error, color: AppColors.red),
+                      const Icon(Icons.error, color: AppColors.statusError),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: AppColors.red))),
+                      Expanded(
+                          child: Text(_error!,
+                              style: const TextStyle(
+                                  color: AppColors.statusError))),
                     ],
                   ),
                 ),
-              
+
               if (_success != null)
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.green,
+                    color: AppColors.statusSuccess,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.green),
+                    border: Border.all(color: AppColors.statusSuccess),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle, color: AppColors.green),
+                      const Icon(Icons.check_circle,
+                          color: AppColors.statusSuccess),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_success!, style: const TextStyle(color: AppColors.green))),
+                      Expanded(
+                          child: Text(_success!,
+                              style: const TextStyle(
+                                  color: AppColors.statusSuccess))),
                     ],
                   ),
                 ),
@@ -444,23 +477,26 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                 child: ElevatedButton(
                   onPressed: _loading ? null : _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.purple,
+                    backgroundColor: AppColors.brandTealDeep,
                     foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
                   ),
-                  child: _loading 
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: AppColors.white, strokeWidth: 2),
-                      )
-                    : const Text(
-                        'Guardar cambios',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                  child: _loading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                              color: AppColors.white, strokeWidth: 2),
+                        )
+                      : const Text(
+                          'Guardar cambios',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
                 ),
               ),
-              
+
               // Espacio adicional para evitar overflow
               const SizedBox(height: 32),
             ],
@@ -469,4 +505,4 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
       ),
     );
   }
-} 
+}

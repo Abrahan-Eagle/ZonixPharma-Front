@@ -118,9 +118,21 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
                       const SizedBox(height: 16),
                       _buildMap(clampedKm),
                       const SizedBox(height: 24),
-                      _buildRadioSugerido(theme, provider),
-                      const SizedBox(height: 16),
-                      _buildRadioPersonalizado(theme, provider),
+                      RadioGroup<bool>(
+                        groupValue: provider.useSuggestedRadius,
+                        onChanged: (value) {
+                          if (value != null) {
+                            provider.setUseSuggestedRadius(value);
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            _buildRadioSugerido(theme, provider),
+                            const SizedBox(height: 16),
+                            _buildRadioPersonalizado(theme, provider),
+                          ],
+                        ),
+                      ),
                       if (!provider.useSuggestedRadius) ...[
                         const SizedBox(height: 16),
                         _buildSlider(theme, provider),
@@ -154,8 +166,11 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.location_off, size: 64,
-                color: isGpsOff ? AppColors.orange : AppColors.red),
+            Icon(Icons.location_off,
+                size: 64,
+                color: isGpsOff
+                    ? AppColors.brandCtaAccent
+                    : AppColors.statusError),
             const SizedBox(height: 16),
             Text(
               isGpsOff
@@ -194,7 +209,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       ),
       child: Row(
         children: [
-          Icon(Icons.search, color: theme.colorScheme.onSurfaceVariant, size: 22),
+          Icon(Icons.search,
+              color: theme.colorScheme.onSurfaceVariant, size: 22),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -302,10 +318,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Radio<bool>(
+              const Radio<bool>(
                 value: true,
-                groupValue: provider.useSuggestedRadius, // ignore: deprecated_member_use
-                onChanged: (_) => provider.setUseSuggestedRadius(true), // ignore: deprecated_member_use
                 activeColor: _primary,
               ),
               Expanded(
@@ -338,7 +352,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
     );
   }
 
-  Widget _buildRadioPersonalizado(ThemeData theme, SearchRadiusProvider provider) {
+  Widget _buildRadioPersonalizado(
+      ThemeData theme, SearchRadiusProvider provider) {
     return Material(
       color: theme.colorScheme.surfaceContainerLow,
       borderRadius: BorderRadius.circular(16),
@@ -349,10 +364,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Radio<bool>(
+              const Radio<bool>(
                 value: false,
-                groupValue: provider.useSuggestedRadius, // ignore: deprecated_member_use
-                onChanged: (_) => provider.setUseSuggestedRadius(false), // ignore: deprecated_member_use
                 activeColor: _primary,
               ),
               Expanded(
@@ -392,8 +405,12 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('1 km', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
-            Text('400 km', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
+            Text('1 km',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
+            Text('400 km',
+                style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12, color: theme.colorScheme.onSurfaceVariant)),
           ],
         ),
         Slider(
@@ -418,7 +435,8 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
       decoration: InputDecoration(
         labelText: 'Kilómetros',
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       onChanged: (v) {
         final n = double.tryParse(v);
@@ -438,11 +456,13 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
           backgroundColor: _primary,
           foregroundColor: AppColors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
         child: Text(
           'Aplicar',
-          style: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w600),
+          style: GoogleFonts.plusJakartaSans(
+              fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
     );

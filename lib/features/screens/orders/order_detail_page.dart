@@ -34,6 +34,7 @@ class OrderDetailPage extends StatefulWidget {
 
   final int orderId;
   final Order? order;
+
   /// Si true, al abrir la pantalla se muestra un modal "¡Pedido creado!" y se va directo al detalle del recibo.
   final bool showCreatedDialog;
 
@@ -120,11 +121,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         s == 'pending_prescription_validation';
     if (shouldSubscribe) {
       PusherService.instance.subscribeToOrderChat(widget.orderId);
-      
+
       _pusherSubscription?.cancel();
       _pusherSubscription = PusherService.instance.eventStream.listen((event) {
         final eventName =
-            (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+            (event['canonicalEventName'] ?? event['eventName'])?.toString() ??
+                '';
         final channelName = event['channelName']?.toString() ?? '';
         final data = event['data'] is Map<String, dynamic>
             ? event['data'] as Map<String, dynamic>
@@ -165,7 +167,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             });
           }
         }
-        
+
         if (eventName.contains('OrderStatusChanged') ||
             eventName.contains('PaymentValidated') ||
             eventName.contains('PrescriptionValidated') ||
@@ -258,9 +260,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     try {
       if (type == 'delivery') {
         final info = await OrderService().getPaymentInfo(widget.orderId);
-        availableMethods = List<Map<String, dynamic>>.from(info?['delivery_methods'] ?? []);
+        availableMethods =
+            List<Map<String, dynamic>>.from(info?['delivery_methods'] ?? []);
       } else {
-        availableMethods = await OrderService().getAvailablePaymentMethodsForOrder(widget.orderId);
+        availableMethods = await OrderService()
+            .getAvailablePaymentMethodsForOrder(widget.orderId);
       }
     } catch (e) {
       debugPrint('Error fetching payment methods in OrderDetailPage: $e');
@@ -285,9 +289,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     rawRef = rawRef.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '');
     referenceNumber = rawRef;
 
-    if (paymentMethod == null || paymentMethod.isEmpty || referenceNumber.isEmpty || imagePath == null) {
+    if (paymentMethod == null ||
+        paymentMethod.isEmpty ||
+        referenceNumber.isEmpty ||
+        imagePath == null) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Datos incompletos para subir el comprobante')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Datos incompletos para subir el comprobante')));
       }
       return;
     }
@@ -309,13 +317,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       if (mounted) {
         final label = type == 'delivery' ? 'envío' : 'pedido';
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Comprobante de $label subido correctamente'), backgroundColor: AppColors.green),
+          SnackBar(
+              content: Text('Comprobante de $label subido correctamente'),
+              backgroundColor: AppColors.statusSuccess),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'), backgroundColor: AppColors.red),
+          SnackBar(
+              content: Text(
+                  'Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+              backgroundColor: AppColors.statusError),
         );
       }
     } finally {
@@ -360,7 +373,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString().replaceFirst('Exception: ', '')),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -417,7 +430,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   onPressed: () async {
                     final uri = Uri.parse(url);
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(uri,
+                          mode: LaunchMode.externalApplication);
                     }
                   },
                   icon: const Icon(Icons.open_in_new),
@@ -468,7 +482,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -539,85 +554,87 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       body: Stack(
         children: [
           RefreshIndicator(
-              onRefresh: _loadOrder,
-              child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 72),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildReceiptHeader(order,
-                        textPrimary: textPrimary,
-                        textSecondary: textSecondary,
-                        surfaceColor: surfaceColor,
-                        borderColor: borderColor,
-                        badgeBg: badgeBg),
-                    if (order.prescriptionId != null ||
-                        order.status == 'pending_prescription_validation') ...[
-                      const SizedBox(height: 16),
-                      Card(
-                        color: surfaceColor,
-                        child: ListTile(
-                          leading: const Icon(Icons.receipt_long,
-                              color: AppColors.brandTeal),
-                          title: const Text('Receta médica'),
-                          subtitle: Text(
-                            order.status == 'pending_prescription_validation'
-                                ? 'En validación por el farmacéutico colegiado.'
-                                : 'Ver detalle de la receta adjunta.',
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => _openPrescriptionDetail(order),
+            onRefresh: _loadOrder,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(16, 24, 16, 72),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildReceiptHeader(order,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      badgeBg: badgeBg),
+                  if (order.prescriptionId != null ||
+                      order.status == 'pending_prescription_validation') ...[
+                    const SizedBox(height: 16),
+                    Card(
+                      color: surfaceColor,
+                      child: ListTile(
+                        leading: const Icon(Icons.receipt_long,
+                            color: AppColors.brandTeal),
+                        title: const Text('Receta médica'),
+                        subtitle: Text(
+                          order.status == 'pending_prescription_validation'
+                              ? 'En validación por el farmacéutico colegiado.'
+                              : 'Ver detalle de la receta adjunta.',
                         ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () => _openPrescriptionDetail(order),
                       ),
-                    ],
-                    if (_isTrackableStatus(order.status)) ...[
-                      const SizedBox(height: 24),
-                      _buildActiveOrderProgressSection(
-                          order, primary: Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.accentButton(context)
-                              : AppColors.blue,
-                          surfaceColor: surfaceColor,
-                          borderColor: borderColor,
-                          textPrimary: textPrimary,
-                          textSecondary: textSecondary),
-                    ],
-                    const SizedBox(height: 24),
-                    _buildResumenCard(order,
-                        textPrimary: textPrimary,
-                        textSecondary: textSecondary,
-                        surfaceColor: surfaceColor,
-                        borderColor: borderColor,
-                        badgeBg: badgeBg),
-                    const SizedBox(height: 24),
-                    _buildPaymentAndAddressCard(order,
-                        textPrimary: textPrimary,
-                        textSecondary: textSecondary,
-                        surfaceColor: surfaceColor,
-                        borderColor: borderColor,
-                        badgeBg: badgeBg),
-                    if (_isTrackableStatus(order.status) && order.isDeliveryOrder) ...[
-                      const SizedBox(height: 24),
-                      _buildTrackingCard(order),
-                    ],
-                    if (order.status == 'pending_payment') ...[
-                      const SizedBox(height: 24),
-                      PaymentTimeline(
-                        currentStep: PaymentTimeline.stepFromOrder(
-                          status: order.status,
-                          approvedForPayment: order.approvedForPayment,
-                          hasPaymentProof: order.paymentProof != null && order.paymentProof!.isNotEmpty,
-                          isPaymentValidated: order.paymentValidatedAt != null,
-                        ),
-                        createdAt: order.createdAt,
-                      ),
-                      const SizedBox(height: 16),
-                      _buildPendingPaymentActions(order),
-                    ],
+                    ),
                   ],
-                ),
+                  if (_isTrackableStatus(order.status)) ...[
+                    const SizedBox(height: 24),
+                    _buildActiveOrderProgressSection(order,
+                        primary: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.accentButton(context)
+                            : AppColors.brandTeal,
+                        surfaceColor: surfaceColor,
+                        borderColor: borderColor,
+                        textPrimary: textPrimary,
+                        textSecondary: textSecondary),
+                  ],
+                  const SizedBox(height: 24),
+                  _buildResumenCard(order,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      badgeBg: badgeBg),
+                  const SizedBox(height: 24),
+                  _buildPaymentAndAddressCard(order,
+                      textPrimary: textPrimary,
+                      textSecondary: textSecondary,
+                      surfaceColor: surfaceColor,
+                      borderColor: borderColor,
+                      badgeBg: badgeBg),
+                  if (_isTrackableStatus(order.status) &&
+                      order.isDeliveryOrder) ...[
+                    const SizedBox(height: 24),
+                    _buildTrackingCard(order),
+                  ],
+                  if (order.status == 'pending_payment') ...[
+                    const SizedBox(height: 24),
+                    PaymentTimeline(
+                      currentStep: PaymentTimeline.stepFromOrder(
+                        status: order.status,
+                        approvedForPayment: order.approvedForPayment,
+                        hasPaymentProof: order.paymentProof != null &&
+                            order.paymentProof!.isNotEmpty,
+                        isPaymentValidated: order.paymentValidatedAt != null,
+                      ),
+                      createdAt: order.createdAt,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildPendingPaymentActions(order),
+                  ],
+                ],
               ),
             ),
+          ),
           if (_updating)
             Positioned.fill(
               child: Container(
@@ -714,7 +731,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     color: textPrimary),
               ),
               IconButton(
-                icon: const Icon(Icons.copy, size: 20, color: AppColors.blue),
+                icon: const Icon(Icons.copy,
+                    size: 20, color: AppColors.brandTeal),
                 onPressed: () {
                   final text = order.orderNumber.isNotEmpty
                       ? order.orderNumber
@@ -883,7 +901,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             const SizedBox(height: 4),
             Text(
               order.specialInstructions!,
-              style: TextStyle(fontSize: 13, color: textSecondary, height: 1.35),
+              style:
+                  TextStyle(fontSize: 13, color: textSecondary, height: 1.35),
             ),
           ],
           const SizedBox(height: 16),
@@ -918,7 +937,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.amber),
+                      color: AppColors.statusWarning),
                 ),
               ],
             ),
@@ -991,7 +1010,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     final paymentDisplay = order.referenceNumber?.isNotEmpty == true
         ? '${paymentLabel.isNotEmpty ? '$paymentLabel • ' : ''}•••• ${order.referenceNumber!.length >= 4 ? order.referenceNumber!.substring(order.referenceNumber!.length - 4) : order.referenceNumber}'
         : (_selectedPaymentMethodLabel ??
-            (paymentLabel.isEmpty ? (approved ? 'Seleccionar pago' : 'Esperando aprobación') : paymentLabel));
+            (paymentLabel.isEmpty
+                ? (approved ? 'Seleccionar pago' : 'Esperando aprobación')
+                : paymentLabel));
 
     final useDoublePayment =
         order.orderPayments.isNotEmpty && order.commercePayment != null;
@@ -1090,32 +1111,38 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    if (order.status == 'pending_payment' && order.approvedForPayment) ...[
+                    if (order.status == 'pending_payment' &&
+                        order.approvedForPayment) ...[
                       if (!order.hasCommerceProof)
                         Padding(
                           padding: const EdgeInsets.only(top: 12),
                           child: SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () => _uploadProof(order, type: 'food'),
+                              onPressed: () =>
+                                  _uploadProof(order, type: 'food'),
                               icon: const Icon(Icons.receipt_long, size: 20),
                               label: const Text('Pagar pedido'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.blue,
+                                backgroundColor: AppColors.brandTeal,
                                 foregroundColor: AppColors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                                 elevation: 0,
                               ),
                             ),
                           ),
                         )
-                      else if (!order.commerceValidated && !order.commerceRejected)
+                      else if (!order.commerceValidated &&
+                          !order.commerceRejected)
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
                           child: Text(
                             'Comprobante del pedido subido. Esperando validación del comercio.',
-                            style: TextStyle(fontSize: 12, color: AppColors.orange),
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.brandCtaAccent),
                           ),
                         )
                       else if (order.commerceRejected)
@@ -1124,14 +1151,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Pago del pedido rechazado.', style: TextStyle(fontSize: 12, color: AppColors.red)),
+                              const Text('Pago del pedido rechazado.',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.statusError)),
                               const SizedBox(height: 4),
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton.icon(
-                                  onPressed: () => _uploadProof(order, type: 'food'),
+                                  onPressed: () =>
+                                      _uploadProof(order, type: 'food'),
                                   icon: const Icon(Icons.refresh, size: 18),
-                                  label: const Text('Re-subir comprobante del pedido'),
+                                  label: const Text(
+                                      'Re-subir comprobante del pedido'),
                                 ),
                               ),
                             ],
@@ -1140,7 +1172,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       else
                         const Padding(
                           padding: EdgeInsets.only(top: 8),
-                          child: Text('Pago del pedido validado', style: TextStyle(fontSize: 12, color: AppColors.green)),
+                          child: Text('Pago del pedido validado',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.statusSuccess)),
                         ),
                       if (order.needsDeliveryPayment) ...[
                         const SizedBox(height: 8),
@@ -1148,41 +1183,55 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton.icon(
-                              onPressed: () => _uploadProof(order, type: 'delivery'),
+                              onPressed: () =>
+                                  _uploadProof(order, type: 'delivery'),
                               icon: const Icon(Icons.local_shipping, size: 20),
-                              label: Text('Pagar envío (\$${order.deliveryFee.toStringAsFixed(2)})'),
+                              label: Text(
+                                  'Pagar envío (\$${order.deliveryFee.toStringAsFixed(2)})'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.green,
+                                backgroundColor: AppColors.statusSuccess,
                                 foregroundColor: AppColors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                                 elevation: 0,
                               ),
                             ),
                           )
-                        else if (!order.deliveryValidated && !order.deliveryRejected)
+                        else if (!order.deliveryValidated &&
+                            !order.deliveryRejected)
                           const Text(
                             'Comprobante envío subido. Esperando validación de la empresa.',
-                            style: TextStyle(fontSize: 12, color: AppColors.orange),
+                            style: TextStyle(
+                                fontSize: 12, color: AppColors.brandCtaAccent),
                           )
                         else if (order.deliveryRejected)
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('Pago envío rechazado.', style: TextStyle(fontSize: 12, color: AppColors.red)),
+                              const Text('Pago envío rechazado.',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.statusError)),
                               const SizedBox(height: 4),
                               SizedBox(
                                 width: double.infinity,
                                 child: OutlinedButton.icon(
-                                  onPressed: () => _uploadProof(order, type: 'delivery'),
+                                  onPressed: () =>
+                                      _uploadProof(order, type: 'delivery'),
                                   icon: const Icon(Icons.refresh, size: 18),
-                                  label: const Text('Re-subir comprobante envío'),
+                                  label:
+                                      const Text('Re-subir comprobante envío'),
                                 ),
                               ),
                             ],
                           )
                         else
-                          const Text('Pago envío validado', style: TextStyle(fontSize: 12, color: AppColors.green)),
+                          const Text('Pago envío validado',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.statusSuccess)),
                       ],
                     ],
                   ],
@@ -1209,7 +1258,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(order.isPickup ? 'Retiro en tienda' : 'Dirección de entrega',
+                    Text(
+                        order.isPickup
+                            ? 'Retiro en tienda'
+                            : 'Dirección de entrega',
                         style: TextStyle(
                             fontSize: 12,
                             color: textSecondary,
@@ -1266,14 +1318,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Error al generar el PDF'),
-            backgroundColor: AppColors.red),
+            backgroundColor: AppColors.statusError),
       );
       return;
     }
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
           content: Text('PDF listo para guardar o compartir'),
-          backgroundColor: AppColors.green),
+          backgroundColor: AppColors.statusSuccess),
     );
   }
 
@@ -1307,7 +1359,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             label: Text(
                 _updating ? AppStrings.generating : AppStrings.downloadPdf),
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.blue,
+              backgroundColor: AppColors.brandTeal,
               foregroundColor: AppColors.white,
               padding: const EdgeInsets.symmetric(vertical: 12),
               textStyle:
@@ -1320,7 +1372,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget _buildPendingPaymentActions(Order order) {
-    final hasProof = order.paymentProof != null && order.paymentProof!.isNotEmpty;
+    final hasProof =
+        order.paymentProof != null && order.paymentProof!.isNotEmpty;
     final approvedForPayment = order.approvedForPayment;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1339,25 +1392,30 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             decoration: BoxDecoration(
               color: AppColors.orange.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.orange.withValues(alpha: 0.4)),
+              border:
+                  Border.all(color: AppColors.orange.withValues(alpha: 0.4)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.schedule, color: AppColors.orange, size: 24),
+                    const Icon(Icons.schedule,
+                        color: AppColors.brandCtaAccent, size: 24),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Esperando que el comercio acepte tu pedido. Cuando lo acepte, aparecerá el botón para subir el comprobante.',
-                        style: TextStyle(fontSize: 14, color: AppColors.primaryText(context)),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.primaryText(context)),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                _WaitTimerChip(since: order.createdAt, color: AppColors.orange),
+                _WaitTimerChip(
+                    since: order.createdAt, color: AppColors.brandCtaAccent),
               ],
             ),
           ),
@@ -1374,18 +1432,22 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.check_circle_outline, color: AppColors.green, size: 24),
+                    const Icon(Icons.check_circle_outline,
+                        color: AppColors.statusSuccess, size: 24),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
                         'Comprobante subido y esperando validación del comercio.',
-                        style: TextStyle(fontSize: 14, color: AppColors.primaryText(context)),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.primaryText(context)),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                _WaitTimerChip(since: order.updatedAt, color: AppColors.green),
+                _WaitTimerChip(
+                    since: order.updatedAt, color: AppColors.statusSuccess),
               ],
             ),
           ),
@@ -1398,8 +1460,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             icon: const Icon(Icons.cancel_outlined),
             label: const Text('Cancelar orden'),
             style: OutlinedButton.styleFrom(
-              foregroundColor: AppColors.red,
-              side: const BorderSide(color: AppColors.red),
+              foregroundColor: AppColors.statusError,
+              side: const BorderSide(color: AppColors.statusError),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
           ),
@@ -1437,8 +1499,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ? const ['RECIBIDO', 'PREPARACIÓN', 'LISTO', 'RECOGIDO']
         : const ['RECIBIDO', 'PREPARACIÓN', 'EN CAMINO', 'ENTREGADO'];
     final icons = order.isPickup
-        ? const [Icons.check, Icons.local_pharmacy, Icons.storefront, Icons.shopping_bag]
-        : const [Icons.check, Icons.local_pharmacy, Icons.two_wheeler, Icons.inventory_2];
+        ? const [
+            Icons.check,
+            Icons.local_pharmacy,
+            Icons.storefront,
+            Icons.shopping_bag
+          ]
+        : const [
+            Icons.check,
+            Icons.local_pharmacy,
+            Icons.two_wheeler,
+            Icons.inventory_2
+          ];
     Widget circle(int i) {
       final done = i < step;
       final active = i == step;
@@ -1446,10 +1518,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         width: active ? 40 : 32,
         height: active ? 40 : 32,
         decoration: BoxDecoration(
-          color: done || active ? primary : textSecondary.withValues(alpha: 0.2),
+          color:
+              done || active ? primary : textSecondary.withValues(alpha: 0.2),
           shape: BoxShape.circle,
           boxShadow: active
-              ? [BoxShadow(color: primary.withValues(alpha: 0.3), blurRadius: 8)]
+              ? [
+                  BoxShadow(
+                      color: primary.withValues(alpha: 0.3), blurRadius: 8)
+                ]
               : null,
         ),
         child: Icon(
@@ -1459,6 +1535,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ),
       );
     }
+
     Color labelColor(int i) => i <= step ? primary : textSecondary;
     return Container(
       width: double.infinity,
@@ -1498,46 +1575,68 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               Column(children: [
                 circle(0),
                 const SizedBox(height: 6),
-                Text(labels[0], style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: labelColor(0))),
+                Text(labels[0],
+                    style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: labelColor(0))),
               ]),
               Expanded(
                 child: Center(
                   child: Container(
                     height: 2,
-                    color: step > 0 ? primary : textSecondary.withValues(alpha: 0.3),
+                    color: step > 0
+                        ? primary
+                        : textSecondary.withValues(alpha: 0.3),
                   ),
                 ),
               ),
               Column(children: [
                 circle(1),
                 const SizedBox(height: 6),
-                Text(labels[1], style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: labelColor(1))),
+                Text(labels[1],
+                    style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: labelColor(1))),
               ]),
               Expanded(
                 child: Center(
                   child: Container(
                     height: 2,
-                    color: step > 1 ? primary : textSecondary.withValues(alpha: 0.3),
+                    color: step > 1
+                        ? primary
+                        : textSecondary.withValues(alpha: 0.3),
                   ),
                 ),
               ),
               Column(children: [
                 circle(2),
                 const SizedBox(height: 6),
-                Text(labels[2], style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: labelColor(2))),
+                Text(labels[2],
+                    style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: labelColor(2))),
               ]),
               Expanded(
                 child: Center(
                   child: Container(
                     height: 2,
-                    color: step > 2 ? primary : textSecondary.withValues(alpha: 0.3),
+                    color: step > 2
+                        ? primary
+                        : textSecondary.withValues(alpha: 0.3),
                   ),
                 ),
               ),
               Column(children: [
                 circle(3),
                 const SizedBox(height: 6),
-                Text(labels[3], style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: labelColor(3))),
+                Text(labels[3],
+                    style: TextStyle(
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                        color: labelColor(3))),
               ]),
             ],
           ),
@@ -1561,7 +1660,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       isScrollControlled: true,
       backgroundColor: AppColors.transparent,
       builder: (ctx) => Container(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
         decoration: const BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -1571,11 +1671,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.delivery_dining, size: 48, color: AppColors.green),
+              const Icon(Icons.delivery_dining,
+                  size: 48, color: AppColors.statusSuccess),
               const SizedBox(height: 12),
               Text(
                 'El repartidor llegó',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -1586,7 +1690,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.green, width: 2),
+                  border: Border.all(color: AppColors.statusSuccess, width: 2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: QrImageView(
@@ -1598,7 +1702,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               const SizedBox(height: 16),
               Text(
                 'El repartidor escaneará este código',
-                style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
+                style: TextStyle(
+                    fontSize: 13, color: AppColors.secondaryText(context)),
               ),
             ],
           ),
@@ -1610,7 +1715,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void _showRatingAfterDelivery() {
     if (_order == null) return;
     // Close QR modal if open
-    Navigator.of(context).popUntil((route) => route.isFirst || route.settings.name == null);
+    Navigator.of(context)
+        .popUntil((route) => route.isFirst || route.settings.name == null);
     Future.delayed(const Duration(milliseconds: 600), () {
       if (!mounted) return;
       showModalBottomSheet<void>(
@@ -1652,7 +1758,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       markers.add(MapMarker.create(
         point: LatLng(_deliveryLat!, _deliveryLng!),
         iconData: Icons.two_wheeler,
-        color: AppColors.blue,
+        color: AppColors.brandTeal,
         size: 36,
       ));
     }
@@ -1660,7 +1766,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       markers.add(MapMarker.create(
         point: LatLng(_customerLat!, _customerLng!),
         iconData: Icons.location_on,
-        color: AppColors.green,
+        color: AppColors.statusSuccess,
         size: 32,
       ));
     }
@@ -1669,12 +1775,17 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     if (_routePoints.isNotEmpty) {
       polyline = _routePoints;
     } else if (hasLocation && hasCustomer) {
-      polyline = [LatLng(_deliveryLat!, _deliveryLng!), LatLng(_customerLat!, _customerLng!)];
+      polyline = [
+        LatLng(_deliveryLat!, _deliveryLng!),
+        LatLng(_customerLat!, _customerLng!)
+      ];
     }
 
     final center = hasLocation
         ? LatLng(_deliveryLat!, _deliveryLng!)
-        : (hasCustomer ? LatLng(_customerLat!, _customerLng!) : const LatLng(10.16, -68.01));
+        : (hasCustomer
+            ? LatLng(_customerLat!, _customerLng!)
+            : const LatLng(10.16, -68.01));
 
     return Card(
       color: isDark ? null : AppColors.white,
@@ -1686,11 +1797,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.delivery_dining, color: AppColors.green, size: 22),
+                const Icon(Icons.delivery_dining,
+                    color: AppColors.statusSuccess, size: 22),
                 const SizedBox(width: 8),
                 Text(
                   AppStrings.deliveryTracking,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: AppColors.primaryText(context)),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryText(context)),
                 ),
               ],
             ),
@@ -1708,7 +1822,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       zoom: 14.0,
                       markers: markers.isEmpty ? null : markers,
                       polylinePoints: polyline,
-                      polylineColor: AppColors.blue,
+                      polylineColor: AppColors.brandTeal,
                       polylineStrokeWidth: 4,
                     ),
                   ),
@@ -1719,21 +1833,28 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 height: 120,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.gray.withValues(alpha: 0.1) : AppColors.grayLight,
+                  color: isDark
+                      ? AppColors.gray.withValues(alpha: 0.1)
+                      : AppColors.grayLight,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.location_searching, size: 36, color: AppColors.gray),
+                    Icon(Icons.location_searching,
+                        size: 36, color: AppColors.gray),
                     SizedBox(height: 8),
-                    Text(AppStrings.waitingDeliveryLocation, style: TextStyle(color: AppColors.gray, fontSize: 13)),
+                    Text(AppStrings.waitingDeliveryLocation,
+                        style: TextStyle(color: AppColors.gray, fontSize: 13)),
                   ],
                 ),
               ),
             if (order.status == 'shipped') ...[
               const SizedBox(height: 12),
-              Text('Cuando el repartidor llegue, te pedirá mostrar tu QR', style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)), textAlign: TextAlign.center),
+              Text('Cuando el repartidor llegue, te pedirá mostrar tu QR',
+                  style: TextStyle(
+                      fontSize: 13, color: AppColors.secondaryText(context)),
+                  textAlign: TextAlign.center),
             ],
             if (hasLocation) ...[
               const SizedBox(height: 12),
@@ -1743,9 +1864,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   icon: const Icon(Icons.navigation, size: 18),
                   label: const Text(AppStrings.openInGoogleMaps),
                   onPressed: () async {
-                    final url = Uri.parse('${AppConfig.googleMapsPointUrl}=$_deliveryLat,$_deliveryLng');
+                    final url = Uri.parse(
+                        '${AppConfig.googleMapsPointUrl}=$_deliveryLat,$_deliveryLng');
                     if (await canLaunchUrl(url)) {
-                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                      await launchUrl(url,
+                          mode: LaunchMode.externalApplication);
                     }
                   },
                 ),
@@ -1762,7 +1885,10 @@ class _UploadProofDialog extends StatefulWidget {
   final List<Map<String, dynamic>> paymentMethods;
   final String? initialMethod;
   final String title;
-  const _UploadProofDialog({required this.paymentMethods, this.initialMethod, this.title = 'Pagar y notificar'});
+  const _UploadProofDialog(
+      {required this.paymentMethods,
+      this.initialMethod,
+      this.title = 'Pagar y notificar'});
 
   @override
   State<_UploadProofDialog> createState() => _UploadProofDialogState();
@@ -1857,7 +1983,8 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                 ))
             .toList()
         : _fallbackMethods
-            .map((m) => DropdownMenuItem(value: m, child: Text(_methodLabel(m))))
+            .map(
+                (m) => DropdownMenuItem(value: m, child: Text(_methodLabel(m))))
             .toList();
 
     final mq = MediaQuery.sizeOf(context);
@@ -1894,179 +2021,196 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-              if (_currentStep == 0) ...[
-                Text(
-                  useCommerceMethods
-                      ? 'Transfiere o deposita a estas cuentas:'
-                      : 'Ingresa los datos del pago realizado:',
-                  style: TextStyle(
-                    fontSize: 14, 
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.primaryText(context).withValues(alpha: 0.7),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  initialValue: items.any((e) => e.value == _selectedMethod)
-                      ? _selectedMethod
-                      : (items.isNotEmpty ? items.first.value : null),
-                  decoration: InputDecoration(
-                    labelText: 'Método de pago',
-                    filled: true,
-                    fillColor: AppColors.grayLight.withValues(alpha: 0.3),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                if (_currentStep == 0) ...[
+                  Text(
+                    useCommerceMethods
+                        ? 'Transfiere o deposita a estas cuentas:'
+                        : 'Ingresa los datos del pago realizado:',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color:
+                          AppColors.primaryText(context).withValues(alpha: 0.7),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
-                  items: items,
-                  onChanged: (v) =>
-                      setState(() => _selectedMethod = v ?? _selectedMethod),
-                ),
-                if (useCommerceMethods) ...[
                   const SizedBox(height: 16),
-                  _buildSelectedMethodDetails(),
-                ],
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.blue.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Text(
-                    'Nota: Guarda el número de referencia y captura el comprobante para el siguiente paso.',
-                    style: TextStyle(fontSize: 12, color: AppColors.blue, fontStyle: FontStyle.italic),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ] else ...[
-                // Paso 1: Carga
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: AppColors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.check_circle, color: AppColors.green, size: 18),
-                      const SizedBox(width: 8),
-                      Text(
-                        _methodLabel(_selectedMethod),
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.green),
+                  DropdownButtonFormField<String>(
+                    initialValue: items.any((e) => e.value == _selectedMethod)
+                        ? _selectedMethod
+                        : (items.isNotEmpty ? items.first.value : null),
+                    decoration: InputDecoration(
+                      labelText: 'Método de pago',
+                      filled: true,
+                      fillColor: AppColors.grayLight.withValues(alpha: 0.3),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
                       ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                    ),
+                    items: items,
+                    onChanged: (v) =>
+                        setState(() => _selectedMethod = v ?? _selectedMethod),
+                  ),
+                  if (useCommerceMethods) ...[
+                    const SizedBox(height: 16),
+                    _buildSelectedMethodDetails(),
+                  ],
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.blue.withValues(alpha: 0.05),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'Nota: Guarda el número de referencia y captura el comprobante para el siguiente paso.',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.brandTeal,
+                          fontStyle: FontStyle.italic),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ] else ...[
+                  // Paso 1: Carga
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.check_circle,
+                            color: AppColors.statusSuccess, size: 18),
+                        const SizedBox(width: 8),
+                        Text(
+                          _methodLabel(_selectedMethod),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.statusSuccess),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  TextFormField(
+                    controller: _refController,
+                    decoration: InputDecoration(
+                      labelText: 'Número de referencia',
+                      hintText: 'Ej: 466511 o ABC123',
+                      helperText: '4-20 caracteres del comprobante',
+                      filled: true,
+                      fillColor: AppColors.grayLight.withValues(alpha: 0.3),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      prefixIcon: const Icon(Icons.tag, size: 20),
+                    ),
+                    keyboardType: TextInputType.text,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
+                      LengthLimitingTextInputFormatter(20),
                     ],
                   ),
-                ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: _refController,
-                  decoration: InputDecoration(
-                    labelText: 'Número de referencia',
-                    hintText: 'Ej: 466511 o ABC123',
-                    helperText: '4-20 caracteres del comprobante',
-                    filled: true,
-                    fillColor: AppColors.grayLight.withValues(alpha: 0.3),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    prefixIcon: const Icon(Icons.tag, size: 20),
-                  ),
-                  keyboardType: TextInputType.text,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]')),
-                    LengthLimitingTextInputFormatter(20),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const Text('Imagen del comprobante', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
-                if (_image != null)
-                  Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            constraints: const BoxConstraints(maxHeight: 300),
-                            width: double.infinity,
-                            child: Image.file(
-                              File(_image!.path),
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                height: 180,
-                                color: AppColors.grayLight,
-                                child: const Icon(Icons.broken_image, color: AppColors.gray, size: 40),
+                  const SizedBox(height: 24),
+                  const Text('Imagen del comprobante',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  if (_image != null)
+                    Stack(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.black.withValues(alpha: 0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              constraints: const BoxConstraints(maxHeight: 300),
+                              width: double.infinity,
+                              child: Image.file(
+                                File(_image!.path),
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                  height: 180,
+                                  color: AppColors.grayLight,
+                                  child: const Icon(Icons.broken_image,
+                                      color: AppColors.gray, size: 40),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        top: 8,
-                        right: 8,
-                        child: GestureDetector(
-                          onTap: () => setState(() => _image = null),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.red.withValues(alpha: 0.9),
-                              shape: BoxShape.circle,
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: GestureDetector(
+                            onTap: () => setState(() => _image = null),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.red.withValues(alpha: 0.9),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.close,
+                                  size: 18, color: AppColors.white),
                             ),
-                            child: const Icon(Icons.close, size: 18, color: AppColors.white),
                           ),
                         ),
-                      ),
-                    ],
-                  )
-                else
-                  InkWell(
-                    onTap: _pickingImage ? null : _pickImage,
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: AppColors.blue.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: AppColors.blue.withValues(alpha: 0.2),
-                          width: 2,
-                          style: BorderStyle.solid,
+                      ],
+                    )
+                  else
+                    InkWell(
+                      onTap: _pickingImage ? null : _pickImage,
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height: 140,
+                        decoration: BoxDecoration(
+                          color: AppColors.blue.withValues(alpha: 0.05),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: AppColors.blue.withValues(alpha: 0.2),
+                            width: 2,
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (_pickingImage)
+                              const CircularProgressIndicator(strokeWidth: 2)
+                            else ...[
+                              const Icon(Icons.add_a_photo,
+                                  size: 40, color: AppColors.brandTeal),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Galería de fotos',
+                                style: TextStyle(
+                                    color: AppColors.brandTeal,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ],
                         ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          if (_pickingImage)
-                            const CircularProgressIndicator(strokeWidth: 2)
-                          else ...[
-                            const Icon(Icons.add_a_photo, size: 40, color: AppColors.blue),
-                            const SizedBox(height: 12),
-                            const Text(
-                              'Galería de fotos',
-                              style: TextStyle(color: AppColors.blue, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ],
-                      ),
                     ),
-                  ),
+                ],
               ],
-            ],
             ),
           ),
         ),
@@ -2081,7 +2225,8 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                   onPressed: () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Cancelar'),
                 ),
@@ -2091,10 +2236,11 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                 child: ElevatedButton(
                   onPressed: () => setState(() => _currentStep = 1),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.blue,
+                    backgroundColor: AppColors.brandTeal,
                     foregroundColor: AppColors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
                   ),
                   child: const Text('Ya pagué'),
@@ -2106,7 +2252,8 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                   onPressed: () => setState(() => _currentStep = 0),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                   child: const Text('Atrás'),
                 ),
@@ -2118,7 +2265,9 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                     final ref = _refController.text.trim();
                     if (ref.length < 4) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('La referencia debe tener entre 4 y 6 dígitos')),
+                        const SnackBar(
+                            content: Text(
+                                'La referencia debe tener entre 4 y 6 dígitos')),
                       );
                       return;
                     }
@@ -2135,10 +2284,11 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.green,
+                    backgroundColor: AppColors.statusSuccess,
                     foregroundColor: AppColors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
                   ),
                   child: const Text('Enviar'),
@@ -2159,7 +2309,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
         Container(
           width: 40,
           height: 2,
-          color: _currentStep == 1 ? AppColors.blue : AppColors.grayLight,
+          color: _currentStep == 1 ? AppColors.brandTeal : AppColors.grayLight,
         ),
         _stepCircle(1, 'Subir'),
       ],
@@ -2175,15 +2325,20 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
           width: 30,
           height: 30,
           decoration: BoxDecoration(
-            color: active ? AppColors.blue : AppColors.grayLight,
+            color: active ? AppColors.brandTeal : AppColors.grayLight,
             shape: BoxShape.circle,
-            border: current ? Border.all(color: AppColors.blue.withValues(alpha: 0.3), width: 4) : null,
+            border: current
+                ? Border.all(
+                    color: AppColors.blue.withValues(alpha: 0.3), width: 4)
+                : null,
           ),
           child: Center(
             child: Text(
               (step + 1).toString(),
               style: TextStyle(
-                color: active ? AppColors.white : AppColors.primaryText(context).withValues(alpha: 0.5),
+                color: active
+                    ? AppColors.white
+                    : AppColors.primaryText(context).withValues(alpha: 0.5),
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               ),
@@ -2195,7 +2350,9 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
           label,
           style: TextStyle(
             fontSize: 10,
-            color: active ? AppColors.blue : AppColors.primaryText(context).withValues(alpha: 0.5),
+            color: active
+                ? AppColors.brandTeal
+                : AppColors.primaryText(context).withValues(alpha: 0.5),
             fontWeight: active ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -2235,25 +2392,33 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
         children: [
           const Row(
             children: [
-              Icon(Icons.info_outline, color: AppColors.blue, size: 18),
+              Icon(Icons.info_outline, color: AppColors.brandTeal, size: 18),
               SizedBox(width: 8),
               Text(
                 'Datos de destino',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: AppColors.blue),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: AppColors.brandTeal),
               ),
             ],
           ),
           const SizedBox(height: 12),
-          if (bankName.isNotEmpty) _detailRow('Banco', bankName, isCopyable: true),
-          if (accountNumber.isNotEmpty) _detailRow('Cuenta', accountNumber, isCopyable: true),
+          if (bankName.isNotEmpty)
+            _detailRow('Banco', bankName, isCopyable: true),
+          if (accountNumber.isNotEmpty)
+            _detailRow('Cuenta', accountNumber, isCopyable: true),
           if (phone.isNotEmpty) _detailRow('Teléfono', phone, isCopyable: true),
           if (idNumber.isNotEmpty)
             _detailRow(
-              _isMobilePaymentType(_selectedMethod) ? 'Cédula / RIF' : 'ID fiscal',
+              _isMobilePaymentType(_selectedMethod)
+                  ? 'Cédula / RIF'
+                  : 'ID fiscal',
               idNumber,
               isCopyable: true,
             ),
-          if (ownerName.isNotEmpty) _detailRow('Titular', ownerName, isCopyable: true),
+          if (ownerName.isNotEmpty)
+            _detailRow('Titular', ownerName, isCopyable: true),
         ],
       ),
     );
@@ -2265,19 +2430,28 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textMutedGray, fontWeight: FontWeight.bold)),
+          Text(label,
+              style: const TextStyle(
+                  fontSize: 11,
+                  color: AppColors.textMutedGray,
+                  fontWeight: FontWeight.bold)),
           Row(
             children: [
               Expanded(
-                child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                child: Text(value,
+                    style: const TextStyle(
+                        fontSize: 14, fontWeight: FontWeight.w500)),
               ),
               if (isCopyable)
                 IconButton(
-                  icon: const Icon(Icons.copy, size: 16, color: AppColors.blue),
+                  icon: const Icon(Icons.copy,
+                      size: 16, color: AppColors.brandTeal),
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: value));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('$label copiado'), duration: const Duration(seconds: 1)),
+                      SnackBar(
+                          content: Text('$label copiado'),
+                          duration: const Duration(seconds: 1)),
                     );
                   },
                   padding: EdgeInsets.zero,
@@ -2363,7 +2537,8 @@ class _WaitTimerChipState extends State<_WaitTimerChip> {
         const SizedBox(width: 4),
         Text(
           _elapsed(),
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: widget.color),
+          style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w600, color: widget.color),
         ),
       ],
     );

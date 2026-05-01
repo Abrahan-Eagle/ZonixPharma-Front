@@ -6,7 +6,8 @@ import '../../utils/app_colors.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
 
 class CommercePromotionFormPage extends StatefulWidget {
-  const CommercePromotionFormPage({super.key, this.promotionId, this.initialData});
+  const CommercePromotionFormPage(
+      {super.key, this.promotionId, this.initialData});
 
   final int? promotionId;
   final Map<String, dynamic>? initialData;
@@ -83,7 +84,9 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.red),
+          SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: AppColors.statusError),
         );
       }
     }
@@ -102,7 +105,8 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
   Future<void> _pickEndDate() async {
     final d = await showDatePicker(
       context: context,
-      initialDate: _endDate ?? (_startDate ?? DateTime.now()).add(const Duration(days: 7)),
+      initialDate: _endDate ??
+          (_startDate ?? DateTime.now()).add(const Duration(days: 7)),
       firstDate: _startDate ?? DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 730)),
     );
@@ -115,7 +119,7 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Selecciona fechas de inicio y fin'),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
       return;
@@ -137,7 +141,9 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
         'maximum_discount': double.tryParse(_maxDiscountController.text),
         'start_date': _startDate!.toIso8601String().split('T')[0],
         'end_date': _endDate!.toIso8601String().split('T')[0],
-        'terms_conditions': _termsController.text.trim().isEmpty ? null : _termsController.text.trim(),
+        'terms_conditions': _termsController.text.trim().isEmpty
+            ? null
+            : _termsController.text.trim(),
         'priority': _priority,
         'is_active': _isActive,
       };
@@ -159,7 +165,7 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Promoción guardada'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         Navigator.pop(context, true);
@@ -180,7 +186,9 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.promotionId == null ? 'Nueva promoción' : 'Editar promoción'),
+        title: Text(widget.promotionId == null
+            ? 'Nueva promoción'
+            : 'Editar promoción'),
       ),
       body: Form(
         key: _formKey,
@@ -195,7 +203,8 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
                   color: AppColors.red.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(_error!, style: const TextStyle(color: AppColors.red)),
+                child: Text(_error!,
+                    style: const TextStyle(color: AppColors.statusError)),
               ),
             ],
             Center(
@@ -205,13 +214,15 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
                   width: 120,
                   height: 120,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: _imagePath != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(12),
-                          child: Image.file(File(_imagePath!), fit: BoxFit.cover),
+                          child:
+                              Image.file(File(_imagePath!), fit: BoxFit.cover),
                         )
                       : (imageUrl != null && imageUrl.isNotEmpty)
                           ? ClipRRect(
@@ -222,7 +233,9 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
                                 errorBuilder: (_, __, ___) => Icon(
                                   Icons.image_not_supported,
                                   size: 48,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                               ),
                             )
@@ -232,12 +245,16 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
                                 Icon(
                                   Icons.add_photo_alternate,
                                   size: 48,
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                                 Text(
                                   'Imagen',
                                   style: TextStyle(
-                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
                                   ),
                                 ),
                               ],
@@ -248,65 +265,85 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
             const SizedBox(height: 20),
             TextFormField(
               controller: _titleController,
-              decoration: const InputDecoration(labelText: 'Título', border: OutlineInputBorder()),
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              decoration: const InputDecoration(
+                  labelText: 'Título', border: OutlineInputBorder()),
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Requerido' : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _descController,
-              decoration: const InputDecoration(labelText: 'Descripción', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Descripción', border: OutlineInputBorder()),
               maxLines: 2,
-              validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+              validator: (v) =>
+                  (v == null || v.trim().isEmpty) ? 'Requerido' : null,
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
               initialValue: _discountType,
-              decoration: const InputDecoration(labelText: 'Tipo de descuento', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Tipo de descuento', border: OutlineInputBorder()),
               items: const [
-                DropdownMenuItem(value: 'percentage', child: Text('Porcentaje')),
+                DropdownMenuItem(
+                    value: 'percentage', child: Text('Porcentaje')),
                 DropdownMenuItem(value: 'fixed', child: Text('Monto fijo')),
               ],
-              onChanged: (v) => setState(() => _discountType = v ?? 'percentage'),
+              onChanged: (v) =>
+                  setState(() => _discountType = v ?? 'percentage'),
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _discountValueController,
-              decoration: const InputDecoration(labelText: 'Valor del descuento', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Valor del descuento',
+                  border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
               validator: (v) {
                 final n = double.tryParse(v ?? '');
                 if (n == null || n <= 0) return 'Ingresa un valor mayor a 0';
-                if (_discountType == 'percentage' && n > 100) return 'Máximo 100%';
+                if (_discountType == 'percentage' && n > 100) {
+                  return 'Máximo 100%';
+                }
                 return null;
               },
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _minOrderController,
-              decoration: const InputDecoration(labelText: 'Pedido mínimo', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Pedido mínimo', border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _maxDiscountController,
-              decoration: const InputDecoration(labelText: 'Descuento máximo (opcional)', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Descuento máximo (opcional)',
+                  border: OutlineInputBorder()),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 12),
             ListTile(
-              title: Text(_startDate == null ? 'Fecha inicio' : 'Inicio: ${_startDate!.toString().split(' ')[0]}'),
+              title: Text(_startDate == null
+                  ? 'Fecha inicio'
+                  : 'Inicio: ${_startDate!.toString().split(' ')[0]}'),
               trailing: const Icon(Icons.calendar_today),
               onTap: _pickStartDate,
             ),
             ListTile(
-              title: Text(_endDate == null ? 'Fecha fin' : 'Fin: ${_endDate!.toString().split(' ')[0]}'),
+              title: Text(_endDate == null
+                  ? 'Fecha fin'
+                  : 'Fin: ${_endDate!.toString().split(' ')[0]}'),
               trailing: const Icon(Icons.calendar_today),
               onTap: _pickEndDate,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _termsController,
-              decoration: const InputDecoration(labelText: 'Términos y condiciones', border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                  labelText: 'Términos y condiciones',
+                  border: OutlineInputBorder()),
               maxLines: 2,
             ),
             const SizedBox(height: 12),

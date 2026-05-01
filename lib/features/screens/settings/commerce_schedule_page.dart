@@ -12,7 +12,7 @@ class CommerceSchedulePage extends StatefulWidget {
 class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
   final _formKey = GlobalKey<FormState>();
   final _scheduleController = TextEditingController();
-  
+
   bool _loading = false;
   bool _initialLoading = true;
   String? _error;
@@ -60,11 +60,11 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
 
       final data = await CommerceDataService.getCommerceData();
       final schedule = data['schedule'];
-      
+
       if (schedule != null && schedule is String && schedule.isNotEmpty) {
         _parseScheduleString(schedule);
       }
-      
+
       setState(() {
         _initialLoading = false;
       });
@@ -87,7 +87,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
       final day = entry.key;
       final data = entry.value;
       final dayName = _dayNames[day]!;
-      
+
       if (data['enabled']) {
         buffer.writeln('$dayName: ${data['open']} - ${data['close']}');
       } else {
@@ -99,22 +99,22 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
-    setState(() { 
-      _loading = true; 
-      _error = null; 
-      _success = null; 
+
+    setState(() {
+      _loading = true;
+      _error = null;
+      _success = null;
     });
 
     try {
       final scheduleString = _generateScheduleString();
-      
+
       final data = {
         'schedule': scheduleString,
       };
 
       await CommerceDataService.updateCommerceData(data);
-      
+
       setState(() {
         _loading = false;
         _success = 'Horario actualizado correctamente.';
@@ -138,7 +138,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
 
   Widget _buildDaySchedule(String day, String dayName) {
     final data = _scheduleData[day]!;
-    
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -155,22 +155,27 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                       data['enabled'] = value ?? false;
                     });
                   },
-                  activeColor: AppColors.purple,
+                  activeColor: AppColors.brandTealDeep,
                 ),
                 Text(
                   dayName,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const Spacer(),
                 if (data['enabled'])
                   Text(
                     '${data['open']} - ${data['close']}',
-                    style: const TextStyle(color: AppColors.green, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        color: AppColors.statusSuccess,
+                        fontWeight: FontWeight.bold),
                   )
                 else
                   const Text(
                     'Cerrado',
-                    style: TextStyle(color: AppColors.red, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        color: AppColors.statusError,
+                        fontWeight: FontWeight.bold),
                   ),
               ],
             ),
@@ -184,7 +189,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                       decoration: const InputDecoration(
                         labelText: 'Apertura',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       onChanged: (value) {
                         data['open'] = value;
@@ -200,7 +206,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                       decoration: const InputDecoration(
                         labelText: 'Cierre',
                         border: OutlineInputBorder(),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       ),
                       onChanged: (value) {
                         data['close'] = value;
@@ -222,7 +229,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Horario de atención'),
-          backgroundColor: AppColors.purple,
+          backgroundColor: AppColors.brandTealDeep,
           foregroundColor: AppColors.white,
         ),
         body: const Center(child: CircularProgressIndicator()),
@@ -232,7 +239,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Horario de atención'),
-        backgroundColor: AppColors.purple,
+        backgroundColor: AppColors.brandTealDeep,
         foregroundColor: AppColors.white,
       ),
       body: Padding(
@@ -244,7 +251,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
               // Selector de horarios por día
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -252,16 +260,18 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                     children: [
                       const Row(
                         children: [
-                          Icon(Icons.schedule, color: AppColors.blue),
+                          Icon(Icons.schedule, color: AppColors.brandTeal),
                           SizedBox(width: 8),
                           Text(
                             'Horario por Días',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
-                      ..._scheduleData.keys.map((day) => _buildDaySchedule(day, _dayNames[day]!)),
+                      ..._scheduleData.keys.map(
+                          (day) => _buildDaySchedule(day, _dayNames[day]!)),
                     ],
                   ),
                 ),
@@ -271,7 +281,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
               // Horario personalizado
               Card(
                 elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -279,7 +290,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                     children: [
                       const Text(
                         'Horario Personalizado',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       const Text(
@@ -292,7 +304,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                         decoration: const InputDecoration(
                           labelText: 'Horario personalizado',
                           border: OutlineInputBorder(),
-                          hintText: 'Ejemplo:\nL-V 8:00-18:00\nS 9:00-14:00\nD cerrado',
+                          hintText:
+                              'Ejemplo:\nL-V 8:00-18:00\nS 9:00-14:00\nD cerrado',
                           alignLabelWithHint: true,
                         ),
                         maxLines: 4,
@@ -306,7 +319,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
               // Información adicional
               Card(
                 elevation: 2,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 child: const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Column(
@@ -314,11 +328,12 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.info_outline, color: AppColors.blue),
+                          Icon(Icons.info_outline, color: AppColors.brandTeal),
                           SizedBox(width: 8),
                           Text(
                             'Información',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
@@ -328,7 +343,8 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                         '• Los días marcados como "Cerrado" no aparecerán en el horario público\n'
                         '• Puedes usar el horario personalizado para casos especiales\n'
                         '• Los cambios se aplican inmediatamente',
-                        style: TextStyle(fontSize: 14, color: AppColors.textMutedGray),
+                        style: TextStyle(
+                            fontSize: 14, color: AppColors.textMutedGray),
                       ),
                     ],
                   ),
@@ -341,32 +357,39 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.red,
+                    color: AppColors.statusError,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.red),
+                    border: Border.all(color: AppColors.statusError),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.error, color: AppColors.red),
+                      const Icon(Icons.error, color: AppColors.statusError),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_error!, style: const TextStyle(color: AppColors.red))),
+                      Expanded(
+                          child: Text(_error!,
+                              style: const TextStyle(
+                                  color: AppColors.statusError))),
                     ],
                   ),
                 ),
-              
+
               if (_success != null)
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: AppColors.green,
+                    color: AppColors.statusSuccess,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: AppColors.green),
+                    border: Border.all(color: AppColors.statusSuccess),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle, color: AppColors.green),
+                      const Icon(Icons.check_circle,
+                          color: AppColors.statusSuccess),
                       const SizedBox(width: 8),
-                      Expanded(child: Text(_success!, style: const TextStyle(color: AppColors.green))),
+                      Expanded(
+                          child: Text(_success!,
+                              style: const TextStyle(
+                                  color: AppColors.statusSuccess))),
                     ],
                   ),
                 ),
@@ -379,25 +402,28 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                 height: 50,
                 child: ElevatedButton.icon(
                   onPressed: _loading ? null : _submit,
-                  icon: _loading 
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(color: AppColors.white, strokeWidth: 2),
-                      )
-                    : const Icon(Icons.save),
+                  icon: _loading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                              color: AppColors.white, strokeWidth: 2),
+                        )
+                      : const Icon(Icons.save),
                   label: Text(
                     _loading ? 'Guardando...' : 'Guardar horario',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.purple,
+                    backgroundColor: AppColors.brandTealDeep,
                     foregroundColor: AppColors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25)),
                   ),
                 ),
               ),
-              
+
               // Espacio adicional para evitar overflow
               const SizedBox(height: 32),
             ],
@@ -406,4 +432,4 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
       ),
     );
   }
-} 
+}

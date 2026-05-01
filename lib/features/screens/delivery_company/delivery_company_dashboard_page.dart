@@ -9,10 +9,12 @@ class DeliveryCompanyDashboardPage extends StatefulWidget {
   const DeliveryCompanyDashboardPage({super.key});
 
   @override
-  State<DeliveryCompanyDashboardPage> createState() => _DeliveryCompanyDashboardPageState();
+  State<DeliveryCompanyDashboardPage> createState() =>
+      _DeliveryCompanyDashboardPageState();
 }
 
-class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardPage> {
+class _DeliveryCompanyDashboardPageState
+    extends State<DeliveryCompanyDashboardPage> {
   int _obsWindowHours = 24;
 
   @override
@@ -39,7 +41,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
             );
           }
           if (service.dashboardError != null && service.dashboardData.isEmpty) {
-            return _buildError(service.dashboardError!, () => service.loadDashboard());
+            return _buildError(
+                service.dashboardError!, () => service.loadDashboard());
           }
 
           final data = service.dashboardData;
@@ -75,17 +78,21 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                   const SizedBox(height: 16),
                   _buildDefaultPayoutCard(context, company),
                   const SizedBox(height: 16),
-                  _buildStatusRow(context, agentsCount, activeAgents, avgRating),
+                  _buildStatusRow(
+                      context, agentsCount, activeAgents, avgRating),
                   const SizedBox(height: 16),
                   _buildSectionTitle('Entregas'),
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _metricCard(context, 'Hoy', '$todayDeliveries', AppColors.green),
+                      _metricCard(context, 'Hoy', '$todayDeliveries',
+                          AppColors.statusSuccess),
                       const SizedBox(width: 8),
-                      _metricCard(context, 'Semana', '$weekDeliveries', AppColors.blue),
+                      _metricCard(context, 'Semana', '$weekDeliveries',
+                          AppColors.brandTeal),
                       const SizedBox(width: 8),
-                      _metricCard(context, 'Mes', '$monthDeliveries', AppColors.purple),
+                      _metricCard(context, 'Mes', '$monthDeliveries',
+                          AppColors.brandTealDeep),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -93,11 +100,23 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _metricCard(context, 'Hoy', '\$${todayEarnings.toStringAsFixed(2)}', AppColors.green),
+                      _metricCard(
+                          context,
+                          'Hoy',
+                          '\$${todayEarnings.toStringAsFixed(2)}',
+                          AppColors.statusSuccess),
                       const SizedBox(width: 8),
-                      _metricCard(context, 'Semana', '\$${weekEarnings.toStringAsFixed(2)}', AppColors.blue),
+                      _metricCard(
+                          context,
+                          'Semana',
+                          '\$${weekEarnings.toStringAsFixed(2)}',
+                          AppColors.brandTeal),
                       const SizedBox(width: 8),
-                      _metricCard(context, 'Mes', '\$${monthEarnings.toStringAsFixed(2)}', AppColors.purple),
+                      _metricCard(
+                          context,
+                          'Mes',
+                          '\$${monthEarnings.toStringAsFixed(2)}',
+                          AppColors.brandTealDeep),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -111,7 +130,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                         selected: _obsWindowHours == 24,
                         onSelected: (_) {
                           setState(() => _obsWindowHours = 24);
-                          service.loadObservability(windowHours: _obsWindowHours);
+                          service.loadObservability(
+                              windowHours: _obsWindowHours);
                         },
                       ),
                       ChoiceChip(
@@ -119,7 +139,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                         selected: _obsWindowHours == 12,
                         onSelected: (_) {
                           setState(() => _obsWindowHours = 12);
-                          service.loadObservability(windowHours: _obsWindowHours);
+                          service.loadObservability(
+                              windowHours: _obsWindowHours);
                         },
                       ),
                       ChoiceChip(
@@ -127,13 +148,15 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                         selected: _obsWindowHours == 6,
                         onSelected: (_) {
                           setState(() => _obsWindowHours = 6);
-                          service.loadObservability(windowHours: _obsWindowHours);
+                          service.loadObservability(
+                              windowHours: _obsWindowHours);
                         },
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  _buildObservabilityCard(context, obsKpi, obsIncidents, obsHistory, obsRunbooks),
+                  _buildObservabilityCard(
+                      context, obsKpi, obsIncidents, obsHistory, obsRunbooks),
                 ],
               ),
             ),
@@ -143,7 +166,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
     );
   }
 
-  Widget _buildDefaultPayoutCard(BuildContext context, Map<String, dynamic> company) {
+  Widget _buildDefaultPayoutCard(
+      BuildContext context, Map<String, dynamic> company) {
     final cs = Theme.of(context).colorScheme;
     final defaultPct = safeDouble(company['default_payout_percentage'], 70.0);
     return InkWell(
@@ -158,18 +182,24 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
         ),
         child: Row(
           children: [
-            const Icon(Icons.percent, color: AppColors.orange, size: 22),
+            const Icon(Icons.percent,
+                color: AppColors.brandCtaAccent, size: 22),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Porcentaje default (nuevos agentes)', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  Text('${defaultPct.toStringAsFixed(0)}% del delivery_fee', style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context))),
+                  const Text('Porcentaje default (nuevos agentes)',
+                      style:
+                          TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  Text('${defaultPct.toStringAsFixed(0)}% del delivery_fee',
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.secondaryText(context))),
                 ],
               ),
             ),
-            const Icon(Icons.edit, size: 18, color: AppColors.orange),
+            const Icon(Icons.edit, size: 18, color: AppColors.brandCtaAccent),
           ],
         ),
       ),
@@ -177,7 +207,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
   }
 
   void _showEditDefaultPayoutDialog(BuildContext context, double currentPct) {
-    final controller = TextEditingController(text: currentPct.toStringAsFixed(0));
+    final controller =
+        TextEditingController(text: currentPct.toStringAsFixed(0));
     showDialog<void>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -191,19 +222,27 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancelar')),
+          TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Cancelar')),
           FilledButton(
             onPressed: () async {
               final pct = double.tryParse(controller.text.replaceAll(',', '.'));
               if (pct == null || pct < 0 || pct > 100) {
-                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Ingresa un número entre 0 y 100')));
+                ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(
+                    content: Text('Ingresa un número entre 0 y 100')));
                 return;
               }
               Navigator.of(ctx).pop();
-              final ok = await context.read<DeliveryCompanyService>().updateCompanySettings(defaultPayoutPercentage: pct);
+              final ok = await context
+                  .read<DeliveryCompanyService>()
+                  .updateCompanySettings(defaultPayoutPercentage: pct);
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(ok ? 'Configuración actualizada' : 'Error al actualizar')),
+                  SnackBar(
+                      content: Text(ok
+                          ? 'Configuración actualizada'
+                          : 'Error al actualizar')),
                 );
               }
             },
@@ -214,7 +253,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
     );
   }
 
-  Widget _buildCompanyHeader(BuildContext context, Map<String, dynamic> company) {
+  Widget _buildCompanyHeader(
+      BuildContext context, Map<String, dynamic> company) {
     final cs = Theme.of(context).colorScheme;
     final name = company['name'] ?? 'Mi Empresa';
     final isOpen = company['open'] == true;
@@ -232,22 +272,29 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
           CircleAvatar(
             radius: 28,
             backgroundColor: AppColors.orange.withValues(alpha: 0.15),
-            child: const Icon(Icons.local_shipping, color: AppColors.orange, size: 28),
+            child: const Icon(Icons.local_shipping,
+                color: AppColors.brandCtaAccent, size: 28),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(name, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(name,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    _statusChip(isOpen ? 'Abierto' : 'Cerrado', isOpen ? AppColors.green : AppColors.red),
+                    _statusChip(
+                        isOpen ? 'Abierto' : 'Cerrado',
+                        isOpen
+                            ? AppColors.statusSuccess
+                            : AppColors.statusError),
                     const SizedBox(width: 8),
                     _statusChip(
                       isActive ? 'Activo' : 'Inactivo',
-                      isActive ? AppColors.blue : cs.onSurfaceVariant,
+                      isActive ? AppColors.brandTeal : cs.onSurfaceVariant,
                     ),
                   ],
                 ),
@@ -266,18 +313,24 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
         color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
+      child: Text(label,
+          style: TextStyle(
+              fontSize: 11, fontWeight: FontWeight.w600, color: color)),
     );
   }
 
-  Widget _buildStatusRow(BuildContext context, int total, int active, double rating) {
+  Widget _buildStatusRow(
+      BuildContext context, int total, int active, double rating) {
     return Row(
       children: [
-        _statCard(context, Icons.people, '$total', 'Agentes', AppColors.blue),
+        _statCard(
+            context, Icons.people, '$total', 'Agentes', AppColors.brandTeal),
         const SizedBox(width: 8),
-        _statCard(context, Icons.circle, '$active', 'Activos', AppColors.green),
+        _statCard(context, Icons.circle, '$active', 'Activos',
+            AppColors.statusSuccess),
         const SizedBox(width: 8),
-        _statCard(context, Icons.star, rating.toStringAsFixed(1), 'Rating', AppColors.orange),
+        _statCard(context, Icons.star, rating.toStringAsFixed(1), 'Rating',
+            AppColors.brandCtaAccent),
       ],
     );
   }
@@ -300,8 +353,12 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
           children: [
             Icon(icon, color: color, size: 22),
             const SizedBox(height: 6),
-            Text(value, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text(label, style: TextStyle(fontSize: 11, color: AppColors.secondaryText(context))),
+            Text(value,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 11, color: AppColors.secondaryText(context))),
           ],
         ),
       ),
@@ -324,9 +381,13 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
         ),
         child: Column(
           children: [
-            Text(label, style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context))),
+            Text(label,
+                style: TextStyle(
+                    fontSize: 12, color: AppColors.secondaryText(context))),
             const SizedBox(height: 4),
-            Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+            Text(value,
+                style: TextStyle(
+                    fontSize: 16, fontWeight: FontWeight.bold, color: color)),
           ],
         ),
       ),
@@ -334,7 +395,11 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
   }
 
   Widget _buildSectionTitle(String title) {
-    return Text(title, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText(context)));
+    return Text(title,
+        style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primaryText(context)));
   }
 
   Widget _buildError(String msg, VoidCallback retry) {
@@ -344,11 +409,15 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(msg, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            ElevatedButton.icon(onPressed: retry, icon: const Icon(Icons.refresh), label: const Text('Reintentar')),
+            ElevatedButton.icon(
+                onPressed: retry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar')),
           ],
         ),
       ),
@@ -382,10 +451,13 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
             spacing: 10,
             runSpacing: 8,
             children: [
-              _statusChip('Sin asignar: $unassigned', AppColors.red),
-              _statusChip('Tracking congelado: $frozen', AppColors.orange),
-              _statusChip('Timeout: ${timeoutRatio.toStringAsFixed(2)}%', AppColors.purple),
-              _statusChip('Asignación: ${avgAssign.toStringAsFixed(2)} min', AppColors.blue),
+              _statusChip('Sin asignar: $unassigned', AppColors.statusError),
+              _statusChip(
+                  'Tracking congelado: $frozen', AppColors.brandCtaAccent),
+              _statusChip('Timeout: ${timeoutRatio.toStringAsFixed(2)}%',
+                  AppColors.brandTealDeep),
+              _statusChip('Asignación: ${avgAssign.toStringAsFixed(2)} min',
+                  AppColors.brandTeal),
             ],
           ),
           const SizedBox(height: 10),
@@ -405,7 +477,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Text(
                   '• ${safeString(incident['event_code'])} (orden #${safeInt(incident['order_id'])})',
-                  style: TextStyle(color: AppColors.primaryText(context), fontSize: 13),
+                  style: TextStyle(
+                      color: AppColors.primaryText(context), fontSize: 13),
                 ),
               ),
           const SizedBox(height: 10),
@@ -425,7 +498,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Text(
                   '• ${safeString(snapshot['created_at'])} · TTA ${safeDouble(snapshot['avg_assignment_minutes']).toStringAsFixed(2)}m',
-                  style: TextStyle(color: AppColors.primaryText(context), fontSize: 12),
+                  style: TextStyle(
+                      color: AppColors.primaryText(context), fontSize: 12),
                 ),
               ),
           const SizedBox(height: 10),
@@ -445,7 +519,8 @@ class _DeliveryCompanyDashboardPageState extends State<DeliveryCompanyDashboardP
                 padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Text(
                   '• ${safeString(rb['title'])}',
-                  style: TextStyle(color: AppColors.primaryText(context), fontSize: 12),
+                  style: TextStyle(
+                      color: AppColors.primaryText(context), fontSize: 12),
                 ),
               ),
         ],

@@ -15,10 +15,15 @@ class CommercePromotionService {
     String? type,
     String? sortBy,
     String? sortOrder,
+    int page = 1,
+    int perPage = 50,
   }) async {
     try {
       final headers = await AuthHelper.getAuthHeaders();
-      final queryParams = <String, String>{};
+      final queryParams = <String, String>{
+        'page': '$page',
+        'per_page': '${perPage.clamp(1, 100)}',
+      };
       if (status != null && status.isNotEmpty) queryParams['status'] = status;
       if (type != null && type.isNotEmpty) queryParams['type'] = type;
       if (sortBy != null) queryParams['sort_by'] = sortBy;
@@ -35,8 +40,13 @@ class CommercePromotionService {
         final data = jsonDecode(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
-        } else if (data['data'] != null) {
-          return List<Map<String, dynamic>>.from(data['data']);
+        }
+        final inner = data['data'];
+        if (inner is List) {
+          return List<Map<String, dynamic>>.from(inner);
+        }
+        if (inner is Map && inner['items'] is List) {
+          return List<Map<String, dynamic>>.from(inner['items'] as List);
         }
         return [];
       } else if (response.statusCode == 404) {

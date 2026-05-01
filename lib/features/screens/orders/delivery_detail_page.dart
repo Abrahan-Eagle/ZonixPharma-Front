@@ -229,8 +229,8 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
                       shape: BoxShape.circle,
                       border: Border.all(color: surfaceColor, width: 3),
                     ),
-                    child:
-                        const Icon(Icons.check, color: AppColors.white, size: 14),
+                    child: const Icon(Icons.check,
+                        color: AppColors.white, size: 14),
                   ),
                 ),
             ],
@@ -246,7 +246,8 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.star_rounded, color: AppColors.amber, size: 22),
+              const Icon(Icons.star_rounded,
+                  color: AppColors.statusWarning, size: 22),
               const SizedBox(width: 4),
               Text(
                 rating != null ? rating.toString() : '—',

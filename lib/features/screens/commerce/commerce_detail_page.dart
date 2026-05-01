@@ -5,7 +5,7 @@ import '../../utils/app_colors.dart';
 import 'package:zonix/features/screens/settings/commerce_data_page.dart';
 import 'package:zonix/features/services/commerce_list_service.dart';
 
-/// Detalle de restaurante estilo Zonix-Frontend: datos, descripción, ubicación, estadísticas.
+/// Detalle de farmacia (comercio): datos, descripción, ubicación, estadísticas.
 class CommerceDetailPage extends StatelessWidget {
   final MyCommerce commerce;
 
@@ -17,7 +17,7 @@ class CommerceDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(c.businessName),
-        backgroundColor: AppColors.purple,
+        backgroundColor: AppColors.brandTealDeep,
         foregroundColor: AppColors.white,
         actions: [
           IconButton(
@@ -41,7 +41,8 @@ class CommerceDetailPage extends StatelessWidget {
                   _InfoRow(label: 'RIF / NIT', value: c.taxId!),
                 if (c.businessType != null && c.businessType!.isNotEmpty)
                   _InfoRow(label: 'Tipo', value: c.businessType!),
-                _InfoRow(label: 'Estado', value: c.open ? 'Abierto' : 'Cerrado'),
+                _InfoRow(
+                    label: 'Estado', value: c.open ? 'Abierto' : 'Cerrado'),
               ],
             ),
             const SizedBox(height: 16),
@@ -76,11 +77,14 @@ class CommerceDetailPage extends StatelessWidget {
                 ),
               ],
             ),
-            if (c.schedule != null && _formatSchedule(c.schedule).isNotEmpty) ...[
+            if (c.schedule != null &&
+                _formatSchedule(c.schedule).isNotEmpty) ...[
               const SizedBox(height: 16),
               _buildSection(
                 'Horario',
-                [_InfoRow(label: 'Horario', value: _formatSchedule(c.schedule))],
+                [
+                  _InfoRow(label: 'Horario', value: _formatSchedule(c.schedule))
+                ],
               ),
             ],
             const SizedBox(height: 24),
@@ -89,12 +93,13 @@ class CommerceDetailPage extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: () => _openEdit(context),
                 icon: const Icon(Icons.edit),
-                label: const Text('Editar restaurante'),
+                label: const Text('Editar farmacia'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.green,
+                  backgroundColor: AppColors.statusSuccess,
                   foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
@@ -125,10 +130,12 @@ class CommerceDetailPage extends StatelessWidget {
                       child: Image.network(
                         c.image!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(Icons.store, color: AppColors.green, size: 36),
+                        errorBuilder: (_, __, ___) => const Icon(Icons.store,
+                            color: AppColors.statusSuccess, size: 36),
                       ),
                     )
-                  : const Icon(Icons.store, color: AppColors.green, size: 36),
+                  : const Icon(Icons.store,
+                      color: AppColors.statusSuccess, size: 36),
             ),
             const SizedBox(width: 20),
             Expanded(
@@ -145,7 +152,8 @@ class CommerceDetailPage extends StatelessWidget {
                   if (c.isPrimary) ...[
                     const SizedBox(height: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
                         color: AppColors.green.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
@@ -154,7 +162,7 @@ class CommerceDetailPage extends StatelessWidget {
                         'Principal',
                         style: TextStyle(
                           fontSize: 12,
-                          color: AppColors.green,
+                          color: AppColors.statusSuccess,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -178,13 +186,14 @@ class CommerceDetailPage extends StatelessWidget {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.purple,
+            color: AppColors.brandTealDeep,
           ),
         ),
         const SizedBox(height: 12),
         Card(
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(children: children),
@@ -197,7 +206,9 @@ class CommerceDetailPage extends StatelessWidget {
   String _formatSchedule(dynamic schedule) {
     if (schedule == null) return '';
     if (schedule is String) return schedule;
-    if (schedule is Map && schedule['raw'] != null) return schedule['raw'].toString();
+    if (schedule is Map && schedule['raw'] != null) {
+      return schedule['raw'].toString();
+    }
     return jsonEncode(schedule);
   }
 
@@ -209,7 +220,9 @@ class CommerceDetailPage extends StatelessWidget {
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${e.toString().replaceAll('Exception: ', '')}')),
+            SnackBar(
+                content: Text(
+                    'Error: ${e.toString().replaceAll('Exception: ', '')}')),
           );
         }
         return;
@@ -266,13 +279,14 @@ class _StatChip extends StatelessWidget {
   final String label;
   final String value;
 
-  const _StatChip({required this.icon, required this.label, required this.value});
+  const _StatChip(
+      {required this.icon, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Icon(icon, size: 24, color: AppColors.green),
+        Icon(icon, size: 24, color: AppColors.statusSuccess),
         const SizedBox(height: 8),
         Text(
           value,

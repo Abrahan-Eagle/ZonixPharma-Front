@@ -53,20 +53,21 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
     _debounceTimer?.cancel();
     _pusherSubscription?.cancel();
     if (_pusherSubscribed && _commerceId > 0) {
-      PusherService.instance.unsubscribeFromChannel('private-commerce.$_commerceId');
+      PusherService.instance
+          .unsubscribeFromChannel('private-commerce.$_commerceId');
     }
     super.dispose();
   }
 
   Future<void> _subscribeToCommerceUpdates() async {
     if (!AppConfig.enablePusher || _commerceId <= 0 || !mounted) return;
-    final ok = await PusherService.instance.subscribeToCommerceChannel(_commerceId);
-    
+    final ok =
+        await PusherService.instance.subscribeToCommerceChannel(_commerceId);
+
     if (ok && mounted) {
       _pusherSubscription?.cancel();
       _pusherSubscription = PusherService.instance.eventStream.listen((event) {
-        final rawEventName =
-            event['canonicalEventName']?.toString() ??
+        final rawEventName = event['canonicalEventName']?.toString() ??
             event['eventName']?.toString() ??
             '';
         final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
@@ -113,21 +114,24 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
       }
 
       if (!mounted) return;
-      final commerceService = Provider.of<CommerceService>(context, listen: false);
+      final commerceService =
+          Provider.of<CommerceService>(context, listen: false);
       final stats = await commerceService.getCommerceStatistics(_commerceId);
       if (!mounted) return;
       List<dynamic> recent = stats['recent_orders'] as List<dynamic>? ?? [];
       if (recent.isEmpty) {
         final orders = await CommerceOrderService.getOrders(perPage: 5);
         if (!mounted) return;
-        recent = orders.map((o) => {
-          'id': o.id,
-          'status': o.status,
-          'total': o.total,
-          'customer_name': o.customerName,
-          'created_at': o.createdAt.toIso8601String(),
-          'items_count': o.itemCount,
-        }).toList();
+        recent = orders
+            .map((o) => {
+                  'id': o.id,
+                  'status': o.status,
+                  'total': o.total,
+                  'customer_name': o.customerName,
+                  'created_at': o.createdAt.toIso8601String(),
+                  'items_count': o.itemCount,
+                })
+            .toList();
       }
 
       if (mounted) {
@@ -156,7 +160,7 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(value ? 'Comercio abierto' : 'Comercio cerrado'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -164,8 +168,9 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
-            backgroundColor: AppColors.red,
+            content:
+                Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -195,7 +200,7 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
   Color _onChipBackground(Color background) {
     return ThemeData.estimateBrightnessForColor(background) == Brightness.dark
         ? AppColors.white
-        : const Color(0xFF1C1B1F);
+        : AppColors.brandNavyDeep;
   }
 
   String _statusText(String status) {
@@ -212,7 +217,8 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
 
   String _statusTextForRecentOrder(Map<dynamic, dynamic> order) {
     final status = order['status']?.toString() ?? '';
-    final pickup = order['is_pickup'] == true || order['delivery_type'] == 'pickup';
+    final pickup =
+        order['is_pickup'] == true || order['delivery_type'] == 'pickup';
     if (status == 'shipped') {
       return pickup ? 'Listo' : 'En camino';
     }
@@ -223,7 +229,8 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
     if (order['delivery_type'] == null && order['is_pickup'] == null) {
       return null;
     }
-    final pickup = order['is_pickup'] == true || order['delivery_type'] == 'pickup';
+    final pickup =
+        order['is_pickup'] == true || order['delivery_type'] == 'pickup';
     return pickup ? 'Recoger en tienda' : 'Envío a domicilio';
   }
 
@@ -254,7 +261,8 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+                const Icon(Icons.error_outline,
+                    size: 64, color: AppColors.statusError),
                 const SizedBox(height: 16),
                 Text(
                   _error!,
@@ -308,7 +316,8 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
                 Container(
                   width: double.infinity,
                   margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: _commerceStatus == 'rejected'
                         ? AppColors.red.withValues(alpha: 0.1)
@@ -333,10 +342,10 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
                                 ? Icons.pause_circle_outline
                                 : Icons.hourglass_top,
                         color: _commerceStatus == 'rejected'
-                            ? AppColors.red
+                            ? AppColors.statusError
                             : _commerceStatus == 'suspended'
-                                ? AppColors.orange
-                                : AppColors.blue,
+                                ? AppColors.brandCtaAccent
+                                : AppColors.brandTeal,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -361,218 +370,237 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
                     children: [
                       Text(
                         _commerceOpen ? 'Comercio abierto' : 'Comercio cerrado',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: _commerceOpen ? AppColors.green : AppColors.red,
-                      ),
-                    ),
-                    Switch(
-                      value: _commerceOpen,
-                      onChanged: _toggleCommerceOpen,
-                      activeThumbColor: AppColors.green,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    label: 'Pendientes',
-                    value: '${_stats['pending_orders'] ?? 0}',
-                    icon: Icons.pending_actions,
-                    color: AppColors.orange,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    label: 'Órdenes hoy',
-                    value: '${_stats['today_orders'] ?? 0}',
-                    icon: Icons.receipt,
-                    color: AppColors.blue,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    label: 'Ingresos hoy',
-                    value: '\$${_parseNum(_stats['today_revenue']).toStringAsFixed(2)}',
-                    icon: Icons.attach_money,
-                    color: AppColors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    label: 'Productos activos',
-                    value: '${_stats['active_products'] ?? 0}',
-                    icon: Icons.inventory,
-                    color: AppColors.purple,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Últimas órdenes',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (_recentOrders.isEmpty)
-              Card(
-                color: Theme.of(context).colorScheme.surfaceContainerLow,
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.receipt_long,
-                          size: 48,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'No hay órdenes recientes',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            else
-              ...(_recentOrders).map((o) {
-                final order = o is Map ? Map<dynamic, dynamic>.from(o) : <dynamic, dynamic>{};
-                final statusBg = _statusColor(context, order['status']?.toString() ?? '');
-                final hint = _fulfillmentHint(order);
-                return Card(
-                  color: Theme.of(context).colorScheme.surfaceContainerLow,
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: ListTile(
-                    title: Text(
-                      order['customer_name'] ?? 'Cliente',
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          '\$${_parseNum(order['total']).toStringAsFixed(2)} · ${_statusTextForRecentOrder(order)}',
-                        ),
-                        if (hint != null)
-                          Text(
-                            hint,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: _commerceOpen
+                                      ? AppColors.statusSuccess
+                                      : AppColors.statusError,
                                 ),
-                          ),
-                      ],
-                    ),
-                    isThreeLine: hint != null,
-                    trailing: Chip(
-                      label: Text(
-                        _statusTextForRecentOrder(order),
-                        style: TextStyle(fontSize: 11, color: _onChipBackground(statusBg)),
                       ),
-                      backgroundColor: statusBg,
-                    ),
-                    onTap: () async {
-                      final id = order['id'];
-                      if (id != null) {
-                        await Navigator.pushNamed(context, '/commerce/order/$id');
-                        if (mounted) _loadData();
-                      }
-                    },
+                      Switch(
+                        value: _commerceOpen,
+                        onChanged: _toggleCommerceOpen,
+                        activeThumbColor: AppColors.statusSuccess,
+                      ),
+                    ],
                   ),
-                );
-              }),
-            const SizedBox(height: 24),
-            Text(
-              'Accesos rápidos',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: _QuickActionButton(
-                    icon: Icons.chat,
-                    label: 'Chat',
-                    onTap: () => Navigator.pushNamed(context, '/commerce/chat'),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Pendientes',
+                      value: '${_stats['pending_orders'] ?? 0}',
+                      icon: Icons.pending_actions,
+                      color: AppColors.brandCtaAccent,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _QuickActionButton(
-                    icon: Icons.person,
-                    label: 'Mi perfil',
-                    onTap: () => Navigator.pushNamed(context, '/commerce/profile'),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Órdenes hoy',
+                      value: '${_stats['today_orders'] ?? 0}',
+                      icon: Icons.receipt,
+                      color: AppColors.brandTeal,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _QuickActionButton(
-                    icon: Icons.campaign,
-                    label: 'Promociones',
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CommercePromotionsPage(),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Ingresos hoy',
+                      value:
+                          '\$${_parseNum(_stats['today_revenue']).toStringAsFixed(2)}',
+                      icon: Icons.attach_money,
+                      color: AppColors.statusSuccess,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _StatCard(
+                      label: 'Productos activos',
+                      value: '${_stats['active_products'] ?? 0}',
+                      icon: Icons.inventory,
+                      color: AppColors.brandTealDeep,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Últimas órdenes',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              if (_recentOrders.isEmpty)
+                Card(
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.receipt_long,
+                            size: 48,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'No hay órdenes recientes',
+                            style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: _QuickActionButton(
-                    icon: Icons.qr_code_2,
-                    label: 'Mi QR (comercio)',
-                    onTap: () {
-                      if (_commerceId <= 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('No hay comercio asociado.'),
+                )
+              else
+                ...(_recentOrders).map((o) {
+                  final order = o is Map
+                      ? Map<dynamic, dynamic>.from(o)
+                      : <dynamic, dynamic>{};
+                  final statusBg =
+                      _statusColor(context, order['status']?.toString() ?? '');
+                  final hint = _fulfillmentHint(order);
+                  return Card(
+                    color: Theme.of(context).colorScheme.surfaceContainerLow,
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      title: Text(
+                        order['customer_name'] ?? 'Cliente',
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '\$${_parseNum(order['total']).toStringAsFixed(2)} · ${_statusTextForRecentOrder(order)}',
+                          ),
+                          if (hint != null)
+                            Text(
+                              hint,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant,
+                                  ),
+                            ),
+                        ],
+                      ),
+                      isThreeLine: hint != null,
+                      trailing: Chip(
+                        label: Text(
+                          _statusTextForRecentOrder(order),
+                          style: TextStyle(
+                              fontSize: 11, color: _onChipBackground(statusBg)),
+                        ),
+                        backgroundColor: statusBg,
+                      ),
+                      onTap: () async {
+                        final id = order['id'];
+                        if (id != null) {
+                          await Navigator.pushNamed(
+                              context, '/commerce/order/$id');
+                          if (mounted) _loadData();
+                        }
+                      },
+                    ),
+                  );
+                }),
+              const SizedBox(height: 24),
+              Text(
+                'Accesos rápidos',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: _QuickActionButton(
+                      icon: Icons.chat,
+                      label: 'Chat',
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/commerce/chat'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _QuickActionButton(
+                      icon: Icons.person,
+                      label: 'Mi perfil',
+                      onTap: () =>
+                          Navigator.pushNamed(context, '/commerce/profile'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _QuickActionButton(
+                      icon: Icons.campaign,
+                      label: 'Promociones',
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const CommercePromotionsPage(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: _QuickActionButton(
+                      icon: Icons.qr_code_2,
+                      label: 'Mi QR (comercio)',
+                      onTap: () {
+                        if (_commerceId <= 0) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('No hay comercio asociado.'),
+                            ),
+                          );
+                          return;
+                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute<void>(
+                            builder: (_) => CommerceShareQrPage(
+                              commerceId: _commerceId,
+                              businessName: _commerceName.isNotEmpty
+                                  ? _commerceName
+                                  : 'Mi farmacia',
+                              commerceImageUrl: _commerceImageUrl.isNotEmpty
+                                  ? _commerceImageUrl
+                                  : null,
+                            ),
                           ),
                         );
-                        return;
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (_) => CommerceShareQrPage(
-                            commerceId: _commerceId,
-                            businessName: _commerceName.isNotEmpty
-                                ? _commerceName
-                                : 'Mi restaurante',
-                            commerceImageUrl: _commerceImageUrl.isNotEmpty
-                                ? _commerceImageUrl
-                                : null,
-                          ),
-                        ),
-                      );
-                    },
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
             ],
           ),
         ),
@@ -608,9 +636,9 @@ class _StatCard extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
             ),
             Text(
               label,

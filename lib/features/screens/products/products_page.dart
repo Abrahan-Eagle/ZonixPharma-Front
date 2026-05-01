@@ -90,10 +90,8 @@ class _ProductsPageState extends State<ProductsPage> {
       if (age < 15 * 60 * 1000) {
         final idStrings = prefs.getStringList(_nearbyIdsKey);
         if (idStrings != null && idStrings.isNotEmpty) {
-          final ids = idStrings
-              .map((s) => int.tryParse(s))
-              .whereType<int>()
-              .toSet();
+          final ids =
+              idStrings.map((s) => int.tryParse(s)).whereType<int>().toSet();
           final filtered =
               products.where((p) => ids.contains(p.commerceId)).toList();
           return filtered.isEmpty ? products : filtered;
@@ -113,7 +111,8 @@ class _ProductsPageState extends State<ProductsPage> {
       if (e is LocationDisabledException && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Ubicación desactivada — mostrando todos los productos'),
+            content:
+                Text('Ubicación desactivada — mostrando todos los productos'),
             duration: Duration(seconds: 3),
           ),
         );
@@ -154,7 +153,6 @@ class _ProductsPageState extends State<ProductsPage> {
             _nearbyIdsKey, commerceIds.map((e) => e.toString()).toList());
         prefs.setInt(_nearbyIdsTsKey, DateTime.now().millisecondsSinceEpoch);
       });
-
     } on LocationDisabledException {
       if (mounted) showGpsDisabledDialog(context);
       _nearbyCommerceIds = <int>{};
@@ -172,7 +170,8 @@ class _ProductsPageState extends State<ProductsPage> {
     }
   }
 
-  Future<void> _loadProductsPage({bool reset = false, bool silent = false}) async {
+  Future<void> _loadProductsPage(
+      {bool reset = false, bool silent = false}) async {
     if (_isLoadingMore) return;
     if (!reset && !_hasMore) return;
     final nextPage = reset ? 1 : _currentPage + 1;
@@ -203,8 +202,12 @@ class _ProductsPageState extends State<ProductsPage> {
       if (search.isEmpty) {
         final nearbyIds = _nearbyCommerceIds;
         if (nearbyIds != null && nearbyIds.isNotEmpty) {
-          final filtered = pageProducts.where((p) => nearbyIds.contains(p.commerceId)).toList();
-          pageProducts = filtered.isEmpty && nextPage == 1 ? pageResult.products : filtered;
+          final filtered = pageProducts
+              .where((p) => nearbyIds.contains(p.commerceId))
+              .toList();
+          pageProducts = filtered.isEmpty && nextPage == 1
+              ? pageResult.products
+              : filtered;
         }
       }
 
@@ -367,9 +370,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           selected: sel,
                           label: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(c)
-                            ],
+                            children: [Text(c)],
                           ),
                           onSelected: (_) =>
                               setState(() => _selectedCategory = c),
@@ -379,7 +380,9 @@ class _ProductsPageState extends State<ProductsPage> {
                           labelStyle: TextStyle(
                             color: sel
                                 ? AppColors.white
-                                : (isDark ? AppColors.white70 : AppColors.black87),
+                                : (isDark
+                                    ? AppColors.white70
+                                    : AppColors.black87),
                             fontWeight: sel ? FontWeight.bold : FontWeight.w500,
                             fontSize: 14,
                           ),
@@ -429,7 +432,8 @@ class _ProductsPageState extends State<ProductsPage> {
                       child: AppSkeleton.list(count: 5, useCards: true))
                   : Builder(
                       builder: (context) {
-                        final products = _filterProducts(_products, _searchQuery);
+                        final products =
+                            _filterProducts(_products, _searchQuery);
                         if (products.isEmpty) {
                           return SliverFillRemaining(
                             child: Center(
@@ -442,24 +446,27 @@ class _ProductsPageState extends State<ProductsPage> {
                         }
                         return SliverMainAxisGroup(
                           slivers: [
+                            // Celdas más altas que 0.68: el card (img 100 + textos) superaba
+                            // la altura de celda en móviles típicos (~9–12 px overflow).
                             SliverGrid(
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 2,
                                 mainAxisSpacing: 16,
                                 crossAxisSpacing: 16,
-                                childAspectRatio: 0.68,
+                                childAspectRatio: 0.62,
                               ),
                               delegate: SliverChildBuilderDelegate(
-                                (context, index) => _buildProductCard(
-                                    context, products[index], cartService, isDark),
+                                (context, index) => _buildProductCard(context,
+                                    products[index], cartService, isDark),
                                 childCount: products.length,
                               ),
                             ),
                             SliverToBoxAdapter(
                               child: _isLoadingMore
                                   ? const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 16),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 16),
                                       child: Center(
                                           child: CircularProgressIndicator()),
                                     )
@@ -487,8 +494,9 @@ class _ProductsPageState extends State<ProductsPage> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: 'Buscar hamburguesas, pizza...',
-          hintStyle: TextStyle(color: isDark ? AppColors.white38 : AppColors.black45),
+          hintText: 'Buscar medicinas o farmacias...',
+          hintStyle:
+              TextStyle(color: isDark ? AppColors.white38 : AppColors.black45),
           prefixIcon: Icon(Icons.search,
               color: isDark ? AppColors.white54 : AppColors.black54, size: 22),
           suffixIcon: Icon(Icons.tune,
@@ -518,7 +526,9 @@ class _ProductsPageState extends State<ProductsPage> {
             borderRadius: BorderRadius.circular(20),
             boxShadow: const [
               BoxShadow(
-                  color: AppColors.black26, blurRadius: 12, offset: Offset(0, 4))
+                  color: AppColors.black26,
+                  blurRadius: 12,
+                  offset: Offset(0, 4))
             ],
           ),
           child: ClipRRect(
@@ -669,7 +679,7 @@ class _ProductsPageState extends State<ProductsPage> {
                             ? Icons.favorite
                             : Icons.favorite_border,
                         color: _favProductIds.contains(product.id.toString())
-                            ? AppColors.red
+                            ? AppColors.statusError
                             : AppColors.white.withValues(alpha: 0.9),
                         size: 18,
                       ),
@@ -706,18 +716,26 @@ class _ProductsPageState extends State<ProductsPage> {
               children: [
                 const Icon(Icons.star, color: _primary, size: 14),
                 const SizedBox(width: 4),
-                Text(
+                Expanded(
+                  child: Text(
                     '${product.rating.toStringAsFixed(1)} (${product.reviewCount})',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                         fontSize: 11,
-                        color: isDark ? AppColors.white54 : AppColors.black54)),
-                const SizedBox(width: 8),
+                        color: isDark ? AppColors.white54 : AppColors.black54),
+                  ),
+                ),
                 if (product.requiresPrescription) ...[
-                  Text('•',
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: isDark ? AppColors.white38 : AppColors.black38)),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
+                  Text(
+                    '•',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? AppColors.white38 : AppColors.black38,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
                   Container(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -725,7 +743,7 @@ class _ProductsPageState extends State<ProductsPage> {
                       color: AppColors.brandTealDeep.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Receta',
                       style: TextStyle(
                         fontSize: 10,
@@ -735,93 +753,114 @@ class _ProductsPageState extends State<ProductsPage> {
                     ),
                   ),
                 ] else if ((product.presentation ?? '').isNotEmpty) ...[
-                  Text('•',
-                      style: TextStyle(
-                          fontSize: 11,
-                          color: isDark ? AppColors.white38 : AppColors.black38)),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 6),
+                  Text(
+                    '•',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? AppColors.white38 : AppColors.black38,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
                   Flexible(
+                    flex: 2,
                     child: Text(
                       product.presentation!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontSize: 11,
-                          color: isDark
-                              ? AppColors.white54
-                              : AppColors.black54),
+                          color:
+                              isDark ? AppColors.white54 : AppColors.black54),
                     ),
                   ),
                 ],
               ],
             ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('\$${product.price.toStringAsFixed(2)}',
-                    style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: _accentYellow)),
-                GestureDetector(
-                  onTap: () {
-                    if (!product.isAvailable ||
-                        (product.hasStockLimit && product.stock <= 0)) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Producto no disponible o sin stock'),
-                      ));
-                      return;
-                    }
-                    final result = cartService.addToCart(CartItem(
-                      id: product.id,
-                      nombre: product.name,
-                      precio: product.price,
-                      quantity: 1,
-                      image: product.image,
-                      stock: product.hasStockLimit ? product.stock : null,
-                      category: product.category,
-                      commerceId: product.commerceId,
-                      requiresPrescription: product.requiresPrescription,
-                      prescriptionType: product.prescriptionType,
-                      controlledSubstance: product.controlledSubstance,
-                      coldChain: product.coldChain,
-                      activeIngredient: product.activeIngredient,
-                      concentration: product.concentration,
-                      presentation: product.presentation,
-                    ));
-                    final message = switch (result.status) {
-                      CartAddStatus.replacedCommerce =>
-                        'Carrito actualizado. Solo puedes tener productos de una farmacia a la vez.',
-                      CartAddStatus.blockedLimit =>
-                        'No puedes agregar mas de 100 unidades',
-                      CartAddStatus.blockedStock =>
-                        'Cantidad no disponible por stock',
-                      _ => product.requiresPrescription
-                          ? 'Añadido. Recuerda subir la receta médica al pagar.'
-                          : 'Producto agregado al carrito',
-                    };
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(message)),
-                    );
-                  },
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: isDark
-                          ? AppColors.white.withValues(alpha: 0.1)
-                          : AppColors.grayLight,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                          color:
-                              isDark ? AppColors.white24 : AppColors.borderLight),
-                    ),
-                    child: Icon(Icons.add,
-                        color: isDark ? AppColors.white : _primary, size: 18),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.plusJakartaSans(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: _accentYellow),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          if (!product.isAvailable ||
+                              (product.hasStockLimit && product.stock <= 0)) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content:
+                                  Text('Producto no disponible o sin stock'),
+                            ));
+                            return;
+                          }
+                          final result = cartService.addToCart(CartItem(
+                            id: product.id,
+                            nombre: product.name,
+                            precio: product.price,
+                            quantity: 1,
+                            image: product.image,
+                            stock: product.hasStockLimit ? product.stock : null,
+                            category: product.category,
+                            commerceId: product.commerceId,
+                            requiresPrescription: product.requiresPrescription,
+                            prescriptionType: product.prescriptionType,
+                            controlledSubstance: product.controlledSubstance,
+                            coldChain: product.coldChain,
+                            activeIngredient: product.activeIngredient,
+                            concentration: product.concentration,
+                            presentation: product.presentation,
+                          ));
+                          final message = switch (result.status) {
+                            CartAddStatus.replacedCommerce =>
+                              'Carrito actualizado. Solo puedes tener productos de una farmacia a la vez.',
+                            CartAddStatus.blockedLimit =>
+                              'No puedes agregar mas de 100 unidades',
+                            CartAddStatus.blockedStock =>
+                              'Cantidad no disponible por stock',
+                            _ => product.requiresPrescription
+                                ? 'Añadido. Recuerda subir la receta médica al pagar.'
+                                : 'Producto agregado al carrito',
+                          };
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(message)),
+                          );
+                        },
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: isDark
+                                ? AppColors.white.withValues(alpha: 0.1)
+                                : AppColors.grayLight,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: isDark
+                                  ? AppColors.white24
+                                  : AppColors.borderLight,
+                            ),
+                          ),
+                          child: Icon(Icons.add,
+                              color: isDark ? AppColors.white : _primary,
+                              size: 18),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

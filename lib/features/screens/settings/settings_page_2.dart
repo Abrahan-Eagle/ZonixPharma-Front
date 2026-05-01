@@ -186,8 +186,8 @@ class _SettingsPage2State extends State<SettingsPage2> {
         dialogShown = true;
       }
       try {
-        await ProfileService().updateProfile(profile.id, profile,
-            imageFile: File(path));
+        await ProfileService()
+            .updateProfile(profile.id, profile, imageFile: File(path));
         if (!mounted) return;
         if (dialogShown) Navigator.of(context).pop();
         await _loadProfile();
@@ -234,8 +234,8 @@ class _SettingsPage2State extends State<SettingsPage2> {
         dialogShown = true;
       }
       try {
-        await ProfileService().updateProfile(profile.id, profile,
-            imageFile: File(path));
+        await ProfileService()
+            .updateProfile(profile.id, profile, imageFile: File(path));
         if (!mounted) return;
         if (dialogShown) Navigator.of(context).pop();
         await _loadProfile();
@@ -913,7 +913,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
           context: context,
           theme: theme,
           icon: Icons.location_on,
-          iconColor: AppColors.amber,
+          iconColor: AppColors.statusWarning,
           title: 'Direcciones guardadas',
           surfaceColor: surfaceColor,
           borderColor: borderColor,
@@ -929,7 +929,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
             context: context,
             theme: theme,
             icon: Icons.credit_card,
-            iconColor: AppColors.amber,
+            iconColor: AppColors.statusWarning,
             title: 'Métodos de pago',
             surfaceColor: surfaceColor,
             borderColor: borderColor,
@@ -948,7 +948,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
           context: context,
           theme: theme,
           icon: Icons.call,
-          iconColor: AppColors.green,
+          iconColor: AppColors.statusSuccess,
           title: 'Teléfonos',
           surfaceColor: surfaceColor,
           borderColor: borderColor,
@@ -963,7 +963,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
           context: context,
           theme: theme,
           icon: Icons.badge_outlined,
-          iconColor: AppColors.orange,
+          iconColor: AppColors.brandCtaAccent,
           title: 'Documentos',
           surfaceColor: surfaceColor,
           borderColor: borderColor,
@@ -973,7 +973,8 @@ class _SettingsPage2State extends State<SettingsPage2> {
                 builder: (_) => DocumentListScreen(
                   userId: userProvider.userId,
                   holderName: _profile is Profile
-                      ? '${(_profile as Profile).firstName} ${(_profile as Profile).lastName}'.trim()
+                      ? '${(_profile as Profile).firstName} ${(_profile as Profile).lastName}'
+                          .trim()
                       : null,
                 ),
               )),
@@ -1320,7 +1321,14 @@ class _SettingsPage2State extends State<SettingsPage2> {
                     child: Column(
                       children: [
                         Text(
-                          snapshot.hasData ? snapshot.data!.where((p) => p['active'] == true || p['status'] == 'active').length.toString() : '0',
+                          snapshot.hasData
+                              ? snapshot.data!
+                                  .where((p) =>
+                                      p['active'] == true ||
+                                      p['status'] == 'active')
+                                  .length
+                                  .toString()
+                              : '0',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,
@@ -1386,13 +1394,15 @@ class _SettingsPage2State extends State<SettingsPage2> {
                       top: -16,
                       right: -16,
                       child: Icon(Icons.description,
-                          size: 48, color: AppColors.white.withValues(alpha: 0.1)),
+                          size: 48,
+                          color: AppColors.white.withValues(alpha: 0.1)),
                     ),
                     Positioned(
                       bottom: 8,
                       left: -24,
                       child: Icon(Icons.star,
-                          size: 36, color: AppColors.white.withValues(alpha: 0.1)),
+                          size: 36,
+                          color: AppColors.white.withValues(alpha: 0.1)),
                     ),
                   ],
                 ),
@@ -1417,7 +1427,10 @@ class _SettingsPage2State extends State<SettingsPage2> {
                 ),
                 const SizedBox(height: 32),
                 FilledButton.icon(
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CommercePromotionFormPage())),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const CommercePromotionFormPage())),
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Crear Promoción'),
                   style: FilledButton.styleFrom(
@@ -1509,7 +1522,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
             if (role != 'users')
               _MasTile(
                 icon: Icons.download_rounded,
-                iconColor: AppColors.green,
+                iconColor: AppColors.statusSuccess,
                 title: 'Exportar datos',
                 onTap: () => Navigator.push(context,
                     MaterialPageRoute(builder: (_) => const DataExportPage())),
@@ -1526,24 +1539,25 @@ class _SettingsPage2State extends State<SettingsPage2> {
             borderColor: borderColor,
             tiles: [
               _MasTile(
-                icon: Icons.payments,
-                iconColor: AppColors.green,
-                title: 'Métodos de pago',
-                subtitle: 'Cuentas para recibir pagos',
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const CommercePaymentMethodsPage()))),
-              if (isDeliveryCompany)
-                _MasTile(
-                  icon: Icons.account_balance_wallet,
-                  iconColor: AppColors.purple,
-                  title: 'Ganancias',
-                  subtitle: 'Resumen de ingresos y pagos',
+                  icon: Icons.payments,
+                  iconColor: AppColors.statusSuccess,
+                  title: 'Métodos de pago',
+                  subtitle: 'Cuentas para recibir pagos',
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const DeliveryCompanyEarningsPage()))),
+                          builder: (_) => const CommercePaymentMethodsPage()))),
+              if (isDeliveryCompany)
+                _MasTile(
+                    icon: Icons.account_balance_wallet,
+                    iconColor: AppColors.brandTealDeep,
+                    title: 'Ganancias',
+                    subtitle: 'Resumen de ingresos y pagos',
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                const DeliveryCompanyEarningsPage()))),
             ],
           ),
         ],
@@ -1558,7 +1572,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
             tiles: [
               _MasTile(
                   icon: Icons.store,
-                  iconColor: AppColors.blue,
+                  iconColor: AppColors.brandTeal,
                   title: 'Datos del comercio',
                   subtitle: 'Información básica y contacto',
                   onTap: () => Navigator.push(
@@ -1567,7 +1581,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                           builder: (_) => const CommerceDataPage()))),
               _MasTile(
                   icon: Icons.schedule,
-                  iconColor: AppColors.purple,
+                  iconColor: AppColors.brandTealDeep,
                   title: 'Horarios',
                   subtitle: 'Apertura y cierre',
                   onTap: () => Navigator.push(
@@ -1576,7 +1590,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                           builder: (_) => const CommerceSchedulePage()))),
               _MasTile(
                   icon: Icons.payments,
-                  iconColor: AppColors.green,
+                  iconColor: AppColors.statusSuccess,
                   title: 'Métodos de pago',
                   subtitle: 'Cuentas bancarias y móviles',
                   onTap: () => Navigator.push(
@@ -1585,7 +1599,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                           builder: (_) => const CommercePaymentMethodsPage()))),
               _MasTile(
                   icon: Icons.map_outlined,
-                  iconColor: AppColors.brown,
+                  iconColor: AppColors.brandTealDeep,
                   title: 'Zonas de delivery',
                   subtitle: 'Áreas de entrega',
                   onTap: () => Navigator.push(
@@ -1604,7 +1618,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
             tiles: [
               _MasTile(
                   icon: Icons.campaign,
-                  iconColor: AppColors.amber,
+                  iconColor: AppColors.statusWarning,
                   title: 'Promociones y cupones',
                   subtitle: 'Crear promos y gestionar descuentos',
                   onTap: () => Navigator.push(
@@ -1757,7 +1771,8 @@ class _SettingsPage2State extends State<SettingsPage2> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.stitchPink400.withValues(alpha: 0.2),
+                            color:
+                                AppColors.stitchPink400.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Icon(Icons.help,
@@ -1786,10 +1801,8 @@ class _SettingsPage2State extends State<SettingsPage2> {
               Material(
                 color: AppColors.transparent,
                 child: InkWell(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const LegalInfoPage())),
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const LegalInfoPage())),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 16),
@@ -1845,7 +1858,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Icon(Icons.notifications,
-                              color: AppColors.teal, size: 22),
+                              color: AppColors.brandTeal, size: 22),
                         ),
                         const SizedBox(width: 16),
                         Expanded(

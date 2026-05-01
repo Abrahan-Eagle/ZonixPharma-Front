@@ -111,7 +111,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
     final isSmallPhone = size.width < 360;
 
     return Scaffold(
-      backgroundColor: AppColors.green,
+      backgroundColor: AppColors.statusSuccess,
       body: SafeArea(
         child: AnimatedBuilder(
           animation: _animationController,
@@ -193,7 +193,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
             child: Icon(
               Icons.store,
               size: isTablet ? 40 : (isSmallPhone ? 30 : 35),
-              color: AppColors.green,
+              color: AppColors.statusSuccess,
             ),
           ),
 
@@ -323,7 +323,9 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
                 children: [
                   Icon(
                     _abierto ? Icons.check_circle : Icons.cancel,
-                    color: _abierto ? AppColors.green : AppColors.red,
+                    color: _abierto
+                        ? AppColors.statusSuccess
+                        : AppColors.statusError,
                     size: isTablet ? 24 : 20,
                   ),
                   SizedBox(width: isTablet ? 16 : 12),
@@ -339,7 +341,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
                   Switch(
                     value: _abierto,
                     onChanged: (value) => setState(() => _abierto = value),
-                    activeThumbColor: AppColors.green,
+                    activeThumbColor: AppColors.statusSuccess,
                   ),
                 ],
               ),
@@ -443,14 +445,15 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
       ),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: AppColors.green),
+        prefixIcon: Icon(icon, color: AppColors.statusSuccess),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.borderLight),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.green, width: 2),
+          borderSide:
+              const BorderSide(color: AppColors.statusSuccess, width: 2),
         ),
         filled: true,
         fillColor: AppColors.inputBg,
@@ -517,7 +520,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: isTablet ? 14 : (isSmallPhone ? 11 : 12),
-                        color: AppColors.red,
+                        color: AppColors.statusError,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -535,7 +538,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
                     }
                   });
                 },
-                activeThumbColor: AppColors.green,
+                activeThumbColor: AppColors.statusSuccess,
               ),
             ],
           ),
@@ -579,7 +582,9 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
               value.isEmpty ? hint : value,
               style: TextStyle(
                 fontSize: isTablet ? 12 : (isSmallPhone ? 10 : 11),
-                color: value.isEmpty ? AppColors.gray : AppColors.textSecondaryDark,
+                color: value.isEmpty
+                    ? AppColors.gray
+                    : AppColors.textSecondaryDark,
               ),
             ),
             Icon(
@@ -601,7 +606,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
         onPressed: _isLoading ? null : _submitForm,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.white,
-          foregroundColor: AppColors.green,
+          foregroundColor: AppColors.statusSuccess,
           padding: EdgeInsets.symmetric(vertical: isTablet ? 20 : 16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
@@ -614,7 +619,8 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
                 width: isTablet ? 24 : 20,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.green),
+                  valueColor:
+                      AlwaysStoppedAnimation<Color>(AppColors.statusSuccess),
                 ),
               )
             : Text(
@@ -641,7 +647,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
             const SnackBar(
               content: Text(
                   'No se pudo identificar tu cuenta. Cierra sesión e inicia de nuevo.'),
-              backgroundColor: AppColors.red,
+              backgroundColor: AppColors.statusError,
             ),
           );
           return;
@@ -651,7 +657,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
         final commerceResult = await CommerceDataService.createCommerce({
           'user_id': userId,
           'business_name': _nombreLocalController.text.trim(),
-          'business_type': 'Restaurante',
+          'business_type': 'Farmacia',
           'tax_id': _pagoMovilCedulaController.text.trim(),
           'address': _direccionController.text.trim(),
           'phone': _telefonoController.text.trim(),
@@ -686,7 +692,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Comercio registrado y onboarding completado'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
 
@@ -698,7 +704,7 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al registrar: $e'),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       } finally {

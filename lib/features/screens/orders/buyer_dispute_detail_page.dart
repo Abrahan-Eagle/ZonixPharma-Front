@@ -64,7 +64,8 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
   void _subscribeToRealtimeDispute() {
     _pusherSub?.cancel();
     _pusherSub = PusherService.instance.eventStream.listen((event) async {
-      final eventName = (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+      final eventName =
+          (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
       if (!eventName.contains('NotificationCreated')) return;
 
       final eventData = event['data'] is Map<String, dynamic>
@@ -82,7 +83,8 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
       await _load();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La disputa se actualizo en tiempo real.')),
+        const SnackBar(
+            content: Text('La disputa se actualizo en tiempo real.')),
       );
     });
   }
@@ -108,11 +110,13 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.error_outline, color: AppColors.red, size: 48),
+                        const Icon(Icons.error_outline,
+                            color: AppColors.statusError, size: 48),
                         const SizedBox(height: 8),
                         Text(_error!, textAlign: TextAlign.center),
                         const SizedBox(height: 8),
-                        TextButton(onPressed: _load, child: const Text('Reintentar')),
+                        TextButton(
+                            onPressed: _load, child: const Text('Reintentar')),
                       ],
                     ),
                   ),
@@ -143,7 +147,8 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
                 children: [
                   Text(
                     'Orden #$orderId',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   _chip(DisputeService.statusLabel(status)),
@@ -185,7 +190,9 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  Text(adminNotes.isEmpty ? 'Aún sin notas de resolución.' : adminNotes),
+                  Text(adminNotes.isEmpty
+                      ? 'Aún sin notas de resolución.'
+                      : adminNotes),
                 ],
               ),
             ),
@@ -204,7 +211,8 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
             width: 84,
             child: Text(
               key,
-              style: const TextStyle(color: AppColors.gray, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  color: AppColors.gray, fontWeight: FontWeight.w600),
             ),
           ),
           Expanded(child: Text(value)),

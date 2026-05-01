@@ -20,8 +20,7 @@ class _CommercePaymentMethodsPageState
   String? _error;
   List<Map<String, dynamic>> _methods = [];
 
-  bool get _isDark =>
-      Theme.of(context).brightness == Brightness.dark;
+  bool get _isDark => Theme.of(context).brightness == Brightness.dark;
 
   @override
   void initState() {
@@ -96,8 +95,12 @@ class _CommercePaymentMethodsPageState
     }
   }
 
-  String _subtitle(Map<String, dynamic> m, String type, [Map<String, dynamic>? refMap]) {
-    final ref = refMap ?? (m['reference_info'] is Map ? Map<String, dynamic>.from(m['reference_info']) : <String, dynamic>{});
+  String _subtitle(Map<String, dynamic> m, String type,
+      [Map<String, dynamic>? refMap]) {
+    final ref = refMap ??
+        (m['reference_info'] is Map
+            ? Map<String, dynamic>.from(m['reference_info'])
+            : <String, dynamic>{});
     if (type == 'mobile_payment' && m['phone'] != null) {
       return 'Pago móvil · ${m['phone']}';
     }
@@ -135,7 +138,8 @@ class _CommercePaymentMethodsPageState
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Desactivar', style: TextStyle(color: AppColors.red)),
+            child: const Text('Desactivar',
+                style: TextStyle(color: AppColors.statusError)),
           ),
         ],
       ),
@@ -161,7 +165,7 @@ class _CommercePaymentMethodsPageState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
     }
@@ -193,7 +197,8 @@ class _CommercePaymentMethodsPageState
     final cardBg = AppColors.cardBg(context);
     final primaryText = AppColors.primaryText(context);
     final secondaryText = AppColors.secondaryText(context);
-    final borderColor = _isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
+    final borderColor =
+        _isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
 
     if (_loading) {
       return Scaffold(
@@ -216,13 +221,17 @@ class _CommercePaymentMethodsPageState
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+                const Icon(Icons.error_outline,
+                    size: 64, color: AppColors.statusError),
                 const SizedBox(height: 16),
-                Text(_error!, textAlign: TextAlign.center, style: TextStyle(color: primaryText)),
+                Text(_error!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: primaryText)),
                 const SizedBox(height: 16),
                 FilledButton(
                   onPressed: _loadData,
-                  style: FilledButton.styleFrom(backgroundColor: AppColors.blue),
+                  style: FilledButton.styleFrom(
+                      backgroundColor: AppColors.brandTeal),
                   child: const Text('Reintentar'),
                 ),
               ],
@@ -252,19 +261,26 @@ class _CommercePaymentMethodsPageState
                           final ref = (m['reference_info'] is Map)
                               ? Map<String, dynamic>.from(m['reference_info'])
                               : <String, dynamic>{};
-                          final effectiveType = (type == 'other' && ref['display_type'] == 'digital_wallet')
+                          final effectiveType = (type == 'other' &&
+                                  ref['display_type'] == 'digital_wallet')
                               ? 'digital_wallet'
                               : type;
-                          final alias = (ref['alias'] ?? m['owner_name'] ?? _typeLabel(effectiveType)).toString();
+                          final alias = (ref['alias'] ??
+                                  m['owner_name'] ??
+                                  _typeLabel(effectiveType))
+                              .toString();
                           final isActive = m['is_active'] != false;
                           final subtitle = _subtitle(m, effectiveType, ref);
 
-                          final cardBorder = _isDark ? borderColor : AppColors.stitchBorder;
+                          final cardBorder =
+                              _isDark ? borderColor : AppColors.stitchBorder;
                           final iconBg = _isDark
                               ? AppColors.blue.withValues(alpha: 0.25)
                               : AppColors.blueLight50;
                           final iconColor = isActive
-                              ? (_isDark ? AppColors.blueLight400 : AppColors.blue)
+                              ? (_isDark
+                                  ? AppColors.blueLight400
+                                  : AppColors.brandTeal)
                               : Theme.of(context).colorScheme.onSurfaceVariant;
 
                           return Padding(
@@ -280,10 +296,12 @@ class _CommercePaymentMethodsPageState
                                   padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: cardBorder, width: 1),
+                                    border:
+                                        Border.all(color: cardBorder, width: 1),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: AppColors.black.withValues(alpha: 0.04),
+                                        color: AppColors.black
+                                            .withValues(alpha: 0.04),
                                         blurRadius: 6,
                                         offset: const Offset(0, 2),
                                       ),
@@ -296,7 +314,8 @@ class _CommercePaymentMethodsPageState
                                         height: 48,
                                         decoration: BoxDecoration(
                                           color: iconBg,
-                                          borderRadius: BorderRadius.circular(24),
+                                          borderRadius:
+                                              BorderRadius.circular(24),
                                         ),
                                         child: Icon(
                                           _typeIcon(effectiveType),
@@ -307,7 +326,8 @@ class _CommercePaymentMethodsPageState
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
@@ -335,17 +355,21 @@ class _CommercePaymentMethodsPageState
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           IconButton(
-                                            icon: Icon(Icons.edit_outlined, size: 22, color: secondaryText),
+                                            icon: Icon(Icons.edit_outlined,
+                                                size: 22, color: secondaryText),
                                             onPressed: () => _openDetail(m),
                                             style: IconButton.styleFrom(
-                                              foregroundColor: AppColors.orange,
+                                              foregroundColor:
+                                                  AppColors.brandCtaAccent,
                                             ),
                                           ),
                                           IconButton(
-                                            icon: Icon(Icons.delete_outline, size: 22, color: secondaryText),
+                                            icon: Icon(Icons.delete_outline,
+                                                size: 22, color: secondaryText),
                                             onPressed: () => _deactivate(m),
                                             style: IconButton.styleFrom(
-                                              foregroundColor: AppColors.red,
+                                              foregroundColor:
+                                                  AppColors.statusError,
                                             ),
                                           ),
                                         ],
@@ -367,22 +391,29 @@ class _CommercePaymentMethodsPageState
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: _isDark ? AppColors.grayDark.withValues(alpha: 0.5) : AppColors.slateLight50,
+                          color: _isDark
+                              ? AppColors.grayDark.withValues(alpha: 0.5)
+                              : AppColors.slateLight50,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: _isDark ? borderColor : AppColors.stitchBorder,
+                            color:
+                                _isDark ? borderColor : AppColors.stitchBorder,
                             width: 1,
                           ),
                         ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.lock_outline, size: 20, color: secondaryText),
+                            Icon(Icons.lock_outline,
+                                size: 20, color: secondaryText),
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 'Tus datos de pago se almacenan de forma segura cumpliendo con los estándares PCI DSS.',
-                                style: TextStyle(fontSize: 12, color: secondaryText, height: 1.4),
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: secondaryText,
+                                    height: 1.4),
                               ),
                             ),
                           ],
@@ -398,14 +429,17 @@ class _CommercePaymentMethodsPageState
                       child: FilledButton(
                         onPressed: () => _openForm(),
                         style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.blue,
+                          backgroundColor: AppColors.brandTeal,
                           foregroundColor: AppColors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                           elevation: 2,
                           shadowColor: AppColors.black.withValues(alpha: 0.2),
                         ),
-                        child: const Text('+ Agregar nuevo método', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        child: const Text('+ Agregar nuevo método',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ),
@@ -452,7 +486,8 @@ class _CommercePaymentMethodsPageState
               Expanded(
                 child: Text(
                   'Tus datos de pago se almacenan de forma segura cumpliendo con los estándares PCI DSS.',
-                  style: TextStyle(fontSize: 12, color: secondaryText, height: 1.4),
+                  style: TextStyle(
+                      fontSize: 12, color: secondaryText, height: 1.4),
                 ),
               ),
             ],
@@ -463,13 +498,15 @@ class _CommercePaymentMethodsPageState
             child: FilledButton(
               onPressed: () => _openForm(),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 elevation: 2,
               ),
-              child: const Text('+ Agregar nuevo método', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: const Text('+ Agregar nuevo método',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],

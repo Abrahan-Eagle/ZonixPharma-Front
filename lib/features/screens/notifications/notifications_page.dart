@@ -20,7 +20,20 @@ Map<String, List<NotificationItem>> _groupByDate(List<NotificationItem> items) {
     } else if (d == yesterday) {
       key = 'Ayer';
     } else {
-      const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const months = [
+        'Ene',
+        'Feb',
+        'Mar',
+        'Abr',
+        'May',
+        'Jun',
+        'Jul',
+        'Ago',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dic'
+      ];
       key = '${n.receivedAt.day} ${months[n.receivedAt.month - 1]}';
     }
     groups.putIfAbsent(key, () => []).add(n);
@@ -48,7 +61,8 @@ List<String> _sectionOrder(Map<String, List<NotificationItem>> groups) {
 }
 
 /// Icono y color según tipo de notificación (template: order, promo, points, support).
-({IconData icon, Color bgColor, Color iconColor}) _styleForType(String? type, BuildContext context) {
+({IconData icon, Color bgColor, Color iconColor}) _styleForType(
+    String? type, BuildContext context) {
   final theme = Theme.of(context);
   final isDark = theme.brightness == Brightness.dark;
   final mutedBg = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
@@ -57,33 +71,73 @@ List<String> _sectionOrder(Map<String, List<NotificationItem>> groups) {
   switch (type?.toLowerCase()) {
     case 'order':
     case 'pedido':
-      return (icon: Icons.shopping_bag_outlined, bgColor: AppColors.blue.withValues(alpha: 0.2), iconColor: AppColors.blue);
+      return (
+        icon: Icons.shopping_bag_outlined,
+        bgColor: AppColors.blue.withValues(alpha: 0.2),
+        iconColor: AppColors.brandTeal
+      );
     case 'promotion':
     case 'promoción':
     case 'promo':
-      return (icon: Icons.local_offer_outlined, bgColor: AppColors.amber.withValues(alpha: 0.2), iconColor: AppColors.amber);
+      return (
+        icon: Icons.local_offer_outlined,
+        bgColor: AppColors.amber.withValues(alpha: 0.2),
+        iconColor: AppColors.statusWarning
+      );
     case 'points':
     case 'puntos':
     case 'loyalty':
-      return (icon: Icons.star_outline, bgColor: AppColors.green.withValues(alpha: 0.2), iconColor: AppColors.green);
+      return (
+        icon: Icons.star_outline,
+        bgColor: AppColors.green.withValues(alpha: 0.2),
+        iconColor: AppColors.statusSuccess
+      );
     case 'support':
     case 'soporte':
     case 'consulta':
-      return (icon: Icons.support_agent_outlined, bgColor: mutedBg, iconColor: mutedFg);
+      return (
+        icon: Icons.support_agent_outlined,
+        bgColor: mutedBg,
+        iconColor: mutedFg
+      );
     default:
       break;
   }
-  return (icon: Icons.check_circle_outline, bgColor: mutedBg, iconColor: mutedFg);
+  return (
+    icon: Icons.check_circle_outline,
+    bgColor: mutedBg,
+    iconColor: mutedFg
+  );
 }
 
 /// Inferir tipo desde título/cuerpo cuando el backend no envía type.
 String? _inferType(NotificationItem n) {
   final t = n.title.toLowerCase();
   final b = n.body.toLowerCase();
-  if (t.contains('pedido') || t.contains('entregado') || t.contains('confirmado') || b.contains('pedido')) return 'order';
-  if (t.contains('promo') || t.contains('descuento') || t.contains('oferta') || t.contains('% off')) return 'promotion';
-  if (t.contains('puntos') || t.contains('points') || b.contains('puntos') || b.contains('points')) return 'points';
-  if (t.contains('soporte') || t.contains('consulta') || t.contains('resuelta') || b.contains('solicitud')) return 'support';
+  if (t.contains('pedido') ||
+      t.contains('entregado') ||
+      t.contains('confirmado') ||
+      b.contains('pedido')) {
+    return 'order';
+  }
+  if (t.contains('promo') ||
+      t.contains('descuento') ||
+      t.contains('oferta') ||
+      t.contains('% off')) {
+    return 'promotion';
+  }
+  if (t.contains('puntos') ||
+      t.contains('points') ||
+      b.contains('puntos') ||
+      b.contains('points')) {
+    return 'points';
+  }
+  if (t.contains('soporte') ||
+      t.contains('consulta') ||
+      t.contains('resuelta') ||
+      b.contains('solicitud')) {
+    return 'support';
+  }
   return null;
 }
 
@@ -109,7 +163,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
       await context.read<NotificationService>().markAllAsRead();
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Todas las notificaciones marcadas como leídas')),
+          const SnackBar(
+              content: Text('Todas las notificaciones marcadas como leídas')),
         );
       }
     } catch (e) {
@@ -142,7 +197,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final scaffoldBg = isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+    final scaffoldBg =
+        isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
     final onSurface = theme.colorScheme.onSurface;
     final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
     const sectionTodayColor = AppColors.blue;
@@ -188,9 +244,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.cloud_off, size: 64, color: AppColors.textMutedGray),
+                  const Icon(Icons.cloud_off,
+                      size: 64, color: AppColors.textMutedGray),
                   const SizedBox(height: 16),
-                  Text(notificationService.error!, style: const TextStyle(fontSize: 16)),
+                  Text(notificationService.error!,
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: () => notificationService.loadInitialData(),
@@ -215,7 +273,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         width: 120,
                         height: 120,
                         decoration: BoxDecoration(
-                          color: isDark ? AppColors.slateBorder : AppColors.stitchBorder.withValues(alpha: 0.5),
+                          color: isDark
+                              ? AppColors.slateBorder
+                              : AppColors.stitchBorder.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -247,8 +307,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       OutlinedButton(
                         onPressed: _loadNotifications,
                         style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                         child: const Text('Refrescar'),
                       ),
@@ -281,7 +343,9 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.2,
-                        color: order[s] == 'Hoy' ? sectionTodayColor : sectionOtherColor,
+                        color: order[s] == 'Hoy'
+                            ? sectionTodayColor
+                            : sectionOtherColor,
                       ),
                     ),
                   ),
@@ -297,7 +361,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           iconColor: style.iconColor,
                           timeLabel: _formatTime(n),
                           onTap: () {
-                            notificationService.navigateToNotificationDetail(context, n);
+                            notificationService.navigateToNotificationDetail(
+                                context, n);
                           },
                           onDelete: n.id == null
                               ? null
@@ -305,31 +370,42 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                   final confirm = await showDialog<bool>(
                                     context: context,
                                     builder: (ctx) => AlertDialog(
-                                      title: const Text('Eliminar notificación'),
-                                      content: const Text('¿Quitar esta notificación de la lista?'),
+                                      title:
+                                          const Text('Eliminar notificación'),
+                                      content: const Text(
+                                          '¿Quitar esta notificación de la lista?'),
                                       actions: [
                                         TextButton(
-                                          onPressed: () => Navigator.pop(ctx, false),
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, false),
                                           child: const Text('Cancelar'),
                                         ),
                                         TextButton(
-                                          onPressed: () => Navigator.pop(ctx, true),
+                                          onPressed: () =>
+                                              Navigator.pop(ctx, true),
                                           child: const Text('Eliminar'),
                                         ),
                                       ],
                                     ),
                                   );
-                                  if (confirm != true || !context.mounted) return;
+                                  if (confirm != true || !context.mounted) {
+                                    return;
+                                  }
                                   try {
-                                    await notificationService.deleteNotification(n.id!);
+                                    await notificationService
+                                        .deleteNotification(n.id!);
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Notificación eliminada')),
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text('Notificación eliminada')),
                                       );
                                     }
                                   } catch (e) {
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(content: Text('Error: $e')),
                                       );
                                     }
@@ -379,7 +455,8 @@ class _NotificationTile extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.only(left: 16, right: 4, top: 16, bottom: 16),
+          padding:
+              const EdgeInsets.only(left: 16, right: 4, top: 16, bottom: 16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -428,7 +505,7 @@ class _NotificationTile extends StatelessWidget {
                             height: 8,
                             decoration: const BoxDecoration(
                               shape: BoxShape.circle,
-                              color: AppColors.blue,
+                              color: AppColors.brandTeal,
                             ),
                           ),
                         ],

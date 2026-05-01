@@ -29,7 +29,7 @@ class AdminDeliveryConfigPage extends StatelessWidget {
           ),
           foregroundColor: AppColors.white,
           bottom: const TabBar(
-            indicatorColor: AppColors.yellow,
+            indicatorColor: AppColors.statusWarning,
             labelColor: AppColors.white,
             unselectedLabelColor: AppColors.white60,
             indicatorWeight: 3,
@@ -203,7 +203,7 @@ class _GlobalRateTabState extends State<_GlobalRateTab>
                         : const Icon(Icons.save_rounded),
                     label: Text(_isSaving ? 'Guardando…' : 'Guardar cambios'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.blue,
+                      backgroundColor: AppColors.brandTeal,
                       foregroundColor: AppColors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -230,7 +230,7 @@ class _GlobalRateTabState extends State<_GlobalRateTab>
       child: Row(
         children: [
           const Icon(Icons.info_outline_rounded,
-              color: AppColors.blue, size: 22),
+              color: AppColors.brandTeal, size: 22),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
@@ -278,7 +278,8 @@ class _GlobalRateTabState extends State<_GlobalRateTab>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 56, color: AppColors.red),
+            const Icon(Icons.cloud_off_rounded,
+                size: 56, color: AppColors.statusError),
             const SizedBox(height: 12),
             Text(
               _error!,
@@ -302,7 +303,8 @@ class _GlobalRateTabState extends State<_GlobalRateTab>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: isError ? AppColors.red : AppColors.green,
+        backgroundColor:
+            isError ? AppColors.statusError : AppColors.statusSuccess,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -391,7 +393,7 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showZoneDialog(),
-        backgroundColor: AppColors.blue,
+        backgroundColor: AppColors.brandTeal,
         foregroundColor: AppColors.white,
         icon: const Icon(Icons.add),
         label: const Text('Nueva zona'),
@@ -414,7 +416,7 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
         padding: const EdgeInsets.only(right: 20),
         margin: const EdgeInsets.only(bottom: 12),
         decoration: BoxDecoration(
-          color: AppColors.red,
+          color: AppColors.statusError,
           borderRadius: BorderRadius.circular(14),
         ),
         child: const Icon(Icons.delete_rounded, color: AppColors.white),
@@ -491,7 +493,7 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
   }
 
   Widget _activeBadge(bool active) {
-    final color = active ? AppColors.green : AppColors.red;
+    final color = active ? AppColors.statusSuccess : AppColors.red;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -524,7 +526,8 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
             child: const Text('Cancelar'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: AppColors.red),
+            style:
+                FilledButton.styleFrom(backgroundColor: AppColors.statusError),
             onPressed: () => Navigator.pop(ctx, true),
             child: const Text('Eliminar'),
           ),
@@ -750,7 +753,8 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off_rounded, size: 56, color: AppColors.red),
+            const Icon(Icons.cloud_off_rounded,
+                size: 56, color: AppColors.statusError),
             const SizedBox(height: 12),
             Text(
               _error!,
@@ -774,7 +778,8 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: isError ? AppColors.red : AppColors.green,
+        backgroundColor:
+            isError ? AppColors.statusError : AppColors.statusSuccess,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),

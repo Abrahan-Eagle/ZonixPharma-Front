@@ -50,11 +50,13 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   Color _bgPrimary(BuildContext context) =>
       _isDark(context) ? AppColors.brandSurfaceDark : AppColors.white;
 
-  Color _bgSecondary(BuildContext context) =>
-      _isDark(context) ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight;
+  Color _bgSecondary(BuildContext context) => _isDark(context)
+      ? AppColors.brandSurfaceContainerDark
+      : AppColors.brandSurfaceLight;
 
-  Color _borderColor(BuildContext context) =>
-      _isDark(context) ? AppColors.brandSurfaceDarkLighter : AppColors.brandStrokeLight;
+  Color _borderColor(BuildContext context) => _isDark(context)
+      ? AppColors.brandSurfaceDarkLighter
+      : AppColors.brandStrokeLight;
 
   Color _textPrimary(BuildContext context) => AppColors.primaryText(context);
 
@@ -508,7 +510,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
       entries.add(MapEntry('Principio activo', _product.activeIngredient!));
     }
     if ((_product.dosageForm ?? '').isNotEmpty) {
-      entries.add(MapEntry('Forma farmacéutica', _humanDosageForm(_product.dosageForm!)));
+      entries.add(MapEntry(
+          'Forma farmacéutica', _humanDosageForm(_product.dosageForm!)));
     }
     if ((_product.concentration ?? '').isNotEmpty) {
       entries.add(MapEntry('Concentración', _product.concentration!));
@@ -656,8 +659,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                     color: _kPrimary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child:
-                      const Icon(Icons.local_pharmacy, color: _kPrimary, size: 20),
+                  child: const Icon(Icons.local_pharmacy,
+                      color: _kPrimary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -751,8 +754,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               : AppColors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color:
-                isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.black12,
+            color: isDark
+                ? AppColors.white.withValues(alpha: 0.05)
+                : AppColors.black12,
           ),
           boxShadow: [
             BoxShadow(
@@ -767,7 +771,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isDark ? _bgPrimary(context) : AppColors.brandSurfaceLight,
+                color:
+                    isDark ? _bgPrimary(context) : AppColors.brandSurfaceLight,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -823,8 +828,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                 child: InkWell(
                   onTap: () {
                     if (!_product.isAvailable ||
-                        (_product.hasStockLimit &&
-                            _product.stock <= 0)) {
+                        (_product.hasStockLimit && _product.stock <= 0)) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Producto no disponible o sin stock'),
@@ -839,8 +843,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                       precio: _unitTotal,
                       quantity: _quantity,
                       image: _product.image,
-                      stock:
-                          _product.hasStockLimit ? _product.stock : null,
+                      stock: _product.hasStockLimit ? _product.stock : null,
                       category: _product.category,
                       notes: notes.isEmpty ? null : notes,
                       commerceId: _product.commerceId,

@@ -105,20 +105,23 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
     }
   }
 
-  Future<List<LatLng>> _fetchRoute(double fromLat, double fromLng, double toLat, double toLng) async {
+  Future<List<LatLng>> _fetchRoute(
+      double fromLat, double fromLng, double toLat, double toLng) async {
     try {
       final headers = await AuthHelper.getAuthHeaders();
-      final res = await http.post(
-        Uri.parse('${AppConfig.apiUrl}/api/location/calculate-route'),
-        headers: headers,
-        body: jsonEncode({
-          'origin_lat': fromLat,
-          'origin_lng': fromLng,
-          'destination_lat': toLat,
-          'destination_lng': toLng,
-          'mode': 'driving',
-        }),
-      ).timeout(const Duration(seconds: 8));
+      final res = await http
+          .post(
+            Uri.parse('${AppConfig.apiUrl}/api/location/calculate-route'),
+            headers: headers,
+            body: jsonEncode({
+              'origin_lat': fromLat,
+              'origin_lng': fromLng,
+              'destination_lat': toLat,
+              'destination_lng': toLng,
+              'mode': 'driving',
+            }),
+          )
+          .timeout(const Duration(seconds: 8));
       if (res.statusCode != 200) return [];
       final data = jsonDecode(res.body);
       if (data['success'] != true) return [];
@@ -163,8 +166,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
     _pusherSub?.cancel();
     _pusherSub = PusherService.instance.eventStream.listen((event) {
       if (!mounted) return;
-      final rawEventName =
-          event['canonicalEventName']?.toString() ??
+      final rawEventName = event['canonicalEventName']?.toString() ??
           event['eventName']?.toString() ??
           '';
       final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
@@ -239,7 +241,10 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
     final dLat = _deg2rad(lat2 - lat1);
     final dLon = _deg2rad(lon2 - lon1);
     final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
+        cos(_deg2rad(lat1)) *
+            cos(_deg2rad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
     return r * 2 * atan2(sqrt(a), sqrt(1 - a));
   }
 
@@ -284,11 +289,13 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.cloud_off, size: 48, color: AppColors.red),
+                  const Icon(Icons.cloud_off,
+                      size: 48, color: AppColors.statusError),
                   const SizedBox(height: 12),
                   Text(svc.mapAgentsError!,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: AppColors.secondaryText(context))),
+                      style:
+                          TextStyle(color: AppColors.secondaryText(context))),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _loadAgents,
@@ -337,10 +344,15 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: isBusy ? AppColors.orange : AppColors.green,
+                  color: isBusy
+                      ? AppColors.brandCtaAccent
+                      : AppColors.statusSuccess,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: const [
-                    BoxShadow(color: AppColors.black26, blurRadius: 4, offset: Offset(0, 2)),
+                    BoxShadow(
+                        color: AppColors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2)),
                   ],
                 ),
                 child: Text(
@@ -354,7 +366,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               ),
               Icon(
                 Icons.delivery_dining,
-                color: isBusy ? AppColors.orange : AppColors.green,
+                color:
+                    isBusy ? AppColors.brandCtaAccent : AppColors.statusSuccess,
                 size: 28,
               ),
             ],
@@ -376,20 +389,26 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.blue,
+                  color: AppColors.brandTeal,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: const [
-                    BoxShadow(color: AppColors.black26, blurRadius: 4, offset: Offset(0, 2)),
+                    BoxShadow(
+                        color: AppColors.black26,
+                        blurRadius: 4,
+                        offset: Offset(0, 2)),
                   ],
                 ),
                 child: Text(
                   _companyName != null && _companyName!.length > 10
                       ? '${_companyName!.substring(0, 10)}…'
                       : _companyName ?? 'Sede',
-                  style: const TextStyle(color: AppColors.white, fontSize: 10, fontWeight: FontWeight.w600),
+                  style: const TextStyle(
+                      color: AppColors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600),
                 ),
               ),
-              const Icon(Icons.business, color: AppColors.blue, size: 28),
+              const Icon(Icons.business, color: AppColors.brandTeal, size: 28),
             ],
           ),
         ),
@@ -411,7 +430,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
         height: 32,
         child: Icon(
           Icons.flag_rounded,
-          color: isSelected ? AppColors.red : AppColors.red.withAlpha(120),
+          color:
+              isSelected ? AppColors.statusError : AppColors.red.withAlpha(120),
           size: isSelected ? 32 : 24,
         ),
       ));
@@ -465,11 +485,14 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
 
       final isSelected = agentId == _selectedAgentId;
       final cachedRoute = _routeCache[agentId];
-      final points = cachedRoute ?? [LatLng(agentLat, agentLng), LatLng(destLat, destLng)];
+      final points =
+          cachedRoute ?? [LatLng(agentLat, agentLng), LatLng(destLat, destLng)];
 
       polylines.add(Polyline(
         points: points,
-        color: isSelected ? AppColors.orange : AppColors.orange.withAlpha(80),
+        color: isSelected
+            ? AppColors.brandCtaAccent
+            : AppColors.orange.withAlpha(80),
         strokeWidth: isSelected ? 4.0 : 2.0,
       ));
     }
@@ -521,7 +544,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: AppColors.blue.withAlpha(25),
                           borderRadius: BorderRadius.circular(10),
@@ -531,7 +555,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
-                            color: AppColors.blue,
+                            color: AppColors.brandTeal,
                           ),
                         ),
                       ),
@@ -567,13 +591,14 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: selected ? AppColors.blue : cs.surfaceContainerHighest,
+          color: selected ? AppColors.brandTeal : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
           label,
           style: TextStyle(
-            color: selected ? AppColors.white : AppColors.secondaryText(context),
+            color:
+                selected ? AppColors.white : AppColors.secondaryText(context),
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
             fontSize: 12,
           ),
@@ -600,11 +625,12 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           child: Row(
             children: [
-              const Icon(Icons.radar, size: 20, color: AppColors.blue),
+              const Icon(Icons.radar, size: 20, color: AppColors.brandTeal),
               const SizedBox(width: 8),
               Text(
                 '${_radiusKm.toStringAsFixed(0)} km',
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                style:
+                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
               ),
               Expanded(
                 child: Slider(
@@ -659,7 +685,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                 height: 4,
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: Theme.of(ctx).colorScheme.outline.withValues(alpha: 0.5),
+                  color:
+                      Theme.of(ctx).colorScheme.outline.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -667,11 +694,15 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundColor:
-                        (isBusy ? AppColors.orange : AppColors.green).withAlpha(30),
+                    backgroundColor: (isBusy
+                            ? AppColors.brandCtaAccent
+                            : AppColors.statusSuccess)
+                        .withAlpha(30),
                     child: Icon(
                       Icons.delivery_dining,
-                      color: isBusy ? AppColors.orange : AppColors.green,
+                      color: isBusy
+                          ? AppColors.brandCtaAccent
+                          : AppColors.statusSuccess,
                       size: 28,
                     ),
                   ),
@@ -690,15 +721,18 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
-                                color: (isBusy ? AppColors.orange : AppColors.green)
+                                color: (isBusy
+                                        ? AppColors.brandCtaAccent
+                                        : AppColors.statusSuccess)
                                     .withAlpha(25),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
                                 isBusy ? 'En mandado' : 'Libre',
                                 style: TextStyle(
-                                  color:
-                                      isBusy ? AppColors.orange : AppColors.green,
+                                  color: isBusy
+                                      ? AppColors.brandCtaAccent
+                                      : AppColors.statusSuccess,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -722,12 +756,15 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
               const SizedBox(height: 16),
               Row(
                 children: [
-                  _statChip(Icons.star, rating > 0 ? rating.toStringAsFixed(1) : '—', 'Rating'),
+                  _statChip(Icons.star,
+                      rating > 0 ? rating.toStringAsFixed(1) : '—', 'Rating'),
                   const SizedBox(width: 12),
-                  _statChip(Icons.local_shipping, totalDeliveries.toString(), 'Entregas'),
+                  _statChip(Icons.local_shipping, totalDeliveries.toString(),
+                      'Entregas'),
                   if (lastUpdate.isNotEmpty) ...[
                     const SizedBox(width: 12),
-                    _statChip(Icons.access_time, _timeSince(lastUpdate), 'Últ. ubicación'),
+                    _statChip(Icons.access_time, _timeSince(lastUpdate),
+                        'Últ. ubicación'),
                   ],
                 ],
               ),
@@ -735,7 +772,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                 const Divider(height: 24),
                 Row(
                   children: [
-                    const Icon(Icons.receipt_long, size: 18, color: AppColors.orange),
+                    const Icon(Icons.receipt_long,
+                        size: 18, color: AppColors.brandCtaAccent),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -755,7 +793,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.orange,
+                          color: AppColors.brandCtaAccent,
                         ),
                       ),
                     ),
@@ -772,13 +810,13 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                         icon: const Icon(Icons.phone),
                         label: const Text('Llamar'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.green,
-                          side: const BorderSide(color: AppColors.green),
+                          foregroundColor: AppColors.statusSuccess,
+                          side:
+                              const BorderSide(color: AppColors.statusSuccess),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),
-                        onPressed: () =>
-                            launchUrl(Uri.parse('tel:$phone')),
+                        onPressed: () => launchUrl(Uri.parse('tel:$phone')),
                       ),
                     ),
                   if (phone.isNotEmpty) const SizedBox(width: 12),
@@ -787,8 +825,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                       icon: const Icon(Icons.my_location),
                       label: const Text('Centrar'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.blue,
-                        side: const BorderSide(color: AppColors.blue),
+                        foregroundColor: AppColors.brandTeal,
+                        side: const BorderSide(color: AppColors.brandTeal),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12)),
                       ),
@@ -831,7 +869,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
         const SizedBox(height: 12),
         Row(
           children: [
-            const Icon(Icons.route, size: 16, color: AppColors.orange),
+            const Icon(Icons.route, size: 16, color: AppColors.brandCtaAccent),
             const SizedBox(width: 6),
             Text(
               'Ruta al destino (${dist.toStringAsFixed(1)} km)',
@@ -843,7 +881,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
           const SizedBox(height: 4),
           Text(
             destAddress,
-            style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context)),
+            style: TextStyle(
+                fontSize: 12, color: AppColors.secondaryText(context)),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -868,8 +907,9 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                 ),
                 PolylineLayer(polylines: [
                   Polyline(
-                    points: _routeCache[safeInt(agent['id'])] ?? [LatLng(agentLat, agentLng), LatLng(destLat, destLng)],
-                    color: AppColors.orange,
+                    points: _routeCache[safeInt(agent['id'])] ??
+                        [LatLng(agentLat, agentLng), LatLng(destLat, destLng)],
+                    color: AppColors.brandCtaAccent,
                     strokeWidth: 3,
                   ),
                 ]),
@@ -878,13 +918,15 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                     point: LatLng(agentLat, agentLng),
                     width: 28,
                     height: 28,
-                    child: const Icon(Icons.delivery_dining, color: AppColors.orange, size: 28),
+                    child: const Icon(Icons.delivery_dining,
+                        color: AppColors.brandCtaAccent, size: 28),
                   ),
                   Marker(
                     point: LatLng(destLat, destLng),
                     width: 28,
                     height: 28,
-                    child: const Icon(Icons.flag_rounded, color: AppColors.red, size: 28),
+                    child: const Icon(Icons.flag_rounded,
+                        color: AppColors.statusError, size: 28),
                   ),
                 ]),
               ],

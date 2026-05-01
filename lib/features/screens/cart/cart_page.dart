@@ -13,8 +13,10 @@ class CartPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartService = Provider.of<CartService>(context);
     final cartItems = cartService.items;
-    final totalItems = cartItems.fold<int>(0, (sum, item) => sum + item.quantity);
-    final subtotal = cartItems.fold<double>(0, (sum, item) => sum + (item.precio ?? 0) * item.quantity);
+    final totalItems =
+        cartItems.fold<int>(0, (sum, item) => sum + item.quantity);
+    final subtotal = cartItems.fold<double>(
+        0, (sum, item) => sum + (item.precio ?? 0) * item.quantity);
     // Total en carrito = solo subtotal; la tarifa de envío se muestra en Checkout (cuando el usuario elige delivery o pickup)
     final total = subtotal;
     return GestureDetector(
@@ -40,7 +42,8 @@ class CartPage extends StatelessWidget {
                             _buildRxBanner(context, cartService),
                           if (cartService.coldChainRequired)
                             _buildColdChainBanner(context),
-                          ...cartItems.map((item) => _buildCartItem(context, cartService, item)),
+                          ...cartItems.map((item) =>
+                              _buildCartItem(context, cartService, item)),
                           const SizedBox(height: 100),
                         ],
                       ),
@@ -49,7 +52,8 @@ class CartPage extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: cartItems.isNotEmpty
-            ? _buildFooterSummaryAndCheckout(context, subtotal: subtotal, total: total)
+            ? _buildFooterSummaryAndCheckout(context,
+                subtotal: subtotal, total: total)
             : null,
       ),
     );
@@ -128,8 +132,8 @@ class CartPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.brandTealDeep.withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-            color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
+        border:
+            Border.all(color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +144,7 @@ class CartPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Tu pedido requiere receta médica',
                   style: TextStyle(
                     fontSize: 14,
@@ -193,7 +197,8 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCartItem(BuildContext context, CartService cartService, CartItem item) {
+  Widget _buildCartItem(
+      BuildContext context, CartService cartService, CartItem item) {
     final imageUrl = item.image ?? item.imagen ?? '';
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -207,7 +212,12 @@ class CartPage extends StatelessWidget {
               : AppColors.textMutedGray.withValues(alpha: 0.2),
         ),
         boxShadow: Theme.of(context).brightness == Brightness.light
-            ? [BoxShadow(color: AppColors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 2))]
+            ? [
+                BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2))
+              ]
             : null,
       ),
       child: Row(
@@ -231,7 +241,10 @@ class CartPage extends StatelessWidget {
                       color: Theme.of(context).brightness == Brightness.dark
                           ? AppColors.white.withValues(alpha: 0.06)
                           : AppColors.grayLight,
-                      child: Icon(Icons.local_pharmacy, size: 40, color: AppColors.secondaryText(context).withValues(alpha: 0.3)),
+                      child: Icon(Icons.local_pharmacy,
+                          size: 40,
+                          color: AppColors.secondaryText(context)
+                              .withValues(alpha: 0.3)),
                     ),
             ),
           ),
@@ -260,12 +273,13 @@ class CartPage extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: AppColors.brandTealDeep,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: Text(
+                                child: const Text(
                                   'Rx',
                                   style: TextStyle(
                                     color: AppColors.white,
@@ -295,12 +309,15 @@ class CartPage extends StatelessWidget {
                       onPressed: () {
                         cartService.removeFromCart(item);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Producto eliminado del carrito')),
+                          const SnackBar(
+                              content: Text('Producto eliminado del carrito')),
                         );
                       },
-                      icon: Icon(Icons.delete_outline_rounded, size: 22, color: AppColors.error(context)),
+                      icon: Icon(Icons.delete_outline_rounded,
+                          size: 22, color: AppColors.error(context)),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                      constraints:
+                          const BoxConstraints(minWidth: 36, minHeight: 36),
                     ),
                   ],
                 ),
@@ -327,14 +344,19 @@ class CartPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuantityStepper(BuildContext context, CartService cartService, CartItem item) {
+  Widget _buildQuantityStepper(
+      BuildContext context, CartService cartService, CartItem item) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: isDark ? AppColors.white.withValues(alpha: 0.05) : AppColors.textMutedGray.withValues(alpha: 0.12),
+        color: isDark
+            ? AppColors.white.withValues(alpha: 0.05)
+            : AppColors.textMutedGray.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
-        border: isDark ? Border.all(color: AppColors.white.withValues(alpha: 0.1)) : null,
+        border: isDark
+            ? Border.all(color: AppColors.white.withValues(alpha: 0.1))
+            : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -352,7 +374,9 @@ class CartPage extends StatelessWidget {
               child: Icon(
                 Icons.remove_rounded,
                 size: 18,
-                color: isDark ? AppColors.secondaryText(context) : AppColors.accentButton(context),
+                color: isDark
+                    ? AppColors.secondaryText(context)
+                    : AppColors.accentButton(context),
               ),
             ),
           ),
@@ -375,7 +399,9 @@ class CartPage extends StatelessWidget {
               height: 32,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isDark ? AppColors.accentButton(context).withValues(alpha: 0.2) : AppColors.transparent,
+                color: isDark
+                    ? AppColors.accentButton(context).withValues(alpha: 0.2)
+                    : AppColors.transparent,
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Icon(
@@ -407,7 +433,8 @@ class CartPage extends StatelessWidget {
           ),
         ],
         border: Border(
-          top: BorderSide(color: AppColors.secondaryText(context).withValues(alpha: 0.1)),
+          top: BorderSide(
+              color: AppColors.secondaryText(context).withValues(alpha: 0.1)),
         ),
       ),
       child: SafeArea(
@@ -439,7 +466,10 @@ class CartPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 12),
-              Divider(height: 1, color: AppColors.secondaryText(context).withValues(alpha: 0.1)),
+              Divider(
+                  height: 1,
+                  color:
+                      AppColors.secondaryText(context).withValues(alpha: 0.1)),
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -468,47 +498,50 @@ class CartPage extends StatelessWidget {
                 button: true,
                 label: 'Ir a pagar, continuar al checkout',
                 child: Material(
-                color: AppColors.orange,
-                borderRadius: BorderRadius.circular(999),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CheckoutPage()),
-                    );
-                  },
+                  color: AppColors.brandTeal,
                   borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(999),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.orange.withValues(alpha: 0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Ir a pagar',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.white,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CheckoutPage()),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 24),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.brandTeal.withValues(alpha: 0.3),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4),
                           ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(Icons.arrow_forward_rounded, size: 22, color: AppColors.white),
-                      ],
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ir a pagar',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward_rounded,
+                              size: 22, color: AppColors.white),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
               ),
             ],
           ),

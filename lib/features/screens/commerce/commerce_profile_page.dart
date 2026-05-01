@@ -85,7 +85,7 @@ class _CommerceProfilePageState extends State<CommerceProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(value ? 'Comercio abierto' : 'Comercio cerrado'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -93,8 +93,9 @@ class _CommerceProfilePageState extends State<CommerceProfilePage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
-            backgroundColor: AppColors.red,
+            content:
+                Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -115,7 +116,8 @@ class _CommerceProfilePageState extends State<CommerceProfilePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -166,14 +168,16 @@ class _CommerceProfilePageState extends State<CommerceProfilePage> {
                       Text(
                         _commerceOpen ? 'Comercio abierto' : 'Comercio cerrado',
                         style: TextStyle(
-                          color: _commerceOpen ? AppColors.green : AppColors.red,
+                          color: _commerceOpen
+                              ? AppColors.statusSuccess
+                              : AppColors.statusError,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       Switch(
                         value: _commerceOpen,
                         onChanged: _toggleOpen,
-                        activeThumbColor: AppColors.green,
+                        activeThumbColor: AppColors.statusSuccess,
                       ),
                     ],
                   ),

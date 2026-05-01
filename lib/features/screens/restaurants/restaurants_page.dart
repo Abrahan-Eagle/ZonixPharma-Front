@@ -134,7 +134,8 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
     }
   }
 
-  Future<void> _loadRestaurants({bool reset = false, bool silent = false}) async {
+  Future<void> _loadRestaurants(
+      {bool reset = false, bool silent = false}) async {
     if (_isLoadingMore) return;
     if (!reset && !_hasMore) return;
 
@@ -266,9 +267,9 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                 });
               },
               style: OutlinedButton.styleFrom(
-                foregroundColor: isDark ? AppColors.white : AppColors.blue,
+                foregroundColor: isDark ? AppColors.white : AppColors.brandTeal,
                 side: BorderSide(
-                    color: isDark ? AppColors.white24 : AppColors.blue),
+                    color: isDark ? AppColors.white24 : AppColors.brandTeal),
               ),
               child: const Text('Limpiar búsqueda'),
             ),
@@ -387,7 +388,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                               : Icons.favorite_border,
                           size: 20,
                           color: _favoriteIds.contains(restaurant.id.toString())
-                              ? AppColors.red
+                              ? AppColors.statusError
                               : AppColors.gray,
                         ),
                       ),
@@ -468,7 +469,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  // Tipo de cocina
+                  // Especialidad/tipo de farmacia (reusa cuisineDisplay del modelo legacy).
                   Text(
                     restaurant.cuisineDisplay,
                     style: GoogleFonts.plusJakartaSans(
@@ -607,7 +608,9 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                                   selected ? FontWeight.w600 : FontWeight.w500,
                               color: selected
                                   ? AppColors.white
-                                  : (isDark ? AppColors.white70 : AppColors.gray),
+                                  : (isDark
+                                      ? AppColors.white70
+                                      : AppColors.gray),
                             ),
                           ),
                         ],

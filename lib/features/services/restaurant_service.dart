@@ -103,7 +103,7 @@ class RestaurantService {
     );
   }
 
-  // GET /api/buyer/restaurants - Listar restaurantes paginados.
+  // GET /api/buyer/restaurants (alias) — listar farmacias paginadas.
   Future<RestaurantsPageResult> fetchRestaurantsPage({
     required int page,
     int perPage = 15,
@@ -195,7 +195,7 @@ class RestaurantService {
     return result.restaurants;
   }
 
-  // GET /api/buyer/restaurants/{id} - Obtener detalle de restaurante
+  // GET /api/buyer/restaurants/{id} — detalle de farmacia
   Future<Restaurant> fetchRestaurantDetails(int restaurantId) async {
     if (restaurantId <= 0) {
       throw ArgumentError('restaurantId inválido: $restaurantId');
@@ -238,7 +238,7 @@ class RestaurantService {
         _detailsCache[restaurantId] = parsed;
         return parsed;
       } else if (response.statusCode == 404) {
-        throw Exception('Restaurante no encontrado');
+        throw Exception('Farmacia no encontrada');
       } else {
         logger.e('API Details Error: Status: ${response.statusCode}, Body: ${response.body}');
         throw Exception('Failed to load restaurant details: ${response.statusCode}');

@@ -90,7 +90,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   double? _longitude;
   DateTime? _lastGeocodingCall;
   bool _isLoadingLocation = false;
-  bool _skipNextReverseGeocode = false; // Evitar loop al mover mapa desde inputs
+  bool _skipNextReverseGeocode =
+      false; // Evitar loop al mover mapa desde inputs
   Timer? _streetDebounceTimer; // Debounce para geocodificar al cambiar calle
 
   // STEP 2 (commerce): dirección del dueño — se guarda en provider, no se persiste hasta el final.
@@ -201,11 +202,21 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   void _prefillStep4FromUserAddress() {
     if (_step4PrefilledFromUser) return;
     final provider = context.read<OnboardingProvider>();
-    if (provider.street == null && provider.houseNumber == null && provider.postalCode == null) return;
+    if (provider.street == null &&
+        provider.houseNumber == null &&
+        provider.postalCode == null) {
+      return;
+    }
     setState(() {
-      if (provider.street != null) _streetCommerceController.text = provider.street!;
-      if (provider.houseNumber != null) _houseNumberCommerceController.text = provider.houseNumber!;
-      if (provider.postalCode != null) _postalCodeCommerceController.text = provider.postalCode!;
+      if (provider.street != null) {
+        _streetCommerceController.text = provider.street!;
+      }
+      if (provider.houseNumber != null) {
+        _houseNumberCommerceController.text = provider.houseNumber!;
+      }
+      if (provider.postalCode != null) {
+        _postalCodeCommerceController.text = provider.postalCode!;
+      }
       if (provider.latitude != null) _latitude = provider.latitude;
       if (provider.longitude != null) _longitude = provider.longitude;
       _step4PrefilledFromUser = true;
@@ -389,7 +400,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   void _onStreetChanged() {
     _streetDebounceTimer?.cancel();
     _streetDebounceTimer = Timer(const Duration(milliseconds: 800), () {
-      if (_selectedCity != null || _selectedState != null || _selectedCountry != null) {
+      if (_selectedCity != null ||
+          _selectedState != null ||
+          _selectedCountry != null) {
         _moveMapToAddress();
       }
     });
@@ -479,7 +492,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             15,
           );
         } catch (e) {
-          debugPrint('Error refreshing user details in buyer onboarding submit: $e');
+          debugPrint(
+              'Error refreshing user details in buyer onboarding submit: $e');
         }
       });
 
@@ -826,7 +840,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
 
   Future<void> _handleNext() async {
     if (_currentStep == 0) {
-      if (_step1FormKey.currentState?.validate() != true || _birthDate == null || _selectedSex == null) {
+      if (_step1FormKey.currentState?.validate() != true ||
+          _birthDate == null ||
+          _selectedSex == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Por favor completa tus datos personales.'),
@@ -862,7 +878,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           _selectedCity == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Completa todos los campos de dirección (país, estado, ciudad y dirección).'),
+            content: Text(
+                'Completa todos los campos de dirección (país, estado, ciudad y dirección).'),
           ),
         );
         return;
@@ -898,7 +915,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       if (_step3FormKey.currentState?.validate() != true) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Completa los datos de tu comercio (nombre del local y teléfono).'),
+            content: Text(
+                'Completa los datos de tu comercio (nombre del local y teléfono).'),
           ),
         );
         return;
@@ -909,7 +927,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           _selectedCity == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Completa la dirección del establecimiento (país, estado, ciudad y dirección).'),
+            content: Text(
+                'Completa la dirección del establecimiento (país, estado, ciudad y dirección).'),
           ),
         );
         return;
@@ -939,7 +958,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('No se pudo identificar tu cuenta. Cierra sesión e inicia de nuevo.'),
+              content: Text(
+                  'No se pudo identificar tu cuenta. Cierra sesión e inicia de nuevo.'),
             ),
           );
         }
@@ -974,7 +994,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         firstName: onboarding.firstName ?? _firstNameController.text.trim(),
         middleName: onboarding.middleName ?? '',
         lastName: onboarding.lastName ?? _lastNameController.text.trim(),
-        secondLastName: onboarding.secondLastName ?? _secondLastNameController.text.trim(),
+        secondLastName:
+            onboarding.secondLastName ?? _secondLastNameController.text.trim(),
         photo: null,
         dateOfBirth: (onboarding.dateOfBirth ?? _birthDate)!
             .toIso8601String()
@@ -1006,7 +1027,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       final address = Address(
         id: null,
         street: onboarding.street ?? _streetController.text.trim(),
-        houseNumber: onboarding.houseNumber ?? _houseNumberController.text.trim(),
+        houseNumber:
+            onboarding.houseNumber ?? _houseNumberController.text.trim(),
         postalCode: onboarding.postalCode ?? _postalCodeController.text.trim(),
         latitude: onboarding.latitude ?? _latitude ?? 0.0,
         longitude: onboarding.longitude ?? _longitude ?? 0.0,
@@ -1020,16 +1042,20 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       // 3) Crear teléfono (exactamente 7 dígitos)
       final number = _phoneController.text.trim();
       if (number.length == 7) {
-        final op = _selectedPersonalOperator ?? (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
+        final op = _selectedPersonalOperator ??
+            (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
         final operatorId = op?['id'] ?? 0;
-        final operatorName = op?['code']?.toString() ?? op?['name']?.toString() ?? '';
+        final operatorName =
+            op?['code']?.toString() ?? op?['name']?.toString() ?? '';
 
         if (operatorId > 0) {
           final phone = Phone(
             id: 0,
             profileId: profileId,
             context: PhoneContext.personal,
-            operatorCodeId: operatorId is int ? operatorId : int.tryParse(operatorId.toString()) ?? 0,
+            operatorCodeId: operatorId is int
+                ? operatorId
+                : int.tryParse(operatorId.toString()) ?? 0,
             operatorCodeName: operatorName,
             number: number,
             isPrimary: true,
@@ -1071,14 +1097,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         try {
           Navigator.of(context).pop();
         } catch (e) {
-          debugPrint('Error closing loading dialog in buyer onboarding submit: $e');
+          debugPrint(
+              'Error closing loading dialog in buyer onboarding submit: $e');
         }
       }
       final message = _userFriendlyErrorMessage(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
     } finally {
@@ -1103,14 +1130,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           final details = await userProvider.getUserDetails(forceRefresh: true);
           userId = details['userId'] ?? userProvider.userId;
         } catch (e) {
-          debugPrint('Error refreshing user details in commerce onboarding submit: $e');
+          debugPrint(
+              'Error refreshing user details in commerce onboarding submit: $e');
         }
       }
       if (userId <= 0) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('No se pudo identificar tu cuenta. Cierra sesión e inicia de nuevo.'),
+              content: Text(
+                  'No se pudo identificar tu cuenta. Cierra sesión e inicia de nuevo.'),
             ),
           );
         }
@@ -1142,9 +1171,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         firstName: onboarding.firstName ?? _firstNameController.text.trim(),
         middleName: onboarding.middleName ?? '',
         lastName: onboarding.lastName ?? _lastNameController.text.trim(),
-        secondLastName: onboarding.secondLastName ?? _secondLastNameController.text.trim(),
+        secondLastName:
+            onboarding.secondLastName ?? _secondLastNameController.text.trim(),
         photo: null,
-        dateOfBirth: (onboarding.dateOfBirth ?? _birthDate)!.toIso8601String().split('T').first,
+        dateOfBirth: (onboarding.dateOfBirth ?? _birthDate)!
+            .toIso8601String()
+            .split('T')
+            .first,
         maritalStatus: 'single',
         sex: onboarding.sex ?? _selectedSex ?? 'M',
         status: 'notverified',
@@ -1168,7 +1201,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       final addressOwner = Address(
         id: null,
         street: onboarding.street ?? _streetController.text.trim(),
-        houseNumber: onboarding.houseNumber ?? _houseNumberController.text.trim(),
+        houseNumber:
+            onboarding.houseNumber ?? _houseNumberController.text.trim(),
         postalCode: onboarding.postalCode ?? _postalCodeController.text.trim(),
         latitude: onboarding.latitude ?? _latitude ?? 0.0,
         longitude: onboarding.longitude ?? _longitude ?? 0.0,
@@ -1182,15 +1216,19 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       // 3) Teléfono
       final number = _phoneController.text.trim();
       if (number.length == 7) {
-        final op = _selectedPersonalOperator ?? (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
+        final op = _selectedPersonalOperator ??
+            (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
         final operatorId = op?['id'] ?? 0;
-        final operatorName = op?['code']?.toString() ?? op?['name']?.toString() ?? '';
+        final operatorName =
+            op?['code']?.toString() ?? op?['name']?.toString() ?? '';
         if (operatorId > 0) {
           final phone = Phone(
             id: 0,
             profileId: profileId,
             context: PhoneContext.personal,
-            operatorCodeId: operatorId is int ? operatorId : int.tryParse(operatorId.toString()) ?? 0,
+            operatorCodeId: operatorId is int
+                ? operatorId
+                : int.tryParse(operatorId.toString()) ?? 0,
             operatorCodeName: operatorName,
             number: number,
             isPrimary: true,
@@ -1203,29 +1241,35 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       }
 
       // 4) Crear comercio (tabla commerces; la dirección va en addresses con role commerce)
-      final addressEstablishmentStr = '${_streetCommerceController.text.trim()} ${_houseNumberCommerceController.text.trim()}'.trim();
+      final addressEstablishmentStr =
+          '${_streetCommerceController.text.trim()} ${_houseNumberCommerceController.text.trim()}'
+              .trim();
       // Teléfono del comercio: mismo formato que el del usuario (0 + código + 7 dígitos)
       String commercePhone = _commercePhoneController.text.trim();
-      final opCommerce = _selectedCommerceOperator ?? (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
+      final opCommerce = _selectedCommerceOperator ??
+          (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
       final opCode = opCommerce?['code']?.toString();
       if (opCode != null && opCode.isNotEmpty && commercePhone.length == 7) {
         commercePhone = '0$opCode$commercePhone';
       }
-      final commerceResult = await CommerceDataService.createCommerceForExistingProfile(
+      final commerceResult =
+          await CommerceDataService.createCommerceForExistingProfile(
         profileId,
         {
           'business_name': _commerceNameController.text.trim(),
-          'business_type': 'Restaurante',
+          'business_type': 'Farmacia',
           'tax_id': _commerceTaxIdController.text.trim().isEmpty
               ? 'N/A'
               : _commerceTaxIdController.text.trim(),
           'address': addressEstablishmentStr,
           'open': false,
-          'schedule': _commerceSchedule.isEmpty ? '' : jsonEncode(_commerceSchedule),
+          'schedule':
+              _commerceSchedule.isEmpty ? '' : jsonEncode(_commerceSchedule),
         },
       );
       if (commerceResult['success'] != true) {
-        throw Exception(commerceResult['message'] ?? 'No se pudo registrar el comercio');
+        throw Exception(
+            commerceResult['message'] ?? 'No se pudo registrar el comercio');
       }
       // Id del comercio recién creado para vincular la dirección del establecimiento.
       final commerceId = commerceResult['data']?['id'] is int
@@ -1254,14 +1298,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       // 6) Teléfono del comercio → tabla phones (context=commerce)
       if (commerceId != null && commerceId > 0) {
         final commercePhoneDigits = _commercePhoneController.text.trim();
-        final opCommerce = _selectedCommerceOperator ?? (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
+        final opCommerce = _selectedCommerceOperator ??
+            (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
         final opId = opCommerce?['id'];
         if (commercePhoneDigits.length == 7 && opId != null) {
           final opName = opCommerce?['name']?.toString() ?? '';
           final commercePhoneObj = Phone(
             id: 0,
             profileId: profileId,
-            operatorCodeId: opId is int ? opId : int.tryParse(opId.toString()) ?? 0,
+            operatorCodeId:
+                opId is int ? opId : int.tryParse(opId.toString()) ?? 0,
             operatorCodeName: opName,
             number: commercePhoneDigits,
             isPrimary: true,
@@ -1280,7 +1326,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         id: null,
         street: _streetCommerceController.text.trim(),
         houseNumber: _houseNumberCommerceController.text.trim(),
-        postalCode: _postalCodeCommerceController.text.trim().isEmpty ? '' : _postalCodeCommerceController.text.trim(),
+        postalCode: _postalCodeCommerceController.text.trim().isEmpty
+            ? ''
+            : _postalCodeCommerceController.text.trim(),
         latitude: _latitude ?? 0.0,
         longitude: _longitude ?? 0.0,
         status: 'notverified',
@@ -1323,14 +1371,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         try {
           Navigator.of(context).pop();
         } catch (e) {
-          debugPrint('Error closing loading dialog in commerce onboarding submit: $e');
+          debugPrint(
+              'Error closing loading dialog in commerce onboarding submit: $e');
         }
       }
       final message = _userFriendlyErrorMessage(e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
     } finally {
@@ -1343,7 +1392,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   /// Convierte excepciones de API/red en mensajes entendibles para el usuario.
   String _userFriendlyErrorMessage(Object e) {
     final msg = e.toString();
-    if (msg.contains('SocketException') || msg.contains('Connection') || msg.contains('Failed host lookup')) {
+    if (msg.contains('SocketException') ||
+        msg.contains('Connection') ||
+        msg.contains('Failed host lookup')) {
       return 'Sin conexión. Revisa tu internet e intenta de nuevo.';
     }
     if (msg.contains('401') || msg.contains('Unauthorized')) {
@@ -1362,10 +1413,12 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     if (msg.contains('Error al crear el perfil') || msg.contains('profiles')) {
       return 'Hubo un problema al guardar tus datos personales. Revisa nombre, fecha de nacimiento y género.';
     }
-    if (msg.contains('Error al crear comercio') || msg.contains('add-commerce')) {
+    if (msg.contains('Error al crear comercio') ||
+        msg.contains('add-commerce')) {
       return 'Hubo un problema al registrar el comercio. Revisa nombre, RIF y dirección del local.';
     }
-    if (msg.contains('Error al crear dirección') || msg.contains('/buyer/addresses')) {
+    if (msg.contains('Error al crear dirección') ||
+        msg.contains('/buyer/addresses')) {
       return 'Hubo un problema con tu dirección. Revisa país, estado, ciudad y calle antes de intentar de nuevo.';
     }
     if (msg.contains('Error al crear teléfono')) {
@@ -1417,7 +1470,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 children: [
                   IconButton(
                     onPressed: () => Navigator.maybePop(context),
-                    icon: const Icon(Icons.chevron_left, color: AppColors.white),
+                    icon:
+                        const Icon(Icons.chevron_left, color: AppColors.white),
                     style: IconButton.styleFrom(
                       backgroundColor: AppColors.grayDark,
                       foregroundColor: AppColors.white,
@@ -1426,7 +1480,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   Expanded(
                     child: Center(
                       child: Text(
-                        _currentStep == 0 ? 'Datos Personales' : _stepTitle(_currentStep),
+                        _currentStep == 0
+                            ? 'Datos Personales'
+                            : _stepTitle(_currentStep),
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -1460,7 +1516,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.blue,
+                          color: AppColors.brandTeal,
                         ),
                       ),
                     ],
@@ -1472,7 +1528,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       value: progress,
                       minHeight: 8,
                       backgroundColor: AppColors.grayDark,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.blue),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.brandTeal),
                     ),
                   ),
                 ],
@@ -1500,7 +1557,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         ),
       ),
       bottomNavigationBar: Container(
-        padding: EdgeInsets.fromLTRB(24, 16, 24, 16 + MediaQuery.of(context).padding.bottom),
+        padding: EdgeInsets.fromLTRB(
+            24, 16, 24, 16 + MediaQuery.of(context).padding.bottom),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -1517,7 +1575,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           child: ElevatedButton(
             onPressed: _isSubmitting ? null : _handleNext,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.blue,
+              backgroundColor: AppColors.brandTeal,
               foregroundColor: AppColors.white,
               disabledBackgroundColor: AppColors.blue.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
@@ -1547,9 +1605,12 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   String _stepTitle(int step) {
     if (widget.isCommerce) {
       switch (step) {
-        case 1: return 'Dirección';
-        case 2: return 'Datos del Comercio';
-        case 3: return 'Dirección del Establecimiento';
+        case 1:
+          return 'Dirección';
+        case 2:
+          return 'Datos del Comercio';
+        case 3:
+          return 'Dirección del Establecimiento';
       }
     } else {
       if (step == 1) return 'Dirección';
@@ -1613,7 +1674,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       child: Container(
                         padding: EdgeInsets.all(isSmall ? 6 : 8),
                         decoration: BoxDecoration(
-                          color: AppColors.blue,
+                          color: AppColors.brandTeal,
                           shape: BoxShape.circle,
                           border: Border.all(
                             color: AppColors.backgroundDark,
@@ -1670,8 +1731,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         );
                       }
                     },
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Ingresa tu nombre' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Ingresa tu nombre'
+                        : null,
                   ),
                 ),
                 SizedBox(width: isSmall ? 12 : 16),
@@ -1689,8 +1751,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         );
                       }
                     },
-                    validator: (v) =>
-                        (v == null || v.trim().isEmpty) ? 'Ingresa tu apellido' : null,
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Ingresa tu apellido'
+                        : null,
                   ),
                 ),
               ],
@@ -1732,7 +1795,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: const BorderSide(
-                          color: AppColors.blue,
+                          color: AppColors.brandTeal,
                           width: 1.5,
                         ),
                       ),
@@ -1799,7 +1862,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(
-                        color: AppColors.blue,
+                        color: AppColors.brandTeal,
                         width: 1.5,
                       ),
                     ),
@@ -1809,17 +1872,29 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   ),
                   hint: Text(
                     'Selecciona tu sexo',
-                    style: GoogleFonts.plusJakartaSans(color: AppColors.white.withValues(alpha: 0.5)),
+                    style: GoogleFonts.plusJakartaSans(
+                        color: AppColors.white.withValues(alpha: 0.5)),
                   ),
                   items: const [
-                    DropdownMenuItem(value: 'M', child: Text('Masculino', style: TextStyle(color: AppColors.white))),
-                    DropdownMenuItem(value: 'F', child: Text('Femenino', style: TextStyle(color: AppColors.white))),
-                    DropdownMenuItem(value: 'O', child: Text('Otro', style: TextStyle(color: AppColors.white))),
-                    DropdownMenuItem(value: 'X', child: Text('Prefiero no decir', style: TextStyle(color: AppColors.white))),
+                    DropdownMenuItem(
+                        value: 'M',
+                        child: Text('Masculino',
+                            style: TextStyle(color: AppColors.white))),
+                    DropdownMenuItem(
+                        value: 'F',
+                        child: Text('Femenino',
+                            style: TextStyle(color: AppColors.white))),
+                    DropdownMenuItem(
+                        value: 'O',
+                        child: Text('Otro',
+                            style: TextStyle(color: AppColors.white))),
+                    DropdownMenuItem(
+                        value: 'X',
+                        child: Text('Prefiero no decir',
+                            style: TextStyle(color: AppColors.white))),
                   ],
                   onChanged: (v) => setState(() => _selectedSex = v),
-                  validator: (v) =>
-                      v == null ? 'Selecciona tu sexo' : null,
+                  validator: (v) => v == null ? 'Selecciona tu sexo' : null,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
               ],
@@ -1844,7 +1919,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.all(24),
-                      child: CircularProgressIndicator(color: AppColors.blue),
+                      child:
+                          CircularProgressIndicator(color: AppColors.brandTeal),
                     ),
                   )
                 else
@@ -1883,14 +1959,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                                   value: c,
                                   child: Text(
                                     _formatOperatorCodeDisplay(c),
-                                    style: const TextStyle(color: AppColors.white),
+                                    style:
+                                        const TextStyle(color: AppColors.white),
                                   ),
                                 ),
                               )
                               .toList(),
                           validator: (v) => v == null ? 'Código' : null,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          onChanged: (v) => setState(() => _selectedPersonalOperator = v),
+                          onChanged: (v) =>
+                              setState(() => _selectedPersonalOperator = v),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -1924,7 +2002,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: const BorderSide(
-                                color: AppColors.blue,
+                                color: AppColors.brandTeal,
                                 width: 1.5,
                               ),
                             ),
@@ -1934,7 +2012,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                           ),
                           keyboardType: TextInputType.phone,
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Ingresa el número';
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Ingresa el número';
+                            }
                             if (v.trim().length != 7) return '7 dígitos';
                             return null;
                           },
@@ -1997,7 +2077,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(
-                color: AppColors.blue,
+                color: AppColors.brandTeal,
                 width: 1.5,
               ),
             ),
@@ -2075,7 +2155,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               hint: 'Ej. Avenida Reforma',
               icon: Icons.signpost,
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Ingresa una dirección';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Ingresa una dirección';
+                }
                 if (v.trim().length < 5) return 'La dirección parece muy corta';
                 return null;
               },
@@ -2173,7 +2255,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       });
                       final now = DateTime.now();
                       if (_lastGeocodingCall == null ||
-                          now.difference(_lastGeocodingCall!).inMilliseconds > 500) {
+                          now.difference(_lastGeocodingCall!).inMilliseconds >
+                              500) {
                         _lastGeocodingCall = now;
                         _autoFillFromLocation(
                           newCenter.latitude,
@@ -2200,7 +2283,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     const CircularProgressIndicator(color: _kAddressPrimary),
                     const SizedBox(height: 12),
                     Text(
-                      _isLoadingLocation ? 'Obteniendo ubicación...' : 'Esperando ubicación',
+                      _isLoadingLocation
+                          ? 'Obteniendo ubicación...'
+                          : 'Esperando ubicación',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
                         color: AppColors.white.withValues(alpha: 0.7),
@@ -2298,7 +2383,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           style: GoogleFonts.plusJakartaSans(color: AppColors.white),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.white.withValues(alpha: 0.4)),
+            hintStyle: GoogleFonts.plusJakartaSans(
+                color: AppColors.white.withValues(alpha: 0.4)),
             prefixIcon: Icon(
               icon,
               size: 20,
@@ -2306,11 +2392,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
+              borderSide:
+                  BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
+              borderSide:
+                  BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -2318,7 +2406,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             ),
             filled: true,
             fillColor: _kAddressSurface,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           ),
           validator: validator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -2336,13 +2425,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         initialValue: _selectedCountry,
         isExpanded: true,
         dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more, color: AppColors.white.withValues(alpha: 0.6)),
+        icon: Icon(Icons.expand_more,
+            color: AppColors.white.withValues(alpha: 0.6)),
         decoration: _addressInputDecoration(prefixIcon: Icons.public),
         items: _countries
             .map(
               (c) => DropdownMenuItem<Country>(
                 value: c,
-                child: Text(c.name, style: const TextStyle(color: AppColors.white)),
+                child: Text(c.name,
+                    style: const TextStyle(color: AppColors.white)),
               ),
             )
             .toList(),
@@ -2361,13 +2452,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         initialValue: _selectedState,
         isExpanded: true,
         dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more, color: AppColors.white.withValues(alpha: 0.6)),
+        icon: Icon(Icons.expand_more,
+            color: AppColors.white.withValues(alpha: 0.6)),
         decoration: _addressInputDecoration(prefixIcon: Icons.map_outlined),
         items: _states
             .map(
               (s) => DropdownMenuItem<StateModel>(
                 value: s,
-                child: Text(s.name, style: const TextStyle(color: AppColors.white)),
+                child: Text(s.name,
+                    style: const TextStyle(color: AppColors.white)),
               ),
             )
             .toList(),
@@ -2386,13 +2479,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         initialValue: _selectedCity,
         isExpanded: true,
         dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more, color: AppColors.white.withValues(alpha: 0.6)),
+        icon: Icon(Icons.expand_more,
+            color: AppColors.white.withValues(alpha: 0.6)),
         decoration: _addressInputDecoration(prefixIcon: Icons.apartment),
         items: _cities
             .map(
               (c) => DropdownMenuItem<City>(
                 value: c,
-                child: Text(c.name, style: const TextStyle(color: AppColors.white)),
+                child: Text(c.name,
+                    style: const TextStyle(color: AppColors.white)),
               ),
             )
             .toList(),
@@ -2493,13 +2588,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.blue, width: 2),
+          borderSide: const BorderSide(color: AppColors.brandTeal, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.red, width: 1),
+          borderSide: const BorderSide(color: AppColors.statusError, width: 1),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       ),
       validator: validator,
       inputFormatters: inputFormatters,
@@ -2542,7 +2638,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 if (text.isEmpty) return 'El nombre del local es obligatorio';
                 if (text.length < 3) return 'Mínimo 3 caracteres';
                 if (text.length > 150) return 'Máximo 150 caracteres';
-                if (!RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-.]+$').hasMatch(text)) {
+                if (!RegExp(r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-.]+$')
+                    .hasMatch(text)) {
                   return 'Caracteres no válidos';
                 }
                 return null;
@@ -2559,7 +2656,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 if (value != null && value.trim().isNotEmpty) {
                   final rif = value.trim().toUpperCase();
                   final rifRegex = RegExp(r'^(V|J)-\d{8}-\d$');
-                  if (!rifRegex.hasMatch(rif)) return 'Formato: V-12345678-9 o J-12345678-9';
+                  if (!rifRegex.hasMatch(rif)) {
+                    return 'Formato: V-12345678-9 o J-12345678-9';
+                  }
                   final digits = rif.replaceAll(RegExp(r'[^0-9]'), '');
                   if (digits.length != 9) return 'Debe tener 9 dígitos';
                 }
@@ -2597,7 +2696,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
-                  child: CircularProgressIndicator(color: AppColors.blue.withValues(alpha: 0.8)),
+                  child: CircularProgressIndicator(
+                      color: AppColors.blue.withValues(alpha: 0.8)),
                 ),
               )
             else
@@ -2610,7 +2710,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       initialValue: _selectedCommerceOperator,
                       isExpanded: true,
                       dropdownColor: AppColors.grayDark,
-                      icon: Icon(Icons.arrow_drop_down, color: AppColors.white.withValues(alpha: 0.6)),
+                      icon: Icon(Icons.arrow_drop_down,
+                          color: AppColors.white.withValues(alpha: 0.6)),
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left: 16, right: 8),
@@ -2620,7 +2721,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                             color: AppColors.white.withValues(alpha: 0.5),
                           ),
                         ),
-                        prefixIconConstraints: const BoxConstraints(minWidth: 44),
+                        prefixIconConstraints:
+                            const BoxConstraints(minWidth: 44),
                         filled: true,
                         fillColor: AppColors.grayDark,
                         border: OutlineInputBorder(
@@ -2629,13 +2731,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: AppColors.blue, width: 2),
+                          borderSide: const BorderSide(
+                              color: AppColors.brandTeal, width: 2),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 16),
                       ),
                       hint: Text(
                         'Código',
-                        style: GoogleFonts.plusJakartaSans(color: AppColors.white.withValues(alpha: 0.5)),
+                        style: GoogleFonts.plusJakartaSans(
+                            color: AppColors.white.withValues(alpha: 0.5)),
                       ),
                       items: (_operatorCodes.isNotEmpty
                               ? _operatorCodes
@@ -2645,14 +2750,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                               value: code,
                               child: Text(
                                 _formatOperatorCodeDisplay(code),
-                                style: GoogleFonts.plusJakartaSans(color: AppColors.white),
+                                style: GoogleFonts.plusJakartaSans(
+                                    color: AppColors.white),
                               ),
                             ),
                           )
                           .toList(),
                       validator: (v) => v == null ? 'Código' : null,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                      onChanged: (v) => setState(() => _selectedCommerceOperator = v),
+                      onChanged: (v) =>
+                          setState(() => _selectedCommerceOperator = v),
                     ),
                   ),
                   SizedBox(width: isSmall ? 12 : 16),
@@ -2694,12 +2801,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               decoration: BoxDecoration(
                 color: AppColors.blue.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.blue.withValues(alpha: 0.2)),
+                border:
+                    Border.all(color: AppColors.blue.withValues(alpha: 0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.verified_user_outlined, color: AppColors.blue, size: 24),
+                  const Icon(Icons.verified_user_outlined,
+                      color: AppColors.brandTeal, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
@@ -2752,7 +2861,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             _buildSectionHeader(
               icon: Icons.public,
               label: 'UBICACIÓN REGIONAL',
-              color: AppColors.blue,
+              color: AppColors.brandTeal,
               darkStyle: true,
             ),
             const SizedBox(height: 12),
@@ -2773,7 +2882,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             _buildSectionHeader(
               icon: Icons.location_on_outlined,
               label: 'DETALLES DE LA DIRECCIÓN',
-              color: AppColors.blue,
+              color: AppColors.brandTeal,
               darkStyle: true,
             ),
             const SizedBox(height: 12),
@@ -2782,7 +2891,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               controller: _streetCommerceController,
               hint: 'Ej: Av. Principal, Local 1',
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Ingresa una dirección';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Ingresa una dirección';
+                }
                 if (v.trim().length < 5) return 'La dirección parece muy corta';
                 return null;
               },
@@ -2793,7 +2904,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               controller: _houseNumberCommerceController,
               hint: 'Número / Local',
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Ingresa número o local';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Ingresa número o local';
+                }
                 return null;
               },
             ),
@@ -2811,12 +2924,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   String _normalizeName(String input) {
-    final cleaned =
-        input.replaceAll(RegExp(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]'), '');
+    final cleaned = input.replaceAll(RegExp(r'[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]'), '');
     final parts = cleaned.toLowerCase().trim().split(RegExp(r'\s+'));
     return parts
-        .map((w) =>
-            w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
+        .map((w) => w.isEmpty ? w : '${w[0].toUpperCase()}${w.substring(1)}')
         .join(' ');
   }
 
@@ -2872,7 +2983,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       });
                       final now = DateTime.now();
                       if (_lastGeocodingCall == null ||
-                          now.difference(_lastGeocodingCall!).inMilliseconds > 500) {
+                          now.difference(_lastGeocodingCall!).inMilliseconds >
+                              500) {
                         _lastGeocodingCall = now;
                         _autoFillFromLocation(
                           newCenter.latitude,
@@ -2884,8 +2996,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate:
-                        AppConfig.osmTileUrl,
+                    urlTemplate: AppConfig.osmTileUrl,
                     userAgentPackageName: 'com.zonix.pharma',
                   ),
                 ],
@@ -2904,7 +3015,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      _isLoadingLocation ? 'Obteniendo ubicación...' : 'Esperando ubicación',
+                      _isLoadingLocation
+                          ? 'Obteniendo ubicación...'
+                          : 'Esperando ubicación',
                       style: const TextStyle(fontSize: 13),
                     ),
                   ],
@@ -2940,7 +3053,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 decoration: BoxDecoration(
                   color: AppColors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.white.withValues(alpha: 0.7)),
+                  border:
+                      Border.all(color: AppColors.white.withValues(alpha: 0.7)),
                 ),
                 child: const Text(
                   'Ubicación del PIN',
@@ -2996,7 +3110,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             fontSize: 13,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.8,
-            color: darkStyle ? AppColors.white.withValues(alpha: 0.85) : AppColors.grayDark,
+            color: darkStyle
+                ? AppColors.white.withValues(alpha: 0.85)
+                : AppColors.grayDark,
           ),
         ),
       ],
@@ -3006,7 +3122,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   InputDecoration _commerceDropdownDecoration(String label) {
     return InputDecoration(
       labelText: label,
-      labelStyle: GoogleFonts.plusJakartaSans(color: AppColors.white.withValues(alpha: 0.6)),
+      labelStyle: GoogleFonts.plusJakartaSans(
+          color: AppColors.white.withValues(alpha: 0.6)),
       filled: true,
       fillColor: AppColors.grayDark,
       border: OutlineInputBorder(
@@ -3015,7 +3132,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.blue, width: 2),
+        borderSide: const BorderSide(color: AppColors.brandTeal, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
@@ -3027,7 +3144,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       isExpanded: true,
       dropdownColor: AppColors.grayDark,
       decoration: _commerceDropdownDecoration('País'),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down,
+          color: AppColors.white.withValues(alpha: 0.6)),
       items: _countries
           .map(
             (c) => DropdownMenuItem<Country>(
@@ -3050,7 +3168,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       isExpanded: true,
       dropdownColor: AppColors.grayDark,
       decoration: _commerceDropdownDecoration('Estado'),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down,
+          color: AppColors.white.withValues(alpha: 0.6)),
       items: _states
           .map(
             (s) => DropdownMenuItem<StateModel>(
@@ -3073,7 +3192,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       isExpanded: true,
       dropdownColor: AppColors.grayDark,
       decoration: _commerceDropdownDecoration('Ciudad'),
-      icon: Icon(Icons.arrow_drop_down, color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down,
+          color: AppColors.white.withValues(alpha: 0.6)),
       items: _cities
           .map(
             (c) => DropdownMenuItem<City>(
@@ -3112,7 +3232,6 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       },
     );
   }
-
 }
 
 /// Formatter para CI venezolana (V-12345678) inspirado en Zonix Pharma.
@@ -3133,8 +3252,7 @@ class _CIVenezuelaInputFormatter extends TextInputFormatter {
     final digits = text.substring(2).replaceAll(RegExp(r'[^0-9]'), '');
 
     // Limitar a 8 dígitos
-    final limitedDigits =
-        digits.length > 8 ? digits.substring(0, 8) : digits;
+    final limitedDigits = digits.length > 8 ? digits.substring(0, 8) : digits;
 
     final result = 'V-$limitedDigits';
 

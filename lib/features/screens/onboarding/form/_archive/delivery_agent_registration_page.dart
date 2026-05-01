@@ -450,7 +450,9 @@ class _DeliveryAgentRegistrationPageState
                 children: [
                   Icon(
                     _trabajando ? Icons.check_circle : Icons.cancel,
-                    color: _trabajando ? AppColors.green : AppColors.red,
+                    color: _trabajando
+                        ? AppColors.statusSuccess
+                        : AppColors.statusError,
                     size: isTablet ? 24 : 20,
                   ),
                   SizedBox(width: isTablet ? 16 : 12),
@@ -466,7 +468,7 @@ class _DeliveryAgentRegistrationPageState
                   Switch(
                     value: _trabajando,
                     onChanged: (value) => setState(() => _trabajando = value),
-                    activeThumbColor: AppColors.green,
+                    activeThumbColor: AppColors.statusSuccess,
                   ),
                 ],
               ),
@@ -517,7 +519,8 @@ class _DeliveryAgentRegistrationPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.onboardingDeliveryPurple, width: 2),
+          borderSide: const BorderSide(
+              color: AppColors.onboardingDeliveryPurple, width: 2),
         ),
         filled: true,
         fillColor: AppColors.inputBg,
@@ -544,14 +547,16 @@ class _DeliveryAgentRegistrationPageState
       ),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: const Icon(Icons.arrow_drop_down, color: AppColors.onboardingDeliveryPurple),
+        prefixIcon: const Icon(Icons.arrow_drop_down,
+            color: AppColors.onboardingDeliveryPurple),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.borderLight),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.onboardingDeliveryPurple, width: 2),
+          borderSide: const BorderSide(
+              color: AppColors.onboardingDeliveryPurple, width: 2),
         ),
         filled: true,
         fillColor: AppColors.inputBg,
@@ -594,7 +599,8 @@ class _DeliveryAgentRegistrationPageState
                 width: isTablet ? 24 : 20,
                 child: const CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.onboardingDeliveryPurple),
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      AppColors.onboardingDeliveryPurple),
                 ),
               )
             : Text(
@@ -616,7 +622,7 @@ class _DeliveryAgentRegistrationPageState
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Debes seleccionar una empresa de delivery'),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
         return;
@@ -633,7 +639,7 @@ class _DeliveryAgentRegistrationPageState
             content: Text(widget.isEditing
                 ? 'Repartidor actualizado exitosamente'
                 : 'Repartidor registrado exitosamente'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         Navigator.pop(context);
@@ -643,7 +649,7 @@ class _DeliveryAgentRegistrationPageState
           SnackBar(
             content: Text(
                 'Error al ${widget.isEditing ? 'actualizar' : 'registrar'}: $e'),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       } finally {

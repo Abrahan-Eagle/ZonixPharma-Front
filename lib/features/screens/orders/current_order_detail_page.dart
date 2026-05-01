@@ -77,13 +77,16 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
         s == 'processing' ||
         s == 'paid' ||
         s == 'pending_payment') {
-      final ok = await PusherService.instance.subscribeToOrderChat(widget.orderId);
-      
+      final ok =
+          await PusherService.instance.subscribeToOrderChat(widget.orderId);
+
       if (ok && mounted) {
         _pusherSubscription?.cancel();
-        _pusherSubscription = PusherService.instance.eventStream.listen((event) {
+        _pusherSubscription =
+            PusherService.instance.eventStream.listen((event) {
           final eventName =
-              (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+              (event['canonicalEventName'] ?? event['eventName'])?.toString() ??
+                  '';
           final channelName = event['channelName']?.toString() ?? '';
           final eventData = event['data'] is Map<String, dynamic>
               ? event['data'] as Map<String, dynamic>
@@ -102,10 +105,12 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
                       ? Map<String, dynamic>.from(eventData['location'] as Map)
                       : const <String, dynamic>{};
               final lat = double.tryParse(
-                (eventData['latitude'] ?? location['latitude'])?.toString() ?? '',
+                (eventData['latitude'] ?? location['latitude'])?.toString() ??
+                    '',
               );
               final lng = double.tryParse(
-                (eventData['longitude'] ?? location['longitude'])?.toString() ?? '',
+                (eventData['longitude'] ?? location['longitude'])?.toString() ??
+                    '',
               );
               if (lat != null && lng != null && mounted) {
                 setState(() {
@@ -116,7 +121,8 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
               }
             }
             if ((eventName.contains('OrderStatusChanged') ||
-                 eventName.contains('PaymentValidated')) && mounted) {
+                    eventName.contains('PaymentValidated')) &&
+                mounted) {
               _refreshOrder();
             }
           }
@@ -189,14 +195,13 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
         });
       }
     } catch (e) {
-      debugPrint('Error loading initial tracking in CurrentOrderDetailPage: $e');
+      debugPrint(
+          'Error loading initial tracking in CurrentOrderDetailPage: $e');
     }
   }
 
   bool _isTrackableStatus(String s) =>
-      s == 'shipped' ||
-      s == 'processing' ||
-      s == 'paid';
+      s == 'shipped' || s == 'processing' || s == 'paid';
 
   Future<void> _refreshOrder() async {
     try {
@@ -228,8 +233,12 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
         final points = <LatLng>[];
         for (final p in polyline) {
           if (p is Map) {
-            final plat = (p['lat'] is num) ? (p['lat'] as num).toDouble() : double.tryParse(p['lat']?.toString() ?? '');
-            final plng = (p['lng'] is num) ? (p['lng'] as num).toDouble() : double.tryParse(p['lng']?.toString() ?? '');
+            final plat = (p['lat'] is num)
+                ? (p['lat'] as num).toDouble()
+                : double.tryParse(p['lat']?.toString() ?? '');
+            final plng = (p['lng'] is num)
+                ? (p['lng'] as num).toDouble()
+                : double.tryParse(p['lng']?.toString() ?? '');
             if (plat != null && plng != null) points.add(LatLng(plat, plng));
           }
         }
@@ -287,7 +296,9 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
     if (order.status == 'delivered') {
       return order.isPickup ? '¡Pedido recogido!' : '¡Pedido entregado!';
     }
-    return order.isPickup ? 'Tu pedido se está preparando' : 'Tu pedido está en camino';
+    return order.isPickup
+        ? 'Tu pedido se está preparando'
+        : 'Tu pedido está en camino';
   }
 
   String _etaTime(Order order) {
@@ -353,8 +364,10 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
                             currentStep: PaymentTimeline.stepFromOrder(
                               status: order.status,
                               approvedForPayment: order.approvedForPayment,
-                              hasPaymentProof: order.paymentProof != null && order.paymentProof!.isNotEmpty,
-                              isPaymentValidated: order.paymentValidatedAt != null,
+                              hasPaymentProof: order.paymentProof != null &&
+                                  order.paymentProof!.isNotEmpty,
+                              isPaymentValidated:
+                                  order.paymentValidatedAt != null,
                             ),
                             createdAt: order.createdAt,
                             compact: true,
@@ -427,7 +440,8 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => BuyerDisputesPage(initialOrderId: widget.orderId),
+                  builder: (_) =>
+                      BuyerDisputesPage(initialOrderId: widget.orderId),
                 ),
               );
             },
@@ -486,7 +500,9 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
                     const SizedBox(height: 8),
                     Text(
                       step >= 2
-                          ? (order.isPickup ? 'Listo para recoger' : '¡Ya casi llega!')
+                          ? (order.isPickup
+                              ? 'Listo para recoger'
+                              : '¡Ya casi llega!')
                           : (step == 1 ? 'En preparación' : 'Recibido'),
                       style: GoogleFonts.plusJakartaSans(
                           fontSize: 22,
@@ -589,13 +605,24 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
     );
   }
 
-  Widget _buildProgressBar(int currentStep, Color primary, Color textMuted, Order order) {
+  Widget _buildProgressBar(
+      int currentStep, Color primary, Color textMuted, Order order) {
     final labels = order.isPickup
         ? const ['RECIBIDO', 'PREPARACIÓN', 'LISTO', 'RECOGIDO']
         : const ['RECIBIDO', 'PREPARACIÓN', 'EN CAMINO', 'ENTREGADO'];
     final icons = order.isPickup
-        ? const [Icons.check, Icons.local_pharmacy, Icons.storefront, Icons.shopping_bag]
-        : const [Icons.check, Icons.local_pharmacy, Icons.two_wheeler, Icons.inventory_2];
+        ? const [
+            Icons.check,
+            Icons.local_pharmacy,
+            Icons.storefront,
+            Icons.shopping_bag
+          ]
+        : const [
+            Icons.check,
+            Icons.local_pharmacy,
+            Icons.two_wheeler,
+            Icons.inventory_2
+          ];
     Widget circle(int i) {
       final done = i < currentStep;
       final active = i == currentStep;
@@ -705,7 +732,7 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
       markers.add(MapMarker.create(
         point: LatLng(_customerLat!, _customerLng!),
         iconData: Icons.location_on,
-        color: AppColors.green,
+        color: AppColors.statusSuccess,
         size: 32,
       ));
     }
@@ -855,11 +882,15 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
     );
   }
 
-  Widget _buildPickupInfoCard(Order order, Color surfaceColor,
-      Color borderColor, Color primary, Color textPrimary, Color textSecondary) {
-    final commerceName = order.commerceName.isNotEmpty
-        ? order.commerceName
-        : 'el comercio';
+  Widget _buildPickupInfoCard(
+      Order order,
+      Color surfaceColor,
+      Color borderColor,
+      Color primary,
+      Color textPrimary,
+      Color textSecondary) {
+    final commerceName =
+        order.commerceName.isNotEmpty ? order.commerceName : 'el comercio';
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
       padding: const EdgeInsets.all(16),

@@ -12,7 +12,8 @@ class StorefrontQrScannerPage extends StatefulWidget {
   const StorefrontQrScannerPage({super.key});
 
   @override
-  State<StorefrontQrScannerPage> createState() => _StorefrontQrScannerPageState();
+  State<StorefrontQrScannerPage> createState() =>
+      _StorefrontQrScannerPageState();
 }
 
 class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
@@ -35,7 +36,8 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
     final parsed = StorefrontQrParser.parse(raw);
 
     if (parsed.kind == StorefrontQrKind.invalid) {
-      setState(() => _error = 'QR no reconocido. Usa el código de la farmacia en Zonix Pharma.');
+      setState(() => _error =
+          'QR no reconocido. Usa el código de la farmacia en Zonix Pharma.');
       return;
     }
     if (parsed.kind == StorefrontQrKind.orderPickupOrDelivery) {

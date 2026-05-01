@@ -79,7 +79,7 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
             content: Text(
               product.available ? 'Producto desactivado' : 'Producto activado',
             ),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -87,8 +87,9 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
-            backgroundColor: AppColors.red,
+            content:
+                Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -110,7 +111,7 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
             child: const Text('Eliminar'),
           ),
         ],
@@ -124,7 +125,7 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Producto eliminado'),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -132,8 +133,9 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
-            backgroundColor: AppColors.red,
+            content:
+                Text('Error: ${e.toString().replaceFirst('Exception: ', '')}'),
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -165,7 +167,7 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
           IconButton(
             icon: Icon(
               _filterAvailableOnly ? Icons.filter_list : Icons.filter_list_off,
-              color: _filterAvailableOnly ? AppColors.orange : null,
+              color: _filterAvailableOnly ? AppColors.brandCtaAccent : null,
             ),
             onPressed: () {
               setState(() {
@@ -194,8 +196,9 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'commerce_products_add',
-        onPressed: () => Navigator.pushNamed(context, '/commerce/products/create'),
-        backgroundColor: AppColors.orange,
+        onPressed: () =>
+            Navigator.pushNamed(context, '/commerce/products/create'),
+        backgroundColor: AppColors.brandCtaAccent,
         child: const Icon(Icons.add),
       ),
     );
@@ -212,7 +215,8 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+              const Icon(Icons.error_outline,
+                  size: 64, color: AppColors.statusError),
               const SizedBox(height: 16),
               Text(_error!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
@@ -288,7 +292,8 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
                 product.name,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  decoration: product.available ? null : TextDecoration.lineThrough,
+                  decoration:
+                      product.available ? null : TextDecoration.lineThrough,
                 ),
               ),
               subtitle: Text(
@@ -300,7 +305,7 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
                   Switch(
                     value: product.available,
                     onChanged: (_) => _toggleAvailability(product),
-                    activeThumbColor: AppColors.green,
+                    activeThumbColor: AppColors.statusSuccess,
                   ),
                   PopupMenuButton<String>(
                     onSelected: (v) {
@@ -329,9 +334,10 @@ class _CommerceProductsPageState extends State<CommerceProductsPage> {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete, color: AppColors.red),
+                            Icon(Icons.delete, color: AppColors.statusError),
                             SizedBox(width: 8),
-                            Text('Eliminar', style: TextStyle(color: AppColors.red)),
+                            Text('Eliminar',
+                                style: TextStyle(color: AppColors.statusError)),
                           ],
                         ),
                       ),

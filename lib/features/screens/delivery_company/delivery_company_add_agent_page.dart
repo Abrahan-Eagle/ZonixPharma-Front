@@ -9,10 +9,12 @@ class DeliveryCompanyAddAgentPage extends StatefulWidget {
   const DeliveryCompanyAddAgentPage({super.key});
 
   @override
-  State<DeliveryCompanyAddAgentPage> createState() => _DeliveryCompanyAddAgentPageState();
+  State<DeliveryCompanyAddAgentPage> createState() =>
+      _DeliveryCompanyAddAgentPageState();
 }
 
-class _DeliveryCompanyAddAgentPageState extends State<DeliveryCompanyAddAgentPage> {
+class _DeliveryCompanyAddAgentPageState
+    extends State<DeliveryCompanyAddAgentPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstName = TextEditingController();
   final _lastName = TextEditingController();
@@ -60,7 +62,9 @@ class _DeliveryCompanyAddAgentPageState extends State<DeliveryCompanyAddAgentPag
     setState(() => _loading = false);
     if (result != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Agente creado. Puede iniciar sesión con su email y contraseña.')),
+        const SnackBar(
+            content: Text(
+                'Agente creado. Puede iniciar sesión con su email y contraseña.')),
       );
       Navigator.of(context).pop(true);
     } else {
@@ -89,41 +93,50 @@ class _DeliveryCompanyAddAgentPageState extends State<DeliveryCompanyAddAgentPag
                       color: AppColors.red.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: Text(_error!, style: const TextStyle(color: AppColors.red)),
+                    child: Text(_error!,
+                        style: const TextStyle(color: AppColors.statusError)),
                   ),
                 ],
                 TextFormField(
                   controller: _firstName,
                   decoration: const InputDecoration(labelText: 'Nombre'),
                   textCapitalization: TextCapitalization.words,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _lastName,
                   decoration: const InputDecoration(labelText: 'Apellido'),
                   textCapitalization: TextCapitalization.words,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _email,
-                  decoration: const InputDecoration(labelText: 'Correo (login)'),
+                  decoration:
+                      const InputDecoration(labelText: 'Correo (login)'),
                   keyboardType: TextInputType.emailAddress,
                   autocorrect: false,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _password,
-                  decoration: const InputDecoration(labelText: 'Contraseña (mín. 8)'),
+                  decoration:
+                      const InputDecoration(labelText: 'Contraseña (mín. 8)'),
                   obscureText: true,
-                  validator: (v) => (v == null || v.length < 8) ? 'Mínimo 8 caracteres' : null,
+                  validator: (v) => (v == null || v.length < 8)
+                      ? 'Mínimo 8 caracteres'
+                      : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _passwordConfirmation,
-                  decoration: const InputDecoration(labelText: 'Confirmar contraseña'),
+                  decoration:
+                      const InputDecoration(labelText: 'Confirmar contraseña'),
                   obscureText: true,
                   validator: (v) => v != _password.text ? 'No coincide' : null,
                 ),
@@ -132,20 +145,25 @@ class _DeliveryCompanyAddAgentPageState extends State<DeliveryCompanyAddAgentPag
                   controller: _phone,
                   decoration: const InputDecoration(labelText: 'Teléfono'),
                   keyboardType: TextInputType.phone,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _vehicleType,
-                  decoration: const InputDecoration(labelText: 'Tipo de vehículo (ej. moto)'),
+                  decoration: const InputDecoration(
+                      labelText: 'Tipo de vehículo (ej. moto)'),
                   textCapitalization: TextCapitalization.words,
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   controller: _licenseNumber,
-                  decoration: const InputDecoration(labelText: 'Número de licencia'),
-                  validator: (v) => (v == null || v.trim().isEmpty) ? 'Requerido' : null,
+                  decoration:
+                      const InputDecoration(labelText: 'Número de licencia'),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Requerido' : null,
                 ),
                 const SizedBox(height: 24),
                 FilledButton(

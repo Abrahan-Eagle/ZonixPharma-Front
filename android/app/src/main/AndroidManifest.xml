@@ -72,16 +72,10 @@
             </intent-filter>
         </activity>
 
-        <!-- Restringir en Google Cloud (no commitear claves sin restricción de app) -->
-        <meta-data
-            android:name="com.google.android.gms.auth.api.credentials.ClientId"
-            android:value="608143949661-g749kjpeasc4ktj8frofrc9k6kge5g78.apps.googleusercontent.com"/>
+        <!-- Sin ClientId/API_KEY legacy: otro proyecto Google (608...) chocaba con Firebase (939...). -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version"/>
-        <meta-data
-            android:name="com.google.android.gms.auth.api.credentials.API_KEY"
-            android:value="AIzaSyCyVrcmdTiihm5kv0wuAG0xQvPtqL6Ih6s"/>
 
         <meta-data
             android:name="flutterEmbedding"

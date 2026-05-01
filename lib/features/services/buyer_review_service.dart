@@ -49,7 +49,7 @@ Map<String, String> extractApiError(String responseBody, String fallbackMessage)
 class BuyerReviewService {
   final Logger _logger = Logger();
 
-  // POST /api/buyer/reviews/restaurant - Calificar restaurante
+  // POST /api/buyer/reviews/restaurant (alias) — calificar farmacia
   Future<Map<String, dynamic>> rateRestaurant({
     required int orderId,
     required double rating,
@@ -78,7 +78,7 @@ class BuyerReviewService {
         if (data['success'] == true && data['data'] != null) {
           return data['data'];
         } else {
-          throw Exception(data['message'] ?? 'Error al calificar restaurante');
+          throw Exception(data['message'] ?? 'Error al calificar la farmacia');
         }
       } else {
         final apiError = extractApiError(
@@ -89,7 +89,7 @@ class BuyerReviewService {
       }
     } catch (e) {
       _logger.e('Error en rateRestaurant: $e');
-      throw Exception('Error al calificar restaurante: $e');
+      throw Exception('Error al calificar la farmacia: $e');
     }
   }
 
@@ -137,7 +137,7 @@ class BuyerReviewService {
     }
   }
 
-  // GET /api/buyer/reviews/restaurant/{commerceId} - Obtener calificaciones de restaurante
+  // GET /api/buyer/reviews/restaurant/{commerceId} — calificaciones de la farmacia
   Future<List<Map<String, dynamic>>> getRestaurantReviews(
     int commerceId, {
     int? page,
@@ -167,7 +167,7 @@ class BuyerReviewService {
         }
         return [];
       } else {
-        throw Exception('Error al obtener calificaciones del restaurante: ${response.statusCode}');
+        throw Exception('Error al obtener calificaciones de la farmacia: ${response.statusCode}');
       }
     } catch (e) {
       _logger.e('Error en getRestaurantReviews: $e');

@@ -112,8 +112,7 @@ class _ValidationDetailPageState extends State<ValidationDetailPage> {
                             size: 64, color: AppColors.brandTealDeep))
                     : ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child:
-                            Image.network(p.imageUrl, fit: BoxFit.cover),
+                        child: Image.network(p.imageUrl, fit: BoxFit.cover),
                       ),
               ),
             ),

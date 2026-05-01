@@ -1,4 +1,4 @@
-package com.zonix.pharma
+package com.zonix.eats
 
 import android.content.Intent
 import android.os.Bundle

@@ -50,7 +50,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                       title: 'Soy Cliente',
                       subtitle: 'Quiero comprar mis medicamentos',
                       icon: Icons.shopping_bag_outlined,
-                      iconColor: AppColors.blue,
+                      iconColor: AppColors.brandTeal,
                     ),
                     const SizedBox(height: 16),
                     _buildRoleCard(
@@ -140,7 +140,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                  colors: [AppColors.onboardingPurpleAccent.withValues(alpha: 0.1), AppColors.transparent],
+                  colors: [
+                    AppColors.onboardingPurpleAccent.withValues(alpha: 0.1),
+                    AppColors.transparent
+                  ],
                 ),
               ),
             ),
@@ -188,8 +191,8 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.white.withValues(alpha: 0.05)),
           ),
-          child:
-              const Icon(Icons.rocket_launch, color: AppColors.blue, size: 32),
+          child: const Icon(Icons.rocket_launch,
+              color: AppColors.brandTeal, size: 32),
         ),
         const SizedBox(height: 16),
         Text(
@@ -237,7 +240,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
           color: isSelected ? AppColors.surfaceHighlight : AppColors.grayDark,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.blue : AppColors.transparent,
+            color: isSelected ? AppColors.brandTeal : AppColors.transparent,
             width: 2,
           ),
           boxShadow: isSelected
@@ -299,10 +302,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
               height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isSelected ? AppColors.blue : AppColors.transparent,
+                color: isSelected ? AppColors.brandTeal : AppColors.transparent,
                 border: Border.all(
                   color: isSelected
-                      ? AppColors.blue
+                      ? AppColors.brandTeal
                       : AppColors.white.withValues(alpha: 0.3),
                   width: 2,
                 ),
@@ -348,8 +351,9 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
               }
             : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              enabled ? AppColors.blue : AppColors.blue.withValues(alpha: 0.4),
+          backgroundColor: enabled
+              ? AppColors.brandTeal
+              : AppColors.blue.withValues(alpha: 0.4),
           foregroundColor: AppColors.white,
           disabledBackgroundColor: AppColors.blue.withValues(alpha: 0.3),
           disabledForegroundColor: AppColors.white70,
@@ -375,5 +379,4 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
       ),
     );
   }
-
 }

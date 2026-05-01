@@ -30,7 +30,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
       _error = null;
     });
     try {
-      final analytics = Provider.of<CommerceAnalyticsService>(context, listen: false);
+      final analytics =
+          Provider.of<CommerceAnalyticsService>(context, listen: false);
       final overview = await analytics.getOverview();
       final products = await analytics.getProducts();
 
@@ -67,7 +68,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+                const Icon(Icons.error_outline,
+                    size: 64, color: AppColors.statusError),
                 const SizedBox(height: 16),
                 Text(_error!, textAlign: TextAlign.center),
                 const SizedBox(height: 16),
@@ -109,8 +111,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
               Text(
                 'Resumen',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -118,9 +120,10 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                   Expanded(
                     child: _StatCard(
                       label: 'Ventas totales',
-                      value: '\$${safeDouble(_overview['total_sales']).toStringAsFixed(2)}',
+                      value:
+                          '\$${safeDouble(_overview['total_sales']).toStringAsFixed(2)}',
                       icon: Icons.attach_money,
-                      color: AppColors.green,
+                      color: AppColors.statusSuccess,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -129,7 +132,7 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                       label: 'Órdenes',
                       value: '${_overview['total_orders'] ?? 0}',
                       icon: Icons.receipt,
-                      color: AppColors.blue,
+                      color: AppColors.brandTeal,
                     ),
                   ),
                 ],
@@ -140,20 +143,22 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                   Expanded(
                     child: _StatCard(
                       label: 'Ticket promedio',
-                      value: '\$${safeDouble(_overview['average_order_value']).toStringAsFixed(2)}',
+                      value:
+                          '\$${safeDouble(_overview['average_order_value']).toStringAsFixed(2)}',
                       icon: Icons.shopping_cart,
-                      color: AppColors.orange,
+                      color: AppColors.brandCtaAccent,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: _StatCard(
                       label: 'Crecimiento %',
-                      value: '${safeDouble(_overview['growth_rate']).toStringAsFixed(1)}%',
+                      value:
+                          '${safeDouble(_overview['growth_rate']).toStringAsFixed(1)}%',
                       icon: Icons.trending_up,
                       color: safeDouble(_overview['growth_rate']) >= 0
-                          ? AppColors.green
-                          : AppColors.red,
+                          ? AppColors.statusSuccess
+                          : AppColors.statusError,
                     ),
                   ),
                 ],
@@ -162,8 +167,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
               Text(
                 'Clientes',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
               const SizedBox(height: 8),
               Row(
@@ -173,7 +178,7 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                       label: 'Total clientes',
                       value: '${_overview['customer_count'] ?? 0}',
                       icon: Icons.people,
-                      color: AppColors.purple,
+                      color: AppColors.brandTealDeep,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -182,7 +187,7 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                       label: 'Recurrentes',
                       value: '${_overview['repeat_customers'] ?? 0}',
                       icon: Icons.repeat,
-                      color: AppColors.teal,
+                      color: AppColors.brandTeal,
                     ),
                   ),
                 ],
@@ -215,8 +220,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
         Text(
           'Órdenes por estado',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         Card(
@@ -232,7 +237,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(_statusLabel(status)),
-                      Text('$count', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      Text('$count',
+                          style: const TextStyle(fontWeight: FontWeight.bold)),
                     ],
                   ),
                 );
@@ -265,8 +271,8 @@ class _CommerceReportsPageState extends State<CommerceReportsPage> {
         Text(
           'Top 5 productos',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const SizedBox(height: 8),
         Card(
@@ -319,9 +325,9 @@ class _StatCard extends StatelessWidget {
             Text(
               value,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: color,
-              ),
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
             ),
             Text(
               label,

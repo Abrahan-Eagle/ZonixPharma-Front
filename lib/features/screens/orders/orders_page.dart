@@ -49,7 +49,10 @@ class _OrdersPageState extends State<OrdersPage> {
   Future<void> _initOrders() async {
     final cached = await OrderService.getCachedOrders();
     if (cached != null && cached.isNotEmpty && mounted) {
-      setState(() { _orders = cached; _isLoading = false; });
+      setState(() {
+        _orders = cached;
+        _isLoading = false;
+      });
     }
     _refreshOrders();
   }
@@ -57,30 +60,48 @@ class _OrdersPageState extends State<OrdersPage> {
   Future<void> _refreshOrders() async {
     if (!mounted) return;
     if (_orders.isEmpty) {
-      setState(() { _isLoading = true; _error = null; });
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
     }
     try {
       final orders = await _orderService.getUserOrders();
       if (!mounted) return;
-      setState(() { _orders = orders; _isLoading = false; });
+      setState(() {
+        _orders = orders;
+        _isLoading = false;
+      });
     } catch (e) {
       if (!mounted) return;
       if (_orders.isEmpty) {
-        setState(() { _error = e.toString(); _isLoading = false; });
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
       }
     }
   }
 
   Future<void> _loadOrders() async {
     if (!mounted) return;
-    setState(() { _isLoading = true; _error = null; });
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
     try {
       final orders = await _orderService.getUserOrders();
       if (!mounted) return;
-      setState(() { _orders = orders; _isLoading = false; });
+      setState(() {
+        _orders = orders;
+        _isLoading = false;
+      });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _isLoading = false; });
+      setState(() {
+        _error = e.toString();
+        _isLoading = false;
+      });
     }
   }
 
@@ -93,8 +114,11 @@ class _OrdersPageState extends State<OrdersPage> {
       _pusherSubscription?.cancel();
       final ok = await PusherService.instance.subscribeToUserChannel(userId);
       if (ok && mounted) {
-        _pusherSubscription = PusherService.instance.eventStream.listen((event) {
-          final eventName = (event['canonicalEventName'] ?? event['eventName'])?.toString() ?? '';
+        _pusherSubscription =
+            PusherService.instance.eventStream.listen((event) {
+          final eventName =
+              (event['canonicalEventName'] ?? event['eventName'])?.toString() ??
+                  '';
           final channelName = event['channelName']?.toString() ?? '';
           final eventData = event['data'] is Map<String, dynamic>
               ? event['data'] as Map<String, dynamic>
@@ -150,7 +174,8 @@ class _OrdersPageState extends State<OrdersPage> {
       case 'order_created':
       case 'payment_validated':
         _loadOrders();
-        _maybeShowOrderNotification(type, message['data'] as Map<String, dynamic>?);
+        _maybeShowOrderNotification(
+            type, message['data'] as Map<String, dynamic>?);
         break;
       case 'delivery_location_updated':
         _updateDeliveryLocation(message);
@@ -506,9 +531,10 @@ class _OrdersPageState extends State<OrdersPage> {
                 icon: const Icon(Icons.storefront, size: 20),
                 label: const Text('Explorar farmacias'),
                 style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.accentButton(context)
-                      : _templatePrimary,
+                  backgroundColor:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.accentButton(context)
+                          : _templatePrimary,
                 ),
               ),
             ),
@@ -631,8 +657,8 @@ class _OrdersPageState extends State<OrdersPage> {
               itemCount: history.length,
               itemBuilder: (context, i) => Padding(
                 padding: const EdgeInsets.only(bottom: 12),
-                child: _buildHistoryOrderCardCompact(
-                    context, history[i], theme, surfaceColor, borderColor, primary),
+                child: _buildHistoryOrderCardCompact(context, history[i], theme,
+                    surfaceColor, borderColor, primary),
               ),
             ),
           ),
@@ -879,100 +905,101 @@ class _OrdersPageState extends State<OrdersPage> {
             ],
           ),
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: imageUrl != null
-                    ? Image.network(
-                        imageUrl,
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholderImage(40, 40),
-                      )
-                    : _placeholderImage(40, 40),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: theme.colorScheme.onSurface),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '$dateStr • $statusText',
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.55)),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                '\$${order.total.toStringAsFixed(2)}',
-                style: GoogleFonts.plusJakartaSans(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primaryText(context)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: Material(
-                  color: isDark ? AppColors.grayDark : AppColors.grayLight,
-                  borderRadius: BorderRadius.circular(8),
-                  child: InkWell(
-                    onTap: () => _pedirDeNuevo(context, order),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Center(
-                        child: Text(
-                          'Pedir de nuevo',
+                    child: imageUrl != null
+                        ? Image.network(
+                            imageUrl,
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                _placeholderImage(40, 40),
+                          )
+                        : _placeholderImage(40, 40),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
                           style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: primary),
+                              color: theme.colorScheme.onSurface),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '$dateStr • $statusText',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: theme.colorScheme.onSurface
+                                  .withValues(alpha: 0.55)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    '\$${order.total.toStringAsFixed(2)}',
+                    style: GoogleFonts.plusJakartaSans(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryText(context)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Material(
+                      color: isDark ? AppColors.grayDark : AppColors.grayLight,
+                      borderRadius: BorderRadius.circular(8),
+                      child: InkWell(
+                        onTap: () => _pedirDeNuevo(context, order),
+                        borderRadius: BorderRadius.circular(8),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Center(
+                            child: Text(
+                              'Pedir de nuevo',
+                              style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: primary),
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => _openOrderDetail(context, order),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor:
-                        theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    side: BorderSide(color: borderColor),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => _openOrderDetail(context, order),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor:
+                            theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                        side: BorderSide(color: borderColor),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: Text('Ver Recibo',
+                          style: GoogleFonts.plusJakartaSans(
+                              fontSize: 12, fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                  child: Text('Ver Recibo',
-                      style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12, fontWeight: FontWeight.bold)),
-                ),
+                ],
               ),
             ],
-          ),
-        ],
           ),
         ),
       ),
@@ -1004,8 +1031,7 @@ class _OrdersPageState extends State<OrdersPage> {
       height: h,
       color: dark ? AppColors.grayDark : AppColors.textMutedGray,
       child: Icon(Icons.store,
-          color: dark ? AppColors.gray : AppColors.gray,
-          size: w * 0.5),
+          color: dark ? AppColors.gray : AppColors.gray, size: w * 0.5),
     );
   }
 

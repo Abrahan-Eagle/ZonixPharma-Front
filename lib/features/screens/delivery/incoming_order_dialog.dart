@@ -138,13 +138,16 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                 child: const Icon(
                   Icons.delivery_dining,
                   size: 80,
-                  color: AppColors.green,
+                  color: AppColors.statusSuccess,
                 ),
               ),
               const SizedBox(height: 20),
               Text(
                 'Nuevo mandado',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
@@ -158,14 +161,17 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                   child: Column(
                     children: [
                       if (widget.commerceName != null)
-                        _row(Icons.storefront, 'Comercio', widget.commerceName!),
+                        _row(
+                            Icons.storefront, 'Comercio', widget.commerceName!),
                       if (widget.deliveryAddress != null) ...[
                         const SizedBox(height: 8),
-                        _row(Icons.location_on, 'Entregar en', widget.deliveryAddress!),
+                        _row(Icons.location_on, 'Entregar en',
+                            widget.deliveryAddress!),
                       ],
                       if (widget.deliveryFee != null) ...[
                         const SizedBox(height: 8),
-                        _row(Icons.attach_money, 'Tarifa', '\$${widget.deliveryFee!.toStringAsFixed(2)}'),
+                        _row(Icons.attach_money, 'Tarifa',
+                            '\$${widget.deliveryFee!.toStringAsFixed(2)}'),
                       ],
                     ],
                   ),
@@ -181,16 +187,23 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                     CircularProgressIndicator(
                       value: progress,
                       strokeWidth: 6,
-                      backgroundColor: isDark ? AppColors.white12 : AppColors.black12,
+                      backgroundColor:
+                          isDark ? AppColors.white12 : AppColors.black12,
                       valueColor: AlwaysStoppedAnimation(
-                        _remaining <= 10 ? AppColors.red : AppColors.green,
+                        _remaining <= 10
+                            ? AppColors.statusError
+                            : AppColors.statusSuccess,
                       ),
                     ),
                     Text(
                       '${_remaining}s',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: _remaining <= 10 ? AppColors.red : null,
+                            color:
+                                _remaining <= 10 ? AppColors.statusError : null,
                           ),
                     ),
                   ],
@@ -205,7 +218,7 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                       icon: const Icon(Icons.close),
                       label: const Text('Rechazar'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppColors.red,
+                        foregroundColor: AppColors.statusError,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                     ),
@@ -218,12 +231,13 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                           ? const SizedBox(
                               width: 18,
                               height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white),
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2, color: AppColors.white),
                             )
                           : const Icon(Icons.check),
                       label: Text(_processing ? 'Procesando...' : 'Aceptar'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.green,
+                        backgroundColor: AppColors.statusSuccess,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                     ),
@@ -249,7 +263,9 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
             text: TextSpan(
               style: DefaultTextStyle.of(context).style,
               children: [
-                TextSpan(text: '$label: ', style: const TextStyle(fontWeight: FontWeight.w600)),
+                TextSpan(
+                    text: '$label: ',
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
                 TextSpan(text: value),
               ],
             ),

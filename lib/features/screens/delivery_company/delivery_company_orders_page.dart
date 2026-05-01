@@ -18,10 +18,12 @@ class DeliveryCompanyOrdersPage extends StatefulWidget {
   final int? highlightOrderId;
 
   @override
-  State<DeliveryCompanyOrdersPage> createState() => _DeliveryCompanyOrdersPageState();
+  State<DeliveryCompanyOrdersPage> createState() =>
+      _DeliveryCompanyOrdersPageState();
 }
 
-class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> with SingleTickerProviderStateMixin {
+class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   StreamSubscription<Map<String, dynamic>>? _pusherSub;
   String? _companyChannel;
@@ -45,7 +47,8 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
     if (widget.highlightOrderId != null) {
       _tabController.animateTo(2);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Notificación: orden #${widget.highlightOrderId}')),
+        SnackBar(
+            content: Text('Notificación: orden #${widget.highlightOrderId}')),
       );
     }
   }
@@ -79,8 +82,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
 
     _pusherSub?.cancel();
     _pusherSub = PusherService.instance.eventStream.listen((event) {
-      final rawEventName =
-          event['canonicalEventName']?.toString() ??
+      final rawEventName = event['canonicalEventName']?.toString() ??
           event['eventName']?.toString() ??
           '';
       final eventName = RealtimeEventUtils.normalizeEventName(rawEventName);
@@ -90,9 +92,10 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
 
       if (isRelevant &&
           (eventName.contains('OrderStatusChanged') ||
-           eventName.contains('NotificationCreated') ||
-           eventName.contains('PaymentValidated') ||
-           eventName.contains('OrderPendingAssignment')) && mounted) {
+              eventName.contains('NotificationCreated') ||
+              eventName.contains('PaymentValidated') ||
+              eventName.contains('OrderPendingAssignment')) &&
+          mounted) {
         _debounceTimer?.cancel();
         _debounceTimer = Timer(const Duration(milliseconds: 500), () {
           if (mounted) _loadAll();
@@ -128,7 +131,9 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
       ),
       body: Consumer<DeliveryCompanyService>(
         builder: (context, service, _) {
-          if (service.ordersLoading && service.orders.isEmpty && service.pendingOrders.isEmpty) {
+          if (service.ordersLoading &&
+              service.orders.isEmpty &&
+              service.pendingOrders.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
@@ -141,9 +146,12 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.cloud_off, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  Icon(Icons.cloud_off,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
                   const SizedBox(height: 16),
-                  Text(service.ordersError!, style: const TextStyle(fontSize: 16)),
+                  Text(service.ordersError!,
+                      style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 16),
                   ElevatedButton.icon(
                     onPressed: _loadAll,
@@ -180,7 +188,8 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
   }
 
   Widget _buildPendingPaymentTab(DeliveryCompanyService service) {
-    if (service.pendingPaymentOrdersLoading && service.pendingPaymentOrders.isEmpty) {
+    if (service.pendingPaymentOrdersLoading &&
+        service.pendingPaymentOrders.isEmpty) {
       return Center(
         child: CircularProgressIndicator(
           color: Theme.of(context).colorScheme.primary,
@@ -192,9 +201,13 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.payments_outlined, size: 64, color: AppColors.secondaryText(context)),
+            Icon(Icons.payments_outlined,
+                size: 64, color: AppColors.secondaryText(context)),
             const SizedBox(height: 16),
-            Text('No hay pagos de envío pendientes de validar', style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context)), textAlign: TextAlign.center),
+            Text('No hay pagos de envío pendientes de validar',
+                style: TextStyle(
+                    fontSize: 16, color: AppColors.secondaryText(context)),
+                textAlign: TextAlign.center),
           ],
         ),
       );
@@ -215,13 +228,15 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
     );
   }
 
-  Widget _buildPaymentOrderCard(Map<String, dynamic> order, DeliveryCompanyService service) {
+  Widget _buildPaymentOrderCard(
+      Map<String, dynamic> order, DeliveryCompanyService service) {
     final cs = Theme.of(context).colorScheme;
     final orderNumber = order['order_number'] ?? '#${order['id']}';
     final deliveryFee = _num(order['delivery_fee']);
     final orderId = safeInt(order['id']);
     final payments = order['order_payments'] as List<dynamic>? ?? [];
-    final deliveryPayment = payments.firstWhere((p) => p['type'] == 'delivery', orElse: () => null);
+    final deliveryPayment =
+        payments.firstWhere((p) => p['type'] == 'delivery', orElse: () => null);
     final reference = deliveryPayment?['reference_number'] ?? '';
     final method = deliveryPayment?['payment_method_label'] ?? '';
     final proofPath = deliveryPayment?['payment_proof']?.toString();
@@ -240,18 +255,29 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         children: [
           Row(
             children: [
-              Expanded(child: Text('Orden $orderNumber', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15))),
+              Expanded(
+                  child: Text('Orden $orderNumber',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15))),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(color: AppColors.blue.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-                child: const Text('Pago pendiente', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.blue)),
+                decoration: BoxDecoration(
+                    color: AppColors.blue.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(8)),
+                child: const Text('Pago pendiente',
+                    style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.brandTeal)),
               ),
             ],
           ),
           const SizedBox(height: 8),
           if (method.isNotEmpty) _infoRow(Icons.payment, 'Método: $method'),
-          if (reference.isNotEmpty) _infoRow(Icons.numbers, 'Referencia: $reference'),
-          _infoRow(Icons.attach_money, 'Envío: \$${deliveryFee.toStringAsFixed(2)}'),
+          if (reference.isNotEmpty)
+            _infoRow(Icons.numbers, 'Referencia: $reference'),
+          _infoRow(
+              Icons.attach_money, 'Envío: \$${deliveryFee.toStringAsFixed(2)}'),
           if (proofUrl.isNotEmpty) ...[
             const SizedBox(height: 10),
             Text(
@@ -271,26 +297,35 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () async {
-                    final ok = await service.validateDeliveryPayment(orderId, true);
+                    final ok =
+                        await service.validateDeliveryPayment(orderId, true);
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ok ? 'Pago validado' : 'Error al validar')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text(ok ? 'Pago validado' : 'Error al validar')));
                   },
                   icon: const Icon(Icons.check, size: 18),
                   label: const Text('Validar'),
-                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.green),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.statusSuccess),
                 ),
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    final ok = await service.validateDeliveryPayment(orderId, false, rejectionReason: 'Pago de envío rechazado');
+                    final ok = await service.validateDeliveryPayment(
+                        orderId, false,
+                        rejectionReason: 'Pago de envío rechazado');
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(ok ? 'Pago rechazado' : 'Error al rechazar')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content:
+                            Text(ok ? 'Pago rechazado' : 'Error al rechazar')));
                   },
                   icon: const Icon(Icons.close, size: 18),
                   label: const Text('Rechazar'),
-                  style: OutlinedButton.styleFrom(foregroundColor: AppColors.red),
+                  style: OutlinedButton.styleFrom(
+                      foregroundColor: AppColors.statusError),
                 ),
               ),
             ],
@@ -318,11 +353,13 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.assignment_late, size: 64, color: AppColors.secondaryText(context)),
+            Icon(Icons.assignment_late,
+                size: 64, color: AppColors.secondaryText(context)),
             const SizedBox(height: 16),
             Text(
               'No hay órdenes pendientes de asignación',
-              style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context)),
+              style: TextStyle(
+                  fontSize: 16, color: AppColors.secondaryText(context)),
               textAlign: TextAlign.center,
             ),
           ],
@@ -347,18 +384,21 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
     );
   }
 
-  Widget _buildPendingOrderCard(Map<String, dynamic> order, DeliveryCompanyService service) {
+  Widget _buildPendingOrderCard(
+      Map<String, dynamic> order, DeliveryCompanyService service) {
     final cs = Theme.of(context).colorScheme;
     final orderNumber = order['order_number'] ?? '#${order['id']}';
     final total = _num(order['total']);
     final deliveryFee = _num(order['delivery_fee']);
     final createdAt = order['created_at'] as String?;
     final commerce = order['commerce'] as Map<String, dynamic>? ?? {};
-    final commerceName = commerce['business_name'] ?? commerce['name'] ?? 'Comercio';
+    final commerceName =
+        commerce['business_name'] ?? commerce['name'] ?? 'Comercio';
     String dateStr = '';
     if (createdAt != null) {
       try {
-        dateStr = DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(createdAt));
+        dateStr =
+            DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(createdAt));
       } catch (_) {
         dateStr = createdAt;
       }
@@ -374,7 +414,8 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         border: Border.all(color: AppColors.orange.withValues(alpha: 0.6)),
       ),
       child: InkWell(
-        onTap: () => _openAssignOrderPage(context, orderId, orderNumber, service),
+        onTap: () =>
+            _openAssignOrderPage(context, orderId, orderNumber, service),
         borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,15 +423,22 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
             Row(
               children: [
                 Expanded(
-                  child: Text('Orden $orderNumber', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  child: Text('Orden $orderNumber',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 15)),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.orange.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text('Sin asignar', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.orange)),
+                  child: const Text('Sin asignar',
+                      style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.brandCtaAccent)),
                 ),
               ],
             ),
@@ -405,25 +453,35 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
-                  child: Text('Total: \$${total.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                  child: Text('Total: \$${total.toStringAsFixed(2)}',
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
                 ),
-                Text('Delivery: \$${deliveryFee.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.green)),
+                Text('Delivery: \$${deliveryFee.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.statusSuccess)),
               ],
             ),
             const SizedBox(height: 8),
-            const Text('Toca para asignar repartidor', style: TextStyle(fontSize: 12, color: AppColors.orange)),
+            const Text('Toca para asignar repartidor',
+                style:
+                    TextStyle(fontSize: 12, color: AppColors.brandCtaAccent)),
           ],
         ),
       ),
     );
   }
 
-  void _openAssignOrderPage(BuildContext context, int orderId, String orderNumber, DeliveryCompanyService service) {
-    Navigator.of(context).push(
+  void _openAssignOrderPage(BuildContext context, int orderId,
+      String orderNumber, DeliveryCompanyService service) {
+    Navigator.of(context)
+        .push(
       MaterialPageRoute<void>(
-        builder: (ctx) => _AssignOrderPage(orderId: orderId, orderNumber: orderNumber, service: service),
+        builder: (ctx) => _AssignOrderPage(
+            orderId: orderId, orderNumber: orderNumber, service: service),
       ),
-    ).then((_) {
+    )
+        .then((_) {
       if (context.mounted) {
         service.loadPendingOrders();
         service.loadOrders();
@@ -437,9 +495,12 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.receipt_long, size: 64, color: AppColors.secondaryText(context)),
+            Icon(Icons.receipt_long,
+                size: 64, color: AppColors.secondaryText(context)),
             const SizedBox(height: 16),
-            Text(emptyMsg, style: TextStyle(fontSize: 16, color: AppColors.secondaryText(context))),
+            Text(emptyMsg,
+                style: TextStyle(
+                    fontSize: 16, color: AppColors.secondaryText(context))),
           ],
         ),
       );
@@ -452,7 +513,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         child: ListView.builder(
           padding: const EdgeInsets.all(16),
           itemCount: orders.length,
-            itemBuilder: (context, i) => _buildOrderCard(orders[i]),
+          itemBuilder: (context, i) => _buildOrderCard(orders[i]),
         ),
       ),
     );
@@ -467,19 +528,22 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
     final createdAt = order['created_at'] as String?;
 
     final commerce = order['commerce'] as Map<String, dynamic>? ?? {};
-    final commerceName = commerce['business_name'] ?? commerce['name'] ?? 'Comercio';
+    final commerceName =
+        commerce['business_name'] ?? commerce['name'] ?? 'Comercio';
 
     final orderDelivery = order['order_delivery'] as Map<String, dynamic>?;
     final agentData = orderDelivery?['agent'] as Map<String, dynamic>?;
     final agentProfile = agentData?['profile'] as Map<String, dynamic>?;
     final agentName = agentProfile != null
-        ? '${agentProfile['firstName'] ?? ''} ${agentProfile['lastName'] ?? ''}'.trim()
+        ? '${agentProfile['firstName'] ?? ''} ${agentProfile['lastName'] ?? ''}'
+            .trim()
         : 'Sin asignar';
 
     String dateStr = '';
     if (createdAt != null) {
       try {
-        dateStr = DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(createdAt));
+        dateStr =
+            DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(createdAt));
       } catch (_) {
         dateStr = createdAt;
       }
@@ -499,7 +563,9 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
           Row(
             children: [
               Expanded(
-                child: Text('Orden $orderNumber', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                child: Text('Orden $orderNumber',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15)),
               ),
               _statusBadge(status),
             ],
@@ -516,9 +582,12 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total: \$${total.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w600)),
+              Text('Total: \$${total.toStringAsFixed(2)}',
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               Text('Delivery: \$${deliveryFee.toStringAsFixed(2)}',
-                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.green)),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.statusSuccess)),
             ],
           ),
         ],
@@ -531,7 +600,10 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
       children: [
         Icon(icon, size: 15, color: AppColors.secondaryText(context)),
         const SizedBox(width: 6),
-        Expanded(child: Text(text, style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)))),
+        Expanded(
+            child: Text(text,
+                style: TextStyle(
+                    fontSize: 13, color: AppColors.secondaryText(context)))),
       ],
     );
   }
@@ -571,8 +643,12 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-      child: Text(label, style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: color)),
+      decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(8)),
+      child: Text(label,
+          style: TextStyle(
+              fontSize: 11, fontWeight: FontWeight.w600, color: color)),
     );
   }
 
@@ -583,11 +659,15 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 64, color: AppColors.red),
+            const Icon(Icons.error_outline,
+                size: 64, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(msg, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            ElevatedButton.icon(onPressed: retry, icon: const Icon(Icons.refresh), label: const Text('Reintentar')),
+            ElevatedButton.icon(
+                onPressed: retry,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Reintentar')),
           ],
         ),
       ),
@@ -613,7 +693,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
     if (isPdf) {
       return const Row(
         children: [
-          Icon(Icons.picture_as_pdf, size: 40, color: AppColors.red),
+          Icon(Icons.picture_as_pdf, size: 40, color: AppColors.statusError),
           SizedBox(width: 10),
           Expanded(child: Text('Comprobante adjunto (PDF)')),
         ],
@@ -642,12 +722,14 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage> w
           fit: BoxFit.contain,
           errorBuilder: (_, __, ___) => Row(
             children: [
-              Icon(Icons.receipt_long, size: 40, color: AppColors.secondaryText(context)),
+              Icon(Icons.receipt_long,
+                  size: 40, color: AppColors.secondaryText(context)),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   'No se pudo cargar la imagen',
-                  style: TextStyle(fontSize: 13, color: AppColors.secondaryText(context)),
+                  style: TextStyle(
+                      fontSize: 13, color: AppColors.secondaryText(context)),
                 ),
               ),
             ],
@@ -693,14 +775,16 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
       ),
       body: Consumer<DeliveryCompanyService>(
         builder: (context, service, _) {
-          if (service.availableAgentsLoading && service.availableAgentsForOrder.isEmpty) {
+          if (service.availableAgentsLoading &&
+              service.availableAgentsForOrder.isEmpty) {
             return Center(
               child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.primary,
               ),
             );
           }
-          if (service.availableAgentsError != null && service.availableAgentsForOrder.isEmpty) {
+          if (service.availableAgentsError != null &&
+              service.availableAgentsForOrder.isEmpty) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -710,7 +794,8 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
                     Text(service.availableAgentsError ?? 'Error'),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => service.loadAvailableAgentsForOrder(widget.orderId),
+                      onPressed: () =>
+                          service.loadAvailableAgentsForOrder(widget.orderId),
                       child: const Text('Reintentar'),
                     ),
                   ],
@@ -754,16 +839,28 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text(name,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 15)),
                           const SizedBox(height: 4),
-                          Text('${distanceKm.toStringAsFixed(1)} km', style: const TextStyle(fontSize: 12, color: AppColors.green)),
+                          Text('${distanceKm.toStringAsFixed(1)} km',
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.statusSuccess)),
                           if (vehicleType.isNotEmpty)
-                            Text(vehicleType, style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context))),
+                            Text(vehicleType,
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.secondaryText(context))),
                           Row(
                             children: [
-                              const Icon(Icons.star, size: 14, color: AppColors.orange),
+                              const Icon(Icons.star,
+                                  size: 14, color: AppColors.brandCtaAccent),
                               const SizedBox(width: 4),
-                              Text(rating.toStringAsFixed(1), style: TextStyle(fontSize: 12, color: AppColors.secondaryText(context))),
+                              Text(rating.toStringAsFixed(1),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.secondaryText(context))),
                             ],
                           ),
                         ],
@@ -776,7 +873,8 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
                               setState(() => _assigning = true);
                               final navigator = Navigator.of(context);
                               final messenger = ScaffoldMessenger.of(context);
-                              final ok = await widget.service.assignOrderToAgent(widget.orderId, agentId);
+                              final ok = await widget.service
+                                  .assignOrderToAgent(widget.orderId, agentId);
                               if (!mounted) return;
                               setState(() => _assigning = false);
                               if (!mounted) return;
@@ -784,11 +882,18 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
                                 navigator.pop(true);
                               } else {
                                 messenger.showSnackBar(
-                                  const SnackBar(content: Text('No se pudo asignar. Intenta de nuevo.')),
+                                  const SnackBar(
+                                      content: Text(
+                                          'No se pudo asignar. Intenta de nuevo.')),
                                 );
                               }
                             },
-                      icon: _assigning ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)) : const Icon(Icons.person_add),
+                      icon: _assigning
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Icon(Icons.person_add),
                       label: Text(_assigning ? 'Asignando...' : 'Asignar'),
                     ),
                   ],

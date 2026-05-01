@@ -81,7 +81,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
                 child: ElevatedButton(
                   onPressed: _submitting ? null : _submitRating,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.orange,
+                    backgroundColor: AppColors.brandCtaAccent,
                     foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -108,7 +108,8 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
               ),
               const SizedBox(height: 8),
               TextButton(
-                onPressed: _submitting ? null : () => Navigator.of(context).pop(),
+                onPressed:
+                    _submitting ? null : () => Navigator.of(context).pop(),
                 child: const Text(
                   'Ahora no',
                   style: TextStyle(fontWeight: FontWeight.w500),
@@ -193,8 +194,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
     );
   }
 
-  Widget _buildDeliveryCard(
-      BuildContext context, Color surface, bool isDark) {
+  Widget _buildDeliveryCard(BuildContext context, Color surface, bool isDark) {
     return Container(
       decoration: BoxDecoration(
         color: surface,
@@ -281,7 +281,8 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
   Future<void> _submitRating() async {
     if (_restaurantRating <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Selecciona una calificación para la farmacia')),
+        const SnackBar(
+            content: Text('Selecciona una calificación para la farmacia')),
       );
       return;
     }
@@ -335,8 +336,9 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(lastErrorMessage ?? 'No se pudo enviar la calificación. Intenta nuevamente.'),
-            backgroundColor: AppColors.orange,
+            content: Text(lastErrorMessage ??
+                'No se pudo enviar la calificación. Intenta nuevamente.'),
+            backgroundColor: AppColors.brandCtaAccent,
           ),
         );
         setState(() {
@@ -350,7 +352,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
           content: Text(
             e.toString().replaceFirst('Exception: ', ''),
           ),
-          backgroundColor: AppColors.red,
+          backgroundColor: AppColors.statusError,
         ),
       );
       setState(() {
@@ -361,16 +363,19 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
 
   String _sanitizeErrorMessage(Object error) {
     final raw = error.toString().replaceFirst('Exception: ', '').trim();
-    if (raw.isEmpty) return 'No se pudo enviar la calificación. Intenta nuevamente.';
+    if (raw.isEmpty) {
+      return 'No se pudo enviar la calificación. Intenta nuevamente.';
+    }
     final parts = raw.split('|');
     if (parts.length >= 2) {
       final code = parts.first.trim();
       final message = parts.sublist(1).join('|').trim();
-      if (code == 'REVIEWS_DUPLICATE_REVIEW') return 'Ya calificaste esta orden.';
+      if (code == 'REVIEWS_DUPLICATE_REVIEW') {
+        return 'Ya calificaste esta orden.';
+      }
       if (message.isNotEmpty) return message;
     }
     if (raw.contains('409')) return 'Ya calificaste esta orden.';
     return raw;
   }
 }
-

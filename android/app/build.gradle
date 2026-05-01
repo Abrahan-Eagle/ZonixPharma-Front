@@ -8,7 +8,9 @@ plugins {
 }
 
 android {
-    namespace = "com.zonix.pharma"
+    // Parche temporal: applicationId com.zonix.eats (Google Sign-In igual que Zonix Eats en Firebase).
+    // Revertir a com.zonix.pharma cuando la app este registrada en consola con las mismas SHA.
+    namespace = "com.zonix.eats"
     compileSdk = 36
     buildToolsVersion "36.0.0"
     ndkVersion = "27.0.12077973"
@@ -25,7 +27,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.zonix.pharma"
+        applicationId = "com.zonix.eats"
         minSdkVersion flutter.minSdkVersion
         targetSdk 36
         versionCode 36
@@ -94,5 +96,5 @@ flutter {
     source = "../.."
 }
 
-// Firebase (google-services.json en este módulo)
+// Firebase / Google Sign-In: google-services.json + applicationId com.zonix.eats (parche temporal) y SHA del keystore.
 apply plugin: 'com.google.gms.google-services'

@@ -52,11 +52,26 @@ class OnboardingPage1 extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Positioned(top: size.height * 0.1, left: size.width * 0.2, child: _starDot(0.4, 2)),
-          Positioned(top: size.height * 0.3, right: size.width * 0.15, child: _starDot(0.6, 3)),
-          Positioned(bottom: size.height * 0.2, left: size.width * 0.1, child: _starDot(0.8, 1)),
-          Positioned(top: size.height * 0.15, right: size.width * 0.35, child: _starDot(0.5, 2)),
-          Positioned(bottom: size.height * 0.4, right: size.width * 0.05, child: _starDot(0.7, 1)),
+          Positioned(
+              top: size.height * 0.1,
+              left: size.width * 0.2,
+              child: _starDot(0.4, 2)),
+          Positioned(
+              top: size.height * 0.3,
+              right: size.width * 0.15,
+              child: _starDot(0.6, 3)),
+          Positioned(
+              bottom: size.height * 0.2,
+              left: size.width * 0.1,
+              child: _starDot(0.8, 1)),
+          Positioned(
+              top: size.height * 0.15,
+              right: size.width * 0.35,
+              child: _starDot(0.5, 2)),
+          Positioned(
+              bottom: size.height * 0.4,
+              right: size.width * 0.05,
+              child: _starDot(0.7, 1)),
         ],
       ),
     );
@@ -69,7 +84,13 @@ class OnboardingPage1 extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white.withValues(alpha: opacity),
         shape: BoxShape.circle,
-        boxShadow: size >= 2 ? [BoxShadow(color: AppColors.white.withValues(alpha: 0.3), blurRadius: 4)] : null,
+        boxShadow: size >= 2
+            ? [
+                BoxShadow(
+                    color: AppColors.white.withValues(alpha: 0.3),
+                    blurRadius: 4)
+              ]
+            : null,
       ),
     );
   }
@@ -90,7 +111,8 @@ class OnboardingPage1 extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.blue.withValues(alpha: 0.3)),
           ),
-          child: Icon(Icons.rocket_launch, size: iconSize * 0.56, color: AppColors.blue),
+          child: Icon(Icons.rocket_launch,
+              size: iconSize * 0.56, color: AppColors.brandTeal),
         ),
         const SizedBox(height: 16),
         Text(
@@ -121,11 +143,23 @@ class OnboardingPage1 extends StatelessWidget {
   Widget _buildBenefitCards(BuildContext context) {
     return Column(
       children: [
-        _buildBenefitCard(context, icon: Icons.bolt, title: 'Velocidad Luz', description: 'Entregas más rápidas que un cometa cruzando la galaxia.'),
+        _buildBenefitCard(context,
+            icon: Icons.bolt,
+            title: 'Velocidad Luz',
+            description:
+                'Entregas más rápidas que un cometa cruzando la galaxia.'),
         const SizedBox(height: 16),
-        _buildBenefitCard(context, icon: Icons.local_pharmacy, title: 'Salud a un toque', description: 'Farmacias verificadas y catálogo claro para pedir con tranquilidad.'),
+        _buildBenefitCard(context,
+            icon: Icons.local_pharmacy,
+            title: 'Salud a un toque',
+            description:
+                'Farmacias verificadas y catálogo claro para pedir con tranquilidad.'),
         const SizedBox(height: 16),
-        _buildBenefitCard(context, icon: Icons.savings_outlined, title: 'Ahorro Galáctico', description: 'Ofertas y promociones que literalmente no son de este mundo.'),
+        _buildBenefitCard(context,
+            icon: Icons.savings_outlined,
+            title: 'Ahorro Galáctico',
+            description:
+                'Ofertas y promociones que literalmente no son de este mundo.'),
       ],
     );
   }
@@ -165,7 +199,7 @@ class OnboardingPage1 extends StatelessWidget {
               color: AppColors.blue.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: AppColors.blue, size: 24),
+            child: Icon(icon, color: AppColors.brandTeal, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(

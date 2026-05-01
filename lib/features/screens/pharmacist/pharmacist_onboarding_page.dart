@@ -74,7 +74,9 @@ class _PharmacistOnboardingPageState extends State<PharmacistOnboardingPage> {
     final picker = ImagePicker();
     final src = choice == 'camera' ? ImageSource.camera : ImageSource.gallery;
     final picked = await picker.pickImage(source: src, imageQuality: 85);
-    if (picked != null && mounted) setState(() => _titleFile = File(picked.path));
+    if (picked != null && mounted) {
+      setState(() => _titleFile = File(picked.path));
+    }
   }
 
   Future<void> _pickExpiry() async {
@@ -120,8 +122,7 @@ class _PharmacistOnboardingPageState extends State<PharmacistOnboardingPage> {
       if (_titleFile != null) {
         final path = _titleFile!.path;
         final ext = path.split('.').last.toLowerCase();
-        final mime =
-            ext == 'pdf' ? 'application/pdf' : 'image/jpeg';
+        final mime = ext == 'pdf' ? 'application/pdf' : 'image/jpeg';
         req.files.add(await http.MultipartFile.fromPath(
           'title_image',
           path,

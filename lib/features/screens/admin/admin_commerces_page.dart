@@ -123,15 +123,21 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
     _loadData();
   }
 
-  Color _openBadgeColor(bool open) => open ? AppColors.green : AppColors.red;
+  Color _openBadgeColor(bool open) =>
+      open ? AppColors.statusSuccess : AppColors.red;
 
   String _statusLabel(String status) {
     switch (status) {
-      case 'pending_review': return 'Pendiente de revisión';
-      case 'approved': return 'Aprobado';
-      case 'rejected': return 'Rechazado';
-      case 'suspended': return 'Suspendido';
-      default: return status;
+      case 'pending_review':
+        return 'Pendiente de revisión';
+      case 'approved':
+        return 'Aprobado';
+      case 'rejected':
+        return 'Rechazado';
+      case 'suspended':
+        return 'Suspendido';
+      default:
+        return status;
     }
   }
 
@@ -177,7 +183,10 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                         height: 4,
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.45),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withValues(alpha: 0.45),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -225,7 +234,11 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                       safeString(commerce['category']),
                     ),
                     const SizedBox(height: 20),
-                    _detailRow(Icons.verified, 'Estado', _statusLabel(safeString(commerce['status'], 'approved'))),
+                    _detailRow(
+                        Icons.verified,
+                        'Estado',
+                        _statusLabel(
+                            safeString(commerce['status'], 'approved'))),
                     const SizedBox(height: 16),
                     if (safeString(commerce['status']) == 'pending_review') ...[
                       Row(
@@ -234,24 +247,31 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 try {
-                                  await context.read<AdminService>().updateCommerceApproval(id, 'approved');
+                                  await context
+                                      .read<AdminService>()
+                                      .updateCommerceApproval(id, 'approved');
                                   if (!ctx.mounted) return;
                                   Navigator.pop(ctx);
                                   _loadData();
                                   ScaffoldMessenger.of(ctx).showSnackBar(
-                                    const SnackBar(content: Text('Comercio aprobado'), backgroundColor: AppColors.green),
+                                    const SnackBar(
+                                        content: Text('Comercio aprobado'),
+                                        backgroundColor:
+                                            AppColors.statusSuccess),
                                   );
                                 } catch (e) {
                                   if (!ctx.mounted) return;
-                                  ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e')));
+                                  ScaffoldMessenger.of(ctx).showSnackBar(
+                                      SnackBar(content: Text('Error: $e')));
                                 }
                               },
                               icon: const Icon(Icons.check, size: 18),
                               label: const Text('Aprobar'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.green,
+                                backgroundColor: AppColors.statusSuccess,
                                 foregroundColor: AppColors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                           ),
@@ -260,24 +280,33 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 try {
-                                  await context.read<AdminService>().updateCommerceApproval(id, 'rejected', rejectionReason: 'Datos incompletos o incorrectos');
+                                  await context
+                                      .read<AdminService>()
+                                      .updateCommerceApproval(id, 'rejected',
+                                          rejectionReason:
+                                              'Datos incompletos o incorrectos');
                                   if (!ctx.mounted) return;
                                   Navigator.pop(ctx);
                                   _loadData();
                                   ScaffoldMessenger.of(ctx).showSnackBar(
-                                    const SnackBar(content: Text('Comercio rechazado'), backgroundColor: AppColors.orange),
+                                    const SnackBar(
+                                        content: Text('Comercio rechazado'),
+                                        backgroundColor:
+                                            AppColors.brandCtaAccent),
                                   );
                                 } catch (e) {
                                   if (!ctx.mounted) return;
-                                  ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e')));
+                                  ScaffoldMessenger.of(ctx).showSnackBar(
+                                      SnackBar(content: Text('Error: $e')));
                                 }
                               },
                               icon: const Icon(Icons.close, size: 18),
                               label: const Text('Rechazar'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.red,
+                                backgroundColor: AppColors.statusError,
                                 foregroundColor: AppColors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                           ),
@@ -288,34 +317,45 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: _openBadgeColor(currentOpen).withValues(alpha: 0.15),
+                            color: _openBadgeColor(currentOpen)
+                                .withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             currentOpen ? 'Abierto' : 'Cerrado',
-                            style: TextStyle(color: _openBadgeColor(currentOpen), fontWeight: FontWeight.w600),
+                            style: TextStyle(
+                                color: _openBadgeColor(currentOpen),
+                                fontWeight: FontWeight.w600),
                           ),
                         ),
                         const Spacer(),
                         ElevatedButton.icon(
                           onPressed: () async {
                             try {
-                              await context.read<AdminService>().toggleCommerceOpen(id, !currentOpen);
+                              await context
+                                  .read<AdminService>()
+                                  .toggleCommerceOpen(id, !currentOpen);
                               setSheetState(() => currentOpen = !currentOpen);
                               _loadData();
                             } catch (e) {
                               if (!ctx.mounted) return;
-                              ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error: $e')));
+                              ScaffoldMessenger.of(ctx).showSnackBar(
+                                  SnackBar(content: Text('Error: $e')));
                             }
                           },
-                          icon: Icon(currentOpen ? Icons.lock : Icons.lock_open, size: 18),
+                          icon: Icon(currentOpen ? Icons.lock : Icons.lock_open,
+                              size: 18),
                           label: Text(currentOpen ? 'Cerrar' : 'Abrir'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: currentOpen ? AppColors.red : AppColors.green,
+                            backgroundColor: currentOpen
+                                ? AppColors.statusError
+                                : AppColors.statusSuccess,
                             foregroundColor: AppColors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
                         ),
                       ],
@@ -368,7 +408,9 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
         title: const Text('Comercios'),
-        backgroundColor: isDark ? Theme.of(context).colorScheme.surfaceContainerHigh : AppColors.blueDark,
+        backgroundColor: isDark
+            ? Theme.of(context).colorScheme.surfaceContainerHigh
+            : AppColors.blueDark,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -396,7 +438,8 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                       )
                     : null,
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                fillColor:
+                    Theme.of(context).colorScheme.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -411,12 +454,14 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               children: [
-                _filterChip('Todos', _filterStatus == null && _filterOpen == null, () {
+                _filterChip(
+                    'Todos', _filterStatus == null && _filterOpen == null, () {
                   _filterStatus = null;
                   _onFilterChanged(null);
                 }),
                 const SizedBox(width: 8),
-                _filterChip('Pendientes', _filterStatus == 'pending_review', () {
+                _filterChip('Pendientes', _filterStatus == 'pending_review',
+                    () {
                   _filterStatus = 'pending_review';
                   _filterOpen = null;
                   _loadData();
@@ -460,7 +505,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: selected ? AppColors.blue : cs.surfaceContainerHighest,
+          color: selected ? AppColors.brandTeal : cs.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Text(
@@ -561,7 +606,8 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
           color: AppColors.cardBg(context),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.25),
+            color:
+                Theme.of(context).colorScheme.outline.withValues(alpha: 0.25),
           ),
         ),
         child: Padding(
@@ -570,7 +616,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
             children: [
               CircleAvatar(
                 backgroundColor: AppColors.blue.withValues(alpha: 0.15),
-                child: const Icon(Icons.storefront, color: AppColors.blue),
+                child: const Icon(Icons.storefront, color: AppColors.brandTeal),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -601,23 +647,34 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                 children: [
                   if (status != 'approved')
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       margin: const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
-                        color: (status == 'pending_review' ? AppColors.orange : AppColors.red).withValues(alpha: 0.15),
+                        color: (status == 'pending_review'
+                                ? AppColors.brandCtaAccent
+                                : AppColors.statusError)
+                            .withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        status == 'pending_review' ? 'Pendiente' : status == 'rejected' ? 'Rechazado' : 'Suspendido',
+                        status == 'pending_review'
+                            ? 'Pendiente'
+                            : status == 'rejected'
+                                ? 'Rechazado'
+                                : 'Suspendido',
                         style: TextStyle(
-                          color: status == 'pending_review' ? AppColors.orange : AppColors.red,
+                          color: status == 'pending_review'
+                              ? AppColors.brandCtaAccent
+                              : AppColors.statusError,
                           fontWeight: FontWeight.w600,
                           fontSize: 11,
                         ),
                       ),
                     ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: _openBadgeColor(isOpen).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),

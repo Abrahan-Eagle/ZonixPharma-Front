@@ -88,7 +88,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: titleSize,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.blue,
+                                    color: AppColors.brandTeal,
                                     height: 1.25,
                                   ),
                                 ),
@@ -96,7 +96,9 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                                   width: 140,
                                   height: 8,
                                   child: CustomPaint(
-                                    painter: _CurvedUnderlinePainter(color: AppColors.blue.withValues(alpha: 0.3)),
+                                    painter: _CurvedUnderlinePainter(
+                                        color: AppColors.blue
+                                            .withValues(alpha: 0.3)),
                                   ),
                                 ),
                               ],
@@ -188,7 +190,11 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     final ringSize = 288.0 * scale;
     final dashedSize = 352.0 * scale;
     final centerSize = 128.0 * scale;
-    final orbSizes = [64.0 * scale, 56.0 * scale, 48.0 * scale]; // burger, pizza, taco
+    final orbSizes = [
+      64.0 * scale,
+      56.0 * scale,
+      48.0 * scale
+    ]; // burger, pizza, taco
 
     return Stack(
       alignment: Alignment.center,
@@ -198,7 +204,8 @@ class _OnboardingPage2State extends State<OnboardingPage2>
         AnimatedBuilder(
           animation: _floatController,
           builder: (context, _) {
-            final pulse = 0.5 + 0.15 * math.sin(_floatController.value * math.pi);
+            final pulse =
+                0.5 + 0.15 * math.sin(_floatController.value * math.pi);
             return Container(
               width: glowSize,
               height: glowSize,
@@ -234,7 +241,8 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 width: dashedSize,
                 height: dashedSize,
                 child: CustomPaint(
-                  painter: _DashedCirclePainter(color: AppColors.blue.withValues(alpha: 0.2)),
+                  painter: _DashedCirclePainter(
+                      color: AppColors.blue.withValues(alpha: 0.2)),
                 ),
               ),
             );
@@ -257,7 +265,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.blue, AppColors.onboardingBlueDark],
+                    colors: [AppColors.brandTeal, AppColors.onboardingBlueDark],
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -292,7 +300,8 @@ class _OnboardingPage2State extends State<OnboardingPage2>
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
-                  final float = 8 * math.sin(_floatController.value * math.pi + 1);
+                  final float =
+                      8 * math.sin(_floatController.value * math.pi + 1);
                   return Positioned(
                     bottom: float,
                     left: -8 * scale,
@@ -307,7 +316,8 @@ class _OnboardingPage2State extends State<OnboardingPage2>
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
-                  final float = 6 * math.sin(_floatController.value * math.pi + 2);
+                  final float =
+                      6 * math.sin(_floatController.value * math.pi + 2);
                   return Positioned(
                     bottom: 32 * scale - float,
                     right: -24 * scale,
@@ -319,9 +329,16 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 },
               ),
               // Partículas (HTML positions)
-              Positioned(top: 0, left: 40 * scale, child: _particle(8 * scale, 0.6)),
-              Positioned(bottom: 40 * scale, right: 80 * scale, child: _particle(6 * scale, 0.4)),
-              Positioned(top: 120 * scale, right: -32 * scale, child: _particle(4 * scale, 0.8)),
+              Positioned(
+                  top: 0, left: 40 * scale, child: _particle(8 * scale, 0.6)),
+              Positioned(
+                  bottom: 40 * scale,
+                  right: 80 * scale,
+                  child: _particle(6 * scale, 0.4)),
+              Positioned(
+                  top: 120 * scale,
+                  right: -32 * scale,
+                  child: _particle(4 * scale, 0.8)),
             ],
           ),
         ),
@@ -386,7 +403,8 @@ class _DashedCirclePainter extends CustomPainter {
     while (angle < 2 * math.pi) {
       final startAngle = angle;
       angle += dashLength / radius;
-      final sweepAngle = (dashLength / radius).clamp(0.0, 2 * math.pi - startAngle);
+      final sweepAngle =
+          (dashLength / radius).clamp(0.0, 2 * math.pi - startAngle);
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius),
         startAngle,
@@ -417,11 +435,11 @@ class _CurvedUnderlinePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     final path = Path()
       ..moveTo(0, size.height * 0.5)
-      ..quadraticBezierTo(size.width * 0.5, size.height, size.width, size.height * 0.5);
+      ..quadraticBezierTo(
+          size.width * 0.5, size.height, size.width, size.height * 0.5);
     canvas.drawPath(path, paint);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
-
