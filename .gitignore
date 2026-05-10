@@ -44,3 +44,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Entorno local (secretos, API keys — no versionar)
+.env
+.env.*
+!.env.example

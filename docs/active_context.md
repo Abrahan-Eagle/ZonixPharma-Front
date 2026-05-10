@@ -6,11 +6,11 @@
 
 ## Última actualización de contexto
 
-### Verificación local 1 mayo 2026
+### Verificación local 10 mayo 2026
 
-- **Backend** (`ZonixPharma-Backend`): `php artisan test` → **397 passed** (1636 assertions). Pint en verde en última comprobación de sesión. Detalle e histórico en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md).
-- **Frontend** (`ZonixPharma-Front`): `flutter analyze lib` → **sin issues**; `flutter test` → **216 passed** (~1 skipped).
-- **Nota:** sin commit/push desde la IA; higiene Intelephense/Pint e imports en `OrderTest` / tipados en `PharmacyController` y `Order` ya aplicados en backend en trabajo previo.
+- **Backend** (`ZonixPharma-Backend`): detalle e histórico en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md). Pack comercial / inversor (base **USD 101k + Co-CEO**, narrativa y números alineados): [`../ZonixPharma-Backend/docs/Lanzamiento/README.md`](../ZonixPharma-Backend/docs/Lanzamiento/README.md).
+- **Frontend** (`ZonixPharma-Front`): `flutter test` → **216 passed** (~1 skipped). Última corrida de verificación en esta fecha.
+- **Repo:** `.gitignore` ignora `.env` / `.env.*` (excepto `.env.example`) para evitar commits accidentales de secretos.
 
 ---
 
