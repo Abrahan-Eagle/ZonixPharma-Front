@@ -1,13 +1,13 @@
 ---
 name: zonix-order-tracking-ui
-description: Patrones de UI para listado, detalle y tracking de órdenes en Zonix Eats (Flutter). Colores por estado, timelines y mapa.
+description: UI tracking de órdenes Zonix Pharma (Flutter). Estados Rx, timelines, mapa y pending_prescription_validation.
 trigger: Cuando se diseñen o modifiquen pantallas de órdenes, historial, detalle de pedido o tracking en mapa.
 scope: lib/features/screens/orders/, lib/features/services/order_service.dart, lib/features/services/tracking_service.dart
 author: Zonix Team
 version: 1.0
 ---
 
-# 🚚 UI de Tracking de Órdenes - Zonix Eats
+# UI de tracking de órdenes — Zonix Pharma
 
 ## 1. Mapeo de Estados → UI
 

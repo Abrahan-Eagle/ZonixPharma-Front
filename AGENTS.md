@@ -189,6 +189,16 @@ notifyListeners() → Consumer<Service>
 | `zonix-ui-design` | Paleta Pharma, cards, layouts | [.agents/skills/zonix-ui-design/SKILL.md](.agents/skills/zonix-ui-design/SKILL.md) |
 | `context-updater` | Actualizar `docs/active_context.md` | [.agents/skills/context-updater/SKILL.md](.agents/skills/context-updater/SKILL.md) |
 | `documentar-avances` | Proponer "Cambios recientes" | [.agents/skills/documentar-avances/SKILL.md](.agents/skills/documentar-avances/SKILL.md) |
+| `zonix-startup-context` | Contexto canónico inversor (stub → Backend) | [.agents/skills/zonix-startup-context/SKILL.md](.agents/skills/zonix-startup-context/SKILL.md) |
+| `zonix-investor-materials` | Data room / pack Lanzamiento (stub → Backend) | [.agents/skills/zonix-investor-materials/SKILL.md](.agents/skills/zonix-investor-materials/SKILL.md) |
+| `zonix-lanzamiento-roles` | Roles pack inversor (stub → Backend) | [.agents/skills/zonix-lanzamiento-roles/SKILL.md](.agents/skills/zonix-lanzamiento-roles/SKILL.md) |
+| `zonix-launch-piloto` | Plan piloto T+0→Day-D (stub → Backend) | [.agents/skills/zonix-launch-piloto/SKILL.md](.agents/skills/zonix-launch-piloto/SKILL.md) |
+| `zonix-jarvis-subagents-map` | Subagents lente → skill canon (stub → Backend) | [.agents/skills/zonix-jarvis-subagents-map/SKILL.md](.agents/skills/zonix-jarvis-subagents-map/SKILL.md) |
+| `zonix-legal-contracts-ve` | Checklist contratos VE (stub → Backend) | [.agents/skills/zonix-legal-contracts-ve/SKILL.md](.agents/skills/zonix-legal-contracts-ve/SKILL.md) |
+| `zonix-founder-ops-index` | Índice CEO/CTO (stub → Backend) | [.agents/skills/zonix-founder-ops-index/SKILL.md](.agents/skills/zonix-founder-ops-index/SKILL.md) |
+| `zonix-empresa-ve` | Constitución / SAFE / laboral VE (stub → Backend) | [.agents/skills/zonix-empresa-ve/SKILL.md](.agents/skills/zonix-empresa-ve/SKILL.md) |
+
+> **Skills financieras completas** (`zonix-financial-model`, `zonix-fundraising-narrative`, `zonix-regulatory-ve`): solo en [ZonixPharma-Backend/.agents/skills/](../ZonixPharma-Backend/.agents/skills/).
 
 ---
 
@@ -205,6 +215,11 @@ notifyListeners() → Consumer<Service>
 | Hacer git commit | `git-commit` |
 | Cerrar sesión con cambios | `context-updater` |
 | Finalizar tarea | `documentar-avances` |
+| UI alineada a pack inversor / claims salud | `zonix-startup-context` + `zonix-lanzamiento-roles` + Backend `zonix-regulatory-ve` |
+| Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` (stub → Backend) |
+| Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` (stub → Backend) |
+| Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` (stub → Backend) |
+| Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` (stub → Backend) |
 
 ---
 
@@ -245,8 +260,10 @@ Mostrar advertencia en checkout si `cartService.coldChainRequired`. Restringir U
 - **[../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md](../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md)**
 - **[../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md](../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md)**
 - **[../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md)**
+- **[../ZonixPharma-Backend/docs/Lanzamiento/README.md](../ZonixPharma-Backend/docs/Lanzamiento/README.md)** — pack inversor
+- **[../ZonixPharma-Backend/docs/zonix/research_links.md](../ZonixPharma-Backend/docs/zonix/research_links.md)** — skills GitHub
 
 ---
 
-**Última actualización:** 30 abril 2026
+**Última actualización:** 20 mayo 2026
 **Para instrucciones completas:** Ver `README.md`

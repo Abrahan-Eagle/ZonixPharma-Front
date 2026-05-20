@@ -53,6 +53,14 @@ Usar SIEMPRE los tokens `AppColors.brand*` (o helpers `AppColors.scaffoldBg/card
 - **Padding lateral:** 20–24 px.
 - **Ancho máximo mobile:** 360–414 px.
 
+### Formato moneda (lente moov-io/awesome-fintech)
+
+Piloto VE: montos en **USD** en planning; en UI mostrar precios/totales con formato consistente (separador miles, 2 decimales cuando aplique).
+
+- Preferir helper centralizado en app (p. ej. `NumberFormat` / `intl`) en lugar de concatenar strings.
+- Lente OSS: [Dinero.js](https://github.com/moov-io/awesome-fintech) (concepto money object) — en Flutter evaluar `intl` + reglas de redondeo; **no** integrar ISO8583/ACH US.
+- Pagos: copy alineado a manual VE (`zonix-payments` Backend); Zonix **no** es pasarela — no UI tipo Stripe Checkout.
+
 ## 3. Componentes clave
 
 ### Card de medicamento (buyer)

@@ -1,6 +1,6 @@
 ---
 name: zonix-onboarding
-description: Flujo de registro y onboarding de Zonix Eats. Solo Buyer y Commerce van por onboarding movil. Delivery Company y Delivery Agent se registran desde paneles admin/company (modulos separados).
+description: Onboarding Zonix Pharma (Flutter). Paciente (users), farmacia (commerce), farmacéutico (pharmacist); delivery desde paneles company/admin.
 trigger: Cuando se trabaje con registro de usuarios, onboarding, creacion de perfiles, o proceso de activacion de Commerce.
 scope: lib/features/screens/auth/, lib/features/screens/onboarding/, lib/features/services/auth/
 author: Zonix Team
@@ -8,7 +8,7 @@ version: 3.0
 updated: 2026-03-31
 ---
 
-# Onboarding - Zonix Eats (Flutter)
+# Onboarding — Zonix Pharma (Flutter)
 
 ## Roles del sistema (6)
 

@@ -1,13 +1,13 @@
 ---
 name: zonix-admin-analytics-ui
-description: Patrones de UI para dashboards de admin y commerce en Zonix Eats. Cards de métricas, tablas, filtros y gráficos.
+description: UI dashboards admin/commerce Zonix Pharma (Flutter). Métricas, tablas, filtros; alinear KPIs con zonix-analytics Backend.
 trigger: Cuando se diseñen o modifiquen pantallas de analytics, reportes o dashboards (admin/commerce) en Flutter.
 scope: lib/features/screens/admin/, lib/features/screens/commerce/, lib/features/services/analytics_service.dart
 author: Zonix Team
 version: 1.0
 ---
 
-# 📊 UI de Analytics (Admin / Commerce) - Zonix Eats
+# UI de analytics (admin / commerce) — Zonix Pharma
 
 ## 1. Layout General
 
