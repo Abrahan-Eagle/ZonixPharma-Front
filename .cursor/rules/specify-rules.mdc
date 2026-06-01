@@ -1,0 +1,17 @@
+---
+alwaysApply: true
+---
+
+<!-- SPECKIT START -->
+## Zonix Pharma Front — Spec Kit (espejo)
+
+- **SDD hub (specs canon):** `../ZonixPharma-Backend/specs/`
+- **Constitution (canon):** `../ZonixPharma-Backend/.specify/memory/constitution.md`
+- **Jarvis:** `AGENTS.md`, `.cursorrules`, `.agents/skills/zonix-*` (stubs → Backend skills)
+
+When using `/speckit-specify`, `/speckit-plan`, `/speckit-tasks`: work against the **Backend hub** unless the change is Front-only (then document paths as `front:lib/...` inside the Backend spec folder).
+
+**Implement:** only after explicit user OK (Jarvis collaboration rules).
+
+Read active `plan.md` from `../ZonixPharma-Backend/specs/[feature]/`.
+<!-- SPECKIT END -->

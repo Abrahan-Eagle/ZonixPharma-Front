@@ -19,6 +19,16 @@ Implementación en código Flutter: `lib/features/utils/app_colors.dart`, `lib/f
 
 ---
 
+## Spec Kit (espejo — hub en Backend)
+
+Specs SDD viven en **[../ZonixPharma-Backend/specs/](../ZonixPharma-Backend/specs/)**. Constitution: [../ZonixPharma-Backend/.specify/memory/constitution.md](../ZonixPharma-Backend/.specify/memory/constitution.md).
+
+Skills proceso: `.cursor/skills/speckit-*`. Dominio: `.agents/skills/zonix-*` (stubs → Backend).
+
+Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md).
+
+---
+
 ## Project Overview
 
 | Métrica | Valor |
@@ -29,10 +39,11 @@ Implementación en código Flutter: `lib/features/utils/app_colors.dart`, `lib/f
 | **Versión** | 1.0.0 |
 | **Estado** | Migración Eats → Pharma (fork destructivo) en progreso |
 | **Plataformas** | Android + iOS |
-| **Última actualización** | 30 abril 2026 |
+| **Última actualización** | 27 mayo 2026 |
 
 ### Cambios recientes
 
+- **27 may 2026 — Spec Kit (SDD) espejo Cursor:** skills `speckit-*` en `.cursor/skills/`; hub de specs en repo Backend.
 - **30 abr 2026 — Transformación Zonix Eats → Zonix Pharma (fork destructivo, MVP completo Rx).**
   - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, `applicationId = com.zonix.pharma` (Android), `bundleId = com.zonix.pharma` (iOS), web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}`.
   - Paleta Pharma fría en `lib/features/utils/app_colors.dart` (tokens `brand*`) + tema light/dark Pharma en `app_theme.dart` (Plus Jakarta Sans, primario navy, secundario teal, CTA teal). Splash actualizado a `#F5F7FA / #142033`.
@@ -218,6 +229,7 @@ notifyListeners() → Consumer<Service>
 | UI alineada a pack inversor / claims salud | `zonix-startup-context` + `zonix-lanzamiento-roles` + Backend `zonix-regulatory-ve` |
 | Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` (stub → Backend) |
 | Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` (stub → Backend) |
+| Nueva feature producto (spec en Backend hub) | Spec Kit `speckit-*` + `zonix-ui-design` / `zonix-order-lifecycle` — ver Backend [SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md) |
 | Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` (stub → Backend) |
 | Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` (stub → Backend) |
 
