@@ -23,6 +23,22 @@ Para instrucciones completas del proyecto, arquitectura, convenciones, skills di
 
 ---
 
+## Spec Kit (SDD — features de producto, espejo)
+
+Features de **producto** (API + Flutter) siguen Spec-Driven Development en el **hub Backend**. **No** usar Spec Kit para `docs/Lanzamiento/` ni cifras inversor — usar `zonix-lanzamiento-docs` (Backend).
+
+**Flujo:** `/speckit-specify` → `/speckit-clarify` (opc.) → `/speckit-plan` → `/speckit-tasks` → `/speckit-analyze` → `/speckit-implement` (**solo con OK usuario**).
+
+- **Constitution:** [../ZonixPharma-Backend/.specify/memory/constitution.md](../ZonixPharma-Backend/.specify/memory/constitution.md)
+- **Specs (canon):** [../ZonixPharma-Backend/specs/](../ZonixPharma-Backend/specs/)
+- **Guía:** [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md)
+- **Skills proceso:** `.cursor/skills/speckit-*` (complementan `.agents/skills/zonix-*`)
+- Cambios solo Front: documentar rutas como `front:lib/...` en la carpeta spec del Backend hub
+
+Leer el `plan.md` activo en `../ZonixPharma-Backend/specs/[feature]/`.
+
+---
+
 ## Reglas de Colaboración
 
 1. **SIEMPRE PREGUNTAR** antes de realizar cualquier acción
@@ -67,11 +83,13 @@ Para instrucciones completas del proyecto, arquitectura, convenciones, skills di
 ### Reglas farmacéuticas
 
 - **Productos Rx** (`requiresPrescription = true`): mostrar badge "Requiere receta" en cards y detalle.
-- **Carrito Rx** (`cartService.requiresPrescription`): bloquear checkout hasta tener receta válida (ver `PrescriptionUploadPage`).
+- **Carrito Rx** (`cartService.requiresPrescription`): mostrar banner en carrito/checkout; por defecto (Backend permisivo) el pedido puede crearse en `pending_prescription_validation`; bloquear botón "Pagar" hasta receta aprobada (`pending_payment`). Ver `PrescriptionUploadPage`.
 - **Sustancias controladas** (`controlledSubstance = true`): sugerir pickup en farmacia.
 - **Cadena de frío** (`coldChain = true`): mostrar advertencia y restringir delivery sin equipo.
 
-### Skills de dominio recomendadas
+### Skills de dominio (selección — catálogo completo en `AGENTS.md`)
+
+Para **nueva feature de producto**: skills `.cursor/skills/speckit-*` + `zonix-*` del dominio (stubs → canon en Backend).
 
 - **zonix-ui-design**: pantallas, widgets, cards, botones, layouts.
 - **zonix-onboarding**: registro / onboarding por rol (incluye `pharmacist`).
@@ -96,5 +114,5 @@ flutter analyze
 
 ---
 
-**Última actualización:** 30 abril 2026
+**Última actualización:** 1 junio 2026
 **Para instrucciones completas:** Ver `AGENTS.md`
