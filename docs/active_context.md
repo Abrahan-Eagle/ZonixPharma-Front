@@ -6,11 +6,12 @@
 
 ## Última actualización de contexto
 
-### Verificación local 10 mayo 2026
+### Verificación local 9 junio 2026
 
-- **Backend** (`ZonixPharma-Backend`): detalle e histórico en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md). Pack comercial / inversor (base **USD 101k + Co-CEO**, narrativa y números alineados): [`../ZonixPharma-Backend/docs/Lanzamiento/README.md`](../ZonixPharma-Backend/docs/Lanzamiento/README.md).
-- **Frontend** (`ZonixPharma-Front`): `flutter test` → **216 passed** (~1 skipped). Última corrida de verificación en esta fecha.
-- **Repo:** `.gitignore` ignora `.env` / `.env.*` (excepto `.env.example`) para evitar commits accidentales de secretos.
+- **Backend** (`ZonixPharma-Backend`): `php artisan test --parallel` → **399 passed**. Detalle en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md).
+- **Frontend** (`ZonixPharma-Front`): `flutter test` → **216 passed** (~1 skipped).
+- **Android ID (real):** `applicationId` = `com.zonix.eats` (parche Firebase temporal). Objetivo: `com.zonix.pharma`. iOS: `com.zonix.pharma`.
+- **Repo:** `.gitignore` ignora `.env` / `.env.*` (excepto `.env.example`).
 
 ---
 
@@ -19,7 +20,9 @@
 - **Fecha:** 30 abril 2026
 - **Resumen:** **Transformación Zonix Eats → Zonix Pharma (fork destructivo, MVP completo Rx)** del frontend Flutter, espejo del backend (documentación de marca y planes en `../ZonixPharma-Backend/docs/`).
 - **Áreas tocadas (frontend):**
-  - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, `applicationId / namespace = com.zonix.pharma`, `bundleId = com.zonix.pharma`, web manifest/title `Zonix Pharma`, `userAgentPackageName` mapas, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}` (con compatibilidad legacy `zonix://restaurant/`).
+  - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}` (compat legacy `zonix://restaurant/`).
+  - **Android (parche temporal):** `applicationId` / `namespace` = `com.zonix.eats` — ver `android/app/build.gradle`. Objetivo: `com.zonix.pharma`.
+  - **iOS:** `bundleId = com.zonix.pharma`.
   - Paleta: `lib/features/utils/app_colors.dart` reescrito con tokens `brandNavy`, `brandTealDeep`, `brandTeal`, `brandMint`, `brandSurfaceLight`, `brandMutedGray`, `brandSurfaceDark`, `brandCtaAccent`. Aliases legacy de Eats mapeados a Pharma para no romper 70+ archivos.
   - Tema: `lib/features/utils/app_theme.dart` migrado a Material 3 con `ColorScheme` Pharma, primario navy, secundario teal, CTA teal. Plus Jakarta Sans.
   - Splash: `flutter_native_splash.yaml` con `#F5F7FA / #142033`.

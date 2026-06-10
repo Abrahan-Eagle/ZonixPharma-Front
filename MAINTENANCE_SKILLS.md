@@ -1,73 +1,108 @@
-# 🛠️ Guía de Mantenimiento de Skills y Coherencia — Zonix Eats
+# Guía de Mantenimiento de Skills y Coherencia — Zonix Pharma
 
-Esta guía define las reglas para mantener la integridad y coherencia del sistema de documentación y lógica procedimental de Zonix Eats. Es de lectura obligatoria para cualquier IA o humano que desee modificar las **Custom Skills**.
+Esta guía define las reglas para mantener la integridad y coherencia del sistema de documentación y lógica procedimental de **Zonix Pharma**. Es de lectura obligatoria para cualquier IA o humano que desee modificar las **Custom Skills**.
 
 ---
 
 ## 1. El Sistema de Skills (Por qué existe)
 
-Las skills (`.agents/skills/*.md`) no son simple documentación; son **guías procedimentales** para que la IA actúe como un experto especializado. Transforman a una IA genérica en un "Zonix Engineer" que conoce los estados de las órdenes, las reglas de pago y el sistema de diseño sin tener que redescubrirlos cada vez.
+Las skills (`.agents/skills/*/SKILL.md`) no son simple documentación; son **guías procedimentales** para que la IA actúe como un experto especializado. Transforman a una IA genérica en un "Zonix Engineer" que conoce recetas Rx, cadena de frío, pagos VE y el sistema de diseño Pharma sin redescubrirlos cada vez.
 
 ---
 
-## 2. Terminología Estándar de Roles
+## 2. Precedencia de diseño y branding (obligatoria)
 
-Cualquier cambio en código o docs **DEBE** usar esta nomenclatura para evitar alucinaciones de la IA:
+Al tocar UI, copy o CSS, aplicar este orden **sin excepción**:
 
-| Nivel | Código en BD | Nombre Estándar | Alias aceptados            |
-| ----- | ------------ | --------------- | -------------------------- |
-| 0     | `users`      | **Buyer**       | Comprador, Cliente         |
-| 1     | `commerce`   | **Commerce**    | Comercio, Restaurante      |
-| 2     | `delivery`   | **Delivery**    | Delivery Agent, Repartidor |
-| 3     | `admin`      | **Admin**       | Administrador              |
+```
+1. docs/BRAND_ZONIX_PHARMA.md (Backend — canon de marca)
+2. zonix-ui-design (Flutter) | zonix-web-design (Blade/CSS)
+3. zonix-brand-ops | zonix-design-enforcer
+4. ui-ux-pro-max | frontend-design (genéricas — NO overridean tokens)
+5. enhance-prompt / design-md (solo Stitch, no Flutter diario)
+```
+
+**Regla:** Las skills genéricas (`ui-ux-pro-max`, `frontend-design`) son **secundarias**. Nunca introducir HEX, gradientes purple AI-slop ni paletas fuera de tokens `brand*` / variables CSS en `zonix.css`.
 
 ---
 
-## 3. Reglas de Oro para Actualizaciones
+## 3. Skills de branding y diseño (Jun 2026)
 
-### 3.1. Auditoría Previa (Mandatorio para IAs)
+| Skill | Repo canon | Stub en otro repo |
+| ----- | ---------- | ----------------- |
+| `zonix-brand-ops` | Backend | Front |
+| `zonix-web-design` | Backend | Front |
+| `zonix-design-enforcer` | Front | Backend |
+| `zonix-ui-design` | Front | — |
+
+**Auto-invoke (resumen):**
+
+- Flutter UI → `zonix-ui-design` + `zonix-design-enforcer`
+- Copy / naming / ASO → `zonix-brand-ops`
+- Landing Blade / `zonix.css` → `zonix-web-design` + `zonix-brand-ops`
+
+---
+
+## 4. Terminología Estándar de Roles
+
+Cualquier cambio en código o docs **DEBE** usar esta nomenclatura:
+
+| Nivel | Código en BD | Nombre Estándar | Alias aceptados |
+| ----- | ------------ | --------------- | --------------- |
+| 0 | `users` | **Buyer** | Paciente, Cliente |
+| 1 | `commerce` | **Pharmacy** | Farmacia, Comercio |
+| 2 | `delivery` | **Delivery** | Repartidor |
+| 3 | `admin` | **Admin** | Administrador |
+
+> En docs legacy puede aparecer "Commerce"; en UI preferir **Farmacia**.
+
+---
+
+## 5. Reglas de Oro para Actualizaciones
+
+### 5.1. Auditoría Previa (Mandatorio para IAs)
 
 Antes de proponer un cambio en una skill o en `README.md`, la IA debe:
 
-1. Leer todas las skills custom (actualmente 7).
-2. Identificar si el cambio afecta a otros dominios (ej: un cambio en estados de orden afecta a `realtime-events` y `payments`).
-3. Generar un pequeño reporte de impacto (como el `coherence_audit.md` original).
+1. Leer skills custom relevantes (Front ~45, Backend ~56; contar con `find .agents/skills -name SKILL.md | wc -l`).
+2. Identificar impacto cross-dominio (ej: cambio Rx afecta `zonix-prescriptions`, `zonix-order-lifecycle`, UI badges).
+3. Verificar que colores/copy sigan `BRAND_ZONIX_PHARMA.md`.
 
-### 3.2. Sincronización Cross-Project
+### 5.2. Sincronización Cross-Project
 
-Zonix Eats se divide en `zonix-eats-back` y `zonix-eats-front`.
+Zonix Pharma se divide en `ZonixPharma-Backend` y `ZonixPharma-Front`.
 
-- Las skills de lógica (ej: `order-lifecycle`, `realtime-events`) viven en ambos repositorios.
-- **Regla:** Si actualizas la versión en el Backend, la copia en el Frontend **debe** actualizarse inmediatamente para que ambos agentes hablen el mismo idioma.
+- Skills de lógica compartida (`zonix-order-lifecycle`, `zonix-realtime-events`) deben mantenerse alineadas.
+- Skills con **stub** en un repo apuntan al **canon** en el otro; actualizar el canon primero, luego verificar que el stub siga siendo válido.
 
-### 3.3. Cross-References
+### 5.3. Cross-References
 
-Toda skill debe referenciar a otras si hay solapamiento. Ejemplo:
+Toda skill debe referenciar otras si hay solapamiento:
 
-- La skill de `payments` referencia a `order-lifecycle` para los estados.
-- La skill de `onboarding` referencia a `api-patterns` para el formato de respuesta.
-
----
-
-## 4. Infraestructura Crítica (Inamovible)
-
-Existen reglas técnicas que no deben "alucinarse":
-
-1. **NO WebSockets:** Usar exclusivamente Pusher Channels + FCM.
-2. **Canales Privados:** Toda actualización de orden usa canales `private-`.
-3. **Roles:** Solo existen 4 niveles (0-3). Los roles `transport` y `affiliate` están eliminados.
-4. **Deprecaciones:** `profiles.phone` no debe usarse; los teléfonos están en la tabla `phones`.
+- `zonix-brand-ops` → `zonix-web-design`, `zonix-ui-design`
+- `zonix-design-enforcer` → `zonix-ui-design`, `zonix-brand-ops`
+- `zonix-web-design` → `BRAND_ZONIX_PHARMA.md`, `zonix.css`
 
 ---
 
-## 5. Cómo Hacer Cambios (IA Flow)
+## 6. Infraestructura Crítica (Inamovible)
 
-1. **Analizar:** Leer `AGENTS.md` y `MAINTENANCE_SKILLS.md`.
-2. **Proponer:** Crear un `implementation_plan.md` detallando las skills a modificar.
-3. **Ejecutar:** Aplicar cambios, subir versión de la skill (v1.0 -> v2.0) y añadir fecha de actualización.
-4. **Verificar:** Correr auditoría de coherencia.
+1. **NO WebSockets nativos:** Pusher Channels + FCM.
+2. **Canales privados:** Actualizaciones de orden usan canales `private-`.
+3. **Roles:** Solo 4 niveles (0–3).
+4. **Deprecaciones:** `profiles.phone` no debe usarse; teléfonos en tabla `phones`.
+5. **Tokens de color:** `AppColors.brand*` (Flutter) y variables en `public/css/zonix.css` (web).
 
 ---
 
-**Última actualización:** 25 Febrero 2026
+## 7. Cómo Hacer Cambios (IA Flow)
+
+1. **Analizar:** Leer `AGENTS.md` y este archivo.
+2. **Proponer:** Plan detallando skills a modificar; respetar precedencia §2.
+3. **Ejecutar:** Aplicar cambios; frontmatter `related-skills` en skills nuevas.
+4. **Verificar:** `grep SKILLS-START AGENTS.md`; skills no deben introducir HEX fuera de BRAND.
+
+---
+
+**Última actualización:** 10 Junio 2026  
 **Zonix Team**

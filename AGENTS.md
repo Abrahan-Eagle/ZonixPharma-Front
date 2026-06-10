@@ -39,13 +39,18 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
 | **Versión** | 1.0.0 |
 | **Estado** | Migración Eats → Pharma (fork destructivo) en progreso |
 | **Plataformas** | Android + iOS |
-| **Última actualización** | 27 mayo 2026 |
+| **Archivos Dart (`lib/`)** | 203 |
+| **Pantallas** | 89 |
+| **Tests** | 216 passed (~1 skip) |
+| **Última actualización** | 9 junio 2026 |
 
 ### Cambios recientes
 
 - **27 may 2026 — Spec Kit (SDD) espejo Cursor:** skills `speckit-*` en `.cursor/skills/`; hub de specs en repo Backend.
 - **30 abr 2026 — Transformación Zonix Eats → Zonix Pharma (fork destructivo, MVP completo Rx).**
-  - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, `applicationId = com.zonix.pharma` (Android), `bundleId = com.zonix.pharma` (iOS), web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}`.
+  - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}`.
+  - **Android (parche temporal):** `applicationId` / `namespace` = `com.zonix.eats` en `android/app/build.gradle` (Firebase/Google Sign-In compartido con proyecto Eats). **Objetivo:** `com.zonix.pharma` cuando la app esté registrada en consola con las mismas SHA.
+  - **iOS:** `bundleId = com.zonix.pharma`. Firebase iOS (`GoogleService-Info.plist`) pendiente.
   - Paleta Pharma fría en `lib/features/utils/app_colors.dart` (tokens `brand*`) + tema light/dark Pharma en `app_theme.dart` (Plus Jakarta Sans, primario navy, secundario teal, CTA teal). Splash actualizado a `#F5F7FA / #142033`.
   - Modelos: `Product` extendido con campos farmacéuticos (principio activo, presentación, registro INHRR, requires_prescription, controlled_substance, cold_chain, etc.). Nuevos: `Prescription`, `MedicineLot`. `CartItem` con flags Rx/cold_chain. Modelo `Restaurant` mantenido como alias `Pharmacy` para compatibilidad.
   - Servicio nuevo: `PrescriptionService` (registrado en `MultiProvider` de `main.dart`). Pantallas nuevas: `PrescriptionUploadPage`, `MyPrescriptionsPage`, `PharmacistDashboardPage`, `PendingValidationsPage`, `ValidationDetailPage`.
@@ -198,6 +203,9 @@ notifyListeners() → Consumer<Service>
 | `zonix-order-lifecycle` | Estados de orden incluyendo `pending_prescription_validation` | [.agents/skills/zonix-order-lifecycle/SKILL.md](.agents/skills/zonix-order-lifecycle/SKILL.md) |
 | `zonix-realtime-events` | Pusher, FCM, eventos | [.agents/skills/zonix-realtime-events/SKILL.md](.agents/skills/zonix-realtime-events/SKILL.md) |
 | `zonix-ui-design` | Paleta Pharma, cards, layouts | [.agents/skills/zonix-ui-design/SKILL.md](.agents/skills/zonix-ui-design/SKILL.md) |
+| `zonix-design-enforcer` | Grid 8pt, WCAG, tokens brand*, M3/HIG | [.agents/skills/zonix-design-enforcer/SKILL.md](.agents/skills/zonix-design-enforcer/SKILL.md) |
+| `zonix-brand-ops` | Naming, tono pharma, 60-30-10 (stub → Backend) | [.agents/skills/zonix-brand-ops/SKILL.md](.agents/skills/zonix-brand-ops/SKILL.md) |
+| `zonix-web-design` | Landing Blade/CSS (stub → Backend) | [.agents/skills/zonix-web-design/SKILL.md](.agents/skills/zonix-web-design/SKILL.md) |
 | `context-updater` | Actualizar `docs/active_context.md` | [.agents/skills/context-updater/SKILL.md](.agents/skills/context-updater/SKILL.md) |
 | `documentar-avances` | Proponer "Cambios recientes" | [.agents/skills/documentar-avances/SKILL.md](.agents/skills/documentar-avances/SKILL.md) |
 | `zonix-startup-context` | Contexto canónico inversor (stub → Backend) | [.agents/skills/zonix-startup-context/SKILL.md](.agents/skills/zonix-startup-context/SKILL.md) |
@@ -219,7 +227,8 @@ notifyListeners() → Consumer<Service>
 | ------ | ----- |
 | Crear/modificar pantallas o widgets | `flutter-expert` |
 | Crear/modificar servicios | `flutter-expert` |
-| Diseñar UI/UX | `ui-ux-pro-max` + `zonix-ui-design` |
+| Diseñar UI/UX Flutter | `zonix-ui-design` + `zonix-design-enforcer` + `ui-ux-pro-max` (secundaria) |
+| Copy / naming / branding app | `zonix-brand-ops` (stub → Backend) |
 | Onboarding (incluye pharmacist) | `zonix-onboarding` |
 | Estados / flujo de órdenes | `zonix-order-lifecycle` |
 | Implementar Pusher / FCM | `zonix-realtime-events` |
@@ -229,7 +238,7 @@ notifyListeners() → Consumer<Service>
 | UI alineada a pack inversor / claims salud | `zonix-startup-context` + `zonix-lanzamiento-roles` + Backend `zonix-regulatory-ve` |
 | Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` (stub → Backend) |
 | Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` (stub → Backend) |
-| Nueva feature producto (spec en Backend hub) | Spec Kit `speckit-*` + `zonix-ui-design` / `zonix-order-lifecycle` — ver Backend [SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md) |
+| Nueva feature producto (spec en Backend hub) | Spec Kit `speckit-*` + `zonix-ui-design` + `zonix-design-enforcer` / `zonix-order-lifecycle` — ver Backend [SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md) |
 | Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` (stub → Backend) |
 | Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` (stub → Backend) |
 
@@ -277,5 +286,5 @@ Mostrar advertencia en checkout si `cartService.coldChainRequired`. Restringir U
 
 ---
 
-**Última actualización:** 20 mayo 2026
+**Última actualización:** 9 junio 2026
 **Para instrucciones completas:** Ver `README.md`

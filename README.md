@@ -35,26 +35,29 @@ flutter test
 
 ## 📋 Descripción General *(histórico / detalle)*
 
-Frontend de la aplicación Zonix Eats desarrollado en Flutter. Aplicación móvil multi-plataforma para sistema de delivery de comida con soporte para múltiples roles de usuario.
+Frontend de **Zonix Pharma** en Flutter. Marketplace farmacéutico (OTC + recetas) con soporte para **7 roles** de usuario.
 
-## 📊 Estado del Proyecto (Actualizado: 6 Mar 2026)
+## 📊 Estado del Proyecto (Actualizado: 9 Jun 2026)
 
 | Métrica           | Valor                                          |
 | ----------------- | ---------------------------------------------- |
-| **Versión**       | 1.0.0                                          |
+| **Versión**       | 1.0.0+1 (pubspec) / 3.0.16 (Android)           |
 | **Flutter SDK**   | >=3.5.0 <4.0.0                                 |
-| **Archivos Dart** | 183                                            |
-| **Pantallas**     | 79                                             |
-| **Servicios**     | 32                                              |
-| **Tests**         | 167 pasaron ✅, 1 omitido, 0 fallaron           |
-| **Roles**         | 6 (ver tabla debajo)                           |
+| **Archivos Dart** | 203                                            |
+| **Pantallas**     | 89                                             |
+| **Servicios**     | 37                                             |
+| **Tests**         | 216 passed ✅, ~1 omitido                      |
+| **Roles**         | 7 (ver tabla superior)                         |
+
+> **Android ID:** parche temporal `com.zonix.eats` (ver `AGENTS.md`). iOS: `com.zonix.pharma`.
 
 ### Terminología Estándar de Roles
 
 | Código en BD       | Nombre Estándar     | Descripción                                              |
 | ------------------ | ------------------- | -------------------------------------------------------- |
-| `users`            | **Buyer**           | Comprador, Cliente                                       |
-| `commerce`         | **Commerce**        | Comercio, Restaurante                                    |
+| `users`            | **Buyer**           | Comprador / paciente                                     |
+| `commerce`         | **Pharmacy**        | Farmacia / droguería                                     |
+| `pharmacist`       | **Pharmacist**      | Farmacéutico colegiado (valida recetas)                  |
 | `delivery_company` | **Delivery Company**| Empresa que administra repartidores                      |
 | `delivery_agent`   | **Delivery Agent**  | Repartidor vinculado a empresa (`company_id` no nulo)    |
 | `delivery`         | **Delivery**        | Repartidor autónomo (sin empresa, `company_id` nulo)     |
