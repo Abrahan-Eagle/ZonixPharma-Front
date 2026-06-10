@@ -7,6 +7,7 @@ import 'package:zonix/features/services/order_service.dart';
 import 'package:zonix/features/services/promotion_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
+import 'package:zonix/models/cart_item.dart';
 import 'package:zonix/features/screens/orders/order_confirmation_page.dart';
 import 'package:zonix/features/screens/prescriptions/prescription_upload_page.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
@@ -383,8 +384,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.grayDark
-                      : AppColors.grayLight.withValues(alpha: 0.7),
+                      ? AppColors.brandSurfaceContainerDark
+                      : AppColors.brandSurfaceLight.withValues(alpha: 0.7),
                 ),
               ),
               child: Column(
@@ -444,11 +445,11 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                     : Container(
                                         color: Theme.of(context).brightness ==
                                                 Brightness.dark
-                                            ? AppColors.grayDark
-                                            : AppColors.grayLight,
+                                            ? AppColors.brandSurfaceContainerDark
+                                            : AppColors.brandSurfaceLight,
                                         child: const Icon(
                                           Icons.local_pharmacy,
-                                          color: AppColors.gray,
+                                          color: AppColors.brandTealDeep,
                                         ),
                                       ),
                               ),
@@ -495,7 +496,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                       item.notes!,
                                       style: const TextStyle(
                                         fontSize: 12,
-                                        color: AppColors.gray,
+                                        color: AppColors.brandTealDeep,
                                         fontStyle: FontStyle.italic,
                                       ),
                                     ),
@@ -565,7 +566,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 color: AppColors.cardBg(context),
                 borderRadius: BorderRadius.circular(999),
                 border: Border.all(
-                  color: AppColors.gray.withValues(alpha: 0.2),
+                  color: AppColors.brandTealDeep.withValues(alpha: 0.2),
                 ),
               ),
               child: Row(
@@ -678,6 +679,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
               'Cupón de descuento',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
+            if (cartService.requiresPrescription)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Los cupones solo aplican al subtotal OTC (sin receta). '
+                  'Medicamentos Rx no reciben descuento.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.secondaryText(context),
+                  ),
+                ),
+              ),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -716,7 +729,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   child: ElevatedButton(
                     onPressed: _appliedCoupon != null || _validatingCoupon
                         ? null
-                        : () => _validateCoupon(subtotal + delivery),
+                        : () => _validateCoupon(
+                              _couponEligibleSubtotal(cartItems),
+                            ),
                     child: _validatingCoupon
                         ? const SizedBox(
                             height: 18,
@@ -732,10 +747,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.green.withValues(alpha: 0.1),
+                  color: AppColors.statusSuccess.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                   border:
-                      Border.all(color: AppColors.green.withValues(alpha: 0.3)),
+                      Border.all(color: AppColors.statusSuccess.withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   children: [
@@ -899,7 +914,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   color: AppColors.cardBg(context),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.gray.withValues(alpha: 0.2),
+                    color: AppColors.brandTealDeep.withValues(alpha: 0.2),
                   ),
                 ),
                 child: Row(
@@ -908,7 +923,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.orange.withValues(alpha: 0.15),
+                        color: AppColors.brandCtaAccent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Icon(
@@ -936,7 +951,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 'Selecciona o agrega una dirección',
                             style: const TextStyle(
                               fontSize: 13,
-                              color: AppColors.gray,
+                              color: AppColors.brandTealDeep,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -944,7 +959,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             'Estimado: 25-35 min',
                             style: TextStyle(
                               fontSize: 11,
-                              color: AppColors.gray,
+                              color: AppColors.brandTealDeep,
                             ),
                           ),
                         ],
@@ -983,7 +998,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 color: AppColors.cardBg(context),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.gray.withValues(alpha: 0.2),
+                  color: AppColors.brandTealDeep.withValues(alpha: 0.2),
                 ),
               ),
               child: Row(
@@ -993,8 +1008,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     height: 32,
                     decoration: BoxDecoration(
                       color: Theme.of(context).brightness == Brightness.dark
-                          ? AppColors.grayDark
-                          : AppColors.grayLight,
+                          ? AppColors.brandSurfaceContainerDark
+                          : AppColors.brandSurfaceLight,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -1020,7 +1035,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           'Verás las opciones del comercio al subir el comprobante.',
                           style: TextStyle(
                             fontSize: 11,
-                            color: AppColors.gray,
+                            color: AppColors.brandTealDeep,
                           ),
                         ),
                       ],
@@ -1041,7 +1056,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 color: AppColors.cardBg(context),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: AppColors.gray.withValues(alpha: 0.2),
+                  color: AppColors.brandTealDeep.withValues(alpha: 0.2),
                 ),
               ),
               child: Column(
@@ -1147,7 +1162,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 11,
-                  color: AppColors.gray,
+                  color: AppColors.brandTealDeep,
                 ),
               ),
             ),
@@ -1157,9 +1172,29 @@ class _CheckoutPageState extends State<CheckoutPage> {
     );
   }
 
+  double _couponEligibleSubtotal(List<CartItem> items) {
+    return items
+        .where((item) => !item.requiresPrescription)
+        .fold<double>(0, (sum, item) => sum + (item.precio ?? 0) * item.quantity);
+  }
+
   Future<void> _validateCoupon(double orderAmount) async {
     final code = _couponController.text.trim();
     if (code.isEmpty) return;
+    if (orderAmount <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'No hay subtotal OTC elegible para cupón. '
+              'Los medicamentos con receta no admiten promociones.',
+            ),
+            backgroundColor: AppColors.statusError,
+          ),
+        );
+      }
+      return;
+    }
 
     setState(() => _validatingCoupon = true);
     try {

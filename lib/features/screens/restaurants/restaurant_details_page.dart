@@ -99,10 +99,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
   final TextEditingController _searchController = TextEditingController();
   final Debouncer _debouncer = Debouncer(milliseconds: 350);
 
-  static const Color _accent = AppColors.amber;
-  static const Color _primary = AppColors.blue;
-  static const Color _bgLight = AppColors.grayLight;
-  static const Color _bgDark = AppColors.backgroundDark;
+  static const Color _accent = AppColors.statusWarning;
+  static const Color _primary = AppColors.brandTeal;
+  static const Color _bgLight = AppColors.brandSurfaceLight;
+  static const Color _bgDark = AppColors.brandSurfaceDark;
 
   static final Map<int, double> _scrollOffsets = {};
   late final ScrollController _scrollController;
@@ -300,10 +300,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final bgColor = isDark ? _bgDark : _bgLight;
-    final cardColor = isDark ? AppColors.grayDark : AppColors.white;
+    final cardColor = isDark ? AppColors.brandSurfaceContainerDark : AppColors.white;
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
-    final borderColor = isDark ? AppColors.grayDark : AppColors.grayLight;
+    final borderColor = isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -328,11 +328,11 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                       widget.logoUrl!,
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                          color: isDark ? _bgDark : AppColors.backgroundDark),
+                          color: isDark ? _bgDark : AppColors.brandSurfaceDark),
                     )
                   else
                     Container(
-                        color: isDark ? _bgDark : AppColors.backgroundDark),
+                        color: isDark ? _bgDark : AppColors.brandSurfaceDark),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -501,8 +501,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: widget.abierto
-                                      ? AppColors.green.withValues(alpha: 0.12)
-                                      : AppColors.red.withValues(alpha: 0.12),
+                                      ? AppColors.statusSuccess.withValues(alpha: 0.12)
+                                      : AppColors.statusError.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(999),
                                 ),
                                 child: Text(
@@ -1118,8 +1118,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: widget.abierto
-                      ? AppColors.green.withValues(alpha: 0.12)
-                      : AppColors.red.withValues(alpha: 0.12),
+                      ? AppColors.statusSuccess.withValues(alpha: 0.12)
+                      : AppColors.statusError.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999),
                 ),
                 child: Text(
@@ -1459,7 +1459,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage> {
   Widget _shimmerCard(Color cardColor, Color borderColor) {
     final shimmerBase = Theme.of(context).brightness == Brightness.dark
         ? AppColors.white.withValues(alpha: 0.06)
-        : AppColors.grayLight;
+        : AppColors.brandSurfaceLight;
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),

@@ -193,12 +193,12 @@ class _CommercePaymentMethodsPageState
 
   @override
   Widget build(BuildContext context) {
-    final bg = _isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+    final bg = _isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final cardBg = AppColors.cardBg(context);
     final primaryText = AppColors.primaryText(context);
     final secondaryText = AppColors.secondaryText(context);
     final borderColor =
-        _isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
+        _isDark ? AppColors.stitchSurfaceLighter : AppColors.brandStrokeLight;
 
     if (_loading) {
       return Scaffold(
@@ -273,9 +273,9 @@ class _CommercePaymentMethodsPageState
                           final subtitle = _subtitle(m, effectiveType, ref);
 
                           final cardBorder =
-                              _isDark ? borderColor : AppColors.stitchBorder;
+                              _isDark ? borderColor : AppColors.brandStrokeLight;
                           final iconBg = _isDark
-                              ? AppColors.blue.withValues(alpha: 0.25)
+                              ? AppColors.brandTeal.withValues(alpha: 0.25)
                               : AppColors.blueLight50;
                           final iconColor = isActive
                               ? (_isDark
@@ -392,12 +392,12 @@ class _CommercePaymentMethodsPageState
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                           color: _isDark
-                              ? AppColors.grayDark.withValues(alpha: 0.5)
+                              ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5)
                               : AppColors.slateLight50,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color:
-                                _isDark ? borderColor : AppColors.stitchBorder,
+                                _isDark ? borderColor : AppColors.brandStrokeLight,
                             width: 1,
                           ),
                         ),

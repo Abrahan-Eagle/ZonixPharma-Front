@@ -143,17 +143,17 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
   Color _roleColor(String? role) {
     switch (role) {
       case 'users':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'commerce':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'delivery_company':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'delivery_agent':
-        return AppColors.teal;
+        return AppColors.brandTeal;
       case 'delivery':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'admin':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return AppColors.stitchSlate;
     }
@@ -175,11 +175,11 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
   Color _statusColor(String? status) {
     switch (status) {
       case 'active':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'suspended':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'banned':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return AppColors.stitchSlate;
     }
@@ -263,11 +263,11 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             child: ChoiceChip(
               label: Text(e.value),
               selected: selected,
-              selectedColor: AppColors.blue.withAlpha(40),
+              selectedColor: AppColors.brandTeal.withAlpha(40),
               labelStyle: TextStyle(
                 color: selected
                     ? AppColors.brandTeal
-                    : (isDark ? AppColors.white70 : AppColors.gray),
+                    : (isDark ? AppColors.white70 : AppColors.brandTealDeep),
                 fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
               ),
               onSelected: (_) {
@@ -294,11 +294,11 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             child: ChoiceChip(
               label: Text(e.value),
               selected: selected,
-              selectedColor: AppColors.orange.withAlpha(40),
+              selectedColor: AppColors.brandCtaAccent.withAlpha(40),
               labelStyle: TextStyle(
                 color: selected
                     ? AppColors.brandCtaAccent
-                    : (isDark ? AppColors.white70 : AppColors.gray),
+                    : (isDark ? AppColors.white70 : AppColors.brandTealDeep),
                 fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
               ),
               onSelected: (_) {

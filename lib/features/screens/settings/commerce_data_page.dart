@@ -234,7 +234,7 @@ class _CommerceDataPageState extends State<CommerceDataPage> {
                             _logoUrl != null ? NetworkImage(_logoUrl!) : null,
                         child: _logoUrl == null
                             ? const Icon(Icons.store,
-                                size: 50, color: AppColors.textMutedGray)
+                                size: 50, color: AppColors.stitchSlate)
                             : null,
                       ),
                       const SizedBox(height: 16),

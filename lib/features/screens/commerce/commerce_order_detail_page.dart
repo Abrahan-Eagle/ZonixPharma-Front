@@ -543,10 +543,10 @@ class _CommerceOrderDetailPageState extends State<CommerceOrderDetailPage> {
                               width: double.infinity,
                               padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: AppColors.amber.withValues(alpha: 0.12),
+                                color: AppColors.statusWarning.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: AppColors.amber.withValues(alpha: 0.4),
+                                  color: AppColors.statusWarning.withValues(alpha: 0.4),
                                 ),
                               ),
                               child: Column(
@@ -905,8 +905,8 @@ class _FulfillmentModeBanner extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return Card(
       color: pickup
-          ? AppColors.green.withValues(alpha: 0.12)
-          : AppColors.blue.withValues(alpha: 0.12),
+          ? AppColors.statusSuccess.withValues(alpha: 0.12)
+          : AppColors.brandTeal.withValues(alpha: 0.12),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
         child: Row(

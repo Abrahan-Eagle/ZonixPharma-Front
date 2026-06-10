@@ -29,7 +29,7 @@ class _LocationSearchPageState extends State<LocationSearchPage> {
   bool _loadingLocation = true;
   String? _error;
 
-  static const _primary = AppColors.blue;
+  static const _primary = AppColors.brandTeal;
 
   @override
   void initState() {

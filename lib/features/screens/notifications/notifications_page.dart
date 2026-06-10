@@ -65,15 +65,15 @@ List<String> _sectionOrder(Map<String, List<NotificationItem>> groups) {
     String? type, BuildContext context) {
   final theme = Theme.of(context);
   final isDark = theme.brightness == Brightness.dark;
-  final mutedBg = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
-  final mutedFg = isDark ? AppColors.stitchSlate400 : AppColors.textMutedGray;
+  final mutedBg = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
+  final mutedFg = isDark ? AppColors.stitchSlate400 : AppColors.stitchSlate;
 
   switch (type?.toLowerCase()) {
     case 'order':
     case 'pedido':
       return (
         icon: Icons.shopping_bag_outlined,
-        bgColor: AppColors.blue.withValues(alpha: 0.2),
+        bgColor: AppColors.brandTeal.withValues(alpha: 0.2),
         iconColor: AppColors.brandTeal
       );
     case 'promotion':
@@ -81,7 +81,7 @@ List<String> _sectionOrder(Map<String, List<NotificationItem>> groups) {
     case 'promo':
       return (
         icon: Icons.local_offer_outlined,
-        bgColor: AppColors.amber.withValues(alpha: 0.2),
+        bgColor: AppColors.statusWarning.withValues(alpha: 0.2),
         iconColor: AppColors.statusWarning
       );
     case 'points':
@@ -89,7 +89,7 @@ List<String> _sectionOrder(Map<String, List<NotificationItem>> groups) {
     case 'loyalty':
       return (
         icon: Icons.star_outline,
-        bgColor: AppColors.green.withValues(alpha: 0.2),
+        bgColor: AppColors.statusSuccess.withValues(alpha: 0.2),
         iconColor: AppColors.statusSuccess
       );
     case 'support':
@@ -198,10 +198,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final scaffoldBg =
-        isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+        isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final onSurface = theme.colorScheme.onSurface;
     final onSurfaceVariant = theme.colorScheme.onSurfaceVariant;
-    const sectionTodayColor = AppColors.blue;
+    const sectionTodayColor = AppColors.brandTeal;
     final sectionOtherColor = onSurfaceVariant;
 
     return Scaffold(
@@ -245,7 +245,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.cloud_off,
-                      size: 64, color: AppColors.textMutedGray),
+                      size: 64, color: AppColors.stitchSlate),
                   const SizedBox(height: 16),
                   Text(notificationService.error!,
                       style: const TextStyle(fontSize: 16)),
@@ -274,8 +274,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         height: 120,
                         decoration: BoxDecoration(
                           color: isDark
-                              ? AppColors.slateBorder
-                              : AppColors.stitchBorder.withValues(alpha: 0.5),
+                              ? AppColors.brandStrokeDark
+                              : AppColors.brandStrokeLight.withValues(alpha: 0.5),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(

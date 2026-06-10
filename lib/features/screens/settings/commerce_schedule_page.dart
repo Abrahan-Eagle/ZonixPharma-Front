@@ -296,7 +296,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                       const SizedBox(height: 8),
                       const Text(
                         'Si necesitas un horario más específico, puedes escribirlo aquí:',
-                        style: TextStyle(color: AppColors.textMutedGray),
+                        style: TextStyle(color: AppColors.stitchSlate),
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
@@ -344,7 +344,7 @@ class _CommerceSchedulePageState extends State<CommerceSchedulePage> {
                         '• Puedes usar el horario personalizado para casos especiales\n'
                         '• Los cambios se aplican inmediatamente',
                         style: TextStyle(
-                            fontSize: 14, color: AppColors.textMutedGray),
+                            fontSize: 14, color: AppColors.stitchSlate),
                       ),
                     ],
                   ),

@@ -536,15 +536,15 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
   Color _roleBadgeColor(String senderType) {
     switch (senderType) {
       case 'restaurant':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'delivery_agent':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'admin':
-        return AppColors.red;
+        return AppColors.statusError;
       case 'customer':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       default:
-        return AppColors.textMutedGray;
+        return AppColors.stitchSlate;
     }
   }
 
@@ -612,7 +612,7 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(999),
                       borderSide: BorderSide(
-                          color: AppColors.blue.withValues(alpha: 0.35)),
+                          color: AppColors.brandTeal.withValues(alpha: 0.35)),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 14),
@@ -623,7 +623,7 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
               Material(
                 color: AppColors.brandTeal,
                 elevation: 4,
-                shadowColor: AppColors.blue.withValues(alpha: 0.35),
+                shadowColor: AppColors.brandTeal.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(999),
                 child: InkWell(
                   onTap: _sending ? null : _sendMessage,

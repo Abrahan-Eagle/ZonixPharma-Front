@@ -47,21 +47,21 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
 
     return Scaffold(
       backgroundColor:
-          isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+          isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.grayDark : AppColors.white,
+        backgroundColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: AppColors.transparent,
         leading: IconButton(
           icon: Icon(Icons.arrow_back,
-              color: isDark ? AppColors.white : AppColors.blueDark),
+              color: isDark ? AppColors.white : AppColors.brandNavy),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Ayuda y Soporte',
           style: TextStyle(
-            color: isDark ? AppColors.white : AppColors.blueDark,
+            color: isDark ? AppColors.white : AppColors.brandNavy,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -147,16 +147,16 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                 }),
                 decoration: InputDecoration(
                   hintText: '¿Cómo podemos ayudarte?',
-                  hintStyle: const TextStyle(color: AppColors.textMutedGray),
+                  hintStyle: const TextStyle(color: AppColors.stitchSlate),
                   prefixIcon: Icon(
                     Icons.search,
                     color: query.isNotEmpty
                         ? AppColors.brandTeal
-                        : AppColors.textMutedGray,
+                        : AppColors.stitchSlate,
                     size: 24,
                   ),
                   filled: true,
-                  fillColor: isDark ? AppColors.grayDark : AppColors.white,
+                  fillColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
@@ -178,7 +178,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 style: TextStyle(
-                  color: isDark ? AppColors.white : AppColors.blueDark,
+                  color: isDark ? AppColors.white : AppColors.brandNavy,
                   fontSize: 15,
                 ),
               ),
@@ -189,13 +189,13 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.search_off,
-                      size: 40, color: AppColors.textMutedGray),
+                      size: 40, color: AppColors.stitchSlate),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'No hay resultados para "$query". Prueba con otras palabras.',
                       style: const TextStyle(
-                          fontSize: 13, color: AppColors.textMutedGray),
+                          fontSize: 13, color: AppColors.stitchSlate),
                     ),
                   ),
                 ],
@@ -216,7 +216,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
           fontSize: 13,
           fontWeight: FontWeight.w600,
           letterSpacing: 0.5,
-          color: isDark ? AppColors.white54 : AppColors.textMutedGray,
+          color: isDark ? AppColors.white54 : AppColors.stitchSlate,
         ),
       ),
     );
@@ -246,7 +246,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: isDark ? AppColors.grayDark : AppColors.white,
+                color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isDark ? AppColors.white12 : AppColors.borderLight,
@@ -268,7 +268,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.blue.withValues(alpha: 0.15),
+                      color: AppColors.brandTeal.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Icon(t.icon, color: AppColors.brandTeal, size: 24),
@@ -279,7 +279,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: isDark ? AppColors.white : AppColors.blueDark,
+                      color: isDark ? AppColors.white : AppColors.brandNavy,
                     ),
                   ),
                 ],
@@ -388,21 +388,21 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                 color: isDark ? AppColors.white12 : AppColors.borderLight,
               ),
             ),
-            backgroundColor: isDark ? AppColors.grayDark : AppColors.white,
+            backgroundColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
             collapsedBackgroundColor:
-                isDark ? AppColors.grayDark : AppColors.white,
+                isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
             expandedCrossAxisAlignment: CrossAxisAlignment.start,
             title: Text(
               question,
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.white : AppColors.blueDark,
+                color: isDark ? AppColors.white : AppColors.brandNavy,
               ),
             ),
             trailing: const Icon(
               Icons.expand_more,
-              color: AppColors.textMutedGray,
+              color: AppColors.stitchSlate,
               size: 24,
             ),
             children: [
@@ -422,7 +422,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                     style: TextStyle(
                       fontSize: 14,
                       height: 1.5,
-                      color: isDark ? AppColors.white70 : AppColors.gray,
+                      color: isDark ? AppColors.white70 : AppColors.brandTealDeep,
                     ),
                   ),
                 ),
@@ -438,14 +438,14 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.blue.withValues(alpha: isDark ? 0.15 : 0.08),
+        color: AppColors.brandTeal.withValues(alpha: isDark ? 0.15 : 0.08),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.blue.withValues(alpha: 0.25)),
+        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.25)),
         boxShadow: isDark
             ? null
             : [
                 BoxShadow(
-                  color: AppColors.blue.withValues(alpha: 0.08),
+                  color: AppColors.brandTeal.withValues(alpha: 0.08),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -458,7 +458,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: isDark ? AppColors.white : AppColors.blueDark,
+              color: isDark ? AppColors.white : AppColors.brandNavy,
             ),
           ),
           const SizedBox(height: 6),
@@ -467,7 +467,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 13,
-              color: isDark ? AppColors.white54 : AppColors.textMutedGray,
+              color: isDark ? AppColors.white54 : AppColors.stitchSlate,
             ),
           ),
           const SizedBox(height: 20),
@@ -482,7 +482,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 elevation: 2,
-                shadowColor: AppColors.blue.withValues(alpha: 0.35),
+                shadowColor: AppColors.brandTeal.withValues(alpha: 0.35),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -497,7 +497,7 @@ class _HelpAndFAQPageState extends State<HelpAndFAQPage> {
               icon: const Icon(Icons.mail, size: 20),
               label: const Text('Enviar un Correo'),
               style: OutlinedButton.styleFrom(
-                foregroundColor: isDark ? AppColors.white : AppColors.blueDark,
+                foregroundColor: isDark ? AppColors.white : AppColors.brandNavy,
                 side: BorderSide(
                     color: isDark ? AppColors.white24 : AppColors.borderLight),
                 padding: const EdgeInsets.symmetric(vertical: 14),

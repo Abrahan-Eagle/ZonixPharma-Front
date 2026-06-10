@@ -200,7 +200,7 @@ class _CommercePromotionFormPageState extends State<CommercePromotionFormPage> {
                 padding: const EdgeInsets.all(12),
                 margin: const EdgeInsets.only(bottom: 16),
                 decoration: BoxDecoration(
-                  color: AppColors.red.withValues(alpha: 0.1),
+                  color: AppColors.statusError.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(_error!,

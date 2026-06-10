@@ -535,13 +535,13 @@ class _CommerceChatMessagesPageState extends State<CommerceChatMessagesPage> {
   Color _roleBadgeColor(BuildContext context, String senderType) {
     switch (senderType) {
       case 'restaurant':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'delivery_agent':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'admin':
-        return AppColors.red;
+        return AppColors.statusError;
       case 'customer':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       default:
         return Theme.of(context).colorScheme.onSurfaceVariant;
     }
@@ -611,7 +611,7 @@ class _CommerceChatMessagesPageState extends State<CommerceChatMessagesPage> {
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(999),
                       borderSide: BorderSide(
-                          color: AppColors.blue.withValues(alpha: 0.35)),
+                          color: AppColors.brandTeal.withValues(alpha: 0.35)),
                     ),
                     contentPadding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 14),
@@ -622,7 +622,7 @@ class _CommerceChatMessagesPageState extends State<CommerceChatMessagesPage> {
               Material(
                 color: AppColors.brandTeal,
                 elevation: 4,
-                shadowColor: AppColors.blue.withValues(alpha: 0.35),
+                shadowColor: AppColors.brandTeal.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(999),
                 child: InkWell(
                   onTap: _sending ? null : _sendMessage,

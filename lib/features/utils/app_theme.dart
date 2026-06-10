@@ -5,7 +5,7 @@ import 'package:zonix/features/utils/app_colors.dart';
 /// Tema visual Zonix Pharma (light + dark) basado en `AppColors.brand*`.
 /// Tipografía: Plus Jakarta Sans (vía Google Fonts).
 const Color stitchPrimary = AppColors.brandTeal;
-const Color stitchOnPrimary = Colors.white;
+const Color stitchOnPrimary = AppColors.white;
 const Color stitchSecondary = AppColors.brandNavy;
 const Color stitchBgLight = AppColors.brandSurfaceLight;
 const Color stitchBgDark = AppColors.brandSurfaceDark;
@@ -36,26 +36,26 @@ ThemeData buildStitchLightTheme() {
     ),
     colorScheme: const ColorScheme.light(
       primary: AppColors.brandNavy,
-      onPrimary: Colors.white,
+      onPrimary: AppColors.white,
       secondary: AppColors.brandTeal,
-      onSecondary: Colors.white,
+      onSecondary: AppColors.white,
       tertiary: AppColors.brandCtaAccent,
-      onTertiary: Colors.white,
+      onTertiary: AppColors.white,
       error: AppColors.statusError,
-      onError: Colors.white,
+      onError: AppColors.white,
       surface: stitchBgLight,
       onSurface: AppColors.stitchTextDark,
     ),
-    cardColor: Colors.white,
+    cardColor: AppColors.white,
     cardTheme: CardThemeData(
-      color: Colors.white,
+      color: AppColors.white,
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.brandTeal,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.brandNavy,
         minimumSize: const Size(0, 56),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: GoogleFonts.plusJakartaSans(
@@ -80,11 +80,11 @@ ThemeData buildStitchLightTheme() {
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.brandTeal,
-      foregroundColor: Colors.white,
+      foregroundColor: AppColors.brandNavy,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: Colors.white,
+      fillColor: AppColors.white,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
@@ -97,7 +97,7 @@ ThemeData buildStitchLightTheme() {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       selectedItemColor: AppColors.brandTeal,
       unselectedItemColor: AppColors.stitchSlate400,
       type: BottomNavigationBarType.fixed,
@@ -118,15 +118,15 @@ ThemeData buildStitchDarkTheme() {
     scaffoldBackgroundColor: stitchBgDark,
     appBarTheme: AppBarTheme(
       backgroundColor: stitchBgDark,
-      foregroundColor: Colors.white,
+      foregroundColor: AppColors.white,
       elevation: 0,
       centerTitle: false,
       titleTextStyle: GoogleFonts.plusJakartaSans(
-        color: Colors.white,
+        color: AppColors.white,
         fontWeight: FontWeight.bold,
         fontSize: 22,
       ),
-      iconTheme: const IconThemeData(color: Colors.white),
+      iconTheme: const IconThemeData(color: AppColors.white),
     ),
     colorScheme: const ColorScheme.dark(
       primary: AppColors.brandTeal,
@@ -136,9 +136,9 @@ ThemeData buildStitchDarkTheme() {
       tertiary: AppColors.brandCtaAccent,
       onTertiary: AppColors.brandSurfaceDark,
       error: AppColors.statusError,
-      onError: Colors.white,
+      onError: AppColors.white,
       surface: AppColors.brandSurfaceContainerDark,
-      onSurface: Colors.white,
+      onSurface: AppColors.white,
     ),
     cardColor: AppColors.brandSurfaceContainerDark,
     cardTheme: CardThemeData(

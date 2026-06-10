@@ -20,8 +20,8 @@ import 'package:zonix/widgets/app_skeleton.dart';
 import 'package:zonix/models/cart_item.dart';
 import 'product_detail_page.dart';
 
-const Color _primary = AppColors.blue;
-const Color _accentYellow = AppColors.amber;
+const Color _primary = AppColors.brandTeal;
+const Color _accentYellow = AppColors.statusWarning;
 
 class ProductsPage extends StatefulWidget {
   final ProductService? productService;
@@ -375,7 +375,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           onSelected: (_) =>
                               setState(() => _selectedCategory = c),
                           backgroundColor:
-                              isDark ? AppColors.grayDark : AppColors.white,
+                              isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
                           selectedColor: _primary,
                           labelStyle: TextStyle(
                             color: sel
@@ -486,10 +486,10 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget _buildSearchBar(bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? AppColors.grayDark : AppColors.grayLight,
+        color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
         borderRadius: BorderRadius.circular(16),
         border:
-            Border.all(color: isDark ? AppColors.white12 : AppColors.grayLight),
+            Border.all(color: isDark ? AppColors.white12 : AppColors.brandSurfaceLight),
       ),
       child: TextField(
         controller: _searchController,
@@ -555,7 +555,7 @@ class _ProductsPageState extends State<ProductsPage> {
                     gradient: LinearGradient(
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
-                      colors: [AppColors.backgroundDark, AppColors.transparent],
+                      colors: [AppColors.brandSurfaceDark, AppColors.transparent],
                     ),
                   ),
                 ),
@@ -627,13 +627,13 @@ class _ProductsPageState extends State<ProductsPage> {
     final cardChild = Container(
       decoration: BoxDecoration(
         color: isDark
-            ? AppColors.grayDark.withValues(alpha: 0.5)
+            ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5)
             : AppColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
             color: isDark
                 ? AppColors.white.withValues(alpha: 0.1)
-                : AppColors.grayLight),
+                : AppColors.brandSurfaceLight),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: isDark ? 0.3 : 0.05),
@@ -844,7 +844,7 @@ class _ProductsPageState extends State<ProductsPage> {
                           decoration: BoxDecoration(
                             color: isDark
                                 ? AppColors.white.withValues(alpha: 0.1)
-                                : AppColors.grayLight,
+                                : AppColors.brandSurfaceLight,
                             shape: BoxShape.circle,
                             border: Border.all(
                               color: isDark

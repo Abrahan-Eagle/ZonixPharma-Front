@@ -132,7 +132,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
         color: surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isDark ? AppColors.grayDark : AppColors.grayLight,
+          color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
         ),
       ),
       child: Padding(
@@ -173,7 +173,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
                 hintText: 'Comparte tu experiencia...',
                 filled: true,
                 fillColor: isDark
-                    ? AppColors.backgroundDark.withValues(alpha: 0.7)
+                    ? AppColors.brandSurfaceDark.withValues(alpha: 0.7)
                     : AppColors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -182,8 +182,8 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
                     color: isDark
-                        ? AppColors.grayDark
-                        : AppColors.grayLight.withValues(alpha: 0.8),
+                        ? AppColors.brandSurfaceContainerDark
+                        : AppColors.brandSurfaceLight.withValues(alpha: 0.8),
                   ),
                 ),
               ),
@@ -200,7 +200,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
         color: surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: isDark ? AppColors.grayDark : AppColors.grayLight,
+          color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
         ),
       ),
       child: Padding(
@@ -233,7 +233,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
                 hintText: '¿Cómo fue la entrega?',
                 filled: true,
                 fillColor: isDark
-                    ? AppColors.backgroundDark.withValues(alpha: 0.7)
+                    ? AppColors.brandSurfaceDark.withValues(alpha: 0.7)
                     : AppColors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -242,8 +242,8 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
                     color: isDark
-                        ? AppColors.grayDark
-                        : AppColors.grayLight.withValues(alpha: 0.8),
+                        ? AppColors.brandSurfaceContainerDark
+                        : AppColors.brandSurfaceLight.withValues(alpha: 0.8),
                   ),
                 ),
               ),

@@ -138,7 +138,7 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
         return ChoiceChip(
           label: Text(p),
           selected: selected,
-          selectedColor: AppColors.orange.withValues(alpha: 0.2),
+          selectedColor: AppColors.brandCtaAccent.withValues(alpha: 0.2),
           labelStyle: TextStyle(
             color: selected ? AppColors.brandCtaAccent : muted,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
@@ -351,7 +351,7 @@ class _DeliveryEarningsPageState extends State<DeliveryEarningsPage> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.green.withValues(alpha: 0.1),
+                    color: AppColors.statusSuccess.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(Icons.receipt_long,

@@ -100,7 +100,7 @@ class _LegalTile extends StatelessWidget {
         width: 40,
         height: 40,
         decoration: BoxDecoration(
-          color: AppColors.blue.withValues(alpha: 0.15),
+          color: AppColors.brandTeal.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icon, color: AppColors.brandTeal, size: 22),

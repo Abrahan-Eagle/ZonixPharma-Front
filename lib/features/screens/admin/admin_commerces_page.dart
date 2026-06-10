@@ -124,7 +124,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
   }
 
   Color _openBadgeColor(bool open) =>
-      open ? AppColors.statusSuccess : AppColors.red;
+      open ? AppColors.statusSuccess : AppColors.statusError;
 
   String _statusLabel(String status) {
     switch (status) {
@@ -410,7 +410,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
         title: const Text('Comercios'),
         backgroundColor: isDark
             ? Theme.of(context).colorScheme.surfaceContainerHigh
-            : AppColors.blueDark,
+            : AppColors.brandNavy,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -615,7 +615,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
           child: Row(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.blue.withValues(alpha: 0.15),
+                backgroundColor: AppColors.brandTeal.withValues(alpha: 0.15),
                 child: const Icon(Icons.storefront, color: AppColors.brandTeal),
               ),
               const SizedBox(width: 12),

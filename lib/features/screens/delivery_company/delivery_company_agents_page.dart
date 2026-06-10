@@ -98,7 +98,7 @@ class _DeliveryCompanyAgentsPageState extends State<DeliveryCompanyAgentsPage> {
             children: [
               CircleAvatar(
                 radius: 24,
-                backgroundColor: AppColors.blue.withValues(alpha: 0.15),
+                backgroundColor: AppColors.brandTeal.withValues(alpha: 0.15),
                 child: const Icon(Icons.person,
                     color: AppColors.brandTeal, size: 24),
               ),

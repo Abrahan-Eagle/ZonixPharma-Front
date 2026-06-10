@@ -100,10 +100,10 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.white,
+      backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.white,
       appBar: AppBar(
         title: const Text('Escanear farmacia'),
-        backgroundColor: isDark ? AppColors.backgroundDark : AppColors.white,
+        backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.white,
         foregroundColor: isDark ? AppColors.white : AppColors.stitchTextDark,
       ),
       body: Stack(
@@ -128,7 +128,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
               children: [
                 if (_error != null)
                   Material(
-                    color: AppColors.red.withValues(alpha: 0.9),
+                    color: AppColors.statusError.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(12),
                     child: Padding(
                       padding: const EdgeInsets.all(12),
@@ -144,7 +144,7 @@ class _StorefrontQrScannerPageState extends State<StorefrontQrScannerPage> {
                   'Apunta al QR del comercio (catálogo / escaparate).',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: isDark ? AppColors.white70 : AppColors.gray,
+                    color: isDark ? AppColors.white70 : AppColors.brandTealDeep,
                     fontSize: 14,
                   ),
                 ),

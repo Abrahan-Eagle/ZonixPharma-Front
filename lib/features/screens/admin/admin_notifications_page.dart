@@ -255,7 +255,7 @@ class _AdminNotificationsPageState extends State<AdminNotificationsPage> {
           labelStyle: TextStyle(
             color: selected
                 ? meta.color
-                : (_isDark ? AppColors.white70 : AppColors.gray),
+                : (_isDark ? AppColors.white70 : AppColors.brandTealDeep),
             fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
           ),
           onSelected: (_) => setState(() => _type = entry.key),

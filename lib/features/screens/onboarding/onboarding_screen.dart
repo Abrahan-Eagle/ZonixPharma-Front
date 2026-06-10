@@ -63,8 +63,6 @@ class OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -101,7 +99,7 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                           dotHeight: 6,
                           dotWidth: 6,
                           activeDotColor: AppColors.brandTeal,
-                          dotColor: AppColors.blue.withValues(alpha: 0.2),
+                          dotColor: AppColors.brandTeal.withValues(alpha: 0.2),
                           spacing: 8,
                           expansionFactor: 3,
                         ),
@@ -129,16 +127,17 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                             FloatingActionButton(
                               heroTag: 'onboarding_next',
                               onPressed: _handleNext,
-                              backgroundColor: theme.primaryColor,
+                              backgroundColor: AppColors.brandTeal,
+                              foregroundColor: AppColors.brandNavy,
                               elevation: 2,
                               child: _isLoading
                                   ? const CircularProgressIndicator(
-                                      color: AppColors.white,
+                                      color: AppColors.brandNavy,
                                       strokeWidth: 2,
                                     )
                                   : const Icon(
                                       Icons.arrow_forward,
-                                      color: AppColors.white,
+                                      color: AppColors.brandNavy,
                                     ),
                             )
                           else
@@ -196,8 +195,8 @@ class WelcomePage extends StatelessWidget {
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        AppColors.blue.withValues(alpha: 0.25),
-                                        AppColors.blue.withValues(alpha: 0),
+                                        AppColors.brandTeal.withValues(alpha: 0.25),
+                                        AppColors.brandTeal.withValues(alpha: 0),
                                       ],
                                       stops: const [0.0, 0.7],
                                     ),
@@ -253,8 +252,7 @@ class WelcomePage extends StatelessWidget {
                                         height: inner,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: AppColors
-                                              .blueDark, // replaces AppColors.blueDark
+                                          color: AppColors.brandNavy,
                                           boxShadow: [
                                             BoxShadow(
                                               color: AppColors.brandTeal
@@ -279,11 +277,11 @@ class WelcomePage extends StatelessWidget {
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
                                                     colors: [
-                                                      AppColors.backgroundDark
+                                                      AppColors.brandSurfaceDark
                                                           .withValues(
                                                               alpha: 0.8),
                                                       AppColors.transparent,
-                                                      AppColors.blue.withValues(
+                                                      AppColors.brandTeal.withValues(
                                                           alpha: 0.2),
                                                     ],
                                                     stops: const [
@@ -326,7 +324,7 @@ class WelcomePage extends StatelessWidget {
                       // Textos
                       Text.rich(
                         TextSpan(
-                          text: '¡Tu viaje ',
+                          text: '¡Tu ',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: MediaQuery.of(context).size.width < 360
                                 ? 24.0
@@ -339,7 +337,7 @@ class WelcomePage extends StatelessWidget {
                           ),
                           children: [
                             TextSpan(
-                              text: 'gastronómico',
+                              text: 'bienestar',
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: MediaQuery.of(context).size.width <
                                         360
@@ -399,13 +397,13 @@ class WelcomePage extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.backgroundDark,
+        color: AppColors.brandSurfaceDark,
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.blueDark.withValues(alpha: 0.5),
-            AppColors.backgroundDark,
+            AppColors.brandNavy.withValues(alpha: 0.5),
+            AppColors.brandSurfaceDark,
           ],
         ),
       ),
@@ -437,7 +435,7 @@ class WelcomePage extends StatelessWidget {
     return Text(
       char,
       style: TextStyle(
-        color: AppColors.blue.withValues(alpha: opacity),
+        color: AppColors.brandTeal.withValues(alpha: opacity),
         fontSize: 12,
       ),
     );
@@ -448,7 +446,7 @@ class WelcomePage extends StatelessWidget {
       width: 8,
       height: 8,
       decoration: BoxDecoration(
-        color: AppColors.blue.withValues(alpha: opacity),
+        color: AppColors.brandTeal.withValues(alpha: opacity),
         shape: BoxShape.circle,
       ),
     );

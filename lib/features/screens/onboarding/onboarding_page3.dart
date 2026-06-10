@@ -55,7 +55,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                     const SizedBox(height: 16),
                     _buildRoleCard(
                       role: 'commerce',
-                      title: 'Tengo un Comercio',
+                      title: 'Tengo una Farmacia',
                       subtitle: 'Quiero vender mis productos',
                       icon: Icons.storefront_outlined,
                       iconColor: AppColors.onboardingPurpleAccent,
@@ -105,7 +105,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppColors.backgroundDark, AppColors.backgroundDarker],
+          colors: [AppColors.brandSurfaceDark, AppColors.backgroundDarker],
         ),
       ),
       child: Stack(
@@ -123,7 +123,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.blue.withValues(alpha: 0.2),
+                    AppColors.brandTeal.withValues(alpha: 0.2),
                     AppColors.transparent
                   ],
                 ),
@@ -187,7 +187,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.grayDark.withValues(alpha: 0.5),
+            color: AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.white.withValues(alpha: 0.05)),
           ),
@@ -237,7 +237,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.surfaceHighlight : AppColors.grayDark,
+          color: isSelected ? AppColors.surfaceHighlight : AppColors.brandSurfaceContainerDark,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? AppColors.brandTeal : AppColors.transparent,
@@ -246,7 +246,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                      color: AppColors.blue.withValues(alpha: 0.15),
+                      color: AppColors.brandTeal.withValues(alpha: 0.15),
                       blurRadius: 30,
                       spreadRadius: 0)
                 ]
@@ -353,12 +353,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
         style: ElevatedButton.styleFrom(
           backgroundColor: enabled
               ? AppColors.brandTeal
-              : AppColors.blue.withValues(alpha: 0.4),
-          foregroundColor: AppColors.white,
-          disabledBackgroundColor: AppColors.blue.withValues(alpha: 0.3),
-          disabledForegroundColor: AppColors.white70,
+              : AppColors.brandTeal.withValues(alpha: 0.4),
+          foregroundColor: AppColors.brandNavy,
+          disabledBackgroundColor: AppColors.brandTeal.withValues(alpha: 0.3),
+          disabledForegroundColor: AppColors.brandNavy.withValues(alpha: 0.5),
           elevation: enabled ? 4 : 0,
-          shadowColor: AppColors.blue.withValues(alpha: 0.4),
+          shadowColor: AppColors.brandTeal.withValues(alpha: 0.4),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),

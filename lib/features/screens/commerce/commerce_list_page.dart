@@ -12,12 +12,12 @@ import 'package:zonix/features/screens/commerce/commerce_detail_page.dart';
 /// Si [embedded] es true, solo muestra el contenido sin Scaffold/AppBar (para Mi Perfil).
 
 // Colores del template Stitch (code.html) centralizados en AppColors
-const Color _stitchPrimary = AppColors.blue;
-const Color _stitchSurfaceDark = AppColors.grayDark;
+const Color _stitchPrimary = AppColors.brandTeal;
+const Color _stitchSurfaceDark = AppColors.brandSurfaceContainerDark;
 const Color _stitchSurfaceLighter = AppColors.stitchSurfaceLighter;
-const Color _stitchYellow400 = AppColors.amber; // star
-const Color _stitchGreen400 = AppColors.green; // shopping_bag
-const Color _stitchPurple400 = AppColors.purple; // inventory_2
+const Color _stitchYellow400 = AppColors.statusWarning; // star
+const Color _stitchGreen400 = AppColors.statusSuccess; // shopping_bag
+const Color _stitchPurple400 = AppColors.brandTealDeep; // inventory_2
 
 class CommerceListPage extends StatefulWidget {
   const CommerceListPage({super.key, this.embedded = false});
@@ -315,9 +315,9 @@ class _CommerceCard extends StatelessWidget {
   Color _iconColorForIndex(int i) {
     switch (i % 3) {
       case 0:
-        return AppColors.blue; // blue-400
+        return AppColors.brandTeal; // blue-400
       case 1:
-        return AppColors.orange; // orange-400
+        return AppColors.brandCtaAccent; // orange-400
       default:
         return AppColors.stitchPink400; // pink-400
     }
@@ -539,7 +539,7 @@ class _CommerceCard extends StatelessWidget {
                 Expanded(
                   child: Material(
                     color:
-                        AppColors.red.withValues(alpha: 0.1), // bg-red-500/10
+                        AppColors.statusError.withValues(alpha: 0.1), // bg-red-500/10
                     borderRadius: BorderRadius.circular(12), // rounded-xl
                     child: InkWell(
                       onTap: onEliminar,

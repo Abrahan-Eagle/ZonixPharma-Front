@@ -15,7 +15,7 @@ Future<bool> showGpsDisabledDialog(BuildContext context, {bool force = false}) a
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      icon: const Icon(Icons.location_off, size: 48, color: AppColors.orange),
+      icon: const Icon(Icons.location_off, size: 48, color: AppColors.brandCtaAccent),
       title: const Text('Ubicación desactivada'),
       content: const Text(
         'Activa la ubicación para ver los comercios cercanos a ti.',

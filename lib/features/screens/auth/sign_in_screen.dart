@@ -19,8 +19,8 @@ final ApiService apiService = ApiService();
 final logger = Logger();
 
 // Colores del template Stitch (basados en logo)
-const Color _kBackgroundDark = AppColors.backgroundDark;
-const Color _kPrimary = AppColors.blue;
+const Color _kBackgroundDark = AppColors.brandSurfaceDark;
+const Color _kPrimary = AppColors.brandTeal;
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -142,7 +142,7 @@ class SignInScreenState extends State<SignInScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const SizedBox(height: 60),
+                          const SizedBox(height: 64),
                           _buildLogoAndTitle(),
                           const SizedBox(height: 32),
                           const Spacer(),
@@ -221,77 +221,21 @@ class SignInScreenState extends State<SignInScreen> {
               ),
             ),
           ),
-          // Círculo con logo del planeta (esquina superior derecha)
+          // Acento decorativo superior derecho (sin logo duplicado)
           Positioned(
-            top: -40,
-            right: -40,
+            top: -48,
+            right: -48,
             child: Container(
-              width: 150,
-              height: 150,
+              width: 160,
+              height: 160,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: _kPrimary.withValues(alpha: 0.2),
-                boxShadow: [
-                  BoxShadow(
-                    color: _kPrimary.withValues(alpha: 0.2),
-                    blurRadius: 32,
-                    spreadRadius: 6,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Image.asset(
-                  'assets/images/logo_login.png',
-                  width: 90,
-                  height: 90,
-                  fit: BoxFit.contain,
-                ),
+                color: _kPrimary.withValues(alpha: 0.12),
               ),
             ),
           ),
-          // Patrón de estrellas: dispersas, tamaños variables (como screen.png)
-          ...List.generate(60, (i) {
-            final positions = [
-              20.0,
-              35.0,
-              55.0,
-              75.0,
-              100.0,
-              130.0,
-              155.0,
-              180.0,
-              205.0,
-              230.0,
-              260.0,
-              290.0,
-              320.0,
-              350.0,
-              380.0,
-              15.0,
-              45.0,
-              85.0,
-              120.0,
-              165.0,
-            ];
-            final x = (positions[i % 10] + (i ~/ 10) * 180) % 420;
-            final y = (positions[(i + 5) % 10] + (i ~/ 10) * 220) % 850;
-            final size = (i % 5 == 2) ? 2.0 : 1.0;
-            return Positioned(
-              left: x,
-              top: y,
-              child: Opacity(
-                opacity: 0.25 + (i % 3) * 0.05,
-                child: Container(
-                  width: size,
-                  height: size,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                  ),
-                ),
-              ),
-            );
-          }),
+          // Estrellas sutiles (capa estática, menos tema espacial)
+          ..._loginStarLayer(),
         ],
       ),
     );
@@ -302,11 +246,11 @@ class SignInScreenState extends State<SignInScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Image.asset(
-          'assets/images/dart_dark-android.png',
-          height: 92,
+          'assets/images/splash_logo_dark.png',
+          height: 96,
           fit: BoxFit.contain,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Text(
@@ -315,7 +259,7 @@ class SignInScreenState extends State<SignInScreen> {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w500,
-              color: AppColors.blueLight.withValues(alpha: 0.65),
+              color: AppColors.brandMint.withValues(alpha: 0.85),
             ),
           ),
         ),
@@ -400,7 +344,7 @@ class SignInScreenState extends State<SignInScreen> {
           },
           icon: Icon(
             Icons.qr_code_scanner,
-            color: AppColors.blueLight.withValues(alpha: 0.85),
+            color: AppColors.brandMint.withValues(alpha: 0.85),
             size: 22,
           ),
           label: Text(
@@ -408,7 +352,7 @@ class SignInScreenState extends State<SignInScreen> {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 15,
               fontWeight: FontWeight.w600,
-              color: AppColors.blueLight.withValues(alpha: 0.9),
+              color: AppColors.brandMint.withValues(alpha: 0.9),
             ),
           ),
         ),
@@ -418,11 +362,47 @@ class SignInScreenState extends State<SignInScreen> {
           textAlign: TextAlign.center,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 12,
-            color: AppColors.blueLight.withValues(alpha: 0.55),
+            color: AppColors.brandMint.withValues(alpha: 0.55),
             height: 1.5,
           ),
         ),
       ],
     );
   }
+}
+
+List<Widget> _loginStarLayer() {
+  const spots = <(double left, double top, double size, double opacity)>[
+    (24, 48, 2, 0.35),
+    (120, 32, 1, 0.25),
+    (280, 72, 2, 0.3),
+    (340, 160, 1, 0.2),
+    (48, 200, 1, 0.25),
+    (200, 120, 2, 0.28),
+    (320, 280, 1, 0.22),
+    (80, 360, 2, 0.3),
+    (240, 400, 1, 0.25),
+    (160, 520, 1, 0.2),
+    (360, 480, 2, 0.28),
+    (16, 640, 1, 0.22),
+  ];
+  return spots
+      .map(
+        (s) => Positioned(
+          left: s.$1,
+          top: s.$2,
+          child: Opacity(
+            opacity: s.$4,
+            child: Container(
+              width: s.$3,
+              height: s.$3,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.white,
+              ),
+            ),
+          ),
+        ),
+      )
+      .toList();
 }

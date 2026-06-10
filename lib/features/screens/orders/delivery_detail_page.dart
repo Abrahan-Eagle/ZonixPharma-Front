@@ -70,15 +70,15 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
     final surfaceColor = isDark ? AppColors.cardBg(context) : AppColors.white;
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
-    final textMuted = isDark ? AppColors.white54 : AppColors.gray;
-    const primary = AppColors.blue;
+    final textMuted = isDark ? AppColors.white54 : AppColors.brandTealDeep;
+    const primary = AppColors.brandTeal;
     final scaffoldBg = AppColors.scaffoldBg(context);
-    final borderColor = isDark ? AppColors.white12 : AppColors.grayLight;
+    final borderColor = isDark ? AppColors.white12 : AppColors.brandSurfaceLight;
     final statusBg = isDark
         ? primary.withValues(alpha: 0.2)
         : primary.withValues(alpha: 0.1);
     final verifiedBg =
-        isDark ? primary.withValues(alpha: 0.25) : AppColors.grayLight;
+        isDark ? primary.withValues(alpha: 0.25) : AppColors.brandSurfaceLight;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -474,7 +474,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isDark ? AppColors.white12 : AppColors.grayLight,
+              color: isDark ? AppColors.white12 : AppColors.brandSurfaceLight,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(vehicleIcon, size: 28, color: textPrimary),
@@ -650,7 +650,7 @@ class _DeliveryDetailPageState extends State<DeliveryDetailPage> {
     final placeholder = CircleAvatar(
       radius: 48,
       backgroundColor:
-          isDark ? primary.withValues(alpha: 0.2) : AppColors.grayLight,
+          isDark ? primary.withValues(alpha: 0.2) : AppColors.brandSurfaceLight,
       child: Text(
         initial,
         style: GoogleFonts.plusJakartaSans(

@@ -181,16 +181,16 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
     final cs = Theme.of(context).colorScheme;
     switch (status) {
       case 'pending_payment':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'paid':
       case 'processing':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'shipped':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return cs.surfaceContainerHighest;
     }
@@ -320,17 +320,17 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: _commerceStatus == 'rejected'
-                        ? AppColors.red.withValues(alpha: 0.1)
+                        ? AppColors.statusError.withValues(alpha: 0.1)
                         : _commerceStatus == 'suspended'
-                            ? AppColors.orange.withValues(alpha: 0.1)
-                            : AppColors.blue.withValues(alpha: 0.1),
+                            ? AppColors.brandCtaAccent.withValues(alpha: 0.1)
+                            : AppColors.brandTeal.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: _commerceStatus == 'rejected'
-                          ? AppColors.red.withValues(alpha: 0.3)
+                          ? AppColors.statusError.withValues(alpha: 0.3)
                           : _commerceStatus == 'suspended'
-                              ? AppColors.orange.withValues(alpha: 0.3)
-                              : AppColors.blue.withValues(alpha: 0.3),
+                              ? AppColors.brandCtaAccent.withValues(alpha: 0.3)
+                              : AppColors.brandTeal.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(

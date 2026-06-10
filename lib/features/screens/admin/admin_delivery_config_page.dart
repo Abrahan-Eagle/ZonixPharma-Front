@@ -223,9 +223,9 @@ class _GlobalRateTabState extends State<_GlobalRateTab>
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: _isDark ? AppColors.blue.withAlpha(25) : AppColors.blueLight50,
+        color: _isDark ? AppColors.brandTeal.withAlpha(25) : AppColors.blueLight50,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.blue.withAlpha(50)),
+        border: Border.all(color: AppColors.brandTeal.withAlpha(50)),
       ),
       child: Row(
         children: [
@@ -493,7 +493,7 @@ class _DeliveryZonesTabState extends State<_DeliveryZonesTab>
   }
 
   Widget _activeBadge(bool active) {
-    final color = active ? AppColors.statusSuccess : AppColors.red;
+    final color = active ? AppColors.statusSuccess : AppColors.statusError;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(

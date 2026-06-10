@@ -272,7 +272,7 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                         children: const [
                           SizedBox(height: 120),
                           Icon(Icons.support_agent,
-                              size: 48, color: AppColors.gray),
+                              size: 48, color: AppColors.brandTealDeep),
                           SizedBox(height: 8),
                           Center(
                               child:
@@ -314,7 +314,7 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                                     children: const [
                                       SizedBox(height: 120),
                                       Icon(Icons.filter_alt_off,
-                                          size: 44, color: AppColors.gray),
+                                          size: 44, color: AppColors.brandTealDeep),
                                       SizedBox(height: 8),
                                       Center(
                                           child: Text(
@@ -373,7 +373,7 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                                                       horizontal: 8,
                                                       vertical: 4),
                                                   decoration: BoxDecoration(
-                                                    color: AppColors.green
+                                                    color: AppColors.statusSuccess
                                                         .withValues(
                                                             alpha: 0.15),
                                                     borderRadius:
@@ -402,7 +402,7 @@ class _BuyerDisputesPageState extends State<BuyerDisputesPage> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8, vertical: 4),
                                             decoration: BoxDecoration(
-                                              color: AppColors.grayLight,
+                                              color: AppColors.brandSurfaceLight,
                                               borderRadius:
                                                   BorderRadius.circular(999),
                                             ),

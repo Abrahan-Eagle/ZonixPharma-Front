@@ -952,19 +952,19 @@ class _AdminAnalyticsPageState extends State<AdminAnalyticsPage> {
   Color _statusColor(String status) {
     switch (status) {
       case 'pending_payment':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'paid':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'processing':
       case 'preparing':
-        return AppColors.teal;
+        return AppColors.brandTeal;
       case 'shipped':
       case 'out_for_delivery':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return AppColors.stitchSlate;
     }

@@ -37,10 +37,10 @@ class BuyerShell extends StatefulWidget {
 class _BuyerShellState extends State<BuyerShell> {
   int _addressReloadKey = 0;
 
-  static const Color _primary = AppColors.blue;
-  static const Color _bgLight = AppColors.grayLight;
-  static const Color _bgDark = AppColors.backgroundDark;
-  static const Color _badgeRed = AppColors.red;
+  static const Color _primary = AppColors.brandTeal;
+  static const Color _bgLight = AppColors.brandSurfaceLight;
+  static const Color _bgDark = AppColors.brandSurfaceDark;
+  static const Color _badgeRed = AppColors.statusError;
 
   final LocationService _locationService = LocationService();
 
@@ -160,7 +160,7 @@ class _BuyerShellState extends State<BuyerShell> {
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
                           color: isLocationOff
-                              ? AppColors.orange.withValues(alpha: 0.15)
+                              ? AppColors.brandCtaAccent.withValues(alpha: 0.15)
                               : _primary.withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
@@ -202,7 +202,7 @@ class _BuyerShellState extends State<BuyerShell> {
                                     ? AppColors.brandCtaAccent
                                     : (isDark
                                         ? AppColors.white
-                                        : AppColors.backgroundDark),
+                                        : AppColors.brandSurfaceDark),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

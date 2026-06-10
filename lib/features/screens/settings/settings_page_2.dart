@@ -53,8 +53,8 @@ class _MasTile {
 }
 
 // Colores Stitch (template) — usar AppColors
-const Color _stitchPrimary = AppColors.blue;
-const Color _stitchSurfaceDark = AppColors.grayDark;
+const Color _stitchPrimary = AppColors.brandTeal;
+const Color _stitchSurfaceDark = AppColors.brandSurfaceContainerDark;
 
 class SettingsPage2 extends StatefulWidget {
   const SettingsPage2({super.key});
@@ -126,12 +126,28 @@ class _SettingsPage2State extends State<SettingsPage2> {
                   : (raw != null ? int.tryParse(raw.toString()) : null);
             }
 
-            // Si no vino en addressesData, probamos llamando al endpoint AddressService para estar seguros
+            // Si no vino city_id en addressesData, resolvemos por ID real de dirección.
             if (cityIdToFetch == null || cityIdToFetch <= 0) {
-              final address =
-                  await addressService.getAddressById(profile.userId);
-              if (address != null && address.cityId > 0) {
-                cityIdToFetch = address.cityId;
+              int? addressId;
+              if (addrs != null && addrs.isNotEmpty) {
+                Map<String, dynamic> addr = addrs.first;
+                for (final e in addrs) {
+                  if (e['is_default'] == true || e['is_default'] == 1) {
+                    addr = e;
+                    break;
+                  }
+                }
+                final rawAddrId = addr['id'];
+                addressId = rawAddrId is int
+                    ? rawAddrId
+                    : int.tryParse(rawAddrId?.toString() ?? '');
+              }
+              if (addressId != null && addressId > 0) {
+                final address =
+                    await addressService.getAddressById(addressId);
+                if (address != null && address.cityId > 0) {
+                  cityIdToFetch = address.cityId;
+                }
               }
             }
 
@@ -681,7 +697,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
     final inactiveBg =
         isDark ? _stitchSurfaceDark : theme.colorScheme.surfaceContainerLow;
     final inactiveColor =
-        isDark ? AppColors.textMutedGray : theme.colorScheme.onSurfaceVariant;
+        isDark ? AppColors.stitchSlate : theme.colorScheme.onSurfaceVariant;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -1182,7 +1198,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: border, width: 1),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1854,7 +1870,7 @@ class _SettingsPage2State extends State<SettingsPage2> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: AppColors.teal.withValues(alpha: 0.2),
+                            color: AppColors.brandTeal.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: const Icon(Icons.notifications,

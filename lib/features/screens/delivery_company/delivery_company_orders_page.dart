@@ -248,7 +248,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.blue.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.6)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +262,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                    color: AppColors.blue.withValues(alpha: 0.15),
+                    color: AppColors.brandTeal.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8)),
                 child: const Text('Pago pendiente',
                     style: TextStyle(
@@ -411,7 +411,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.orange.withValues(alpha: 0.6)),
+        border: Border.all(color: AppColors.brandCtaAccent.withValues(alpha: 0.6)),
       ),
       child: InkWell(
         onTap: () =>
@@ -431,7 +431,7 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.15),
+                    color: AppColors.brandCtaAccent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text('Sin asignar',
@@ -613,31 +613,31 @@ class _DeliveryCompanyOrdersPageState extends State<DeliveryCompanyOrdersPage>
     String label;
     switch (status) {
       case 'pending_payment':
-        color = AppColors.orange;
+        color = AppColors.brandCtaAccent;
         label = 'Pago pendiente';
         break;
       case 'paid':
-        color = AppColors.blue;
+        color = AppColors.brandTeal;
         label = 'Pagada';
         break;
       case 'processing':
-        color = AppColors.blue;
+        color = AppColors.brandTeal;
         label = 'Procesando';
         break;
       case 'shipped':
-        color = AppColors.purple;
+        color = AppColors.brandTealDeep;
         label = 'Enviada';
         break;
       case 'delivered':
-        color = AppColors.green;
+        color = AppColors.statusSuccess;
         label = 'Entregada';
         break;
       case 'cancelled':
-        color = AppColors.red;
+        color = AppColors.statusError;
         label = 'Cancelada';
         break;
       default:
-        color = AppColors.gray;
+        color = AppColors.brandTealDeep;
         label = status;
     }
 

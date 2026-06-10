@@ -209,7 +209,7 @@ class CartPage extends StatelessWidget {
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.dark
               ? AppColors.white.withValues(alpha: 0.05)
-              : AppColors.textMutedGray.withValues(alpha: 0.2),
+              : AppColors.stitchSlate.withValues(alpha: 0.2),
         ),
         boxShadow: Theme.of(context).brightness == Brightness.light
             ? [
@@ -240,7 +240,7 @@ class CartPage extends StatelessWidget {
                   : Container(
                       color: Theme.of(context).brightness == Brightness.dark
                           ? AppColors.white.withValues(alpha: 0.06)
-                          : AppColors.grayLight,
+                          : AppColors.brandSurfaceLight,
                       child: Icon(Icons.local_pharmacy,
                           size: 40,
                           color: AppColors.secondaryText(context)
@@ -352,7 +352,7 @@ class CartPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark
             ? AppColors.white.withValues(alpha: 0.05)
-            : AppColors.textMutedGray.withValues(alpha: 0.12),
+            : AppColors.stitchSlate.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(8),
         border: isDark
             ? Border.all(color: AppColors.white.withValues(alpha: 0.1))

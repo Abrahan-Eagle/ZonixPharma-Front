@@ -14,9 +14,10 @@ import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/features/utils/user_provider.dart';
 import 'package:zonix/models/order.dart';
 import 'package:zonix/widgets/app_skeleton.dart';
+import 'package:zonix/features/utils/order_tracking_controller.dart';
 
 /// Color primary del template (code1/code2 HTML): #3399ff
-const Color _templatePrimary = AppColors.blue;
+const Color _templatePrimary = AppColors.brandTeal;
 
 class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
@@ -323,10 +324,10 @@ class _OrdersPageState extends State<OrdersPage> {
     final isDark = theme.brightness == Brightness.dark;
     final surfaceColor = AppColors.cardBg(context);
     final backgroundLight =
-        isDark ? AppColors.backgroundDark : AppColors.grayLight;
+        isDark ? AppColors.brandSurfaceDark : AppColors.brandSurfaceLight;
     final primary = isDark ? AppColors.accentButton(context) : _templatePrimary;
     final borderColor =
-        isDark ? AppColors.white.withValues(alpha: 0.08) : AppColors.grayLight;
+        isDark ? AppColors.white.withValues(alpha: 0.08) : AppColors.brandSurfaceLight;
 
     return Scaffold(
       backgroundColor: backgroundLight,
@@ -397,8 +398,8 @@ class _OrdersPageState extends State<OrdersPage> {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: isDark
-              ? AppColors.grayDark.withValues(alpha: 0.5)
-              : AppColors.grayLight.withValues(alpha: 0.8), // slate-200/80
+              ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5)
+              : AppColors.brandSurfaceLight.withValues(alpha: 0.8), // slate-200/80
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
@@ -762,8 +763,8 @@ class _OrdersPageState extends State<OrdersPage> {
                               child: LinearProgressIndicator(
                                 value: _progressForStatus(order.status),
                                 backgroundColor: isDark
-                                    ? AppColors.grayDark
-                                    : AppColors.grayLight,
+                                    ? AppColors.brandSurfaceContainerDark
+                                    : AppColors.brandSurfaceLight,
                                 valueColor:
                                     AlwaysStoppedAnimation<Color>(primary),
                                 minHeight: 6,
@@ -849,27 +850,8 @@ class _OrdersPageState extends State<OrdersPage> {
     );
   }
 
-  double _progressForStatus(String status) {
-    switch (status) {
-      case 'pending_prescription_validation':
-        return 0.10;
-      case 'pending_payment':
-      case 'pending':
-        return 0.2;
-      case 'paid':
-      case 'confirmed':
-        return 0.35;
-      case 'preparing':
-      case 'processing':
-        return 0.55;
-      case 'ready':
-      case 'shipped':
-      case 'out_for_delivery':
-        return 0.75;
-      default:
-        return 0.5;
-    }
-  }
+  double _progressForStatus(String status) =>
+      OrderTrackingController.progressFraction(status);
 
   /// Card compacta para "Historial Reciente" (tab Activas): imagen 40px, "12 Oct • Entregado", Pedir de nuevo + Ver Recibo.
   Widget _buildHistoryOrderCardCompact(
@@ -960,7 +942,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 children: [
                   Expanded(
                     child: Material(
-                      color: isDark ? AppColors.grayDark : AppColors.grayLight,
+                      color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
                       borderRadius: BorderRadius.circular(8),
                       child: InkWell(
                         onTap: () => _pedirDeNuevo(context, order),
@@ -1029,9 +1011,9 @@ class _OrdersPageState extends State<OrdersPage> {
     return Container(
       width: w,
       height: h,
-      color: dark ? AppColors.grayDark : AppColors.textMutedGray,
+      color: dark ? AppColors.brandSurfaceContainerDark : AppColors.stitchSlate,
       child: Icon(Icons.store,
-          color: dark ? AppColors.gray : AppColors.gray, size: w * 0.5),
+          color: dark ? AppColors.brandTealDeep : AppColors.brandTealDeep, size: w * 0.5),
     );
   }
 

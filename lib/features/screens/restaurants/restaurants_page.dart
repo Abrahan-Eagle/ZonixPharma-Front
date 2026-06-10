@@ -14,10 +14,10 @@ import 'package:zonix/features/utils/network_image_with_fallback.dart';
 
 /// Colores del template Stitch Zonix Pharma - Farmacias
 class _TemplateColors {
-  static const Color primary = AppColors.blue;
-  static const Color bgDark = AppColors.backgroundDark;
-  static const Color cardDark = AppColors.grayDark;
-  static const Color ratingYellow = AppColors.amber;
+  static const Color primary = AppColors.brandTeal;
+  static const Color bgDark = AppColors.brandSurfaceDark;
+  static const Color cardDark = AppColors.brandSurfaceContainerDark;
+  static const Color ratingYellow = AppColors.statusWarning;
 }
 
 class RestaurantsPage extends StatefulWidget {
@@ -222,8 +222,8 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
   Widget _buildShimmerLoading() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
-      baseColor: isDark ? _TemplateColors.cardDark : AppColors.gray,
-      highlightColor: isDark ? _TemplateColors.bgDark : AppColors.gray,
+      baseColor: isDark ? _TemplateColors.cardDark : AppColors.brandTealDeep,
+      highlightColor: isDark ? _TemplateColors.bgDark : AppColors.brandTealDeep,
       child: ListView.builder(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
         itemCount: 5,
@@ -247,7 +247,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.search_off, size: 48, color: AppColors.gray),
+          const Icon(Icons.search_off, size: 48, color: AppColors.brandTealDeep),
           const SizedBox(height: 16),
           Text(
             _searchQuery.isEmpty
@@ -255,7 +255,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                 : 'No encontramos resultados',
             style: GoogleFonts.plusJakartaSans(
                 fontSize: 18,
-                color: isDark ? AppColors.white70 : AppColors.gray),
+                color: isDark ? AppColors.white70 : AppColors.brandTealDeep),
           ),
           if (_searchQuery.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -298,7 +298,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
             : AppColors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? AppColors.white12 : AppColors.grayLight,
+          color: isDark ? AppColors.white12 : AppColors.brandSurfaceLight,
           width: 1,
         ),
         boxShadow: [
@@ -389,7 +389,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                           size: 20,
                           color: _favoriteIds.contains(restaurant.id.toString())
                               ? AppColors.statusError
-                              : AppColors.gray,
+                              : AppColors.brandTealDeep,
                         ),
                       ),
                     ),
@@ -474,7 +474,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                     restaurant.cuisineDisplay,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
-                      color: isDark ? AppColors.white60 : AppColors.gray,
+                      color: isDark ? AppColors.white60 : AppColors.brandTealDeep,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -489,7 +489,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? AppColors.white70 : AppColors.gray,
+                          color: isDark ? AppColors.white70 : AppColors.brandTealDeep,
                         ),
                       ),
                       const SizedBox(width: 16),
@@ -503,7 +503,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
-                          color: isDark ? AppColors.white70 : AppColors.gray,
+                          color: isDark ? AppColors.white70 : AppColors.brandTealDeep,
                         ),
                       ),
                     ],
@@ -522,7 +522,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? _TemplateColors.bgDark : AppColors.grayLight,
+      backgroundColor: isDark ? _TemplateColors.bgDark : AppColors.brandSurfaceLight,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -535,10 +535,10 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                   color: isDark ? AppColors.white : AppColors.black87),
               decoration: InputDecoration(
                 hintText: 'Buscar medicinas o farmacias',
-                hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.gray),
+                hintStyle: GoogleFonts.plusJakartaSans(color: AppColors.brandTealDeep),
                 filled: true,
                 fillColor: isDark ? _TemplateColors.cardDark : AppColors.white,
-                prefixIcon: const Icon(Icons.search, color: AppColors.gray),
+                prefixIcon: const Icon(Icons.search, color: AppColors.brandTealDeep),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -597,7 +597,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                                     ? AppColors.white
                                     : (isDark
                                         ? AppColors.white70
-                                        : AppColors.gray)),
+                                        : AppColors.brandTealDeep)),
                             const SizedBox(width: 4),
                           ],
                           Text(
@@ -610,7 +610,7 @@ class _RestaurantsPageState extends State<RestaurantsPage> {
                                   ? AppColors.white
                                   : (isDark
                                       ? AppColors.white70
-                                      : AppColors.gray),
+                                      : AppColors.brandTealDeep),
                             ),
                           ),
                         ],

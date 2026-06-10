@@ -97,7 +97,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                                   height: 8,
                                   child: CustomPaint(
                                     painter: _CurvedUnderlinePainter(
-                                        color: AppColors.blue
+                                        color: AppColors.brandTeal
                                             .withValues(alpha: 0.3)),
                                   ),
                                 ),
@@ -107,7 +107,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          'Elige tu antojo, confirma tu ubicación y espera a que aterrice en tu puerta.',
+                          'Elige tus medicamentos, confirma tu ubicación y recíbelos en tu puerta.',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: bodySize,
@@ -133,7 +133,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
   Widget _buildBackground(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Container(
-      color: AppColors.backgroundDark,
+      color: AppColors.brandSurfaceDark,
       child: Stack(
         children: [
           // space-bg: radial top center
@@ -149,7 +149,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                   center: Alignment.center,
                   radius: 1.0,
                   colors: [
-                    AppColors.blue.withValues(alpha: 0.15),
+                    AppColors.brandTeal.withValues(alpha: 0.15),
                     AppColors.transparent,
                   ],
                   stops: const [0.0, 0.6],
@@ -168,7 +168,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.blue.withValues(alpha: 0.1),
+                    AppColors.brandTeal.withValues(alpha: 0.1),
                     AppColors.transparent,
                   ],
                   stops: const [0.0, 0.4],
@@ -193,8 +193,13 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     final orbSizes = [
       64.0 * scale,
       56.0 * scale,
-      48.0 * scale
-    ]; // burger, pizza, taco
+      48.0 * scale,
+    ];
+    const orbIcons = [
+      Icons.medication,
+      Icons.local_pharmacy,
+      Icons.vaccines,
+    ];
 
     return Stack(
       alignment: Alignment.center,
@@ -213,7 +218,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.blue.withValues(alpha: 0.2 * pulse),
+                    AppColors.brandTeal.withValues(alpha: 0.2 * pulse),
                     AppColors.transparent,
                   ],
                   stops: const [0.0, 0.7],
@@ -228,7 +233,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
           height: ringSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: AppColors.blue.withValues(alpha: 0.1)),
+            border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.1)),
           ),
         ),
         // Anillo dashed (22rem) con rotación
@@ -242,7 +247,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 height: dashedSize,
                 child: CustomPaint(
                   painter: _DashedCirclePainter(
-                      color: AppColors.blue.withValues(alpha: 0.2)),
+                      color: AppColors.brandTeal.withValues(alpha: 0.2)),
                 ),
               ),
             );
@@ -269,19 +274,19 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.blue.withValues(alpha: 0.4),
+                      color: AppColors.brandTeal.withValues(alpha: 0.4),
                       blurRadius: 30,
                       spreadRadius: 0,
                     ),
                   ],
                 ),
                 child: Icon(
-                  Icons.rocket_launch,
+                  Icons.local_pharmacy,
                   size: centerSize * 0.5,
                   color: AppColors.white.withValues(alpha: 0.9),
                 ),
               ),
-              // Burger: -top-4 right-4, rotate-12 (HTML)
+              // Medicamento: -top-4 right-4
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -291,12 +296,12 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     right: 16 * scale,
                     child: Transform.rotate(
                       angle: 12 * math.pi / 180,
-                      child: _buildFoodOrb('🍔', orbSizes[0]),
+                      child: _buildPharmaOrb(orbIcons[0], orbSizes[0]),
                     ),
                   );
                 },
               ),
-              // Pizza: bottom-0 -left-2, -rotate-12
+              // Farmacia: bottom-0 -left-2
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -307,12 +312,12 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     left: -8 * scale,
                     child: Transform.rotate(
                       angle: -12 * math.pi / 180,
-                      child: _buildFoodOrb('🍕', orbSizes[1]),
+                      child: _buildPharmaOrb(orbIcons[1], orbSizes[1]),
                     ),
                   );
                 },
               ),
-              // Taco: bottom-8 -right-6, rotate-6
+              // Vacunas: bottom-8 -right-6
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -323,7 +328,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     right: -24 * scale,
                     child: Transform.rotate(
                       angle: 6 * math.pi / 180,
-                      child: _buildFoodOrb('🌮', orbSizes[2]),
+                      child: _buildPharmaOrb(orbIcons[2], orbSizes[2]),
                     ),
                   );
                 },
@@ -346,14 +351,14 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     );
   }
 
-  Widget _buildFoodOrb(String emoji, double size) {
+  Widget _buildPharmaOrb(IconData icon, double size) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.backgroundDark,
+        color: AppColors.brandSurfaceDark,
         borderRadius: BorderRadius.circular(size * 0.25),
-        border: Border.all(color: AppColors.blue.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
         boxShadow: [
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.3),
@@ -362,11 +367,10 @@ class _OnboardingPage2State extends State<OnboardingPage2>
           ),
         ],
       ),
-      child: Center(
-        child: Text(
-          emoji,
-          style: TextStyle(fontSize: size * 0.5),
-        ),
+      child: Icon(
+        icon,
+        size: size * 0.45,
+        color: AppColors.brandTeal,
       ),
     );
   }
@@ -376,7 +380,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.blue.withValues(alpha: opacity),
+        color: AppColors.brandTeal.withValues(alpha: opacity),
         shape: BoxShape.circle,
       ),
     );

@@ -385,9 +385,9 @@ class _CommerceShareQrPageState extends State<CommerceShareQrPage> {
                   OutlinedButton.icon(
                     onPressed: _sharing ? null : _shareLinkOnly,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.blueLight,
+                      foregroundColor: AppColors.brandMint,
                       side: BorderSide(
-                        color: AppColors.blueLight.withValues(alpha: 0.65),
+                        color: AppColors.brandMint.withValues(alpha: 0.65),
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -450,9 +450,9 @@ class _TappableLinkRow extends StatelessWidget {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 13,
-              color: AppColors.blueLight,
+              color: AppColors.brandMint,
               decoration: TextDecoration.underline,
-              decorationColor: AppColors.blueLight,
+              decorationColor: AppColors.brandMint,
             ),
           ),
         ),

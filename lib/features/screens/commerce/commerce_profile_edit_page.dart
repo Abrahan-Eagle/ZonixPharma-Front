@@ -145,7 +145,7 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: AppColors.red.withValues(alpha: 0.1),
+                    color: AppColors.statusError.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -166,7 +166,7 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
                   children: [
                     CircleAvatar(
                       radius: 56,
-                      backgroundColor: AppColors.textMutedGray,
+                      backgroundColor: AppColors.stitchSlate,
                       backgroundImage: _imagePath != null
                           ? FileImage(File(_imagePath!))
                           : (imageUrl != null && imageUrl.isNotEmpty
@@ -175,7 +175,7 @@ class _CommerceProfileEditPageState extends State<CommerceProfileEditPage> {
                       child: _imagePath == null &&
                               (imageUrl == null || imageUrl.isEmpty)
                           ? const Icon(Icons.store,
-                              size: 48, color: AppColors.textMutedGray)
+                              size: 48, color: AppColors.stitchSlate)
                           : null,
                     ),
                     Positioned(

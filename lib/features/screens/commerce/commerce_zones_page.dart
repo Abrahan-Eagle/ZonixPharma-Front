@@ -84,10 +84,10 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.blue.withAlpha(15),
+                          color: AppColors.brandTeal.withAlpha(15),
                           borderRadius: BorderRadius.circular(12),
                           border:
-                              Border.all(color: AppColors.blue.withAlpha(40)),
+                              Border.all(color: AppColors.brandTeal.withAlpha(40)),
                         ),
                         child: Row(
                           children: [
@@ -100,7 +100,7 @@ class _CommerceZonesPageState extends State<CommerceZonesPage> {
                                 style: TextStyle(
                                   color: isDark
                                       ? AppColors.white70
-                                      : AppColors.blueDark,
+                                      : AppColors.brandNavy,
                                   fontSize: 13,
                                 ),
                               ),

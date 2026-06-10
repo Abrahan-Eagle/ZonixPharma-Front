@@ -126,17 +126,17 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
   Color _statusColor(String status) {
     switch (status) {
       case 'pending_payment':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'paid':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'processing':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'shipped':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return AppColors.stitchSlate;
     }
@@ -371,7 +371,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
         title: const Text('Órdenes'),
         backgroundColor: isDark
             ? Theme.of(context).colorScheme.surfaceContainerHigh
-            : AppColors.blueDark,
+            : AppColors.brandNavy,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),

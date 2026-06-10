@@ -431,7 +431,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
         child: Icon(
           Icons.flag_rounded,
           color:
-              isSelected ? AppColors.statusError : AppColors.red.withAlpha(120),
+              isSelected ? AppColors.statusError : AppColors.statusError.withAlpha(120),
           size: isSelected ? 32 : 24,
         ),
       ));
@@ -443,8 +443,8 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
         point: _headquarters!,
         radius: _radiusKm * 1000,
         useRadiusInMeter: true,
-        color: AppColors.blue.withAlpha(20),
-        borderColor: AppColors.blue.withAlpha(80),
+        color: AppColors.brandTeal.withAlpha(20),
+        borderColor: AppColors.brandTeal.withAlpha(80),
         borderStrokeWidth: 2,
       ));
     }
@@ -492,7 +492,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
         points: points,
         color: isSelected
             ? AppColors.brandCtaAccent
-            : AppColors.orange.withAlpha(80),
+            : AppColors.brandCtaAccent.withAlpha(80),
         strokeWidth: isSelected ? 4.0 : 2.0,
       ));
     }
@@ -547,7 +547,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
-                          color: AppColors.blue.withAlpha(25),
+                          color: AppColors.brandTeal.withAlpha(25),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
@@ -785,7 +785,7 @@ class _DeliveryCompanyMapPageState extends State<DeliveryCompanyMapPage> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                        color: AppColors.orange.withAlpha(25),
+                        color: AppColors.brandCtaAccent.withAlpha(25),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(

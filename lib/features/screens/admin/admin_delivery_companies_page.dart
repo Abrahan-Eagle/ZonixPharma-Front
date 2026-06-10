@@ -235,7 +235,7 @@ class _AdminDeliveryCompaniesPageState
         title: const Text('Empresas de delivery'),
         backgroundColor: isDark
             ? Theme.of(context).colorScheme.surfaceContainerHigh
-            : AppColors.blueDark,
+            : AppColors.brandNavy,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -374,7 +374,7 @@ class _AdminDeliveryCompaniesPageState
           child: Row(
             children: [
               CircleAvatar(
-                backgroundColor: AppColors.purple.withValues(alpha: 0.15),
+                backgroundColor: AppColors.brandTealDeep.withValues(alpha: 0.15),
                 child: const Icon(Icons.local_shipping,
                     color: AppColors.brandTealDeep),
               ),
@@ -406,7 +406,7 @@ class _AdminDeliveryCompaniesPageState
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.blue.withValues(alpha: 0.12),
+                  color: AppColors.brandTeal.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
@@ -505,7 +505,7 @@ class _AgentsListState extends State<_AgentsList> {
           contentPadding: EdgeInsets.zero,
           leading: CircleAvatar(
             radius: 16,
-            backgroundColor: AppColors.green.withValues(alpha: 0.15),
+            backgroundColor: AppColors.statusSuccess.withValues(alpha: 0.15),
             child: const Icon(Icons.person,
                 size: 16, color: AppColors.statusSuccess),
           ),

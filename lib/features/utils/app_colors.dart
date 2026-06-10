@@ -84,10 +84,7 @@ class AppColors {
 
   static const Color surfaceDarkLighter = brandSurfaceDarkLighter;
   static const Color scaffoldBgLight = brandSurfaceLight;
-  static const Color textMutedGray = Color(0xFF6B7280);
   static const Color grayLight = brandSurfaceLight;
-  static const Color gray = Color(0xFF4A4A4A);
-  static const Color grayDark = brandSurfaceContainerDark;
   static const Color backgroundDark = brandSurfaceDark;
 
   // ─────────────────────────────────────────────────────────
@@ -98,7 +95,6 @@ class AppColors {
   static const Color stitchTextDark = Color(0xFF0F172A);
   static const Color stitchSlate = Color(0xFF64748B);
   static const Color stitchSlate400 = Color(0xFF94A3B8);
-  static const Color stitchBorder = brandStrokeLight;
   static const Color stitchBgCard = Color(0xFFF1F5F9);
   static const Color stitchAmber = brandCtaAccent;
   static const Color stitchCardCream = Color(0xFFEDF6F4);
@@ -124,7 +120,6 @@ class AppColors {
   // Onboarding
   static const Color addressPrimary = brandCtaAccent;
   static const Color onboardingBlueDark = brandNavy;
-  static const Color slateBorder = brandStrokeDark;
   static const Color onboardingGradientStart = brandNavy;
   static const Color onboardingBlueLight = brandTeal;
   static const Color blueDeep = brandNavy;
@@ -176,7 +171,7 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark ? white : brandNavy;
 
   static Color secondaryText(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? white70 : gray;
+      Theme.of(context).brightness == Brightness.dark ? white70 : brandTealDeep;
 
   static Color primaryButton(BuildContext context) => brandTeal;
   static Color accentButton(BuildContext context) => brandNavy;

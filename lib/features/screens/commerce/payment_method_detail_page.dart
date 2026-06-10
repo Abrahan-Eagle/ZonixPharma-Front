@@ -41,12 +41,12 @@ class PaymentMethodDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = _isDark(context);
-    final bg = isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+    final bg = isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final primaryText = AppColors.primaryText(context);
     final cardBg = AppColors.cardBg(context);
     final secondaryText = AppColors.secondaryText(context);
     final borderColor =
-        isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
+        isDark ? AppColors.stitchSurfaceLighter : AppColors.brandStrokeLight;
 
     return Scaffold(
       backgroundColor: bg,
@@ -133,9 +133,9 @@ class PaymentMethodDetailPage extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                AppColors.blueDark,
+                AppColors.brandNavy,
                 AppColors.blueDarkMid,
-                AppColors.blue
+                AppColors.brandTeal
               ],
             ),
             borderRadius: BorderRadius.circular(16),
@@ -157,7 +157,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                     width: 48,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: AppColors.amber.withValues(alpha: 0.8),
+                      color: AppColors.statusWarning.withValues(alpha: 0.8),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -289,7 +289,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                         gradient: LinearGradient(
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
-                          colors: [AppColors.blueDark, AppColors.blue],
+                          colors: [AppColors.brandNavy, AppColors.brandTeal],
                         ),
                       ),
                     ),
@@ -382,7 +382,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
   ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final headerBg = isDark
-        ? AppColors.grayDark.withValues(alpha: 0.5)
+        ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5)
         : AppColors.stitchBgCard;
 
     return Container(
@@ -426,7 +426,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.blue.withValues(alpha: 0.1),
+                      color: AppColors.brandTeal.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(e.value.icon,
@@ -498,7 +498,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                 height: 100,
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.blueDark
+                      ? AppColors.brandNavy
                       : AppColors.stitchSlate.withValues(alpha: 0.3),
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(11)),
@@ -519,7 +519,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                         ],
                       ),
                       child: const Icon(Icons.account_balance,
-                          color: AppColors.blueDark, size: 28),
+                          color: AppColors.brandNavy, size: 28),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -532,7 +532,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                             bank.toString(),
                             style: TextStyle(
                               color:
-                                  isDark ? AppColors.white : AppColors.blueDark,
+                                  isDark ? AppColors.white : AppColors.brandNavy,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
@@ -658,7 +658,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                 height: 80,
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [AppColors.blueDark, AppColors.blue],
+                    colors: [AppColors.brandNavy, AppColors.brandTeal],
                   ),
                   borderRadius: BorderRadius.vertical(top: Radius.circular(11)),
                 ),
@@ -679,7 +679,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.blueDark,
+                                color: AppColors.brandNavy,
                               ),
                             ),
                           ),
@@ -740,7 +740,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.green.withValues(alpha: 0.2),
+                            color: AppColors.statusSuccess.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Row(
@@ -835,7 +835,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.grayDark.withValues(alpha: 0.5)
+                  ? AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5)
                   : AppColors.stitchBgCard,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(11)),
@@ -859,7 +859,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: AppColors.blue.withValues(alpha: 0.1),
+                      color: AppColors.brandTeal.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(e.value.icon,
@@ -952,7 +952,7 @@ class PaymentMethodDetailPage extends StatelessWidget {
   Widget _buildActions(BuildContext context) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
         ? AppColors.stitchSurfaceLighter
-        : AppColors.stitchBorder;
+        : AppColors.brandStrokeLight;
     final isDefault = method['is_default'] == true;
 
     return Container(

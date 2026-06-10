@@ -652,12 +652,12 @@ class _DeliveryOrderDetailPageState extends State<DeliveryOrderDetailPage> {
 
   Color _statusColor(String status, bool hasDelivery) => switch (status) {
         'processing' =>
-          hasDelivery ? AppColors.brandCtaAccent : AppColors.textMutedGray,
+          hasDelivery ? AppColors.brandCtaAccent : AppColors.stitchSlate,
         'shipped' =>
           hasDelivery ? AppColors.brandTeal : AppColors.brandCtaAccent,
         'delivered' => AppColors.statusSuccess,
         'cancelled' => AppColors.statusError,
-        _ => AppColors.textMutedGray,
+        _ => AppColors.stitchSlate,
       };
 
   String _statusLabel(String status, bool hasDelivery) => switch (status) {

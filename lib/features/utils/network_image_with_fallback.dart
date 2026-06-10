@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:zonix/features/utils/app_colors.dart';
 
 class NetworkImageWithFallback extends StatelessWidget {
   final String imageUrl;
@@ -54,13 +55,13 @@ class NetworkImageWithFallback extends StatelessWidget {
     return Container(
       width: width,
       height: height,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.grey.shade200,
-            Colors.grey.shade300,
+            AppColors.brandSurfaceLight,
+            AppColors.brandMutedGray,
           ],
         ),
       ),
@@ -77,13 +78,14 @@ class NetworkImageWithFallback extends StatelessWidget {
                 children: [
                   CircularProgressIndicator(
                     strokeWidth: 3,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(AppColors.statusInfo),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Cargando...',
                     style: TextStyle(
-                      color: Colors.grey,
+                      color: AppColors.stitchSlate,
                       fontSize: 12,
                     ),
                   ),
@@ -94,8 +96,7 @@ class NetworkImageWithFallback extends StatelessWidget {
   }
 
   Widget _buildErrorPlaceholder() {
-    final color = fallbackColor ?? Colors.orange;
-    final materialColor = color is MaterialColor ? color : Colors.orange;
+    final color = fallbackColor ?? AppColors.brandCtaAccent;
     final isCompact = height <= 80;
 
     return Container(
@@ -106,8 +107,8 @@ class NetworkImageWithFallback extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            materialColor.shade100,
-            materialColor.shade200,
+            color.withValues(alpha: 0.15),
+            color.withValues(alpha: 0.35),
           ],
         ),
       ),
@@ -116,7 +117,7 @@ class NetworkImageWithFallback extends StatelessWidget {
             ? Icon(
                 fallbackIcon ?? Icons.local_pharmacy,
                 size: height * 0.4,
-                color: materialColor.shade600,
+                color: color.withValues(alpha: 0.85),
               )
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -125,13 +126,13 @@ class NetworkImageWithFallback extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.9),
+                      color: AppColors.white.withValues(alpha: 0.9),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
                       fallbackIcon ?? Icons.local_pharmacy,
                       size: height * 0.2,
-                      color: materialColor.shade600,
+                      color: color.withValues(alpha: 0.85),
                     ),
                   ),
                   if (title != null) ...[
@@ -143,7 +144,7 @@ class NetworkImageWithFallback extends StatelessWidget {
                         style: TextStyle(
                           fontSize: height * 0.06,
                           fontWeight: FontWeight.bold,
-                          color: materialColor.shade800,
+                          color: color.withValues(alpha: 0.95),
                         ),
                         textAlign: TextAlign.center,
                         maxLines: 2,
@@ -156,7 +157,7 @@ class NetworkImageWithFallback extends StatelessWidget {
                     'Imagen no disponible',
                     style: TextStyle(
                       fontSize: height * 0.04,
-                      color: materialColor.shade600,
+                      color: color.withValues(alpha: 0.75),
                     ),
                   ),
                 ],
@@ -191,13 +192,13 @@ class ProductImage extends StatelessWidget {
       height: height,
       title: productName,
       fallbackIcon: Icons.local_pharmacy,
-      fallbackColor: Colors.orange,
+      fallbackColor: AppColors.brandCtaAccent,
       borderRadius: borderRadius,
     );
   }
 }
 
-// Widget específico para restaurantes
+// Widget específico para farmacias/comercios
 class RestaurantImage extends StatelessWidget {
   final String imageUrl;
   final String restaurantName;
@@ -222,8 +223,8 @@ class RestaurantImage extends StatelessWidget {
       height: height,
       title: restaurantName,
       fallbackIcon: Icons.store,
-      fallbackColor: Colors.blue,
+      fallbackColor: AppColors.statusInfo,
       borderRadius: borderRadius,
     );
   }
-} 
+}

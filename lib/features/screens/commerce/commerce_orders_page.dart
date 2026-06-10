@@ -150,7 +150,7 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
                 ..clearMaterialBanners()
                 ..showMaterialBanner(
                   MaterialBanner(
-                    backgroundColor: AppColors.green.withValues(alpha: 0.15),
+                    backgroundColor: AppColors.statusSuccess.withValues(alpha: 0.15),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 12),
                     leading: const Icon(Icons.notifications_active,
@@ -249,16 +249,16 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
     final cs = Theme.of(context).colorScheme;
     switch (status) {
       case 'pending_payment':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'paid':
       case 'processing':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'shipped':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
         return cs.surfaceContainerHighest;
     }

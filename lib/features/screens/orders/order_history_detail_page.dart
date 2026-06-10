@@ -35,7 +35,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return [
       BoxShadow(
-        color: Colors.black.withValues(alpha: isDark ? 0.28 : 0.06),
+        color: AppColors.black.withValues(alpha: isDark ? 0.28 : 0.06),
         blurRadius: isDark ? 16 : 10,
         offset: const Offset(0, 2),
       ),
@@ -47,7 +47,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final scaffoldBg =
-        isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+        isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final surface = AppColors.cardBg(context);
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
@@ -137,13 +137,13 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     return Material(
       elevation: 0,
       color: surface,
-      shadowColor: Colors.black.withValues(alpha: 0.08),
+      shadowColor: AppColors.black.withValues(alpha: 0.08),
       child: Container(
         decoration: BoxDecoration(
           color: surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.05),
+              color: AppColors.black.withValues(alpha: isDark ? 0.35 : 0.05),
               blurRadius: 24,
               offset: const Offset(0, -8),
             ),
@@ -194,7 +194,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
 
     final statusText = _order.statusText;
     final isDelivered = _order.isDelivered;
-    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.red;
+    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.statusError;
 
     return Container(
       decoration: BoxDecoration(
@@ -804,13 +804,13 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
       width: w,
       height: h,
       decoration: BoxDecoration(
-        color: dark ? AppColors.grayDark : AppColors.grayLight,
+        color: dark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
         borderRadius: circular ? null : BorderRadius.circular(16),
         shape: circular ? BoxShape.circle : BoxShape.rectangle,
       ),
       child: Icon(
         Icons.store,
-        color: dark ? AppColors.white54 : AppColors.gray,
+        color: dark ? AppColors.white54 : AppColors.brandTealDeep,
         size: w * 0.45,
       ),
     );

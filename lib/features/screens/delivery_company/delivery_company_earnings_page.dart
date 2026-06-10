@@ -106,7 +106,7 @@ class _DeliveryCompanyEarningsPageState
         return ChoiceChip(
           label: Text(p),
           selected: selected,
-          selectedColor: AppColors.orange.withValues(alpha: 0.2),
+          selectedColor: AppColors.brandCtaAccent.withValues(alpha: 0.2),
           labelStyle: TextStyle(
             color: selected ? AppColors.brandCtaAccent : cs.onSurfaceVariant,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
@@ -123,7 +123,7 @@ class _DeliveryCompanyEarningsPageState
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-            colors: [AppColors.brandCtaAccent, AppColors.orangeCoral]),
+            colors: [AppColors.brandCtaAccent, AppColors.brandCtaAccent]),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -201,7 +201,7 @@ class _DeliveryCompanyEarningsPageState
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: AppColors.blue.withValues(alpha: 0.15),
+            backgroundColor: AppColors.brandTeal.withValues(alpha: 0.15),
             child:
                 const Icon(Icons.person, color: AppColors.brandTeal, size: 18),
           ),

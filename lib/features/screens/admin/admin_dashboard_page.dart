@@ -247,8 +247,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             ? AppColors.adminHealthNegativeEndDark
             : AppColors.adminHealthNegativeEndLight);
     final Color accentColor =
-        isHealthy ? AppColors.statusSuccess : AppColors.red;
-    final Color textColor = _isDark ? AppColors.white : AppColors.blueDark;
+        isHealthy ? AppColors.statusSuccess : AppColors.statusError;
+    final Color textColor = _isDark ? AppColors.white : AppColors.brandNavy;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -450,7 +450,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       _QuickAction(
           'Disputas', Icons.gavel_rounded, AppColors.statusError, _goDisputes),
       _QuickAction('Empresas Delivery', Icons.local_shipping_rounded,
-          AppColors.orangeCoral, _goDeliveryCompanies),
+          AppColors.brandCtaAccent, _goDeliveryCompanies),
       _QuickAction('Notificaciones', Icons.notifications_active_rounded,
           AppColors.statusSuccess, _goNotifications),
     ];

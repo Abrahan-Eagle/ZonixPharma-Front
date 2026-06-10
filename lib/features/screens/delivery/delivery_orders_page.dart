@@ -272,15 +272,15 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
   Color _statusColor(String status, bool hasDelivery) {
     switch (status) {
       case 'processing':
-        return hasDelivery ? AppColors.brandCtaAccent : AppColors.textMutedGray;
+        return hasDelivery ? AppColors.brandCtaAccent : AppColors.stitchSlate;
       case 'shipped':
-        return hasDelivery ? AppColors.brandTeal : AppColors.orange;
+        return hasDelivery ? AppColors.brandTeal : AppColors.brandCtaAccent;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
-        return AppColors.textMutedGray;
+        return AppColors.stitchSlate;
     }
   }
 
@@ -488,7 +488,7 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.1),
+                    color: AppColors.brandCtaAccent.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(Icons.assignment,

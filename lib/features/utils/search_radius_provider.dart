@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Provider para el radio de búsqueda (1-400 km) estilo Facebook.
-/// Persiste en SharedPreferences. Usado en Explorar para filtrar restaurantes/productos.
+/// Persiste en SharedPreferences. Usado en Explorar para filtrar farmacias/productos.
 class SearchRadiusProvider extends ChangeNotifier {
   static const String _keyRadiusKm = 'search_radius_km';
   static const String _keyUseSuggested = 'search_radius_use_suggested';

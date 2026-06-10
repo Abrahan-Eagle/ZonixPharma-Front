@@ -271,7 +271,7 @@ class _DeliveryCompanyDashboardPageState
         children: [
           CircleAvatar(
             radius: 28,
-            backgroundColor: AppColors.orange.withValues(alpha: 0.15),
+            backgroundColor: AppColors.brandCtaAccent.withValues(alpha: 0.15),
             child: const Icon(Icons.local_shipping,
                 color: AppColors.brandCtaAccent, size: 28),
           ),

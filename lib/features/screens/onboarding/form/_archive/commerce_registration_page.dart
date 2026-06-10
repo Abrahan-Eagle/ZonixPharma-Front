@@ -583,14 +583,14 @@ class _CommerceRegistrationPageState extends State<CommerceRegistrationPage>
               style: TextStyle(
                 fontSize: isTablet ? 12 : (isSmallPhone ? 10 : 11),
                 color: value.isEmpty
-                    ? AppColors.gray
+                    ? AppColors.brandTealDeep
                     : AppColors.textSecondaryDark,
               ),
             ),
             Icon(
               Icons.access_time,
               size: isTablet ? 16 : 14,
-              color: AppColors.gray,
+              color: AppColors.brandTealDeep,
             ),
           ],
         ),

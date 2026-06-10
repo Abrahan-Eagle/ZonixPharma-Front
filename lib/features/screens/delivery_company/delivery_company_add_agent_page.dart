@@ -90,7 +90,7 @@ class _DeliveryCompanyAddAgentPageState
                     padding: const EdgeInsets.all(12),
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
-                      color: AppColors.red.withValues(alpha: 0.15),
+                      color: AppColors.statusError.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(_error!,

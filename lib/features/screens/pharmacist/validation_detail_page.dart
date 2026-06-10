@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:zonix/features/screens/pharmacist/prescription_image_viewer.dart';
 import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/models/prescription.dart';
@@ -106,14 +107,7 @@ class _ValidationDetailPageState extends State<ValidationDetailPage> {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.brandStrokeLight),
                 ),
-                child: p.imageUrl.toLowerCase().endsWith('.pdf')
-                    ? const Center(
-                        child: Icon(Icons.picture_as_pdf,
-                            size: 64, color: AppColors.brandTealDeep))
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(p.imageUrl, fit: BoxFit.cover),
-                      ),
+                child: PrescriptionImageViewer(prescription: p),
               ),
             ),
             const SizedBox(height: 16),

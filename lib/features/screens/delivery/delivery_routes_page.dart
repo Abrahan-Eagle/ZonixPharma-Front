@@ -53,13 +53,13 @@ class _DeliveryRoutesPageState extends State<DeliveryRoutesPage> {
   Color _statusColor(String status) {
     switch (status) {
       case 'assigned':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'shipped':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'delivered':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       default:
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
     }
   }
 

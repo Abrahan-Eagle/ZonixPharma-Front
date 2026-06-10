@@ -23,6 +23,7 @@ import 'package:zonix/features/screens/orders/order_rating_page.dart';
 import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/widgets/payment_timeline.dart';
 import 'package:zonix/widgets/app_skeleton.dart';
+import 'package:zonix/features/utils/order_tracking_controller.dart';
 
 class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({
@@ -462,7 +463,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   bool get _canCancel {
     if (_order == null) return false;
-    if (_order!.status != 'pending_payment') return false;
+    if (!OrderTrackingController.isCancellable(_order!.status)) return false;
+    if (_order!.status == 'pending_prescription_validation') return true;
     final limit = _order!.createdAt.add(const Duration(minutes: 5));
     return DateTime.now().isBefore(limit);
   }
@@ -506,8 +508,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     final surfaceColor = isDark ? AppColors.cardBg(context) : AppColors.white;
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
-    final borderColor = isDark ? AppColors.grayDark : AppColors.grayLight;
-    final badgeBg = isDark ? AppColors.grayDark : AppColors.grayLight;
+    final borderColor = isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight;
+    final badgeBg = isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight;
     final scaffoldBg = AppColors.scaffoldBg(context);
 
     return Scaffold(
@@ -756,8 +758,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget _commercePlaceholder({Color? bgColor}) {
-    final bg = bgColor ?? AppColors.grayLight;
-    final border = bgColor ?? AppColors.grayLight;
+    final bg = bgColor ?? AppColors.brandSurfaceLight;
+    final border = bgColor ?? AppColors.brandSurfaceLight;
     return Container(
       width: 80,
       height: 80,
@@ -770,7 +772,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           size: 40,
           color: Theme.of(context).brightness == Brightness.dark
               ? AppColors.white54
-              : AppColors.gray),
+              : AppColors.brandTealDeep),
     );
   }
 
@@ -948,7 +950,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget _buildDashedDivider({Color? borderColor}) {
-    final color = borderColor ?? AppColors.grayLight;
+    final color = borderColor ?? AppColors.brandSurfaceLight;
     return LayoutBuilder(
       builder: (context, constraints) {
         const dashWidth = 8.0;
@@ -1390,10 +1392,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.orange.withValues(alpha: 0.12),
+              color: AppColors.brandCtaAccent.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
               border:
-                  Border.all(color: AppColors.orange.withValues(alpha: 0.4)),
+                  Border.all(color: AppColors.brandCtaAccent.withValues(alpha: 0.4)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1423,9 +1425,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.green.withValues(alpha: 0.12),
+              color: AppColors.statusSuccess.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.green.withValues(alpha: 0.4)),
+              border: Border.all(color: AppColors.statusSuccess.withValues(alpha: 0.4)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1470,23 +1472,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  int _progressStep(Order order) {
-    final s = order.status.toLowerCase();
-    switch (s) {
-      case 'pending_prescription_validation':
-      case 'pending_payment':
-      case 'paid':
-        return 0;
-      case 'processing':
-        return 1;
-      case 'shipped':
-        return 2;
-      case 'delivered':
-        return 3;
-      default:
-        return 0;
-    }
-  }
+  int _progressStep(Order order) =>
+      OrderTrackingController.progressStep(order.status);
 
   Widget _buildActiveOrderProgressSection(Order order,
       {required Color primary,
@@ -1740,13 +1727,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     });
   }
 
-  bool _isTrackableStatus(String status) {
-    return status == 'pending_prescription_validation' ||
-        status == 'pending_payment' ||
-        status == 'shipped' ||
-        status == 'processing' ||
-        status == 'paid';
-  }
+  bool _isTrackableStatus(String status) =>
+      OrderTrackingController.isTrackable(status);
 
   Widget _buildTrackingCard(Order order) {
     final hasLocation = _deliveryLat != null && _deliveryLng != null;
@@ -1813,7 +1795,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  color: isDark ? AppColors.grayDark : AppColors.white,
+                  color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
                   child: SizedBox(
                     height: 200,
                     width: double.infinity,
@@ -1834,18 +1816,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: isDark
-                      ? AppColors.gray.withValues(alpha: 0.1)
-                      : AppColors.grayLight,
+                      ? AppColors.brandTealDeep.withValues(alpha: 0.1)
+                      : AppColors.brandSurfaceLight,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.location_searching,
-                        size: 36, color: AppColors.gray),
+                        size: 36, color: AppColors.brandTealDeep),
                     SizedBox(height: 8),
                     Text(AppStrings.waitingDeliveryLocation,
-                        style: TextStyle(color: AppColors.gray, fontSize: 13)),
+                        style: TextStyle(color: AppColors.brandTealDeep, fontSize: 13)),
                   ],
                 ),
               ),
@@ -2041,7 +2023,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                     decoration: InputDecoration(
                       labelText: 'Método de pago',
                       filled: true,
-                      fillColor: AppColors.grayLight.withValues(alpha: 0.3),
+                      fillColor: AppColors.brandSurfaceLight.withValues(alpha: 0.3),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -2061,7 +2043,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.blue.withValues(alpha: 0.05),
+                      color: AppColors.brandTeal.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
@@ -2079,7 +2061,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 16, vertical: 10),
                     decoration: BoxDecoration(
-                      color: AppColors.green.withValues(alpha: 0.1),
+                      color: AppColors.statusSuccess.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Row(
@@ -2105,7 +2087,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                       hintText: 'Ej: 466511 o ABC123',
                       helperText: '4-20 caracteres del comprobante',
                       filled: true,
-                      fillColor: AppColors.grayLight.withValues(alpha: 0.3),
+                      fillColor: AppColors.brandSurfaceLight.withValues(alpha: 0.3),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
@@ -2148,9 +2130,9 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                                 errorBuilder: (context, error, stackTrace) =>
                                     Container(
                                   height: 180,
-                                  color: AppColors.grayLight,
+                                  color: AppColors.brandSurfaceLight,
                                   child: const Icon(Icons.broken_image,
-                                      color: AppColors.gray, size: 40),
+                                      color: AppColors.brandTealDeep, size: 40),
                                 ),
                               ),
                             ),
@@ -2164,7 +2146,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: AppColors.red.withValues(alpha: 0.9),
+                                color: AppColors.statusError.withValues(alpha: 0.9),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(Icons.close,
@@ -2181,10 +2163,10 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
                       child: Container(
                         height: 140,
                         decoration: BoxDecoration(
-                          color: AppColors.blue.withValues(alpha: 0.05),
+                          color: AppColors.brandTeal.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: AppColors.blue.withValues(alpha: 0.2),
+                            color: AppColors.brandTeal.withValues(alpha: 0.2),
                             width: 2,
                             style: BorderStyle.solid,
                           ),
@@ -2309,7 +2291,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
         Container(
           width: 40,
           height: 2,
-          color: _currentStep == 1 ? AppColors.brandTeal : AppColors.grayLight,
+          color: _currentStep == 1 ? AppColors.brandTeal : AppColors.brandSurfaceLight,
         ),
         _stepCircle(1, 'Subir'),
       ],
@@ -2325,11 +2307,11 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
           width: 30,
           height: 30,
           decoration: BoxDecoration(
-            color: active ? AppColors.brandTeal : AppColors.grayLight,
+            color: active ? AppColors.brandTeal : AppColors.brandSurfaceLight,
             shape: BoxShape.circle,
             border: current
                 ? Border.all(
-                    color: AppColors.blue.withValues(alpha: 0.3), width: 4)
+                    color: AppColors.brandTeal.withValues(alpha: 0.3), width: 4)
                 : null,
           ),
           child: Center(
@@ -2383,9 +2365,9 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.blue.withValues(alpha: 0.1),
+        color: AppColors.brandTeal.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.blue.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2433,7 +2415,7 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
           Text(label,
               style: const TextStyle(
                   fontSize: 11,
-                  color: AppColors.textMutedGray,
+                  color: AppColors.stitchSlate,
                   fontWeight: FontWeight.bold)),
           Row(
             children: [

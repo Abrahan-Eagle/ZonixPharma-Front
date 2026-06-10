@@ -203,8 +203,8 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Card(
-                    color: AppColors.red.withValues(alpha: 0.08),
-                    shadowColor: AppColors.red.withValues(alpha: 0.15),
+                    color: AppColors.statusError.withValues(alpha: 0.08),
+                    shadowColor: AppColors.statusError.withValues(alpha: 0.15),
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -249,7 +249,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                   const SizedBox(height: 24),
                   Card(
                     color: AppColors.cardBg(context),
-                    shadowColor: AppColors.red.withValues(alpha: 0.10),
+                    shadowColor: AppColors.statusError.withValues(alpha: 0.10),
                     elevation: 8,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
@@ -287,7 +287,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
     final scheduledFor = deletionStatus['scheduled_for'];
 
     return Card(
-      color: AppColors.orange.withValues(alpha: 0.08),
+      color: AppColors.brandCtaAccent.withValues(alpha: 0.08),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -413,7 +413,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
 
   Widget _buildPendingRequestCard() {
     return Card(
-      color: AppColors.orange.withValues(alpha: 0.08),
+      color: AppColors.brandCtaAccent.withValues(alpha: 0.08),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -439,7 +439,7 @@ class _AccountDeletionPageState extends State<AccountDeletionPage> {
                     onPressed:
                         isCancellingDeletion ? null : _cancelDeletionRequest,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.textMutedGray,
+                      backgroundColor: AppColors.stitchSlate,
                       foregroundColor: AppColors.white,
                     ),
                     child: isCancellingDeletion

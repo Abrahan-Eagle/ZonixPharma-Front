@@ -121,7 +121,7 @@ class CommerceDetailPage extends StatelessWidget {
               width: 72,
               height: 72,
               decoration: BoxDecoration(
-                color: AppColors.green.withValues(alpha: 0.2),
+                color: AppColors.statusSuccess.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: c.image != null && c.image!.isNotEmpty
@@ -155,7 +155,7 @@ class CommerceDetailPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.green.withValues(alpha: 0.2),
+                        color: AppColors.statusSuccess.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(

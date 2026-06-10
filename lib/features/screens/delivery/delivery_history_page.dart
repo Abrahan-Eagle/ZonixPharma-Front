@@ -99,7 +99,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
         return ChoiceChip(
           label: Text(p),
           selected: selected,
-          selectedColor: AppColors.orange.withValues(alpha: 0.2),
+          selectedColor: AppColors.brandCtaAccent.withValues(alpha: 0.2),
           labelStyle: TextStyle(
             color: selected ? AppColors.brandCtaAccent : muted,
             fontWeight: selected ? FontWeight.bold : FontWeight.normal,
@@ -163,7 +163,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
 
   Widget _buildOrderCard(BuildContext context, Order order) {
     final isDelivered = order.status == 'delivered';
-    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.red;
+    final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.statusError;
     final statusLabel = isDelivered ? 'Entregada' : 'Cancelada';
     final commerceName = order.commerce?['name']?.toString() ?? 'Comercio';
     final date = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);

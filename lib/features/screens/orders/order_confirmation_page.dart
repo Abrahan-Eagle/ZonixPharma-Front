@@ -33,7 +33,7 @@ class OrderConfirmationPage extends StatelessWidget {
         isDark ? AppColors.stitchSurfaceContainer : AppColors.white;
     final onSurface = AppColors.primaryText(context);
     final onSurfaceVariant = AppColors.secondaryText(context);
-    const accentGreen = AppColors.green;
+    const accentGreen = AppColors.statusSuccess;
     final etaShort = _shortEtaLine(order);
     final heroUrl = _heroImageUrl(order);
     final paymentLine = _paymentDisplayLine(order);
@@ -103,7 +103,7 @@ class OrderConfirmationPage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               fallbackIcon: Icons.local_pharmacy,
                               fallbackColor:
-                                  AppColors.blue.withValues(alpha: 0.5),
+                                  AppColors.brandTeal.withValues(alpha: 0.5),
                             );
                           },
                         ),
@@ -217,12 +217,12 @@ class OrderConfirmationPage extends StatelessWidget {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: surfaceCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.slateBorder.withValues(alpha: isDark ? 0.35 : 0.2),
+          color: AppColors.brandStrokeDark.withValues(alpha: isDark ? 0.35 : 0.2),
         ),
       ),
       child: Column(
@@ -341,12 +341,12 @@ class OrderConfirmationPage extends StatelessWidget {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: surfaceCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.slateBorder.withValues(alpha: isDark ? 0.35 : 0.2),
+          color: AppColors.brandStrokeDark.withValues(alpha: isDark ? 0.35 : 0.2),
         ),
         boxShadow: isDark
             ? null
@@ -369,7 +369,7 @@ class OrderConfirmationPage extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   color:
-                      AppColors.orange.withValues(alpha: isDark ? 0.2 : 0.12),
+                      AppColors.brandCtaAccent.withValues(alpha: isDark ? 0.2 : 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(
@@ -464,12 +464,12 @@ class OrderConfirmationPage extends StatelessWidget {
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: surfaceCard,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.slateBorder.withValues(alpha: isDark ? 0.35 : 0.2),
+          color: AppColors.brandStrokeDark.withValues(alpha: isDark ? 0.35 : 0.2),
         ),
         boxShadow: isDark
             ? null
@@ -488,7 +488,7 @@ class OrderConfirmationPage extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.orange.withValues(alpha: isDark ? 0.2 : 0.12),
+              color: AppColors.brandCtaAccent.withValues(alpha: isDark ? 0.2 : 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Icon(
@@ -622,7 +622,7 @@ class OrderConfirmationPage extends StatelessWidget {
         color: surfaceCard,
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: AppColors.slateBorder.withValues(alpha: isDark ? 0.35 : 0.15),
+          color: AppColors.brandStrokeDark.withValues(alpha: isDark ? 0.35 : 0.15),
         ),
       ),
       child: Column(
@@ -761,7 +761,7 @@ class OrderConfirmationPage extends StatelessWidget {
             color: scaffoldBg.withValues(alpha: 0.88),
             border: Border(
               bottom: BorderSide(
-                color: AppColors.slateBorder.withValues(alpha: 0.12),
+                color: AppColors.brandStrokeDark.withValues(alpha: 0.12),
               ),
             ),
           ),
@@ -797,7 +797,7 @@ class OrderConfirmationPage extends StatelessWidget {
             color: scaffoldBg.withValues(alpha: 0.88),
             border: Border(
               top: BorderSide(
-                color: AppColors.slateBorder.withValues(alpha: 0.12),
+                color: AppColors.brandStrokeDark.withValues(alpha: 0.12),
               ),
             ),
           ),
@@ -818,7 +818,7 @@ class OrderConfirmationPage extends StatelessWidget {
                           backgroundColor: AppColors.brandTeal,
                           foregroundColor: AppColors.white,
                           elevation: 4,
-                          shadowColor: AppColors.blue.withValues(alpha: 0.35),
+                          shadowColor: AppColors.brandTeal.withValues(alpha: 0.35),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

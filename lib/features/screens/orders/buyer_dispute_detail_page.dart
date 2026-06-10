@@ -212,7 +212,7 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
             child: Text(
               key,
               style: const TextStyle(
-                  color: AppColors.gray, fontWeight: FontWeight.w600),
+                  color: AppColors.brandTealDeep, fontWeight: FontWeight.w600),
             ),
           ),
           Expanded(child: Text(value)),
@@ -225,7 +225,7 @@ class _BuyerDisputeDetailPageState extends State<BuyerDisputeDetailPage> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.grayLight,
+        color: AppColors.brandSurfaceLight,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(

@@ -44,8 +44,8 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
   Map<String, dynamic>? _deliveryAgent;
   StreamSubscription<Map<String, dynamic>>? _pusherSubscription;
 
-  static const Color _primary = AppColors.blue;
-  static const Color _accent = AppColors.amber;
+  static const Color _primary = AppColors.brandTeal;
+  static const Color _accent = AppColors.statusWarning;
 
   @override
   void initState() {
@@ -329,9 +329,9 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
     final surfaceColor = isDark ? AppColors.cardBg(context) : AppColors.white;
     final primary = isDark ? AppColors.accentButton(context) : _primary;
     final borderColor =
-        isDark ? AppColors.white.withValues(alpha: 0.08) : AppColors.grayLight;
+        isDark ? AppColors.white.withValues(alpha: 0.08) : AppColors.brandSurfaceLight;
     final backgroundLight =
-        isDark ? AppColors.backgroundDark : AppColors.grayLight;
+        isDark ? AppColors.brandSurfaceDark : AppColors.brandSurfaceLight;
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
 
@@ -752,7 +752,7 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
         child: Container(
           height: 220,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.grayDark : AppColors.grayLight,
+            color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
             border: Border.all(color: borderColor),
           ),
           child: hasLocation
@@ -802,7 +802,7 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
                       Text(
                         'Esperando ubicación del repartidor...',
                         style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12, color: AppColors.gray),
+                            fontSize: 12, color: AppColors.brandTealDeep),
                       ),
                     ],
                   ),
@@ -953,8 +953,8 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.grayDark
-                  : AppColors.grayLight,
+                  ? AppColors.brandSurfaceContainerDark
+                  : AppColors.brandSurfaceLight,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(Icons.location_on, color: textSecondary, size: 22),
@@ -1066,7 +1066,7 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
             padding: const EdgeInsets.all(20),
             color: Theme.of(context).brightness == Brightness.dark
                 ? AppColors.white.withValues(alpha: 0.05)
-                : AppColors.grayLight,
+                : AppColors.brandSurfaceLight,
             child: Column(
               children: [
                 _summaryRow('Subtotal', order.subtotal, textSecondary),
@@ -1119,7 +1119,7 @@ class _CurrentOrderDetailPageState extends State<CurrentOrderDetailPage> {
       width: size,
       height: size,
       color: AppColors.borderLight,
-      child: Icon(Icons.person, color: AppColors.gray, size: size * 0.5),
+      child: Icon(Icons.person, color: AppColors.brandTealDeep, size: size * 0.5),
     );
   }
 }

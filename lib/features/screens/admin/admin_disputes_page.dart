@@ -204,11 +204,11 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
   Color _statusColor(String status) {
     switch (status) {
       case 'pending':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'in_review':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'resolved':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'closed':
         return AppColors.stitchSlate;
       default:
@@ -500,7 +500,7 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
         title: const Text('Disputas'),
         backgroundColor: isDark
             ? Theme.of(context).colorScheme.surfaceContainerHigh
-            : AppColors.blueDark,
+            : AppColors.brandNavy,
         foregroundColor: AppColors.white,
         elevation: 0,
       ),
@@ -596,7 +596,7 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
               _statItem(
                 'SLA prom.',
                 avgResolutionMinutes > 0 ? '${avgResolutionMinutes}m' : '—',
-                AppColors.blueDark,
+                AppColors.brandNavy,
               ),
               _statDivider(),
               _statItem(
@@ -622,7 +622,7 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
               _statItem(
                 'P95',
                 p95ResolutionMinutes > 0 ? '${p95ResolutionMinutes}m' : '—',
-                AppColors.blueDark,
+                AppColors.brandNavy,
               ),
               _statDivider(),
               _statItem(
@@ -681,13 +681,13 @@ class _AdminDisputesPageState extends State<AdminDisputesPage> {
   Color _slaColor(String level) {
     switch (level) {
       case 'critical':
-        return AppColors.red;
+        return AppColors.statusError;
       case 'high':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'warning':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       default:
-        return AppColors.green;
+        return AppColors.statusSuccess;
     }
   }
 

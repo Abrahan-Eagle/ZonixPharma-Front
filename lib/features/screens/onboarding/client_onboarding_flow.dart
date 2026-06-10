@@ -1459,7 +1459,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     final progress = (_currentStep + 1) / _totalSteps;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundDark,
+      backgroundColor: AppColors.brandSurfaceDark,
       body: SafeArea(
         child: Column(
           children: [
@@ -1473,7 +1473,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     icon:
                         const Icon(Icons.chevron_left, color: AppColors.white),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppColors.grayDark,
+                      backgroundColor: AppColors.brandSurfaceContainerDark,
                       foregroundColor: AppColors.white,
                     ),
                   ),
@@ -1527,7 +1527,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 8,
-                      backgroundColor: AppColors.grayDark,
+                      backgroundColor: AppColors.brandSurfaceContainerDark,
                       valueColor: const AlwaysStoppedAnimation<Color>(
                           AppColors.brandTeal),
                     ),
@@ -1564,8 +1564,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.backgroundDark.withValues(alpha: 0),
-              AppColors.backgroundDark,
+              AppColors.brandSurfaceDark.withValues(alpha: 0),
+              AppColors.brandSurfaceDark,
             ],
           ),
         ),
@@ -1577,7 +1577,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.brandTeal,
               foregroundColor: AppColors.white,
-              disabledBackgroundColor: AppColors.blue.withValues(alpha: 0.5),
+              disabledBackgroundColor: AppColors.brandTeal.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
@@ -1648,7 +1648,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       width: isSmall ? 96 : 112,
                       height: isSmall ? 96 : 112,
                       decoration: BoxDecoration(
-                        color: AppColors.grayDark,
+                        color: AppColors.brandSurfaceContainerDark,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppColors.white.withValues(alpha: 0.2),
@@ -1677,7 +1677,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                           color: AppColors.brandTeal,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.backgroundDark,
+                            color: AppColors.brandSurfaceDark,
                             width: 4,
                           ),
                         ),
@@ -1800,7 +1800,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         ),
                       ),
                       filled: true,
-                      fillColor: AppColors.grayDark,
+                      fillColor: AppColors.brandSurfaceContainerDark,
                       contentPadding: inputPadding,
                       suffixIcon: Icon(
                         Icons.calendar_today,
@@ -1841,7 +1841,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 DropdownButtonFormField<String>(
                   initialValue: _selectedSex,
                   isExpanded: true,
-                  dropdownColor: AppColors.grayDark,
+                  dropdownColor: AppColors.brandSurfaceContainerDark,
                   icon: Icon(
                     Icons.expand_more,
                     color: AppColors.white.withValues(alpha: 0.6),
@@ -1867,7 +1867,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       ),
                     ),
                     filled: true,
-                    fillColor: AppColors.grayDark,
+                    fillColor: AppColors.brandSurfaceContainerDark,
                     contentPadding: inputPadding,
                   ),
                   hint: Text(
@@ -1932,7 +1932,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         child: DropdownButtonFormField<Map<String, dynamic>>(
                           initialValue: _selectedPersonalOperator,
                           isExpanded: true,
-                          dropdownColor: AppColors.grayDark,
+                          dropdownColor: AppColors.brandSurfaceContainerDark,
                           decoration: InputDecoration(
                             hintText: 'Código',
                             hintStyle: GoogleFonts.plusJakartaSans(
@@ -1945,7 +1945,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                               ),
                             ),
                             filled: true,
-                            fillColor: AppColors.grayDark,
+                            fillColor: AppColors.brandSurfaceContainerDark,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 14,
@@ -2007,7 +2007,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                               ),
                             ),
                             filled: true,
-                            fillColor: AppColors.grayDark,
+                            fillColor: AppColors.brandSurfaceContainerDark,
                             contentPadding: inputPadding,
                           ),
                           keyboardType: TextInputType.phone,
@@ -2082,7 +2082,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               ),
             ),
             filled: true,
-            fillColor: AppColors.grayDark,
+            fillColor: AppColors.brandSurfaceContainerDark,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
@@ -2097,7 +2097,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
 
   // Colores Stitch (7) - Dirección
   static const Color _kAddressPrimary = AppColors.addressPrimary;
-  static const Color _kAddressSurface = AppColors.grayDark;
+  static const Color _kAddressSurface = AppColors.brandSurfaceContainerDark;
 
   Widget _buildStep2(Size size) {
     final isTablet = size.width > 600;
@@ -2305,7 +2305,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         end: Alignment.bottomCenter,
                         colors: [
                           AppColors.transparent,
-                          AppColors.backgroundDark.withValues(alpha: 0.9),
+                          AppColors.brandSurfaceDark.withValues(alpha: 0.9),
                         ],
                       ),
                     ),
@@ -2333,7 +2333,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         ),
                         child: const Icon(
                           Icons.location_on,
-                          color: AppColors.grayDark,
+                          color: AppColors.brandSurfaceContainerDark,
                           size: 28,
                         ),
                       ),
@@ -2577,7 +2577,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         ),
         prefixIconConstraints: const BoxConstraints(minWidth: 48),
         filled: true,
-        fillColor: AppColors.grayDark,
+        fillColor: AppColors.brandSurfaceContainerDark,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
@@ -2697,7 +2697,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: CircularProgressIndicator(
-                      color: AppColors.blue.withValues(alpha: 0.8)),
+                      color: AppColors.brandTeal.withValues(alpha: 0.8)),
                 ),
               )
             else
@@ -2709,7 +2709,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     child: DropdownButtonFormField<Map<String, dynamic>>(
                       initialValue: _selectedCommerceOperator,
                       isExpanded: true,
-                      dropdownColor: AppColors.grayDark,
+                      dropdownColor: AppColors.brandSurfaceContainerDark,
                       icon: Icon(Icons.arrow_drop_down,
                           color: AppColors.white.withValues(alpha: 0.6)),
                       decoration: InputDecoration(
@@ -2724,7 +2724,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 44),
                         filled: true,
-                        fillColor: AppColors.grayDark,
+                        fillColor: AppColors.brandSurfaceContainerDark,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
                           borderSide: BorderSide.none,
@@ -2799,10 +2799,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.blue.withValues(alpha: 0.1),
+                color: AppColors.brandTeal.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
                 border:
-                    Border.all(color: AppColors.blue.withValues(alpha: 0.2)),
+                    Border.all(color: AppColors.brandTeal.withValues(alpha: 0.2)),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -3112,7 +3112,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             letterSpacing: 0.8,
             color: darkStyle
                 ? AppColors.white.withValues(alpha: 0.85)
-                : AppColors.grayDark,
+                : AppColors.brandSurfaceContainerDark,
           ),
         ),
       ],
@@ -3125,7 +3125,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       labelStyle: GoogleFonts.plusJakartaSans(
           color: AppColors.white.withValues(alpha: 0.6)),
       filled: true,
-      fillColor: AppColors.grayDark,
+      fillColor: AppColors.brandSurfaceContainerDark,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide.none,
@@ -3142,7 +3142,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     return DropdownButtonFormField<Country>(
       initialValue: _selectedCountry,
       isExpanded: true,
-      dropdownColor: AppColors.grayDark,
+      dropdownColor: AppColors.brandSurfaceContainerDark,
       decoration: _commerceDropdownDecoration('País'),
       icon: Icon(Icons.arrow_drop_down,
           color: AppColors.white.withValues(alpha: 0.6)),
@@ -3166,7 +3166,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     return DropdownButtonFormField<StateModel>(
       initialValue: _selectedState,
       isExpanded: true,
-      dropdownColor: AppColors.grayDark,
+      dropdownColor: AppColors.brandSurfaceContainerDark,
       decoration: _commerceDropdownDecoration('Estado'),
       icon: Icon(Icons.arrow_drop_down,
           color: AppColors.white.withValues(alpha: 0.6)),
@@ -3190,7 +3190,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     return DropdownButtonFormField<City>(
       initialValue: _selectedCity,
       isExpanded: true,
-      dropdownColor: AppColors.grayDark,
+      dropdownColor: AppColors.brandSurfaceContainerDark,
       decoration: _commerceDropdownDecoration('Ciudad'),
       icon: Icon(Icons.arrow_drop_down,
           color: AppColors.white.withValues(alpha: 0.6)),

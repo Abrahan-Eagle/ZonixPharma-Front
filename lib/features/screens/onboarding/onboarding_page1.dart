@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Colores del template Stitch (Onboarding beneficios)
-const Color _kCardDark = AppColors.grayDark;
+const Color _kCardDark = AppColors.brandSurfaceContainerDark;
 
 class OnboardingPage1 extends StatelessWidget {
   const OnboardingPage1({super.key});
@@ -13,7 +13,7 @@ class OnboardingPage1 extends StatelessWidget {
     final w = MediaQuery.of(context).size.width;
     final isSmall = w < 360;
     final isTablet = w > 600;
-    final padH = isSmall ? 20.0 : (isTablet ? 32.0 : 24.0);
+    final padH = isSmall ? 16.0 : (isTablet ? 32.0 : 24.0);
     return Stack(
       children: [
         _buildBackground(context),
@@ -45,7 +45,7 @@ class OnboardingPage1 extends StatelessWidget {
           radius: 1.2,
           colors: [
             AppColors.onboardingBlueDark.withValues(alpha: 0.6),
-            AppColors.backgroundDark,
+            AppColors.brandSurfaceDark,
           ],
           stops: const [0.0, 0.6],
         ),
@@ -100,18 +100,18 @@ class OnboardingPage1 extends StatelessWidget {
     final isSmall = w < 360;
     final iconSize = isSmall ? 56.0 : 64.0;
     final titleSize = isSmall ? 24.0 : (w < 400 ? 26.0 : 28.0);
-    final bodySize = isSmall ? 13.0 : 14.0;
+    const bodySize = 14.0;
     return Column(
       children: [
         Container(
           width: iconSize,
           height: iconSize,
           decoration: BoxDecoration(
-            color: AppColors.blue.withValues(alpha: 0.2),
+            color: AppColors.brandTeal.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.blue.withValues(alpha: 0.3)),
+            border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
           ),
-          child: Icon(Icons.rocket_launch,
+          child: Icon(Icons.health_and_safety,
               size: iconSize * 0.56, color: AppColors.brandTeal),
         ),
         const SizedBox(height: 16),
@@ -144,22 +144,22 @@ class OnboardingPage1 extends StatelessWidget {
     return Column(
       children: [
         _buildBenefitCard(context,
-            icon: Icons.bolt,
-            title: 'Velocidad Luz',
+            icon: Icons.local_shipping_outlined,
+            title: 'Entrega confiable',
             description:
-                'Entregas más rápidas que un cometa cruzando la galaxia.'),
+                'Recibe tus medicamentos en casa con seguimiento en tiempo real.'),
         const SizedBox(height: 16),
         _buildBenefitCard(context,
             icon: Icons.local_pharmacy,
-            title: 'Salud a un toque',
+            title: 'Farmacias verificadas',
             description:
-                'Farmacias verificadas y catálogo claro para pedir con tranquilidad.'),
+                'Catálogo claro y farmacias de confianza para pedir con tranquilidad.'),
         const SizedBox(height: 16),
         _buildBenefitCard(context,
-            icon: Icons.savings_outlined,
-            title: 'Ahorro Galáctico',
+            icon: Icons.medication_liquid,
+            title: 'Recetas y OTC',
             description:
-                'Ofertas y promociones que literalmente no son de este mundo.'),
+                'Gestiona medicamentos con y sin receta desde un solo lugar.'),
       ],
     );
   }
@@ -172,18 +172,18 @@ class OnboardingPage1 extends StatelessWidget {
   }) {
     final w = MediaQuery.of(context).size.width;
     final isSmall = w < 360;
-    final pad = isSmall ? 16.0 : 20.0;
+    const pad = 16.0;
     final titleSize = isSmall ? 16.0 : 18.0;
-    final bodySize = isSmall ? 13.0 : 14.0;
+    const bodySize = 14.0;
     return Container(
-      padding: EdgeInsets.all(pad),
+      padding: const EdgeInsets.all(pad),
       decoration: BoxDecoration(
         color: _kCardDark,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.slateBorder),
+        border: Border.all(color: AppColors.brandStrokeDark),
         boxShadow: [
           BoxShadow(
-            color: AppColors.blue.withValues(alpha: 0.05),
+            color: AppColors.brandTeal.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -196,7 +196,7 @@ class OnboardingPage1 extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: AppColors.blue.withValues(alpha: 0.1),
+              color: AppColors.brandTeal.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: AppColors.brandTeal, size: 24),

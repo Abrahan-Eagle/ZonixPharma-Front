@@ -379,13 +379,13 @@ class _CommercePaymentMethodFormPageState
   Widget build(BuildContext context) {
     final isEdit = widget.method != null;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bg = isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+    final bg = isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final cardBg = AppColors.cardBg(context);
     final primaryText = AppColors.primaryText(context);
     final secondaryText = AppColors.secondaryText(context);
     final borderColor =
-        isDark ? AppColors.stitchSurfaceLighter : AppColors.stitchBorder;
-    final inputBg = isDark ? AppColors.grayDark : AppColors.stitchBgCard;
+        isDark ? AppColors.stitchSurfaceLighter : AppColors.brandStrokeLight;
+    final inputBg = isDark ? AppColors.brandSurfaceContainerDark : AppColors.stitchBgCard;
 
     return Scaffold(
       backgroundColor: bg,
@@ -1056,13 +1056,13 @@ class _CommercePaymentMethodFormPageState
                         width: 22,
                         height: 22,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: AppColors.blueDark),
+                            strokeWidth: 2, color: AppColors.brandNavy),
                       )
                     : const Icon(Icons.save, size: 22),
                 label: Text(_saving ? 'Guardando...' : 'Guardar método'),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.statusWarning,
-                  foregroundColor: AppColors.blueDark,
+                  foregroundColor: AppColors.brandNavy,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                 ),
