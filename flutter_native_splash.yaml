@@ -7,7 +7,7 @@ flutter_native_splash:
   branding_bottom_padding: 24
   color_dark: "#142033"
   image_dark: assets/images/splash_logo_dark.png
-  branding_dark: assets/images/dart_dark-android.png
+  branding_dark: assets/images/brand-android-dark.png
 
   android_12:
     image: assets/images/splash_logo.png
@@ -17,11 +17,11 @@ flutter_native_splash:
     image_dark: assets/images/splash_logo_dark.png
     color_dark: "#142033"
     icon_background_color_dark: "#142033"
-    branding_dark: assets/images/dart_dark-android.png
+    branding_dark: assets/images/brand-android-dark.png
 
   android: true
   ios: false
   web: true
   branding_android: assets/images/brand-android.png
-  branding_dark_android: assets/images/dart_dark-android.png
+  branding_dark_android: assets/images/brand-android-dark.png
   fullscreen: true

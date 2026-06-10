@@ -63,10 +63,10 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo_login.png"
-  image_path_android: "assets/images/logo_login.png"
-  adaptive_icon_background: "#000000"
-  adaptive_icon_foreground: "assets/images/splash_logo_dark.png"
+  image_path: "assets/images/launcher_icon.png"
+  image_path_android: "assets/images/launcher_icon.png"
+  adaptive_icon_background: "#F5F7FA"
+  adaptive_icon_foreground: "assets/images/launcher_icon_foreground.png"
 
   remove_alpha_ios: true
   min_sdk_android: 21
@@ -103,7 +103,10 @@ flutter:
     - assets/onboarding/onboarding_pharma_familia.png
     - assets/images/logo_login.png
     - assets/images/logo_login2.png
-    - assets/images/dart_dark-android.png
+    - assets/images/brand-android.png
+    - assets/images/brand-android-dark.png
+    - assets/images/launcher_icon.png
+    - assets/images/launcher_icon_foreground.png
     - assets/images/splash_logo.png
     - assets/images/splash_logo_dark.png
     - assets/images/undraw_launching_szjw.png
