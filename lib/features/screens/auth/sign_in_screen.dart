@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:zonix/features/services/auth/api_service.dart';
@@ -18,9 +19,18 @@ const FlutterSecureStorage _storage = FlutterSecureStorage();
 final ApiService apiService = ApiService();
 final logger = Logger();
 
-// Colores del template Stitch (basados en logo)
-const Color _kBackgroundDark = AppColors.brandSurfaceDark;
-const Color _kPrimary = AppColors.brandTeal;
+// Tokens Clinical Ether (stitch_zonix_pharma/DESIGN.md + templates HTML)
+const Color _kLoginBackgroundDark = Color(0xFF071326);
+const Color _kLoginBackgroundLight = Color(0xFFF4F9F8);
+const Color _kLoginOnSurface = Color(0xFFD7E3FD);
+const Color _kLoginOnSurfaceVariant = Color(0xFFBCC9C6);
+const Color _kLoginSurfaceContainerHigh = Color(0xFF1E2A3E);
+const Color _kLoginOnPrimary = Color(0xFF003732);
+const Color _kLoginOnPrimaryContainer = Color(0xFF005048);
+const Color _kLoginOutline = Color(0xFF879390);
+const Color _kLoginOutlineVariant = Color(0xFF3D4947);
+const String _kLoginCapsuleIcon =
+    'assets/LogosZonixPharma/ZonixPharma_05.png';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -122,144 +132,107 @@ class SignInScreenState extends State<SignInScreen> {
     }
   }
 
+  bool _isDark(BuildContext context) =>
+      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
   @override
   Widget build(BuildContext context) {
+    final isDark = _isDark(context);
+
     return Scaffold(
+      backgroundColor: isDark ? _kLoginBackgroundDark : _kLoginBackgroundLight,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Stack(
-          children: [
-            _buildBackground(),
-            SafeArea(
-              // SliverFillRemaining evita overflow: con poco alto (teclado, pantalla chica)
-              // el contenido hace scroll; con mucho espacio, el Spacer empuja el botón abajo.
-              child: CustomScrollView(
-                slivers: [
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: 64),
-                          _buildLogoAndTitle(),
-                          const SizedBox(height: 32),
-                          const Spacer(),
-                          _buildBottomContent(),
-                          const SizedBox(height: 40),
-                        ],
+        value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        child: SafeArea(
+          child: CustomScrollView(
+            slivers: [
+              SliverFillRemaining(
+                hasScrollBody: false,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Center(
+                          child: _buildLogoAndTitle(context),
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 64),
+                        child: _buildBottomContent(context),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildBackground() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      decoration: const BoxDecoration(
-        color: _kBackgroundDark,
-      ),
-      child: Stack(
-        children: [
-          // Gradiente espacial (como space-gradient del HTML)
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.topRight,
-                  radius: 1.2,
-                  colors: [
-                    _kPrimary.withValues(alpha: 0.15),
-                    AppColors.transparent,
-                  ],
-                  stops: const [0.0, 0.5],
-                ),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.bottomLeft,
-                  radius: 1.2,
-                  colors: [
-                    _kPrimary.withValues(alpha: 0.1),
-                    AppColors.transparent,
-                  ],
-                  stops: const [0.0, 0.5],
-                ),
-              ),
-            ),
-          ),
-          // Círculo decorativo inferior izquierdo (balance visual con el planeta)
-          Positioned(
-            bottom: -60,
-            left: -60,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _kPrimary.withValues(alpha: 0.08),
-                boxShadow: [
-                  BoxShadow(
-                    color: _kPrimary.withValues(alpha: 0.1),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // Acento decorativo superior derecho (sin logo duplicado)
-          Positioned(
-            top: -48,
-            right: -48,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _kPrimary.withValues(alpha: 0.12),
-              ),
-            ),
-          ),
-          // Estrellas sutiles (capa estática, menos tema espacial)
-          ..._loginStarLayer(),
-        ],
-      ),
-    );
-  }
+  Widget _buildLogoAndTitle(BuildContext context) {
+    final isDark = _isDark(context);
 
-  Widget _buildLogoAndTitle() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          'assets/images/splash_logo_dark.png',
-          height: 96,
-          fit: BoxFit.contain,
+        Container(
+          width: 120,
+          height: 120,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: isDark
+                    ? AppColors.brandTeal.withValues(alpha: 0.05)
+                    : _kLoginOnPrimaryContainer.withValues(alpha: 0.08),
+                blurRadius: isDark ? 64 : 32,
+                offset: isDark ? Offset.zero : const Offset(0, 8),
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Image.asset(
+              _kLoginCapsuleIcon,
+              width: 92,
+              height: 92,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
-        const SizedBox(height: 24),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Text(
-            'Pide en tu farmacia de confianza, con la rapidez que mereces.',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: AppColors.brandMint.withValues(alpha: 0.85),
+        const SizedBox(height: 16),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 260),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Image.asset(
+              isDark
+                  ? 'assets/images/brand-android-dark.png'
+                  : 'assets/images/brand-android.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 288),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'Pide en tu farmacia de confianza, con la rapidez que mereces.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                height: 24 / 16,
+                color: isDark
+                    ? _kLoginOnSurface.withValues(alpha: 0.6)
+                    : _kLoginOnPrimary.withValues(alpha: 0.9),
+              ),
             ),
           ),
         ),
@@ -267,7 +240,9 @@ class SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _buildBottomContent() {
+  Widget _buildBottomContent(BuildContext context) {
+    final isDark = _isDark(context);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -285,7 +260,6 @@ class SignInScreenState extends State<SignInScreen> {
             ),
           ),
         ],
-        // Botón Continuar con Google (pill-shaped)
         Semantics(
           button: true,
           label: 'Continuar con Google',
@@ -298,34 +272,46 @@ class SignInScreenState extends State<SignInScreen> {
               child: InkWell(
                 onTap: _handleSignIn,
                 borderRadius: BorderRadius.circular(28),
-                splashColor: _kPrimary.withValues(alpha: 0.15),
-                highlightColor: _kPrimary.withValues(alpha: 0.08),
-                child: Container(
+                splashColor: AppColors.brandTeal.withValues(alpha: 0.12),
+                highlightColor: AppColors.brandTeal.withValues(alpha: 0.06),
+                child: Ink(
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: isDark
+                        ? _kLoginSurfaceContainerHigh
+                        : AppColors.white,
                     borderRadius: BorderRadius.circular(28),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.black.withValues(alpha: 0.08),
-                        blurRadius: 16,
-                        offset: const Offset(0, 4),
-                      ),
-                      BoxShadow(
-                        color: AppColors.white.withValues(alpha: 0.1),
-                        blurRadius: 12,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      'Continuar con Google',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.stitchTextDark,
+                    border: Border.all(
+                      color: _kLoginOutline.withValues(
+                        alpha: isDark ? 0.1 : 0.3,
                       ),
                     ),
+                    boxShadow: isDark
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: AppColors.black.withValues(alpha: 0.04),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const _GoogleLogoIcon(size: 24),
+                      const SizedBox(width: 16),
+                      Text(
+                        'Continuar con Google',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          height: 28 / 22,
+                          color: isDark
+                              ? _kLoginOnSurface
+                              : _kLoginOnPrimaryContainer,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -342,28 +328,44 @@ class SignInScreenState extends State<SignInScreen> {
               ),
             );
           },
+          style: TextButton.styleFrom(
+            foregroundColor: isDark
+                ? AppColors.brandTeal
+                : _kLoginOnPrimaryContainer,
+            padding: const EdgeInsets.symmetric(vertical: 8),
+          ),
           icon: Icon(
             Icons.qr_code_scanner,
-            color: AppColors.brandMint.withValues(alpha: 0.85),
-            size: 22,
+            size: 20,
+            color: isDark
+                ? AppColors.brandTeal
+                : _kLoginOnPrimaryContainer,
           ),
           label: Text(
             'Escanear QR de una farmacia',
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 15,
+              fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: AppColors.brandMint.withValues(alpha: 0.9),
+              height: 24 / 16,
+              letterSpacing: 0.1,
             ),
           ),
         ),
-        const SizedBox(height: 20),
-        Text(
-          'Al continuar, aceptas nuestros Términos y Condiciones y Política de Privacidad.',
-          textAlign: TextAlign.center,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            color: AppColors.brandMint.withValues(alpha: 0.55),
-            height: 1.5,
+        const SizedBox(height: 16),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 288),
+          child: Text(
+            'Al continuar, aceptas nuestros Términos y Condiciones y Política de Privacidad.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              height: 16 / 12,
+              letterSpacing: 0.5,
+              color: isDark
+                  ? _kLoginOnSurfaceVariant.withValues(alpha: 0.4)
+                  : _kLoginOutlineVariant.withValues(alpha: 0.8),
+            ),
           ),
         ),
       ],
@@ -371,38 +373,26 @@ class SignInScreenState extends State<SignInScreen> {
   }
 }
 
-List<Widget> _loginStarLayer() {
-  const spots = <(double left, double top, double size, double opacity)>[
-    (24, 48, 2, 0.35),
-    (120, 32, 1, 0.25),
-    (280, 72, 2, 0.3),
-    (340, 160, 1, 0.2),
-    (48, 200, 1, 0.25),
-    (200, 120, 2, 0.28),
-    (320, 280, 1, 0.22),
-    (80, 360, 2, 0.3),
-    (240, 400, 1, 0.25),
-    (160, 520, 1, 0.2),
-    (360, 480, 2, 0.28),
-    (16, 640, 1, 0.22),
-  ];
-  return spots
-      .map(
-        (s) => Positioned(
-          left: s.$1,
-          top: s.$2,
-          child: Opacity(
-            opacity: s.$4,
-            child: Container(
-              width: s.$3,
-              height: s.$3,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ),
-      )
-      .toList();
+/// Logo Google multicolor (SVG oficial template Stitch HTML).
+class _GoogleLogoIcon extends StatelessWidget {
+  const _GoogleLogoIcon({this.size = 24});
+
+  final double size;
+
+  static const String _svg = '''
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+</svg>''';
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.string(
+      _svg,
+      width: size,
+      height: size,
+    );
+  }
 }
