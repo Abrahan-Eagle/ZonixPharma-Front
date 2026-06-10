@@ -8,9 +8,8 @@ import 'package:zonix/features/utils/app_colors.dart';
 
 class PhoneScreen extends StatefulWidget {
   final int userId;
-  final bool statusId;
 
-  const PhoneScreen({super.key, required this.userId, this.statusId = false});
+  const PhoneScreen({super.key, required this.userId});
 
   @override
   PhoneScreenState createState() => PhoneScreenState();
@@ -112,7 +111,7 @@ class PhoneScreenState extends State<PhoneScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
             child: const Text('Eliminar'),
           ),
         ],
@@ -134,7 +133,7 @@ class PhoneScreenState extends State<PhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 3),
       ),
@@ -145,7 +144,7 @@ class PhoneScreenState extends State<PhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 2),
       ),
@@ -156,7 +155,7 @@ class PhoneScreenState extends State<PhoneScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final appBarBg = AppColors.cardBg(context);
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
@@ -272,11 +271,11 @@ class PhoneScreenState extends State<PhoneScreen> {
     final primary = Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = AppColors.cardBg(context);
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
-    final verifiedBg = AppColors.green.withValues(alpha: isDark ? 0.25 : 0.15);
-    const verifiedFg = AppColors.green;
-    final pendingBg = AppColors.orange.withValues(alpha: isDark ? 0.25 : 0.15);
-    const pendingFg = AppColors.orange;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
+    final verifiedBg = AppColors.statusSuccess.withValues(alpha: isDark ? 0.25 : 0.15);
+    const verifiedFg = AppColors.statusSuccess;
+    final pendingBg = AppColors.brandCtaAccent.withValues(alpha: isDark ? 0.25 : 0.15);
+    const pendingFg = AppColors.brandCtaAccent;
 
     return Card(
       margin: EdgeInsets.zero,
@@ -285,7 +284,7 @@ class PhoneScreenState extends State<PhoneScreen> {
         side: BorderSide(color: borderColor),
       ),
       color: cardBg,
-      shadowColor: Colors.black.withValues(alpha: 0.08),
+      shadowColor: AppColors.black.withValues(alpha: 0.08),
       elevation: 2,
       child: InkWell(
         onTap: () => _navigateToPhoneDetail(phone),
@@ -370,10 +369,10 @@ class PhoneScreenState extends State<PhoneScreen> {
                         value: 'delete',
                         child: Row(
                           children: [
-                            Icon(Icons.delete, size: 20, color: AppColors.red),
+                            Icon(Icons.delete, size: 20, color: AppColors.statusError),
                             SizedBox(width: 8),
                             Text('Eliminar',
-                                style: TextStyle(color: AppColors.red)),
+                                style: TextStyle(color: AppColors.statusError)),
                           ],
                         ),
                       ),
@@ -403,53 +402,33 @@ class PhoneScreenState extends State<PhoneScreen> {
 
   Widget _buildFloatingActionButtons() {
     final primary = Theme.of(context).colorScheme.primary;
-    return Stack(
-      children: [
-        Positioned(
-          right: 24,
-          bottom: 24,
-          child: Material(
-            color: primary,
-            borderRadius: BorderRadius.circular(999),
-            elevation: 4,
-            shadowColor: primary.withValues(alpha: 0.3),
-            child: InkWell(
-              onTap: _navigateToCreatePhone,
-              borderRadius: BorderRadius.circular(999),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, color: AppColors.white, size: 22),
-                    SizedBox(width: 8),
-                    Text(
-                      'Nuevo',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
+    return Material(
+      color: primary,
+      borderRadius: BorderRadius.circular(999),
+      elevation: 4,
+      shadowColor: primary.withValues(alpha: 0.3),
+      child: InkWell(
+        onTap: _navigateToCreatePhone,
+        borderRadius: BorderRadius.circular(999),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add, color: AppColors.white, size: 22),
+              SizedBox(width: 8),
+              Text(
+                'Nuevo',
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
               ),
-            ),
+            ],
           ),
         ),
-        if (widget.statusId)
-          Positioned(
-            right: 24,
-            bottom: 80,
-            child: FloatingActionButton(
-              heroTag: 'phone_list_confirm',
-              onPressed: _handleStatusConfirmation,
-              backgroundColor: AppColors.green,
-              foregroundColor: AppColors.white,
-              child: const Icon(Icons.check),
-            ),
-          ),
-      ],
+      ),
     );
   }
 
@@ -515,36 +494,4 @@ class PhoneScreenState extends State<PhoneScreen> {
     }
   }
 
-  Future<void> _handleStatusConfirmation() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar acción'),
-        content: const Text('¿Quieres aprobar esta solicitud?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Sí'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed == true) {
-      try {
-        await _phoneService.updateStatusCheckScanner(widget.userId);
-        if (!context.mounted) return;
-        final c = context;
-        _showSuccessSnackBar('Estado actualizado exitosamente');
-        Navigator.pop(c);
-      } catch (e) {
-        if (!context.mounted) return;
-        _showErrorSnackBar('Error: $e');
-      }
-    }
-  }
 }

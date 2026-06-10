@@ -57,9 +57,8 @@ class AddressModel with ChangeNotifier {
 
 class AddressPage extends StatelessWidget {
   final int userId;
-  final bool statusId;
 
-  const AddressPage({super.key, required this.userId, this.statusId = false});
+  const AddressPage({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,7 @@ class AddressPage extends StatelessWidget {
         builder: (context, addressModel, child) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           return Scaffold(
-            backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+            backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
             appBar: _buildAppBar(context, addressModel),
             body: _buildBody(context, addressModel, isSmallScreen),
             floatingActionButton:
@@ -88,7 +87,7 @@ class AddressPage extends StatelessWidget {
   PreferredSizeWidget _buildAppBar(
       BuildContext context, AddressModel addressModel) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final barBg = isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+    final barBg = isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
     final fgColor = AppColors.primaryText(context);
     return AppBar(
       elevation: 0,
@@ -147,7 +146,7 @@ class AddressPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.brandTeal),
           ),
           const SizedBox(height: 16),
           Text(
@@ -173,13 +172,13 @@ class AddressPage extends StatelessWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.blue.withValues(alpha: 0.12),
+                color: AppColors.brandTeal.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(60),
               ),
               child: const Icon(
                 Icons.location_off_outlined,
                 size: 60,
-                color: AppColors.blue,
+                color: AppColors.brandTeal,
               ),
             ),
             const SizedBox(height: 24),
@@ -207,7 +206,7 @@ class AddressPage extends StatelessWidget {
               icon: const Icon(Icons.add_location_alt),
               label: const Text('Agregar Dirección'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -249,8 +248,8 @@ class AddressPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.dark
-              ? AppColors.slateBorder
-              : AppColors.stitchBorder,
+              ? AppColors.brandStrokeDark
+              : AppColors.brandStrokeLight,
         ),
         boxShadow: Theme.of(context).brightness == Brightness.dark
             ? null
@@ -272,12 +271,12 @@ class AddressPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.blue.withValues(alpha: 0.12),
+                    color: AppColors.brandTeal.withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.location_on,
-                    color: AppColors.blue,
+                    color: AppColors.brandTeal,
                     size: 24,
                   ),
                 ),
@@ -350,7 +349,7 @@ class AddressPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: isLink ? AppColors.blue : AppColors.primaryText(context),
+                color: isLink ? AppColors.brandTeal : AppColors.primaryText(context),
               ),
               softWrap: true,
               overflow: TextOverflow.visible,
@@ -364,8 +363,8 @@ class AddressPage extends StatelessWidget {
   Widget _buildMapCard(
       Address address, BuildContext context, bool isSmallScreen) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     return Padding(
       padding: EdgeInsets.all(isSmallScreen ? 16.0 : 24.0),
       child: Column(
@@ -381,7 +380,7 @@ class AddressPage extends StatelessWidget {
                 MapMarker.create(
                   point: LatLng(address.latitude, address.longitude),
                   iconData: Icons.location_on,
-                  color: AppColors.red,
+                  color: AppColors.statusError,
                 ),
               ],
             ),
@@ -404,7 +403,7 @@ class AddressPage extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text('No se pudo abrir el mapa: $e'),
-                        backgroundColor: AppColors.red,
+                        backgroundColor: AppColors.statusError,
                       ),
                     );
                   }
@@ -421,12 +420,12 @@ class AddressPage extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.map, color: AppColors.blue, size: 20),
+                    Icon(Icons.map, color: AppColors.brandTeal, size: 20),
                     SizedBox(width: 8),
                     Text(
                       'Abrir en Google Maps',
                       style: TextStyle(
-                        color: AppColors.blue,
+                        color: AppColors.brandTeal,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -443,29 +442,10 @@ class AddressPage extends StatelessWidget {
 
   Widget _buildFloatingActionButtons(
       BuildContext context, AddressModel addressModel) {
-    final hasAddress = addressModel.address != null;
-    if (hasAddress && !statusId) return const SizedBox.shrink();
+    if (addressModel.address != null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (statusId) _buildStatusUpdateButton(context),
-          if (!hasAddress) ...[
-            if (statusId) const SizedBox(height: 16),
-            _buildAddressButton(context, addressModel),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStatusUpdateButton(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: 'adresse_list_status',
-      onPressed: () => _showStatusUpdateDialog(context),
-      backgroundColor: AppColors.green,
-      child: const Icon(Icons.check, color: AppColors.white),
+      child: _buildAddressButton(context, addressModel),
     );
   }
 
@@ -473,7 +453,7 @@ class AddressPage extends StatelessWidget {
     return FloatingActionButton.extended(
       heroTag: 'adresse_list_create',
       onPressed: () => _navigateToCreateAddress(context),
-      backgroundColor: AppColors.blue,
+      backgroundColor: AppColors.brandTeal,
       foregroundColor: AppColors.white,
       icon: const Icon(Icons.add_location_alt),
       label: const Text('Agregar Dirección'),
@@ -517,81 +497,4 @@ class AddressPage extends StatelessWidget {
     }
   }
 
-  Future<void> _showStatusUpdateDialog(BuildContext context) async {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.check_circle, color: AppColors.green),
-            SizedBox(width: 8),
-            Text('Confirmar Aprobación'),
-          ],
-        ),
-        content: const Text('¿Deseas aprobar esta solicitud de dirección?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.green,
-              foregroundColor: AppColors.white,
-            ),
-            child: const Text('Aprobar'),
-          ),
-        ],
-      ),
-    ).then((confirmed) async {
-      if (confirmed == true && context.mounted) {
-        await _updateStatus(context);
-      }
-    });
-  }
-
-  Future<void> _updateStatus(BuildContext context) async {
-    try {
-      await AddressService().updateStatusCheckScanner(userId);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.check_circle, color: AppColors.white),
-                SizedBox(width: 8),
-                Text('Estado actualizado exitosamente'),
-              ],
-            ),
-            backgroundColor: AppColors.green,
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-        );
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error, color: AppColors.white),
-                const SizedBox(width: 8),
-                Expanded(child: Text('Error: ${e.toString()}')),
-              ],
-            ),
-            backgroundColor: AppColors.red,
-            behavior: SnackBarBehavior.floating,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-        );
-      }
-    }
-  }
 }

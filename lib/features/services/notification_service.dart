@@ -617,15 +617,15 @@ class NotificationService extends ChangeNotifier {
   Color getNotificationColor(String type) {
     switch (type) {
       case 'order':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'commission':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'maintenance':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'system':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       default:
-        return AppColors.textMutedGray;
+        return AppColors.stitchSlate;
     }
   }
 
@@ -633,13 +633,13 @@ class NotificationService extends ChangeNotifier {
   Color getPriorityColor(String priority) {
     switch (priority) {
       case 'high':
-        return AppColors.red;
+        return AppColors.statusError;
       case 'medium':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'low':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       default:
-        return AppColors.textMutedGray;
+        return AppColors.stitchSlate;
     }
   }
 

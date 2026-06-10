@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:zonix/features/utils/app_colors.dart';
 
 class StatusProvider with ChangeNotifier {
   
   Color getStatusColor(String status) {
     switch (status) {
       case 'pending':
-        return Colors.amber;
+        return AppColors.statusWarning;
       case 'verifying':
-        return Colors.blueAccent;
+        return AppColors.statusInfo;
       case 'waiting':
-        return Colors.purple;
+        return AppColors.brandTealDeep;
       case 'dispatched':
-        return Colors.green;
+        return AppColors.statusSuccess;
       case 'canceled':
-        return Colors.red;
+        return AppColors.statusError;
       case 'expired':
-        return Colors.orange;
+        return AppColors.brandCtaAccent;
       default:
-        return Colors.black;
+        return AppColors.black;
     }
   }
 

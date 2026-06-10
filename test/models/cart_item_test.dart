@@ -22,4 +22,17 @@ void main() {
       expect(updated.coldChain, true);
     });
   });
+
+  group('CartItem.fromJson', () {
+    test('quantity usa safeInt con string', () {
+      final item = CartItem.fromJson({
+        'id': 1,
+        'nombre': 'Aspirina',
+        'precio': 2.5,
+        'quantity': '3',
+      });
+      expect(item.quantity, 3);
+    });
+  });
 }
+

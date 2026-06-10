@@ -196,9 +196,7 @@ class Order {
       referenceNumber: json['reference_number']?.toString(),
       paymentValidatedAt: json['payment_validated_at'] != null ? DateTime.tryParse(json['payment_validated_at'].toString()) : null,
       paymentProofUploadedAt: json['payment_proof_uploaded_at'] != null ? DateTime.tryParse(json['payment_proof_uploaded_at'].toString()) : null,
-      orderPayments: (json['order_payments'] as List<dynamic>?)
-          ?.map((e) => Map<String, dynamic>.from(e as Map))
-          .toList() ?? [],
+      orderPayments: _parseOrderPayments(json['order_payments']),
       restaurantReviewCount: safeInt(json['restaurant_review_count'], 0),
       deliveryReviewCount: safeInt(json['delivery_review_count'], 0),
       prescriptionId: () {
@@ -388,7 +386,12 @@ class Order {
   }
 
   bool get isPending => status == 'pending_payment';
-  bool get isPendingPayment => status == 'pending_payment';
+  bool get isPendingPrescriptionValidation =>
+      status == 'pending_prescription_validation';
+  /// Incluye validación Rx: fase previa al pago donde el buyer aún puede cancelar.
+  bool get isPendingPayment =>
+      status == 'pending_payment' ||
+      status == 'pending_prescription_validation';
   bool get isPaid => status == 'paid';
   bool get isConfirmed => status == 'paid';
   bool get isPreparing => status == 'processing';
@@ -468,6 +471,19 @@ class Order {
   }
 }
 
+List<Map<String, dynamic>> _parseOrderPayments(dynamic raw) {
+  if (raw is! List) return const [];
+  final out = <Map<String, dynamic>>[];
+  for (final entry in raw) {
+    if (entry is Map<String, dynamic>) {
+      out.add(Map<String, dynamic>.from(entry));
+    } else if (entry is Map) {
+      out.add(Map<String, dynamic>.from(entry));
+    }
+  }
+  return out;
+}
+
 class OrderItem {
   final int id;
   final int orderId;
@@ -492,7 +508,7 @@ class OrderItem {
   });
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
-    final qty = json['quantity'] ?? 0;
+    final qty = safeInt(json['quantity'], 0);
     final price = _parseDouble(json['price']) > 0 ? _parseDouble(json['price']) : _parseDouble(json['unit_price']);
     final tot = _parseDouble(json['total']) > 0 ? _parseDouble(json['total']) : (qty * price);
     return OrderItem(
@@ -514,7 +530,7 @@ class OrderItem {
     final pivot = rawPivot is Map
         ? Map<String, dynamic>.from(rawPivot)
         : <String, dynamic>{};
-    final qty = pivot['quantity'] ?? json['quantity'] ?? 0;
+    final qty = safeInt(pivot['quantity'] ?? json['quantity'], 0);
     final unitPrice = _parseDouble(pivot['unit_price']) > 0 ? _parseDouble(pivot['unit_price']) : _parseDouble(json['price']);
     final tot = qty * unitPrice;
     return OrderItem(

@@ -64,7 +64,7 @@ class CommerceListService {
         return MyCommerce.fromJson(Map<String, dynamic>.from(data['data']));
       }
     }
-    throw Exception('Error al crear restaurante: ${response.statusCode}');
+    throw Exception('Error al crear farmacia: ${response.statusCode}');
   }
 
   /// Establecer un comercio como principal (selector activo)

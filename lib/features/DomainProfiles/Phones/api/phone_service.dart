@@ -330,27 +330,6 @@ class PhoneService {
     }
   }
 
-  Future<void> updateStatusCheckScanner(int userId) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http
-          .post(
-            Uri.parse('${AppConfig.apiUrl}/api/data-verification/$userId/update-status-check-scanner/phones'),
-            headers: headers,
-          )
-          .timeout(const Duration(seconds: 10));
-      if (response.statusCode != 200) {
-        final body = jsonDecode(response.body) as Map<String, dynamic>?;
-        throw Exception(body?['message']?.toString() ?? 'Error al actualizar estado');
-      }
-    } catch (e) {
-      if (e.toString().contains('timeout')) {
-        throw Exception('Tiempo de espera agotado. Verifica tu conexión.');
-      }
-      rethrow;
-    }
-  }
-
   bool validatePhoneNumber(String number) {
     final digits = number.replaceAll(RegExp(r'\D'), '');
     return digits.length == 7 && int.tryParse(digits) != null;

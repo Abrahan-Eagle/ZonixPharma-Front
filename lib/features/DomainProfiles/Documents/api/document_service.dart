@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:zonix/config/app_config.dart';
-import 'package:zonix/features/DomainProfiles/Addresses/api/adresse_service.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 import 'package:zonix/features/utils/rif_formatter.dart';
 import '../models/document.dart';
@@ -196,25 +195,6 @@ class DocumentService {
     } catch (e) {
       logger.e('Exception while updating document: $e');
       rethrow;
-    }
-  }
-
-  Future<void> updateStatusCheckScanner(int userId) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('${AppConfig.apiUrl}/api/data-verification/$userId/update-status-check-scanner/documents'),
-        headers: headers,
-        // Si necesitas enviar un cuerpo, puedes descomentar lo siguiente:
-        // body: json.encode({'user_id': userId}),
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode != 200) {
-        throw ApiException('Error al actualizar el estado: ${response.body}');
-      }
-    } catch (e) {
-      logger.e('Error al actualizar el estado: $e');
-      throw ApiException('Error al actualizar el estado: ${e.toString()}');
     }
   }
 }

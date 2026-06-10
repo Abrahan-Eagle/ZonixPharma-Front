@@ -504,7 +504,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
                 Text('Dirección actualizada exitosamente'),
               ],
             ),
-            backgroundColor: AppColors.green,
+            backgroundColor: AppColors.statusSuccess,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -523,7 +523,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
                 Expanded(child: Text('Error: ${e.toString()}')),
               ],
             ),
-            backgroundColor: AppColors.red,
+            backgroundColor: AppColors.statusError,
             behavior: SnackBarBehavior.floating,
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -541,11 +541,11 @@ class EditAddressScreenState extends State<EditAddressScreen> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+      backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
       appBar: AppBar(
         elevation: 0,
         scrolledUnderElevation: 0,
-        backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+        backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
         foregroundColor: AppColors.primaryText(context),
         title: Text(
           'Editar Dirección',
@@ -573,7 +573,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.brandTeal),
               ),
             )
           : SingleChildScrollView(
@@ -611,13 +611,13 @@ class EditAddressScreenState extends State<EditAddressScreen> {
             width: 80,
             height: 80,
             decoration: BoxDecoration(
-              color: AppColors.blue.withValues(alpha: 0.15),
+              color: AppColors.brandTeal.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.edit_location_alt,
               size: 40,
-              color: AppColors.blue,
+              color: AppColors.brandTeal,
             ),
           ),
           const SizedBox(height: 16),
@@ -658,8 +658,8 @@ class EditAddressScreenState extends State<EditAddressScreen> {
         borderRadius: borderRadius,
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.dark
-              ? AppColors.slateBorder
-              : AppColors.stitchBorder,
+              ? AppColors.brandStrokeDark
+              : AppColors.brandStrokeLight,
         ),
       ),
       child: ClipRRect(
@@ -713,7 +713,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
                 children: [
                   const Icon(
                     Icons.location_on,
-                    color: AppColors.red,
+                    color: AppColors.statusError,
                     size: 46,
                   ),
                   Container(
@@ -758,20 +758,20 @@ class EditAddressScreenState extends State<EditAddressScreen> {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.green.withValues(alpha: 0.12),
+        color: AppColors.statusSuccess.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.green.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.statusSuccess.withValues(alpha: 0.3)),
       ),
       child: const Row(
         children: [
-          Icon(Icons.check_circle, color: AppColors.green, size: 24),
+          Icon(Icons.check_circle, color: AppColors.statusSuccess, size: 24),
           SizedBox(width: 12),
           Text(
             'Ubicación capturada',
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: AppColors.green,
+              color: AppColors.statusSuccess,
             ),
           ),
         ],
@@ -788,15 +788,15 @@ class EditAddressScreenState extends State<EditAddressScreen> {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Theme.of(context).brightness == Brightness.dark
-              ? AppColors.slateBorder
-              : AppColors.stitchBorder,
+              ? AppColors.brandStrokeDark
+              : AppColors.brandStrokeLight,
         ),
       ),
       child: Row(
         children: [
           const Icon(
             Icons.location_on,
-            color: AppColors.blue,
+            color: AppColors.brandTeal,
             size: 24,
           ),
           const SizedBox(width: 12),
@@ -817,14 +817,14 @@ class EditAddressScreenState extends State<EditAddressScreen> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: _isLocationLoading ? AppColors.orange : AppColors.primaryText(context),
+                    color: _isLocationLoading ? AppColors.brandCtaAccent : AppColors.primaryText(context),
                   ),
                 ),
               ],
             ),
           ),
           Material(
-            color: AppColors.blue,
+            color: AppColors.brandTeal,
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               onTap: _isLocationLoading ? null : _getCurrentLocation,
@@ -856,7 +856,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: AppColors.blue,
+            color: AppColors.brandTeal,
             letterSpacing: 0.5,
           ),
         ),
@@ -935,7 +935,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
           style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: AppColors.blue,
+            color: AppColors.brandTeal,
             letterSpacing: 0.5,
           ),
         ),
@@ -988,8 +988,8 @@ class EditAddressScreenState extends State<EditAddressScreen> {
     void Function(String)? onChanged,
   }) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
@@ -1001,7 +1001,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
         onChanged: onChanged,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: AppColors.blue),
+          prefixIcon: Icon(icon, color: AppColors.brandTeal),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -1020,8 +1020,8 @@ class EditAddressScreenState extends State<EditAddressScreen> {
     required String label,
   }) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     final screenHeight = MediaQuery.of(context).size.height;
     final menuHeight = (screenHeight * 0.5).clamp(280.0, 400.0);
 
@@ -1035,7 +1035,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
         initialValue: value,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: AppColors.blue),
+          prefixIcon: Icon(icon, color: AppColors.brandTeal),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -1045,7 +1045,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
         onChanged: onChanged,
         isExpanded: true,
         dropdownColor: AppColors.cardBg(context),
-        icon: const Icon(Icons.arrow_drop_down, color: AppColors.blue),
+        icon: const Icon(Icons.arrow_drop_down, color: AppColors.brandTeal),
         menuMaxHeight: menuHeight,
         borderRadius: BorderRadius.circular(12),
         validator: (value) {
@@ -1065,7 +1065,7 @@ class EditAddressScreenState extends State<EditAddressScreen> {
       child: ElevatedButton(
         onPressed: _isSaving ? null : _saveAddress,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.blue,
+          backgroundColor: AppColors.brandTeal,
           foregroundColor: AppColors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

@@ -110,30 +110,14 @@ class ApiService {
     return response;
   }
 
-  // Método para enviar una solicitud autenticada
+  /// Endpoint legacy `/api/auth/protected-endpoint` removido del backend.
+  @Deprecated('Endpoint protected-endpoint no disponible.')
   Future<void> sendAuthenticatedRequest() async {
     final token = await _storage.read(key: 'token');
-    if (token != null) {
-      final response = await http.get(
-        Uri.parse('${AppConfig.apiUrl}/api/auth/protected-endpoint'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Accept': 'application/json',
-        },
-      );
-
-      if (response.statusCode == 200) {
-        logger.i('Solicitud autenticada OK (${response.statusCode})');
-      } else if (response.statusCode == 401) {
-        logger.e("Token expirado o inválido, redirigiendo a login");
-        // Elimina el token almacenado y redirige al login
-        await _storage.deleteAll();
-        // Aquí puedes redirigir automáticamente al login
-      } else {
-        logger.e("Error en la solicitud: ${response.statusCode}");
-      }
-    } else {
-      logger.e("No hay token almacenado");
+    if (token == null || token.isEmpty) {
+      logger.w('sendAuthenticatedRequest omitido: sin token de sesión.');
+      return;
     }
+    logger.d('sendAuthenticatedRequest omitido: endpoint protegido no existe.');
   }
 }

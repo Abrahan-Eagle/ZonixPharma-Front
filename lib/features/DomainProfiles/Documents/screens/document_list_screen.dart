@@ -7,14 +7,12 @@ import 'package:zonix/features/DomainProfiles/Documents/screens/document_detail_
 
 class DocumentListScreen extends StatefulWidget {
   final int userId;
-  final bool statusId;
   /// Nombre del titular (ej. del perfil) para mostrarlo en el detalle. Opcional.
   final String? holderName;
 
   const DocumentListScreen({
     super.key,
     required this.userId,
-    this.statusId = false,
     this.holderName,
   });
 
@@ -91,10 +89,10 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
   static const double _chipRadius = 8;
 
   Color _surfaceBg(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
 
   Color _cardBorder(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.slateBorder : AppColors.borderLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandStrokeDark : AppColors.borderLight;
 
   @override
   Widget build(BuildContext context) {
@@ -207,12 +205,12 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
                       height: _iconBoxSize,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: AppColors.blue.withValues(alpha: 0.1),
+                          color: AppColors.brandTeal.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(_cardRadius),
                         ),
                         child: Icon(
                           _getDocumentTypeIcon(document.type ?? ''),
-                          color: AppColors.blue,
+                          color: AppColors.brandTeal,
                           size: 24,
                         ),
                       ),
@@ -262,7 +260,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
                   child: TextButton(
                     onPressed: () => _navigateToDocumentDetail(document),
                     style: TextButton.styleFrom(
-                      foregroundColor: AppColors.blue,
+                      foregroundColor: AppColors.brandTeal,
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -283,7 +281,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(color: AppColors.blue),
+          const CircularProgressIndicator(color: AppColors.brandTeal),
           const SizedBox(height: 16),
           Text('Cargando documentos...', style: TextStyle(color: AppColors.secondaryText(context))),
         ],
@@ -315,7 +313,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
             FilledButton.icon(
               onPressed: _refreshDocuments,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -355,7 +353,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
             FilledButton.icon(
               onPressed: () => _navigateToCreateDocument(context),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -372,53 +370,33 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
 
 
   Widget _buildFloatingActionButtons() {
-    return Stack(
-      children: [
-        Positioned(
-          right: 24,
-          bottom: 24,
-          child: Material(
-            color: AppColors.blue,
-            borderRadius: BorderRadius.circular(_cardRadius),
-            elevation: 2,
-            shadowColor: AppColors.blue.withValues(alpha: 0.3),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(_cardRadius),
-              onTap: () => _navigateToCreateDocument(context),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, color: AppColors.white, size: 22),
-                    SizedBox(width: 8),
-                    Text(
-                      'Nuevo',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
+    return Material(
+      color: AppColors.brandTeal,
+      borderRadius: BorderRadius.circular(_cardRadius),
+      elevation: 2,
+      shadowColor: AppColors.brandTeal.withValues(alpha: 0.3),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(_cardRadius),
+        onTap: () => _navigateToCreateDocument(context),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add, color: AppColors.white, size: 22),
+              SizedBox(width: 8),
+              Text(
+                'Nuevo',
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
                 ),
               ),
-            ),
+            ],
           ),
         ),
-        if (widget.statusId)
-          Positioned(
-            right: 24,
-            bottom: 90,
-            child: FloatingActionButton(
-              heroTag: 'document_list_confirm',
-              onPressed: _showConfirmationDialog,
-              backgroundColor: AppColors.green,
-              foregroundColor: AppColors.white,
-              child: const Icon(Icons.check),
-            ),
-          ),
-      ],
+      ),
     );
   }
 
@@ -437,69 +415,6 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
     // Si se regresa de la edición, refrescar la lista
     if (result == true) {
       _refreshDocuments();
-    }
-  }
-
-  Future<void> _showConfirmationDialog() async {
-    bool? isConfirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Confirmar acción'),
-          content: const Text('¿Quieres aprobar esta solicitud?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancelar'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (isConfirmed == true) {
-      await _updateStatus();
-    }
-  }
-
-  Future<void> _updateStatus() async {
-    try {
-      await DocumentService().updateStatusCheckScanner(widget.userId);
-      
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Estado actualizado exitosamente'),
-            backgroundColor: AppColors.green,
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: 'Cerrar',
-              textColor: AppColors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-        Navigator.of(context).pop();
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: ${e.toString()}'),
-            backgroundColor: AppColors.red,
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: 'Cerrar',
-              textColor: AppColors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-      }
     }
   }
 
@@ -532,8 +447,8 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: isVerified
-            ? AppColors.green.withValues(alpha: 0.15)
-            : AppColors.orange.withValues(alpha: 0.15),
+            ? AppColors.statusSuccess.withValues(alpha: 0.15)
+            : AppColors.brandCtaAccent.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(_chipRadius),
       ),
       child: Row(
@@ -542,7 +457,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
           Icon(
             isVerified ? Icons.check_circle : Icons.schedule,
             size: 16,
-            color: isVerified ? AppColors.green : AppColors.orange,
+            color: isVerified ? AppColors.statusSuccess : AppColors.brandCtaAccent,
           ),
           const SizedBox(width: 4),
           Text(
@@ -550,7 +465,7 @@ class _DocumentListScreenState extends State<DocumentListScreen> with TickerProv
             style: theme.textTheme.labelSmall?.copyWith(
               fontWeight: FontWeight.w600,
               fontSize: 12,
-              color: isVerified ? AppColors.green : AppColors.orange,
+              color: isVerified ? AppColors.statusSuccess : AppColors.brandCtaAccent,
             ),
           ),
         ],

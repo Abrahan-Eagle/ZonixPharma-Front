@@ -24,7 +24,7 @@ class AppOfflineBanner extends StatelessWidget {
                   ? Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      color: AppColors.red,
+                      color: AppColors.statusError,
                       child: const Row(
                         children: [
                           Icon(Icons.wifi_off, color: AppColors.white, size: 18),
@@ -42,15 +42,15 @@ class AppOfflineBanner extends StatelessWidget {
                       ? Container(
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                          color: AppColors.orange.withValues(alpha: 0.15),
+                          color: AppColors.brandCtaAccent.withValues(alpha: 0.15),
                           child: const Row(
                             children: [
-                              Icon(Icons.signal_wifi_statusbar_connected_no_internet_4, color: AppColors.orange, size: 18),
+                              Icon(Icons.signal_wifi_statusbar_connected_no_internet_4, color: AppColors.brandCtaAccent, size: 18),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Conexión inestable — algunos datos pueden no estar actualizados',
-                                  style: TextStyle(color: AppColors.orange, fontSize: 12, fontWeight: FontWeight.w500),
+                                  style: TextStyle(color: AppColors.brandCtaAccent, fontSize: 12, fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ],

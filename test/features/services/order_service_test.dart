@@ -74,8 +74,11 @@ class MockOrderService extends OrderService {
   }
 
   @override
-  Future<void> validarComprobante(int orderId, String accion) async {
-    // Simula una validación exitosa
+  Future<void> validarComprobante(
+    int orderId,
+    String accion, {
+    String? rejectionReason,
+  }) async {
     return;
   }
 }

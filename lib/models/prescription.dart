@@ -20,6 +20,8 @@ class Prescription {
   final String? prescribingDoctorSpecialty;
   final DateTime? issuedAt;
   final String imageUrl;
+  /// URL autenticada para descargar el archivo Rx (backend anula `image_url` público).
+  final String? prescriptionFileDownloadUrl;
   final String prescriptionType;
   final String status;
   final int? validatedByProfileId;
@@ -39,6 +41,7 @@ class Prescription {
     this.prescribingDoctorSpecialty,
     this.issuedAt,
     required this.imageUrl,
+    this.prescriptionFileDownloadUrl,
     required this.prescriptionType,
     required this.status,
     this.validatedByProfileId,
@@ -86,6 +89,8 @@ class Prescription {
           json['prescribing_doctor_specialty']?.toString(),
       issuedAt: parseDate(json['issued_at']),
       imageUrl: (json['image_url'] ?? '').toString(),
+      prescriptionFileDownloadUrl:
+          json['prescription_file_download_url']?.toString(),
       prescriptionType: (json['prescription_type'] ?? typeCommon).toString(),
       status: (json['status'] ?? statusPending).toString(),
       validatedByProfileId: parseIntNullable(json['validated_by_profile_id']),
@@ -95,6 +100,18 @@ class Prescription {
       createdAt: parseDate(json['created_at']) ?? DateTime.now(),
       updatedAt: parseDate(json['updated_at']) ?? DateTime.now(),
     );
+  }
+
+  /// URL preferida para mostrar/descargar la receta (autenticada si aplica).
+  String? get authenticatedDownloadUrl {
+    final download = prescriptionFileDownloadUrl?.trim();
+    if (download == null || download.isEmpty) return null;
+    return download;
+  }
+
+  bool get isPdfDisplay {
+    final u = (authenticatedDownloadUrl ?? imageUrl).toLowerCase();
+    return u.contains('.pdf');
   }
 
   bool get isPending => status == statusPending;

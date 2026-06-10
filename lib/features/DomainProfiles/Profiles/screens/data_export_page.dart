@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:zonix/features/DomainProfiles/Profiles/api/profile_service.dart';
+import 'package:zonix/features/utils/app_colors.dart';
 
 final logger = Logger();
 
@@ -40,7 +41,7 @@ class _DataExportPageState extends State<DataExportPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Datos exportados exitosamente'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -54,7 +55,7 @@ class _DataExportPageState extends State<DataExportPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al exportar: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -89,7 +90,7 @@ class _DataExportPageState extends State<DataExportPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Archivo listo. Usa "Guardar en archivos" o "Compartir" para conservarlo.'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -99,7 +100,7 @@ class _DataExportPageState extends State<DataExportPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al generar el archivo: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -306,18 +307,20 @@ class _DataExportPageState extends State<DataExportPage> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.red[50],
+                  color: AppColors.statusError.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.red[200]!),
+                  border: Border.all(
+                    color: AppColors.statusError.withValues(alpha: 0.35),
+                  ),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.error, color: Colors.red[700]),
+                    const Icon(Icons.error, color: AppColors.statusError),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         _error!,
-                        style: TextStyle(color: Colors.red[700]),
+                        style: const TextStyle(color: AppColors.statusError),
                       ),
                     ),
                   ],
@@ -383,9 +386,9 @@ class _DataExportPageState extends State<DataExportPage> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
+          Icon(icon, size: 20, color: AppColors.stitchSlate),
           const SizedBox(width: 8),
-          Text(text, style: TextStyle(color: Colors.grey[700])),
+          Text(text, style: const TextStyle(color: AppColors.stitchSlate)),
         ],
       ),
     );
@@ -399,13 +402,13 @@ class _DataExportPageState extends State<DataExportPage> {
           Icon(
             hasData ? Icons.check_circle : Icons.cancel,
             size: 20,
-            color: hasData ? Colors.green : Colors.grey,
+            color: hasData ? AppColors.statusSuccess : AppColors.stitchSlate,
           ),
           const SizedBox(width: 8),
           Text(
             title,
             style: TextStyle(
-              color: hasData ? Colors.green[700] : Colors.grey[600],
+              color: hasData ? AppColors.statusSuccess : AppColors.stitchSlate,
             ),
           ),
         ],

@@ -261,23 +261,39 @@ class AddressService {
     }
   }
 
-  Future<Address?> getAddressById(int id) async {
+  Map<String, dynamic>? _unwrapDataMap(dynamic body) {
+    if (body is! Map<String, dynamic>) return null;
+    if (body['success'] == true && body['data'] is Map<String, dynamic>) {
+      return Map<String, dynamic>.from(body['data'] as Map);
+    }
+    if (body.containsKey('id')) return body;
+    return null;
+  }
+
+  Future<Address?> getAddressById(int addressId) async {
+    if (addressId <= 0) {
+      throw ApiException('ID de dirección inválido');
+    }
     final token = await _getToken();
     final response = await http.get(
-      Uri.parse('${AppConfig.apiUrl}/api/addresses/$id'),
+      Uri.parse('${AppConfig.apiUrl}/api/addresses/$addressId'),
       headers: {'Authorization': 'Bearer $token'},
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data is List && data.isNotEmpty) {
-        return Address.fromJson(data.first);
-      } else if (data is Map<String, dynamic>) {
-        return Address.fromJson(data);
-      } else {
-        logger.e('Formato de datos inesperado: $data');
-        throw ApiException('Error al obtener la dirección: formato inesperado');
+      final decoded = jsonDecode(response.body);
+      if (decoded is List && decoded.isNotEmpty) {
+        final first = decoded.first;
+        if (first is Map<String, dynamic>) {
+          return Address.fromJson(first);
+        }
       }
+      final map = _unwrapDataMap(decoded);
+      if (map != null) {
+        return Address.fromJson(map);
+      }
+      logger.e('Formato de datos inesperado: $decoded');
+      throw ApiException('Error al obtener la dirección: formato inesperado');
     } else {
       logger.e(
           'Error al obtener la dirección: ${response.statusCode} ${response.body}');
@@ -300,44 +316,18 @@ class AddressService {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        // Assuming the endpoint returns the city object or { "city": { "name": "..."} }
-        // Given 'get-cities-by-state' returned List of cities with 'name'. Let's assume city has 'name' key.
-        return data['name'];
+        final decoded = json.decode(response.body);
+        final map = _unwrapDataMap(decoded) ??
+            (decoded is Map<String, dynamic> ? decoded : null);
+        if (map != null) {
+          final name = map['name'];
+          if (name is String && name.trim().isNotEmpty) return name.trim();
+        }
       }
       return null;
     } catch (e) {
       logger.e('Error fetchCityById: $e');
       return null;
-    }
-  }
-
-  // Actualizar el estado de la dirección (sólo escáneres o admin);
-  Future<void> updateStatusCheckScanner(int userId) async {
-    String? token = await _getToken();
-    if (token == null) {
-      logger.e('Token no encontrado');
-      throw Exception('Token no encontrado. Por favor, inicia sesión.');
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse(
-            '${AppConfig.apiUrl}/api/data-verification/$userId/update-status-check-scanner/addresses'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-        // Si necesitas enviar un cuerpo, puedes descomentar lo siguiente:
-        // body: json.encode({'user_id': userId}),
-      ).timeout(const Duration(seconds: 10));
-
-      if (response.statusCode != 200) {
-        throw ApiException('Error al actualizar el estado: ${response.body}');
-      }
-    } catch (e) {
-      logger.e('Error al actualizar el estado: $e');
-      throw ApiException('Error al actualizar el estado: ${e.toString()}');
     }
   }
 }

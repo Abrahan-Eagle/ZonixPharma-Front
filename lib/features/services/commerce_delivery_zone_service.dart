@@ -6,7 +6,16 @@ import '../../helpers/auth_helper.dart';
 class CommerceDeliveryZoneService {
   static String get baseUrl => AppConfig.apiUrl;
 
-  // Obtener todas las zonas de delivery del comercio
+  static const String _unavailableCrudMessage =
+      'La gestión de zonas de entrega desde el panel comercio no está '
+      'disponible en esta versión. Usa la configuración de ubicación del '
+      'sistema o contacta al administrador.';
+
+  static Never _throwUnavailable() {
+    throw UnsupportedError(_unavailableCrudMessage);
+  }
+
+  // GET /api/location/delivery-zones — zonas activas (lectura)
   static Future<List<Map<String, dynamic>>> getDeliveryZones({
     String? status,
     String? sortBy,
@@ -19,253 +28,75 @@ class CommerceDeliveryZoneService {
       if (sortBy != null) queryParams['sort_by'] = sortBy;
       if (sortOrder != null) queryParams['sort_order'] = sortOrder;
 
-      final uri = Uri.parse('$baseUrl/api/location/delivery-zones').replace(queryParameters: queryParams);
-      
-      final response = await http.get(
-        uri,
-        headers: headers,
-      );
+      final uri = Uri.parse('$baseUrl/api/location/delivery-zones')
+          .replace(queryParameters: queryParams);
+
+      final response = await http.get(uri, headers: headers);
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
-        } else if (data['data'] != null) {
-          return List<Map<String, dynamic>>.from(data['data']);
+        }
+        if (data is Map<String, dynamic>) {
+          if (data['success'] == true && data['data'] is List) {
+            return List<Map<String, dynamic>>.from(data['data'] as List);
+          }
+          if (data['data'] is List) {
+            return List<Map<String, dynamic>>.from(data['data'] as List);
+          }
         }
         return [];
       } else {
-        throw Exception('Error al obtener zonas de delivery: ${response.statusCode}');
+        throw Exception(
+            'Error al obtener zonas de delivery: ${response.statusCode}');
       }
     } catch (e) {
+      if (e is UnsupportedError) rethrow;
       throw Exception('Error al obtener zonas de delivery: $e');
     }
   }
 
-  // Obtener una zona específica
-  static Future<Map<String, dynamic>> getDeliveryZone(int id) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/$id'),
-        headers: headers,
-      );
+  static Future<Map<String, dynamic>> getDeliveryZone(int id) async =>
+      _throwUnavailable();
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data;
-      } else {
-        throw Exception('Error al obtener zona de delivery: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener zona de delivery: $e');
-    }
-  }
+  static Future<Map<String, dynamic>> createDeliveryZone(
+          Map<String, dynamic> data) async =>
+      _throwUnavailable();
 
-  // Crear nueva zona de delivery
-  static Future<Map<String, dynamic>> createDeliveryZone(Map<String, dynamic> data) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones'),
-        headers: headers,
-        body: jsonEncode(data),
-      );
+  static Future<Map<String, dynamic>> updateDeliveryZone(
+          int id, Map<String, dynamic> data) async =>
+      _throwUnavailable();
 
-      if (response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? data;
-      } else {
-        throw Exception('Error al crear zona de delivery: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al crear zona de delivery: $e');
-    }
-  }
+  static Future<void> deleteDeliveryZone(int id) async => _throwUnavailable();
 
-  // Actualizar zona de delivery
-  static Future<Map<String, dynamic>> updateDeliveryZone(int id, Map<String, dynamic> data) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.put(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/$id'),
-        headers: headers,
-        body: jsonEncode(data),
-      );
+  static Future<Map<String, dynamic>> toggleDeliveryZoneStatus(int id) async =>
+      _throwUnavailable();
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? data;
-      } else {
-        throw Exception('Error al actualizar zona de delivery: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al actualizar zona de delivery: $e');
-    }
-  }
+  static Future<Map<String, dynamic>> getDeliveryZoneStats() async =>
+      _throwUnavailable();
 
-  // Eliminar zona de delivery
-  static Future<void> deleteDeliveryZone(int id) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.delete(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/$id'),
-        headers: headers,
-      );
+  static Future<Map<String, dynamic>> checkDeliveryZone(
+          double lat, double lng) async =>
+      _throwUnavailable();
 
-      if (response.statusCode != 200) {
-        throw Exception('Error al eliminar zona de delivery: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al eliminar zona de delivery: $e');
-    }
-  }
+  static Future<Map<String, dynamic>> calculateDeliveryFee(
+          double lat, double lng) async =>
+      _throwUnavailable();
 
-  // Activar/desactivar zona de delivery
-  static Future<Map<String, dynamic>> toggleDeliveryZoneStatus(int id) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.put(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/$id/toggle'),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? data;
-      } else {
-        throw Exception('Error al cambiar estado de zona: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al cambiar estado de zona: $e');
-    }
-  }
-
-  // Obtener estadísticas de zonas de delivery
-  static Future<Map<String, dynamic>> getDeliveryZoneStats() async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/stats'),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? {};
-      } else {
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener estadísticas: $e');
-    }
-  }
-
-  // Verificar si una dirección está en zona de delivery
-  static Future<Map<String, dynamic>> checkDeliveryZone(double lat, double lng) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/check'),
-        headers: headers,
-        body: jsonEncode({
-          'latitude': lat,
-          'longitude': lng,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? data;
-      } else {
-        throw Exception('Error al verificar zona: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al verificar zona: $e');
-    }
-  }
-
-  // Calcular tarifa de delivery para una dirección
-  static Future<Map<String, dynamic>> calculateDeliveryFee(double lat, double lng) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones/calculate-fee'),
-        headers: headers,
-        body: jsonEncode({
-          'latitude': lat,
-          'longitude': lng,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? data;
-      } else {
-        throw Exception('Error al calcular tarifa: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al calcular tarifa: $e');
-    }
-  }
-
-  // Obtener zonas activas
   static Future<List<Map<String, dynamic>>> getActiveDeliveryZones() async {
     return getDeliveryZones(status: 'active');
   }
 
-  // Obtener zonas inactivas
   static Future<List<Map<String, dynamic>>> getInactiveDeliveryZones() async {
     return getDeliveryZones(status: 'inactive');
   }
 
-  // Obtener zonas por radio
-  static Future<List<Map<String, dynamic>>> getDeliveryZonesByRadius(double radius) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones?radius=$radius'),
-        headers: headers,
-      );
+  static Future<List<Map<String, dynamic>>> getDeliveryZonesByRadius(
+          double radius) async =>
+      getDeliveryZones();
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data is List) {
-          return List<Map<String, dynamic>>.from(data);
-        } else if (data['data'] != null) {
-          return List<Map<String, dynamic>>.from(data['data']);
-        }
-        return [];
-      } else {
-        throw Exception('Error al obtener zonas por radio: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener zonas por radio: $e');
-    }
-  }
-
-  // Obtener zonas por tarifa
-  static Future<List<Map<String, dynamic>>> getDeliveryZonesByFee(double minFee, double maxFee) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/delivery-zones?min_fee=$minFee&max_fee=$maxFee'),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data is List) {
-          return List<Map<String, dynamic>>.from(data);
-        } else if (data['data'] != null) {
-          return List<Map<String, dynamic>>.from(data['data']);
-        }
-        return [];
-      } else {
-        throw Exception('Error al obtener zonas por tarifa: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener zonas por tarifa: $e');
-    }
-  }
+  static Future<List<Map<String, dynamic>>> getDeliveryZonesByFee(
+          double minFee, double maxFee) async =>
+      getDeliveryZones();
 }

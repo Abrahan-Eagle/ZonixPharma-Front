@@ -73,7 +73,7 @@ class OrderService extends ChangeNotifier {
   /// [deliveryAddress] requerido cuando deliveryType es 'delivery'
   /// [deliveryLatitude] opcional; coords del destino (GPS, casa u otra ubicación elegida).
   /// [deliveryLongitude] opcional; junto con deliveryLatitude para mapa y ruta.
-  /// [deliveryFee] opcional, costo de envío (ej. 2.50). 0 si pickup.
+  /// [deliveryFee] opcional, costo de envío (fallback UI 5.00). 0 si pickup.
   Future<Order> createOrder(
     List<CartItem> items, {
     required String deliveryType,
@@ -569,26 +569,55 @@ class OrderService extends ChangeNotifier {
     throw Exception(errMsg);
   }
 
-  // Método para validar comprobante (para comercios)
-  Future<void> validarComprobante(int orderId, String accion) async {
-    final headers = await AuthHelper.getAuthHeaders();
-    final url = Uri.parse('${AppConfig.apiUrl}/api/commerce/orders/$orderId/validar-comprobante');
-    final response = await http.post(
-      url, 
-      headers: headers, 
-      body: jsonEncode({'accion': accion})
-    );
-    
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      if (data['success'] == true) {
-        return;
-      } else {
-        throw Exception(data['message'] ?? 'Error al validar comprobante');
-      }
-    } else {
-      throw Exception('Error al validar comprobante: ${response.statusCode}');
+  /// Valida o rechaza comprobante (commerce). Alineado con
+  /// `POST /api/commerce/orders/{id}/validate-payment` → `{is_valid, rejection_reason}`.
+  Future<void> validarComprobante(
+    int orderId,
+    String accion, {
+    String? rejectionReason,
+  }) async {
+    final normalized = accion.trim().toLowerCase();
+    final isValid = normalized == 'aprobar' ||
+        normalized == 'validar' ||
+        normalized == 'approve' ||
+        normalized == 'valid';
+    if (!isValid && (rejectionReason == null || rejectionReason.trim().isEmpty)) {
+      throw Exception('Debes indicar un motivo de rechazo.');
     }
+
+    final headers = await AuthHelper.getAuthHeaders();
+    final url = Uri.parse(
+        '${AppConfig.apiUrl}/api/commerce/orders/$orderId/validate-payment');
+    final response = await http.post(
+      url,
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode({
+        'is_valid': isValid,
+        if (!isValid) 'rejection_reason': rejectionReason!.trim(),
+      }),
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final data = response.body.isNotEmpty
+          ? jsonDecode(response.body) as Map<String, dynamic>?
+          : null;
+      if (data == null || data['success'] != false) return;
+      throw Exception(data['message']?.toString() ?? 'Error al validar comprobante');
+    }
+
+    final data = response.body.isNotEmpty
+        ? jsonDecode(response.body) as Map<String, dynamic>?
+        : null;
+    throw Exception(
+      _extractApiErrorMessage(
+        data,
+        'Error al validar comprobante: ${response.statusCode}',
+      ),
+    );
   }
 
   // Alias method for getUserOrders to maintain compatibility

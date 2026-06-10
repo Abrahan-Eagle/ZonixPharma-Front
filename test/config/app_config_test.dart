@@ -48,6 +48,10 @@ FIREBASE_MESSAGING_SENDER_ID=test_sender
       expect(AppConfig.firebaseProjectId, isNotEmpty);
       expect(AppConfig.firebaseMessagingSenderId, isNotEmpty);
     });
+
+    test('defaultDeliveryFee fallback alinea con backend (5.00)', () {
+      expect(AppConfig.defaultDeliveryFee, 5.00);
+    });
   });
 
   group('Configuration Integration Tests', () {

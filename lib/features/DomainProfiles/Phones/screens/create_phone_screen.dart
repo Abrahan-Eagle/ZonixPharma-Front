@@ -62,7 +62,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 3),
       ),
@@ -73,7 +73,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 2),
       ),
@@ -133,7 +133,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
     final isSmallScreen = size.width < 600;
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final appBarBorder = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final appBarBorder = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
@@ -185,7 +185,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
   Widget _buildHeader() {
     final primary = Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     final cardBg = AppColors.cardBg(context);
     return Container(
       padding: const EdgeInsets.all(20),
@@ -195,7 +195,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -252,7 +252,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
       });
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -274,7 +274,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: borderColor),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
           items: allowed
               .map((ctx) => DropdownMenuItem<String>(
@@ -301,7 +301,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: borderColor),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
             items: _commerces
                 .map((c) => DropdownMenuItem<int>(value: c.id, child: Text(c.businessName)))
@@ -318,7 +318,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
 
   Widget _buildPhoneForm() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     final cardBg = AppColors.cardBg(context);
     final inputDecoration = InputDecoration(
       filled: true,
@@ -327,7 +327,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: borderColor),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,7 +417,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
   Widget _buildVerificationSection() {
     final primary = Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     final cardBg = AppColors.cardBg(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -458,7 +458,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
                   ),
                   filled: true,
                   fillColor: cardBg,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 ),
                 keyboardType: TextInputType.number,
                 maxLength: 6,
@@ -475,7 +475,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Verificación gratuita. Próximamente en esta versión.'),
-                      backgroundColor: AppColors.green,
+                      backgroundColor: AppColors.statusSuccess,
                       behavior: SnackBarBehavior.fixed,
                     ),
                   );
@@ -483,7 +483,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
                 style: OutlinedButton.styleFrom(
                   foregroundColor: primary,
                   side: BorderSide(color: primary),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: const Text('Enviar código'),
@@ -509,7 +509,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
 
   Widget _buildOptionsSection() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -549,7 +549,7 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
             },
             secondary: Icon(
               Icons.star,
-              color: _isPrimary ? AppColors.amber : AppColors.textMutedGray,
+              color: _isPrimary ? AppColors.statusWarning : AppColors.stitchSlate,
             ),
           ),
         ],
@@ -566,8 +566,8 @@ class CreatePhoneScreenState extends State<CreatePhoneScreen> {
         border: Border(
           top: BorderSide(
             color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.slateBorder
-                : AppColors.stitchBorder,
+                ? AppColors.brandStrokeDark
+                : AppColors.brandStrokeLight,
           ),
         ),
       ),

@@ -1,3 +1,5 @@
+import 'package:zonix/features/utils/safe_parse.dart';
+
 class CartItem {
   final int id;
   final String nombre;
@@ -123,7 +125,7 @@ class CartItem {
               : (json['precio'] is double)
                   ? json['precio']
                   : 0.0,
-      quantity: json['quantity'] ?? 1,
+      quantity: safeInt(json['quantity'], 1),
       imagen: json['imagen'],
       stock: json['stock'],
       category: json['category'],

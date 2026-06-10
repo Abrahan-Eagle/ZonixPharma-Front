@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
 
-/// Servicio para gestión de comercios/restaurantes
+/// Servicio para gestión de farmacias/comercios
 /// 
 /// NOTA: Este servicio solo maneja operaciones relacionadas con comercios.
 /// Para productos de comercio, usar CommerceProductService.
@@ -13,7 +13,7 @@ import '../../helpers/auth_helper.dart';
 class CommerceService extends ChangeNotifier {
   static String get baseUrl => AppConfig.apiUrl;
 
-  /// Obtener todos los comercios/restaurantes
+  /// Obtener todas las farmacias/comercios
   Future<List<Commerce>> getCommerces() async {
     try {
       final response = await http.get(

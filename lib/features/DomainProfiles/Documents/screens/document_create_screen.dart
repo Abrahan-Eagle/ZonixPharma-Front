@@ -114,7 +114,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
       _showCustomSnackBar(
         context,
         'Error al escanear el documento',
-        AppColors.red,
+        AppColors.statusError,
       );
     }
   }
@@ -244,10 +244,10 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
   static const double _cardRadius = 12;
 
   Color _surfaceBg(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
 
   Color _cardBorder(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.slateBorder : AppColors.borderLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandStrokeDark : AppColors.borderLight;
 
   Widget _buildHeaderCard(BuildContext context) {
     return Container(
@@ -265,10 +265,10 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.blue.withValues(alpha: 0.1),
+              color: AppColors.brandTeal.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(_cardRadius),
             ),
-            child: const Icon(Icons.description, color: AppColors.blue, size: 28),
+            child: const Icon(Icons.description, color: AppColors.brandTeal, size: 28),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -324,7 +324,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
         ),
         child: Row(
           children: [
-            const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.blue)),
+            const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.brandTeal)),
             const SizedBox(width: 16),
             Expanded(
               child: Text(
@@ -395,7 +395,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(_getDocumentTypeIcon(entry.key), color: AppColors.blue, size: 20),
+                        Icon(_getDocumentTypeIcon(entry.key), color: AppColors.brandTeal, size: 20),
                         const SizedBox(width: 12),
                         Flexible(
                           child: Text(
@@ -523,7 +523,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, color: AppColors.blue, size: 24),
+              Icon(icon, color: AppColors.brandTeal, size: 24),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -666,7 +666,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.photo, color: AppColors.blue, size: 24),
+              const Icon(Icons.photo, color: AppColors.brandTeal, size: 24),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -715,8 +715,8 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
             child: OutlinedButton.icon(
               onPressed: _scanDocument,
               style: OutlinedButton.styleFrom(
-                foregroundColor: AppColors.blue,
-                side: const BorderSide(color: AppColors.blue),
+                foregroundColor: AppColors.brandTeal,
+                side: const BorderSide(color: AppColors.brandTeal),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_cardRadius)),
               ),
               icon: const Icon(Icons.camera_alt, size: 20),
@@ -730,7 +730,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
             child: FilledButton.icon(
               onPressed: _saveDocument,
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.brandTeal,
                 foregroundColor: AppColors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_cardRadius)),
               ),
@@ -805,7 +805,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
                 ? 'Límite alcanzado. Puedes avanzar al siguiente paso.'
                 : 'Documento guardado exitosamente.';
 
-            final color = _saveCounter == 3 ? AppColors.blue : AppColors.green;
+            final color = _saveCounter == 3 ? AppColors.brandTeal : AppColors.statusSuccess;
 
             _showCustomSnackBar(context, message, color);
 
@@ -819,7 +819,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
           _showCustomSnackBar(
             context,
             'La imagen frontal supera los 2 MB.',
-            AppColors.orange,
+            AppColors.brandCtaAccent,
           );
         }
       } catch (e) {
@@ -829,7 +829,7 @@ class CreateDocumentScreenState extends State<CreateDocumentScreen> {
         _showCustomSnackBar(
           context,
           'Error al guardar el documento: $e',
-          AppColors.red,
+          AppColors.statusError,
         );
       }
     }

@@ -55,7 +55,7 @@ class OsmMapWidget extends StatelessWidget {
               polylines: [
                 Polyline(
                   points: polylinePoints!,
-                  color: polylineColor ?? AppColors.blue,
+                  color: polylineColor ?? AppColors.brandTeal,
                   strokeWidth: polylineStrokeWidth ?? 4.0,
                 ),
               ],
@@ -86,7 +86,7 @@ class MapMarker {
       child: child ??
           Icon(
             iconData,
-            color: color ?? AppColors.red,
+            color: color ?? AppColors.statusError,
             size: size,
           ),
     );

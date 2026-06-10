@@ -124,20 +124,20 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+      backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
       appBar: AppBar(
-        backgroundColor: isDark ? AppColors.grayDark : Colors.white,
+        backgroundColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
         elevation: 0,
         scrolledUnderElevation: 0,
         surfaceTintColor: Colors.transparent,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? AppColors.white : AppColors.blueDark),
+          icon: Icon(Icons.arrow_back, color: isDark ? AppColors.white : AppColors.brandNavy),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           'Historial de Actividad',
           style: TextStyle(
-            color: isDark ? AppColors.white : AppColors.blueDark,
+            color: isDark ? AppColors.white : AppColors.brandNavy,
             fontWeight: FontWeight.bold,
             fontSize: 20,
           ),
@@ -164,7 +164,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
   Widget _buildFilterChips(BuildContext context, bool isDark) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      color: isDark ? AppColors.grayDark : Colors.white,
+      color: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
       child: Row(
         children: [
           _chip('Hoy', _PeriodFilter.today, isDark),
@@ -192,13 +192,13 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           decoration: BoxDecoration(
-            color: selected ? AppColors.blue : (isDark ? AppColors.stitchSurfaceLighter : AppColors.borderLight),
+            color: selected ? AppColors.brandTeal : (isDark ? AppColors.stitchSurfaceLighter : AppColors.borderLight),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
             label,
             style: TextStyle(
-              color: selected ? Colors.white : (isDark ? AppColors.white70 : AppColors.gray),
+              color: selected ? AppColors.white : (isDark ? AppColors.white70 : AppColors.brandTealDeep),
               fontSize: 14,
               fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
             ),
@@ -215,7 +215,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 56, color: AppColors.red),
+            const Icon(Icons.error_outline, size: 56, color: AppColors.statusError),
             const SizedBox(height: 16),
             Text(
               'Error al cargar el historial',
@@ -223,14 +223,14 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: isDark ? AppColors.white : AppColors.blueDark,
+                color: isDark ? AppColors.white : AppColors.brandNavy,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               _error ?? '',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13, color: AppColors.textMutedGray),
+              style: const TextStyle(fontSize: 13, color: AppColors.stitchSlate),
             ),
             const SizedBox(height: 20),
             FilledButton.icon(
@@ -238,8 +238,8 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
               icon: const Icon(Icons.refresh, size: 20),
               label: const Text('Reintentar'),
               style: FilledButton.styleFrom(
-                backgroundColor: AppColors.blue,
-                foregroundColor: Colors.white,
+                backgroundColor: AppColors.brandTeal,
+                foregroundColor: AppColors.white,
               ),
             ),
           ],
@@ -253,13 +253,13 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.history, size: 64, color: AppColors.textMutedGray),
+          const Icon(Icons.history, size: 64, color: AppColors.stitchSlate),
           const SizedBox(height: 16),
           Text(
             'No hay actividad en este período',
             style: TextStyle(
               fontSize: 16,
-              color: isDark ? AppColors.white70 : AppColors.gray,
+              color: isDark ? AppColors.white70 : AppColors.brandTealDeep,
             ),
           ),
         ],
@@ -288,7 +288,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: isDark ? AppColors.white : AppColors.blueDark,
+                  color: isDark ? AppColors.white : AppColors.brandNavy,
                 ),
               ),
             ),
@@ -319,7 +319,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.stitchSurfaceLighter : Colors.white,
+          color: isDark ? AppColors.stitchSurfaceLighter : AppColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDark ? AppColors.white12 : AppColors.borderLight,
@@ -347,7 +347,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? AppColors.white : AppColors.blueDark,
+                      color: isDark ? AppColors.white : AppColors.brandNavy,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -357,7 +357,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 14,
-                      color: isDark ? AppColors.white54 : AppColors.textMutedGray,
+                      color: isDark ? AppColors.white54 : AppColors.stitchSlate,
                     ),
                   ),
                 ],
@@ -369,7 +369,7 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: isDark ? AppColors.white54 : AppColors.textMutedGray,
+                color: isDark ? AppColors.white54 : AppColors.stitchSlate,
               ),
             ),
           ],
@@ -433,23 +433,23 @@ class _ActivityHistoryPageState extends State<ActivityHistoryPage> {
       case 'order_placed':
       case 'order':
       case 'order_delivered':
-        return AppColors.blue;
+        return AppColors.brandTeal;
       case 'order_cancelled':
-        return AppColors.red;
+        return AppColors.statusError;
       case 'payment':
       case 'refund':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'profile_updated':
       case 'profile':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'review_posted':
       case 'review':
       case 'rating':
-        return AppColors.purple;
+        return AppColors.brandTealDeep;
       case 'login':
-        return AppColors.teal;
+        return AppColors.brandTeal;
       default:
-        return AppColors.textMutedGray;
+        return AppColors.stitchSlate;
     }
   }
 }

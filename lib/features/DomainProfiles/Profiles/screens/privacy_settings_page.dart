@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zonix/features/DomainProfiles/Profiles/api/profile_service.dart';
 import 'package:zonix/features/screens/auth/sign_in_screen.dart';
 import 'package:zonix/features/utils/user_provider.dart';
+import 'package:zonix/features/utils/app_colors.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -76,7 +77,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Configuración de privacidad actualizada'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
       }
@@ -85,7 +86,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al actualizar: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -111,7 +112,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               Navigator.of(context).pop();
               _showDeleteAccountConfirmation();
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
             child: const Text('Eliminar'),
           ),
         ],
@@ -142,7 +143,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
               Navigator.of(context).pop();
               _deleteAccount();
             },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
             child: const Text('SÍ, ELIMINAR'),
           ),
         ],
@@ -158,7 +159,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Cuenta eliminada exitosamente'),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
           ),
         );
         // Limpiar token y caché y salir totalmente de la app
@@ -175,7 +176,7 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error al eliminar cuenta: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
           ),
         );
       }
@@ -202,20 +203,24 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error, size: 64, color: Colors.red[300]),
+                      Icon(
+                        Icons.error,
+                        size: 64,
+                        color: AppColors.statusError.withValues(alpha: 0.6),
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'Error al cargar la configuración',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.red[300],
+                          color: AppColors.statusError.withValues(alpha: 0.6),
                         ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         _error!,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey[600]),
+                        style: const TextStyle(color: AppColors.stitchSlate),
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
@@ -324,25 +329,28 @@ class _PrivacySettingsPageState extends State<PrivacySettingsPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.red,
+                        color: AppColors.statusError,
                       ),
                     ),
                     const SizedBox(height: 16),
                     
                     Card(
-                      color: Colors.red[50],
+                      color: AppColors.statusError.withValues(alpha: 0.08),
                       child: ListTile(
-                        leading: Icon(Icons.delete_forever, color: Colors.red[700]),
+                        leading: const Icon(
+                          Icons.delete_forever,
+                          color: AppColors.statusError,
+                        ),
                         title: const Text(
                           'Eliminar Mi Cuenta',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.red,
+                            color: AppColors.statusError,
                           ),
                         ),
                         subtitle: const Text(
                           'Esta acción no se puede deshacer',
-                          style: TextStyle(color: Colors.red),
+                          style: TextStyle(color: AppColors.statusError),
                         ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: _showDeleteAccountDialog,

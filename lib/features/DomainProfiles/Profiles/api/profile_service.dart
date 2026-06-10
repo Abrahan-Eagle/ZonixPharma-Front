@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:zonix/features/DomainProfiles/Addresses/api/adresse_service.dart';
 import 'package:zonix/features/DomainProfiles/Profiles/models/profile_model.dart';
 // import 'package:zonix/features/DomainProfiles/Profiles/utils/constants.dart';
 import 'package:logger/logger.dart';
@@ -237,35 +236,6 @@ Future<int> createProfile(Profile profile, int userId, {File? imageFile}) async 
 
 
 
-
-Future<void> updateStatusCheckScanner(int userId, int selectedOptionId) async {
-  String? token = await _getToken();
-  if (token == null) {
-    logger.e('Token no encontrado');
-    throw ApiException('Token no encontrado. Por favor, inicia sesión.'); // Aquí lanzamos ApiException
-  }
-
-  try {
-    final response = await http.post(
-      Uri.parse('${AppConfig.apiUrl}/api/data-verification/$userId/update-status-check-scanner/profiles'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'selectedOptionId': selectedOptionId,
-      }), // Aquí se envía el selectedOptionId
-    ).timeout(const Duration(seconds: 10));
-
-
-    if (response.statusCode != 200) {
-      throw ApiException('Error al actualizar el estado: ${response.body}');
-    }
-  } catch (e) {
-    logger.e('Error al actualizar el estado: $e');
-    throw ApiException('Error al actualizar el estado: ${e.toString()}');
-  }
-}
 
   // Obtener historial de actividad del usuario
   Future<Map<String, dynamic>> getActivityHistory() async {

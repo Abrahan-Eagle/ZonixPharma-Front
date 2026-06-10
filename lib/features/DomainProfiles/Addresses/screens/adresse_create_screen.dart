@@ -153,7 +153,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
@@ -170,7 +170,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
             Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
@@ -202,7 +202,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: isDark ? AppColors.backgroundDark : AppColors.scaffoldBgLight,
+      backgroundColor: isDark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight,
       appBar: _buildAppBar(),
       body: _isLoading ? _buildLoadingState() : _buildContent(),
       floatingActionButton: _buildFloatingActionButton(),
@@ -213,7 +213,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
   PreferredSizeWidget _buildAppBar() {
     final fgColor = AppColors.primaryText(context);
     final barBg = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.backgroundDark
+        ? AppColors.brandSurfaceDark
         : AppColors.scaffoldBgLight;
     return AppBar(
       elevation: 0,
@@ -253,7 +253,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+            valueColor: AlwaysStoppedAnimation<Color>(AppColors.brandTeal),
           ),
           const SizedBox(height: 16),
           Text(
@@ -298,13 +298,13 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
           width: 88,
           height: 88,
           decoration: BoxDecoration(
-            color: AppColors.blue.withValues(alpha: 0.15),
+            color: AppColors.brandTeal.withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
           child: const Icon(
             Icons.add_location_alt,
             size: 48,
-            color: AppColors.blue,
+            color: AppColors.brandTeal,
           ),
         ),
         const SizedBox(height: 16),
@@ -336,13 +336,13 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: AppColors.green.withValues(alpha: 0.12),
+          color: AppColors.statusSuccess.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.green.withValues(alpha: 0.3)),
+          border: Border.all(color: AppColors.statusSuccess.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
-            const Icon(Icons.my_location, color: AppColors.green, size: 22),
+            const Icon(Icons.my_location, color: AppColors.statusSuccess, size: 22),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -353,7 +353,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.green,
+                      color: AppColors.statusSuccess,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -361,7 +361,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
                     'Lat: ${latitude!.toStringAsFixed(4)}, Long: ${longitude!.toStringAsFixed(4)}',
                     style: TextStyle(
                       fontSize: 12,
-                      color: AppColors.green.withValues(alpha: 0.9),
+                      color: AppColors.statusSuccess.withValues(alpha: 0.9),
                     ),
                   ),
                 ],
@@ -375,20 +375,20 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.orange.withValues(alpha: 0.1),
+        color: AppColors.brandCtaAccent.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.orange.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.brandCtaAccent.withValues(alpha: 0.3)),
       ),
       child: const Row(
         children: [
-          Icon(Icons.location_off, color: AppColors.orange, size: 24),
+          Icon(Icons.location_off, color: AppColors.brandCtaAccent, size: 24),
           SizedBox(width: 12),
           Expanded(
             child: Text(
               'Ubicación no disponible. Usa el ícono de arriba para capturar.',
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.orange,
+                color: AppColors.brandCtaAccent,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -513,8 +513,8 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
     required String label,
   }) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     final screenHeight = MediaQuery.of(context).size.height;
     final menuHeight = (screenHeight * 0.5).clamp(280.0, 400.0);
 
@@ -528,7 +528,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         initialValue: value,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: AppColors.blue),
+          prefixIcon: Icon(icon, color: AppColors.brandTeal),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -543,7 +543,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
           return null;
         },
         dropdownColor: AppColors.cardBg(context),
-        icon: const Icon(Icons.arrow_drop_down, color: AppColors.blue),
+        icon: const Icon(Icons.arrow_drop_down, color: AppColors.brandTeal),
         isExpanded: true,
         menuMaxHeight: menuHeight,
         borderRadius: BorderRadius.circular(12),
@@ -560,8 +560,8 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
     int? maxLength,
   }) {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
@@ -573,7 +573,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          prefixIcon: Icon(icon, color: AppColors.blue),
+          prefixIcon: Icon(icon, color: AppColors.brandTeal),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -594,8 +594,8 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
 
   Widget _buildPostalCodeField() {
     final borderColor = Theme.of(context).brightness == Brightness.dark
-        ? AppColors.slateBorder
-        : AppColors.stitchBorder;
+        ? AppColors.brandStrokeDark
+        : AppColors.brandStrokeLight;
     return Container(
       decoration: BoxDecoration(
         color: AppColors.cardBg(context),
@@ -607,7 +607,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
         decoration: const InputDecoration(
           labelText: 'Código Postal',
           hintText: '1010',
-          prefixIcon: Icon(Icons.mail, color: AppColors.blue),
+          prefixIcon: Icon(Icons.mail, color: AppColors.brandTeal),
           border: InputBorder.none,
           contentPadding:
               EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -631,7 +631,7 @@ class RegisterAddressScreenState extends State<RegisterAddressScreen>
       height: 56,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        color: AppColors.blue,
+        color: AppColors.brandTeal,
       ),
       child: ElevatedButton(
         onPressed: _isSubmitting ? null : _createAddress,

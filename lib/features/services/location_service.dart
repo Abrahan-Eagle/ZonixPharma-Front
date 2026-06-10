@@ -282,10 +282,11 @@ class LocationService extends ChangeNotifier {
         
         if (data != null && data is List && data.isNotEmpty) {
           final result = data[0];
-          return {
-            'latitude': double.parse(result['lat']),
-            'longitude': double.parse(result['lon']),
-          };
+          final lat = double.tryParse(result['lat']?.toString() ?? '');
+          final lng = double.tryParse(result['lon']?.toString() ?? '');
+          if (lat != null && lng != null) {
+            return {'latitude': lat, 'longitude': lng};
+          }
         }
       }
       

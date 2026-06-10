@@ -130,10 +130,14 @@ class Product {
           : <String>[],
       rating: parseDouble(json['rating']),
       reviewCount: parseInt(json['review_count']),
-      createdAt: DateTime.parse(
-          (json['created_at'] ?? DateTime.now().toIso8601String()).toString()),
-      updatedAt: DateTime.parse(
-          (json['updated_at'] ?? DateTime.now().toIso8601String()).toString()),
+      createdAt: DateTime.tryParse(
+              (json['created_at'] ?? DateTime.now().toIso8601String())
+                  .toString()) ??
+          DateTime.now(),
+      updatedAt: DateTime.tryParse(
+              (json['updated_at'] ?? DateTime.now().toIso8601String())
+                  .toString()) ??
+          DateTime.now(),
       activeIngredient: json['active_ingredient']?.toString(),
       dosageForm: json['dosage_form']?.toString(),
       concentration: json['concentration']?.toString(),

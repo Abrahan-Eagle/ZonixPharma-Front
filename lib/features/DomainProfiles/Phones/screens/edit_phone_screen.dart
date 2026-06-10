@@ -87,7 +87,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 3),
       ),
@@ -98,7 +98,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 2),
       ),
@@ -161,7 +161,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
       });
     }
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -183,7 +183,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(color: borderColor),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           ),
           items: allowed
               .map((ctx) => DropdownMenuItem<String>(
@@ -210,7 +210,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(color: borderColor),
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             ),
             items: _commerces
                 .map((c) => DropdownMenuItem<int>(value: c.id, child: Text(c.businessName)))
@@ -229,7 +229,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final appBarBorder = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final appBarBorder = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
@@ -280,7 +280,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
   Widget _buildHeader() {
     final primary = Theme.of(context).colorScheme.primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     final cardBg = AppColors.cardBg(context);
     return Container(
       padding: const EdgeInsets.all(20),
@@ -290,7 +290,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
         border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -341,7 +341,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
 
   Widget _buildPhoneForm() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     final cardBg = AppColors.cardBg(context);
     final inputDecoration = InputDecoration(
       filled: true,
@@ -350,7 +350,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide(color: borderColor),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,7 +425,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
 
   Widget _buildOptionsSection() {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final borderColor = isDark ? AppColors.slateBorder : AppColors.stitchBorder;
+    final borderColor = isDark ? AppColors.brandStrokeDark : AppColors.brandStrokeLight;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -461,7 +461,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
             onChanged: (value) => setState(() => _isPrimary = value),
             secondary: Icon(
               Icons.star,
-              color: _isPrimary ? AppColors.amber : AppColors.textMutedGray,
+              color: _isPrimary ? AppColors.statusWarning : AppColors.stitchSlate,
             ),
           ),
           const Divider(),
@@ -481,7 +481,7 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
             onChanged: (value) => setState(() => _isActive = value),
             secondary: Icon(
               Icons.check_circle,
-              color: _isActive ? AppColors.green : AppColors.textMutedGray,
+              color: _isActive ? AppColors.statusSuccess : AppColors.stitchSlate,
             ),
           ),
         ],
@@ -498,8 +498,8 @@ class EditPhoneScreenState extends State<EditPhoneScreen> {
         border: Border(
           top: BorderSide(
             color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.slateBorder
-                : AppColors.stitchBorder,
+                ? AppColors.brandStrokeDark
+                : AppColors.brandStrokeLight,
           ),
         ),
       ),

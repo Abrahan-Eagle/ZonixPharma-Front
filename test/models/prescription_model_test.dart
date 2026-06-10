@@ -46,6 +46,22 @@ void main() {
       expect(prescription.prescriptionTypeLabel, 'Receta retenida');
     });
 
+    test('parses prescription_file_download_url', () {
+      final prescription = Prescription.fromJson({
+        'id': 13,
+        'patient_profile_id': 1,
+        'prescribing_doctor_name': 'Dr. Test',
+        'image_url': '',
+        'prescription_file_download_url':
+            '/api/pharmacist/prescriptions/13/file',
+        'prescription_type': 'common',
+        'status': 'pending_validation',
+      });
+      expect(prescription.authenticatedDownloadUrl,
+          '/api/pharmacist/prescriptions/13/file');
+      expect(prescription.isPdfDisplay, false);
+    });
+
     test('rejected status helpers', () {
       final prescription = Prescription.fromJson({
         'id': 12,

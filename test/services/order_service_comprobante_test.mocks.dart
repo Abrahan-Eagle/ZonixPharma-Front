@@ -296,8 +296,9 @@ class MockOrderService extends _i1.Mock implements _i3.OrderService {
   @override
   _i4.Future<void> validarComprobante(
     int? orderId,
-    String? accion,
-  ) =>
+    String? accion, {
+    String? rejectionReason,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #validarComprobante,
@@ -305,6 +306,7 @@ class MockOrderService extends _i1.Mock implements _i3.OrderService {
             orderId,
             accion,
           ],
+          {#rejectionReason: rejectionReason},
         ),
         returnValue: _i4.Future<void>.value(),
         returnValueForMissingStub: _i4.Future<void>.value(),

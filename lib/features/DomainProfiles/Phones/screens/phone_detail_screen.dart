@@ -24,7 +24,7 @@ class PhoneDetailScreenState extends State<PhoneDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.red,
+        backgroundColor: AppColors.statusError,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 3),
       ),
@@ -35,7 +35,7 @@ class PhoneDetailScreenState extends State<PhoneDetailScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: AppColors.green,
+        backgroundColor: AppColors.statusSuccess,
         behavior: SnackBarBehavior.fixed,
         duration: const Duration(seconds: 2),
       ),
@@ -56,7 +56,7 @@ class PhoneDetailScreenState extends State<PhoneDetailScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.red),
+            style: TextButton.styleFrom(foregroundColor: AppColors.statusError),
             child: const Text('Eliminar'),
           ),
         ],
@@ -199,7 +199,7 @@ class PhoneDetailScreenState extends State<PhoneDetailScreen> {
                 ),
                 _buildStatusChip(
                   widget.phone.statusText,
-                  widget.phone.status ? AppColors.green : AppColors.red,
+                  widget.phone.status ? AppColors.statusSuccess : AppColors.statusError,
                 ),
               ],
             ),
@@ -360,7 +360,7 @@ class PhoneDetailScreenState extends State<PhoneDetailScreen> {
             icon: const Icon(Icons.delete),
             label: const Text('Eliminar Teléfono'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.red,
+              backgroundColor: AppColors.statusError,
               foregroundColor: AppColors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(

@@ -24,8 +24,44 @@ class CartAddResult {
       status == CartAddStatus.blockedLimit || status == CartAddStatus.blockedStock;
 }
 
+class CartApiException implements Exception {
+  final String message;
+  final String? errorCode;
+  final int statusCode;
+
+  CartApiException({
+    required this.message,
+    this.errorCode,
+    required this.statusCode,
+  });
+
+  bool get isOutOfStock => errorCode == 'OUT_OF_STOCK';
+  bool get isCommerceClosed => errorCode == 'COMMERCE_CLOSED';
+
+  @override
+  String toString() => message;
+}
+
 class CartService extends ChangeNotifier {
   final List<CartItem> _cart = [];
+
+  Never _throwCartApiError(http.Response response) {
+    Map<String, dynamic>? data;
+    if (response.body.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(response.body);
+        if (decoded is Map<String, dynamic>) data = decoded;
+      } catch (_) {}
+    }
+    final code = data?['error_code']?.toString();
+    final message = data?['message']?.toString() ??
+        'Error de carrito (${response.statusCode})';
+    throw CartApiException(
+      message: message,
+      errorCode: code,
+      statusCode: response.statusCode,
+    );
+  }
 
   UnmodifiableListView<CartItem> get items => UnmodifiableListView(_cart);
 
@@ -147,15 +183,15 @@ class CartService extends ChangeNotifier {
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
       if (data is Map<String, dynamic> && data['success'] == true) {
-        // Sincronizar con el carrito local
         addToCart(product);
       } else {
-        throw Exception(
-            data['message'] ?? 'Error al agregar producto al carrito');
+        final msg = data is Map ? (data['message'] ?? 'Error al agregar producto al carrito') : 'Error al agregar producto al carrito';
+        throw Exception(msg.toString());
       }
+    } else if (response.statusCode == 422) {
+      _throwCartApiError(response);
     } else {
-      throw Exception(
-          'Error al agregar producto al carrito remoto: ${response.statusCode}');
+      _throwCartApiError(response);
     }
   }
 
@@ -215,8 +251,10 @@ class CartService extends ChangeNotifier {
       } else {
         throw Exception(data['message'] ?? 'Error al actualizar cantidad');
       }
+    } else if (response.statusCode == 422) {
+      _throwCartApiError(response);
     } else {
-      throw Exception('Error al actualizar cantidad: ${response.statusCode}');
+      _throwCartApiError(response);
     }
   }
 

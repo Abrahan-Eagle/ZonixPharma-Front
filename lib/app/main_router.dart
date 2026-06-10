@@ -112,17 +112,17 @@ class MainRouterState extends State<MainRouter> {
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        backgroundColor: isDark ? AppColors.slateBorder : AppColors.white,
+        backgroundColor: isDark ? AppColors.brandStrokeDark : AppColors.white,
         duration: const Duration(seconds: 5),
         content: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.blue.withValues(alpha: 0.1),
+                color: AppColors.brandTeal.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.notifications_active, color: AppColors.blue, size: 20),
+              child: const Icon(Icons.notifications_active, color: AppColors.brandTeal, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -144,7 +144,7 @@ class MainRouterState extends State<MainRouter> {
                     notification.body,
                     style: TextStyle(
                       fontSize: 12,
-                      color: isDark ? AppColors.textMutedGray : AppColors.textMutedGray,
+                      color: isDark ? AppColors.stitchSlate : AppColors.stitchSlate,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -156,7 +156,7 @@ class MainRouterState extends State<MainRouter> {
         ),
         action: SnackBarAction(
           label: 'VER',
-          textColor: AppColors.blue,
+          textColor: AppColors.brandTeal,
           onPressed: () {
             Navigator.push(
               context,

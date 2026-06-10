@@ -116,7 +116,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
       _showCustomSnackBar(
         context,
         'Error al escanear el documento',
-        AppColors.red,
+        AppColors.statusError,
       );
     }
   }
@@ -240,28 +240,28 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
   static const double _cardRadius = 12;
 
   Color _surfaceBg(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
 
   Color _cardBorder(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.slateBorder : AppColors.borderLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandStrokeDark : AppColors.borderLight;
 
   Widget _buildInfoNote() {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.blue.withValues(alpha: 0.08),
+        color: AppColors.brandTeal.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(_cardRadius),
-        border: Border.all(color: AppColors.blue.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline, color: AppColors.blue, size: 20),
+          const Icon(Icons.info_outline, color: AppColors.brandTeal, size: 20),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               'Asegúrese de que todos los datos coincidan exactamente con el documento físico para evitar retrasos en la validación.',
-              style: TextStyle(color: AppColors.blue.withValues(alpha: 0.9), fontSize: 12, height: 1.4),
+              style: TextStyle(color: AppColors.brandTeal.withValues(alpha: 0.9), fontSize: 12, height: 1.4),
             ),
           ),
         ],
@@ -283,7 +283,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
           child: FilledButton(
             onPressed: _updateDocument,
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.blue,
+              backgroundColor: AppColors.brandTeal,
               foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_cardRadius)),
             ),
@@ -309,10 +309,10 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.blue.withValues(alpha: 0.1),
+              color: AppColors.brandTeal.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(_cardRadius),
             ),
-            child: const Icon(Icons.edit, color: AppColors.blue, size: 28),
+            child: const Icon(Icons.edit, color: AppColors.brandTeal, size: 28),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -369,7 +369,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
             ),
             child: Row(
               children: [
-                Icon(_getDocumentTypeIcon(_selectedType), color: AppColors.blue, size: 20),
+                Icon(_getDocumentTypeIcon(_selectedType), color: AppColors.brandTeal, size: 20),
                 const SizedBox(width: 12),
                 Text(
                   typeTranslations[_selectedType] ?? 'Desconocido',
@@ -460,7 +460,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
         children: [
           Row(
             children: [
-              Icon(icon, color: AppColors.blue, size: 24),
+              Icon(icon, color: AppColors.brandTeal, size: 24),
               const SizedBox(width: 12),
               Text(
                 title,
@@ -590,7 +590,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.photo, color: AppColors.blue, size: 24),
+              const Icon(Icons.photo, color: AppColors.brandTeal, size: 24),
               const SizedBox(width: 12),
               Text(
                 'Documento Digitalizado',
@@ -636,7 +636,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
             child: TextButton(
               onPressed: _scanDocument,
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.blue,
+                foregroundColor: AppColors.brandTeal,
                 padding: EdgeInsets.zero,
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -706,7 +706,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
           _showCustomSnackBar(
             context,
             'Documento actualizado exitosamente',
-            AppColors.green,
+            AppColors.statusSuccess,
           );
           Navigator.of(context).pop(true); // Return to previous screen with success
         }
@@ -717,7 +717,7 @@ class DocumentEditScreenState extends State<DocumentEditScreen> {
         _showCustomSnackBar(
           context,
           'Error al actualizar el documento: $e',
-          AppColors.red,
+          AppColors.statusError,
         );
       }
     }

@@ -39,6 +39,24 @@ void main() {
     });
   });
 
+  group('Product model date parsing', () {
+    test('created_at inválido no lanza y usa fallback', () {
+      final product = Product.fromJson({
+        'id': 1,
+        'commerce_id': 10,
+        'name': 'Demo',
+        'description': 'Demo',
+        'price': 1.0,
+        'available': true,
+        'stock_quantity': 1,
+        'created_at': 'fecha-invalida',
+        'updated_at': 'otra-invalida',
+      });
+      expect(product.createdAt, isA<DateTime>());
+      expect(product.updatedAt, isA<DateTime>());
+    });
+  });
+
   group('Product model commerce id parsing', () {
     test('uses nested commerce.id when commerce_id is absent', () {
       final product = Product.fromJson({

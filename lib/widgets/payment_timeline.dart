@@ -91,7 +91,7 @@ class _PaymentTimelineState extends State<PaymentTimeline> {
   Widget build(BuildContext context) {
     if (widget.currentStep < 0) return const SizedBox.shrink();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final surfaceColor = isDark ? AppColors.grayDark : AppColors.white;
+    final surfaceColor = isDark ? AppColors.brandSurfaceContainerDark : AppColors.white;
     final borderColor = isDark ? AppColors.white12 : AppColors.black12;
     final textPrimary = AppColors.primaryText(context);
     final textSecondary = AppColors.secondaryText(context);
@@ -108,7 +108,7 @@ class _PaymentTimelineState extends State<PaymentTimeline> {
         children: [
           Row(
             children: [
-              const Icon(Icons.timeline, size: 20, color: AppColors.blue),
+              const Icon(Icons.timeline, size: 20, color: AppColors.brandTeal),
               const SizedBox(width: 8),
               Text(
                 'Estado del pago',
@@ -134,13 +134,13 @@ class _PaymentTimelineState extends State<PaymentTimeline> {
             Color iconColor;
             Color lineColor;
             if (done) {
-              circleColor = AppColors.green;
+              circleColor = AppColors.statusSuccess;
               iconColor = AppColors.white;
-              lineColor = AppColors.green;
+              lineColor = AppColors.statusSuccess;
             } else if (active) {
-              circleColor = AppColors.blue;
+              circleColor = AppColors.brandTeal;
               iconColor = AppColors.white;
-              lineColor = AppColors.blue.withValues(alpha: 0.3);
+              lineColor = AppColors.brandTeal.withValues(alpha: 0.3);
             } else {
               circleColor = isDark ? AppColors.white12 : AppColors.black12;
               iconColor = textSecondary;
@@ -171,9 +171,9 @@ class _PaymentTimelineState extends State<PaymentTimeline> {
                       ),
                     ),
                     if (done)
-                      const Icon(Icons.check, size: 16, color: AppColors.green),
+                      const Icon(Icons.check, size: 16, color: AppColors.statusSuccess),
                     if (active)
-                      const _PulsingDot(color: AppColors.blue),
+                      const _PulsingDot(color: AppColors.brandTeal),
                   ],
                 ),
                 if (i < _steps.length - 1)

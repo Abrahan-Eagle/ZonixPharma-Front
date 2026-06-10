@@ -281,31 +281,17 @@ class CommerceOrderService {
     }
   }
 
-  // Solicitar delivery para una orden
-  static Future<Map<String, dynamic>> requestDelivery(int orderId, {
+  /// Endpoint legacy `/api/commerce/delivery/request` no existe en backend Pharma.
+  /// La asignación de repartidor la gestiona el flujo delivery/admin.
+  static Future<Map<String, dynamic>> requestDelivery(
+    int orderId, {
     String? notes,
     double? estimatedTime,
   }) async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.post(
-        Uri.parse('$baseUrl/api/commerce/delivery/request'),
-        headers: headers,
-        body: jsonEncode({
-          'order_id': orderId,
-          'notes': notes,
-          'estimated_time': estimatedTime,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Error al solicitar delivery: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al solicitar delivery: $e');
-    }
+    throw UnsupportedError(
+      'requestDelivery no está disponible: el backend asigna repartidor '
+      'vía flujo delivery. Orden: $orderId',
+    );
   }
 
   // Obtener órdenes pendientes

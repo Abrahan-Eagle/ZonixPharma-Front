@@ -69,7 +69,7 @@ class AppConfig {
 
   // Delivery: tarifa por defecto (idealmente el backend la calcula por zona; aquí solo fallback para UI)
   static double get defaultDeliveryFee =>
-      double.tryParse(dotenv.env['DEFAULT_DELIVERY_FEE'] ?? '') ?? 2.50;
+      double.tryParse(dotenv.env['DEFAULT_DELIVERY_FEE'] ?? '') ?? 5.00;
 
   // Mapas y geocoding (sin hardcode en pantallas)
   static String get osmTileUrl =>

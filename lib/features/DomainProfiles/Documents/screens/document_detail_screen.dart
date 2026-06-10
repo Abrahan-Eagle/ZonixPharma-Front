@@ -20,10 +20,10 @@ class DocumentDetailScreen extends StatelessWidget {
   static const double _cardRadius = 12;
 
   Color _surfaceBg(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.backgroundDark : AppColors.scaffoldBgLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandSurfaceDark : AppColors.scaffoldBgLight;
 
   Color _cardBorder(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? AppColors.slateBorder : AppColors.borderLight;
+      Theme.of(context).brightness == Brightness.dark ? AppColors.brandStrokeDark : AppColors.borderLight;
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class DocumentDetailScreen extends StatelessWidget {
                       TextButton(
                         onPressed: () => _showImageDialog(context, document.frontImage!),
                         style: TextButton.styleFrom(
-                          foregroundColor: AppColors.blue,
+                          foregroundColor: AppColors.brandTeal,
                           padding: EdgeInsets.zero,
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -184,11 +184,11 @@ class DocumentDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: isVerified
-            ? AppColors.green.withValues(alpha: 0.15)
-            : AppColors.orange.withValues(alpha: 0.15),
+            ? AppColors.statusSuccess.withValues(alpha: 0.15)
+            : AppColors.brandCtaAccent.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isVerified ? AppColors.green : AppColors.orange,
+          color: isVerified ? AppColors.statusSuccess : AppColors.brandCtaAccent,
           width: 1,
         ),
       ),
@@ -198,7 +198,7 @@ class DocumentDetailScreen extends StatelessWidget {
           Icon(
             isVerified ? Icons.check_circle : Icons.schedule,
             size: 16,
-            color: isVerified ? AppColors.green : AppColors.orange,
+            color: isVerified ? AppColors.statusSuccess : AppColors.brandCtaAccent,
           ),
           const SizedBox(width: 6),
           Text(
@@ -206,7 +206,7 @@ class DocumentDetailScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: isVerified ? AppColors.green : AppColors.orange,
+              color: isVerified ? AppColors.statusSuccess : AppColors.brandCtaAccent,
             ),
           ),
         ],
@@ -372,7 +372,7 @@ class DocumentDetailScreen extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: () => _navigateToEdit(context),
             style: FilledButton.styleFrom(
-              backgroundColor: AppColors.blue,
+              backgroundColor: AppColors.brandTeal,
               foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_cardRadius)),
             ),
@@ -430,7 +430,7 @@ class DocumentDetailScreen extends StatelessWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No hay imagen disponible'),
-          backgroundColor: AppColors.orange,
+          backgroundColor: AppColors.brandCtaAccent,
         ),
       );
       return;

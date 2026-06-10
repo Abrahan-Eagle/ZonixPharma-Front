@@ -83,7 +83,7 @@ class BuyerReviewService {
       } else {
         final apiError = extractApiError(
           response.body,
-          'Error al calificar restaurante: ${response.statusCode}',
+          'Error al calificar farmacia: ${response.statusCode}',
         );
         throw Exception('${apiError['error_code']}|${apiError['message']}');
       }

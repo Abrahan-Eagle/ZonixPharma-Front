@@ -39,9 +39,8 @@ class ProfileModel with ChangeNotifier {
 
 class ProfilePagex extends StatelessWidget {
   final int userId;
-  final bool statusId;
 
-  const ProfilePagex({super.key, required this.userId, this.statusId = false});
+  const ProfilePagex({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +57,7 @@ class ProfilePagex extends StatelessWidget {
               ),
               body: const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.blue),
+                  valueColor: AlwaysStoppedAnimation<Color>(AppColors.brandTeal),
                 ),
               ),
             );
@@ -183,7 +182,7 @@ class ProfilePagex extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 60,
-                backgroundColor: isDark ? AppColors.grayDark : AppColors.white,
+                backgroundColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.white,
                 child: _buildProfileAvatar(context, isDark),
               ),
             ),
@@ -204,7 +203,7 @@ class ProfilePagex extends StatelessWidget {
                 const Icon(
                   Icons.circle,
                   size: 8,
-                  color: AppColors.green,
+                  color: AppColors.statusSuccess,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -237,12 +236,12 @@ class ProfilePagex extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.blue.withValues(alpha: 0.08),
+                    color: AppColors.brandTeal.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.person,
-                    color: AppColors.blue,
+                    color: AppColors.brandTeal,
                     size: 24,
                   ),
                 ),
@@ -288,12 +287,12 @@ class ProfilePagex extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.green.withValues(alpha: 0.15),
+                    color: AppColors.statusSuccess.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.contact_phone,
-                    color: AppColors.green,
+                    color: AppColors.statusSuccess,
                     size: 24,
                   ),
                 ),
@@ -332,12 +331,12 @@ class ProfilePagex extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.orange.withValues(alpha: 0.15),
+                    color: AppColors.brandCtaAccent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.business,
-                    color: AppColors.orange,
+                    color: AppColors.brandCtaAccent,
                     size: 24,
                   ),
                 ),
@@ -380,12 +379,12 @@ class ProfilePagex extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.purple.withValues(alpha: 0.15),
+                    color: AppColors.brandTealDeep.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.delivery_dining,
-                    color: AppColors.purple,
+                    color: AppColors.brandTealDeep,
                     size: 24,
                   ),
                 ),
@@ -501,7 +500,7 @@ class ProfilePagex extends StatelessWidget {
       child: ElevatedButton.icon(
         onPressed: () => _navigateToEditOrCreatePage(context, profile),
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.blue,
+          backgroundColor: AppColors.brandTeal,
           foregroundColor: AppColors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
@@ -576,13 +575,13 @@ class ProfilePagex extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'completeData':
-        return AppColors.green;
+        return AppColors.statusSuccess;
       case 'incompleteData':
-        return AppColors.orange;
+        return AppColors.brandCtaAccent;
       case 'notverified':
-        return AppColors.red;
+        return AppColors.statusError;
       default:
-        return AppColors.gray;
+        return AppColors.brandTealDeep;
     }
   }
 
@@ -617,7 +616,7 @@ class ProfilePagex extends StatelessWidget {
     if (profile?.photo == null || profile!.photo!.isEmpty) {
       return CircleAvatar(
         radius: 55,
-        backgroundColor: isDark ? AppColors.grayDark : AppColors.grayLight,
+        backgroundColor: isDark ? AppColors.brandSurfaceContainerDark : AppColors.brandSurfaceLight,
         child: const Icon(Icons.person, size: 55),
       );
     }

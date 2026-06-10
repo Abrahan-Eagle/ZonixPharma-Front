@@ -5,6 +5,7 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:zonix/features/DomainProfiles/Profiles/api/profile_service.dart';
 import 'package:zonix/features/DomainProfiles/Profiles/models/profile_model.dart';
 import 'package:image/image.dart' as img;
+import 'package:zonix/features/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -108,7 +109,7 @@ Future<void> _pickDate(BuildContext context) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('No se seleccionó ninguna imagen.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.statusError,
           behavior: SnackBarBehavior.fixed,
           action: SnackBarAction(label: 'OK', onPressed: () {}),
         ),
@@ -191,9 +192,9 @@ Future<void> _pickDate(BuildContext context) async {
           SnackBar(
             content: const Text(
               'No se detectó un rostro. Por favor, asegúrate de que tu cara esté visible.',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: AppColors.statusWarning,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -203,9 +204,9 @@ Future<void> _pickDate(BuildContext context) async {
           SnackBar(
             content: Text(
               'Rostro identificado correctamente: ${faces.length}',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -217,9 +218,9 @@ Future<void> _pickDate(BuildContext context) async {
         SnackBar(
           content: Text(
             'Error al procesar la imagen: $e',
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: AppColors.white),
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.statusError,
           behavior: SnackBarBehavior.fixed,
           action: SnackBarAction(label: 'OK', onPressed: () {}),
         ),
@@ -254,9 +255,9 @@ Future<void> _pickDate(BuildContext context) async {
         SnackBar(
           content: const Text(
             'Perfil actualizado exitosamente.',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: AppColors.white),
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.statusSuccess,
           behavior: SnackBarBehavior.fixed,
           action: SnackBarAction(
             label: 'OK',
@@ -272,9 +273,9 @@ Future<void> _pickDate(BuildContext context) async {
           SnackBar(
             content: Text(
               'Error al crear perfil: $e',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -420,7 +421,7 @@ Future<void> _pickDate(BuildContext context) async {
             child: FloatingActionButton(
               heroTag: 'edit_profile_pick_image',
               onPressed: _pickImage,
-              backgroundColor: Colors.blue, // Color distintivo
+              backgroundColor: AppColors.statusInfo, // Color distintivo
               child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -428,7 +429,7 @@ Future<void> _pickDate(BuildContext context) async {
                   Icon(Icons.camera_alt, size: 20), // Ícono
                   Text(
                     'Foto',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: TextStyle(fontSize: 10, color: AppColors.white),
                   ), // Texto dentro del botón
                 ],
               ),
@@ -441,7 +442,7 @@ Future<void> _pickDate(BuildContext context) async {
             child: FloatingActionButton(
               heroTag: 'edit_profile_update',
               onPressed: _updateProfile,
-              backgroundColor: Colors.green, // Color distintivo
+              backgroundColor: AppColors.statusSuccess, // Color distintivo
               child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -449,7 +450,7 @@ Future<void> _pickDate(BuildContext context) async {
                   Icon(Icons.save, size: 20), // Ícono
                   Text(
                     'Actualizar',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: TextStyle(fontSize: 10, color: AppColors.white),
                   ), // Texto dentro del botón
                 ],
               ),
@@ -574,7 +575,7 @@ Future<void> _pickDate(BuildContext context) async {
 //     ScaffoldMessenger.of(context).showSnackBar(
 //         SnackBar(
 //           content: const Text('No se seleccionó ninguna imagen.'),
-//           backgroundColor: Colors.red,
+//           backgroundColor: AppColors.statusError,
 //           behavior: SnackBarBehavior.fixed,
 //           action: SnackBarAction(label: 'OK', onPressed: () {}),
 //         ),
@@ -656,9 +657,9 @@ Future<void> _pickDate(BuildContext context) async {
 //           SnackBar(
 //             content: const Text(
 //               'No se detectó un rostro. Por favor, asegúrate de que tu cara esté visible.',
-//               style: TextStyle(color: Colors.white),
+//               style: TextStyle(color: AppColors.white),
 //             ),
-//             backgroundColor: Colors.orange,
+//             backgroundColor: AppColors.statusWarning,
 //             behavior: SnackBarBehavior.fixed,
 //             action: SnackBarAction(label: 'OK', onPressed: () {}),
 //           ),
@@ -671,9 +672,9 @@ Future<void> _pickDate(BuildContext context) async {
 //           SnackBar(
 //             content: Text(
 //               'Rostro identificado correctamente: ${faces.length}',
-//               style: const TextStyle(color: Colors.white),
+//               style: const TextStyle(color: AppColors.white),
 //             ),
-//             backgroundColor: Colors.green,
+//             backgroundColor: AppColors.statusSuccess,
 //             behavior: SnackBarBehavior.fixed,
 //             action: SnackBarAction(label: 'OK', onPressed: () {}),
 //           ),
@@ -685,9 +686,9 @@ Future<void> _pickDate(BuildContext context) async {
 //         SnackBar(
 //           content: Text(
 //             'Error al procesar la imagen: $e',
-//             style: const TextStyle(color: Colors.white),
+//             style: const TextStyle(color: AppColors.white),
 //           ),
-//           backgroundColor: Colors.red,
+//           backgroundColor: AppColors.statusError,
 //           behavior: SnackBarBehavior.fixed,
 //           action: SnackBarAction(label: 'OK', onPressed: () {}),
 //         ),
@@ -709,9 +710,9 @@ Future<void> _pickDate(BuildContext context) async {
 //         const SnackBar(
 //           content: Text(
 //             'Por favor, tome una foto.',
-//             style: TextStyle(color: Colors.white),
+//             style: TextStyle(color: AppColors.white),
 //           ),
-//           backgroundColor: Colors.red,
+//           backgroundColor: AppColors.statusError,
 //           behavior: SnackBarBehavior.fixed,
 //         ),
 //       );
@@ -725,9 +726,9 @@ Future<void> _pickDate(BuildContext context) async {
 //         SnackBar(
 //           content: const Text(
 //             'Perfil actualizado exitosamente.',
-//             style: TextStyle(color: Colors.white),
+//             style: TextStyle(color: AppColors.white),
 //           ),
-//           backgroundColor: Colors.green,
+//           backgroundColor: AppColors.statusSuccess,
 //           behavior: SnackBarBehavior.fixed,
 //           action: SnackBarAction(
 //             label: 'OK', 
@@ -743,9 +744,9 @@ Future<void> _pickDate(BuildContext context) async {
 //           SnackBar(
 //             content: Text(
 //               'Error al crear perfil: $e',
-//               style: const TextStyle(color: Colors.white),
+//               style: const TextStyle(color: AppColors.white),
 //             ),
-//             backgroundColor: Colors.red,
+//             backgroundColor: AppColors.statusError,
 //             behavior: SnackBarBehavior.fixed,
 //             action: SnackBarAction(label: 'OK', onPressed: () {}),
 //           ),
@@ -902,7 +903,7 @@ Future<void> _pickDate(BuildContext context) async {
 //       bottom: 85, // Separación del botón inferior
 //       child: FloatingActionButton(
 //         onPressed: _pickImage,
-//         backgroundColor: Colors.blue, // Color distintivo
+//         backgroundColor: AppColors.statusInfo, // Color distintivo
 //         child: const Column(
 //           mainAxisSize: MainAxisSize.min,
 //           mainAxisAlignment: MainAxisAlignment.center,
@@ -910,7 +911,7 @@ Future<void> _pickDate(BuildContext context) async {
 //             Icon(Icons.camera_alt, size: 20), // Ícono
 //             Text(
 //               'Foto',
-//               style: TextStyle(fontSize: 10, color: Colors.white),
+//               style: TextStyle(fontSize: 10, color: AppColors.white),
 //             ), // Texto dentro del botón
 //           ],
 //         ),
@@ -922,7 +923,7 @@ Future<void> _pickDate(BuildContext context) async {
 //       bottom: 11, // Espaciado desde el borde inferior
 //       child: FloatingActionButton(
 //         onPressed: _updateProfile,
-//         backgroundColor: Colors.green, // Color distintivo
+//         backgroundColor: AppColors.statusSuccess, // Color distintivo
 //         child: const Column(
 //           mainAxisSize: MainAxisSize.min,
 //           mainAxisAlignment: MainAxisAlignment.center,
@@ -930,7 +931,7 @@ Future<void> _pickDate(BuildContext context) async {
 //             Icon(Icons.save, size: 20), // Ícono
 //             Text(
 //               'Actualizar',
-//               style: TextStyle(fontSize: 10, color: Colors.white),
+//               style: TextStyle(fontSize: 10, color: AppColors.white),
 //             ), // Texto dentro del botón
 //           ],
 //         ),

@@ -7,6 +7,7 @@ import 'package:zonix/features/DomainProfiles/Profiles/api/profile_service.dart'
 import 'package:zonix/features/DomainProfiles/Profiles/models/profile_model.dart';
 import 'package:zonix/features/utils/user_provider.dart';
 import 'package:image/image.dart' as img;
+import 'package:zonix/features/utils/app_colors.dart';
 import 'package:intl/intl.dart';
 
 class CreateProfilePage extends StatefulWidget {
@@ -132,7 +133,7 @@ class CreateProfilePageState extends State<CreateProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('No se seleccionó ninguna imagen.'),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.statusError,
           behavior: SnackBarBehavior.fixed,
           action: SnackBarAction(label: 'OK', onPressed: () {}),
         ),
@@ -166,9 +167,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
           SnackBar(
             content: const Text(
               'No se detectó un rostro. Por favor, asegúrate de que tu cara esté visible.',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.orange,
+            backgroundColor: AppColors.statusWarning,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -178,9 +179,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
           SnackBar(
             content: Text(
               'Rostro identificado correctamente: ${faces.length}',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -192,9 +193,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
         SnackBar(
           content: Text(
             'Error al procesar la imagen: $e',
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: AppColors.white),
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.statusError,
           behavior: SnackBarBehavior.fixed,
           action: SnackBarAction(label: 'OK', onPressed: () {}),
         ),
@@ -242,9 +243,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
     //         const SnackBar(
     //           content: Text(
     //             'Por favor, tome una foto.',
-    //             style: TextStyle(color: Colors.white),
+    //             style: TextStyle(color: AppColors.white),
     //           ),
-    //           backgroundColor: Colors.red,
+    //           backgroundColor: AppColors.statusError,
     //           behavior: SnackBarBehavior.fixed,
     //         ),
     //       );
@@ -277,9 +278,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
     //           SnackBar(
     //             content: const Text(
     //               'Fue registrado exitosamente.',
-    //               style: TextStyle(color: Colors.white),
+    //               style: TextStyle(color: AppColors.white),
     //             ),
-    //             backgroundColor: Colors.green,
+    //             backgroundColor: AppColors.statusSuccess,
     //             behavior: SnackBarBehavior.fixed,
     //             action: SnackBarAction(label: 'OK', onPressed: () {}),
     //           ),
@@ -297,9 +298,9 @@ class CreateProfilePageState extends State<CreateProfilePage> {
     //           SnackBar(
     //             content: Text(
     //               'Error al crear perfil: $e',
-    //               style: const TextStyle(color: Colors.white),
+    //               style: const TextStyle(color: AppColors.white),
     //             ),
-    //             backgroundColor: Colors.red,
+    //             backgroundColor: AppColors.statusError,
     //             behavior: SnackBarBehavior.fixed,
     //             action: SnackBarAction(label: 'OK', onPressed: () {}),
     //           ),
@@ -319,9 +320,9 @@ Future<void> _createProfile() async {
         const SnackBar(
           content: Text(
             'Por favor, tome una foto.',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: AppColors.white),
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.statusError,
           behavior: SnackBarBehavior.fixed,
         ),
       );
@@ -354,9 +355,9 @@ Future<void> _createProfile() async {
           SnackBar(
             content: const Text(
               'Fue registrado exitosamente.',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: AppColors.statusSuccess,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -373,9 +374,9 @@ Future<void> _createProfile() async {
           SnackBar(
             content: Text(
               'Error al crear perfil: $e',
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.white),
             ),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.statusError,
             behavior: SnackBarBehavior.fixed,
             action: SnackBarAction(label: 'OK', onPressed: () {}),
           ),
@@ -547,7 +548,7 @@ Future<void> _createProfile() async {
             child: FloatingActionButton(
               heroTag: 'profile_photo_fab',
               onPressed: _pickImage,
-              backgroundColor: Colors.blue, // Color distintivo
+              backgroundColor: AppColors.statusInfo, // Color distintivo
               child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -555,7 +556,7 @@ Future<void> _createProfile() async {
                   Icon(Icons.camera_alt, size: 20), // Ícono
                   Text(
                     'Foto',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: TextStyle(fontSize: 10, color: AppColors.white),
                   ), // Texto dentro del botón
                 ],
               ),
@@ -568,7 +569,7 @@ Future<void> _createProfile() async {
             child: FloatingActionButton(
               heroTag: 'profile_save_fab',
               onPressed: _createProfile,
-              backgroundColor: Colors.green, // Color distintivo
+              backgroundColor: AppColors.statusSuccess, // Color distintivo
               child: const Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -576,7 +577,7 @@ Future<void> _createProfile() async {
                   Icon(Icons.save, size: 20), // Ícono
                   Text(
                     'Guardar',
-                    style: TextStyle(fontSize: 10, color: Colors.white),
+                    style: TextStyle(fontSize: 10, color: AppColors.white),
                   ), // Texto dentro del botón
                 ],
               ),
