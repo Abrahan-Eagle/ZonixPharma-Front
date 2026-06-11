@@ -6,6 +6,11 @@
 
 ## Última actualización de contexto
 
+### P2 backlog lote 4 — 10 junio 2026
+
+- Dashboard pharmacist cache en `PrescriptionService`; chat orden muestra **Farmacia**; util `formatRxCountdownLabel` testeada.
+- **Verificación:** **237** tests (~1 skip).
+
 ### Cierre auditorías Rx/Orders — 10 junio 2026
 
 - **Orders:** `order_api_errors.dart`; `OrderService` exige `success` en list/show/tracking/cancel.

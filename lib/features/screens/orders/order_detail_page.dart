@@ -25,6 +25,7 @@ import 'package:zonix/features/screens/prescriptions/prescription_upload_page.da
 import 'package:zonix/widgets/payment_timeline.dart';
 import 'package:zonix/widgets/app_skeleton.dart';
 import 'package:zonix/features/utils/order_tracking_controller.dart';
+import 'package:zonix/features/utils/rx_countdown.dart';
 
 class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({
@@ -2579,15 +2580,8 @@ class _CountdownTimerChipState extends State<_CountdownTimerChip> {
     super.dispose();
   }
 
-  String _remaining() {
-    final diff = widget.until.difference(DateTime.now());
-    if (diff.isNegative || diff.inSeconds <= 0) return 'Plazo vencido';
-    if (diff.inMinutes < 1) return 'Queda menos de 1 min';
-    if (diff.inMinutes < 60) return 'Quedan ${diff.inMinutes} min';
-    final h = diff.inHours;
-    final m = diff.inMinutes % 60;
-    return m > 0 ? 'Quedan ${h}h ${m}min' : 'Quedan ${h}h';
-  }
+  String _remaining() =>
+      formatRxCountdownLabel(widget.until, DateTime.now());
 
   @override
   Widget build(BuildContext context) {

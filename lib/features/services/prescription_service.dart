@@ -26,14 +26,31 @@ class PrescriptionService extends ChangeNotifier {
   List<Prescription> _myPrescriptions = const [];
   List<Prescription> _pendingForPharmacist = const [];
   List<Prescription> _historyForPharmacist = const [];
+  Map<String, dynamic>? _pharmacistDashboard;
+  bool _dashboardLoading = false;
+  String? _dashboardError;
   bool _isLoading = false;
   String? _error;
 
   List<Prescription> get myPrescriptions => _myPrescriptions;
   List<Prescription> get pendingForPharmacist => _pendingForPharmacist;
   List<Prescription> get historyForPharmacist => _historyForPharmacist;
+  Map<String, dynamic>? get pharmacistDashboard => _pharmacistDashboard;
+  bool get isDashboardLoading => _dashboardLoading;
+  String? get dashboardError => _dashboardError;
   bool get isLoading => _isLoading;
   String? get error => _error;
+
+  /// IDs de farmacias donde el farmacéutico es responsable (desde dashboard).
+  List<int> get pharmacistCommerceIds {
+    final raw = _pharmacistDashboard?['commerces'];
+    if (raw is! List) return const [];
+    return raw
+        .map((v) => int.tryParse(v.toString()))
+        .whereType<int>()
+        .where((id) => id > 0)
+        .toList(growable: false);
+  }
 
   // ── Buyer ────────────────────────────────────────────────────────────
 
@@ -186,6 +203,44 @@ class PrescriptionService extends ChangeNotifier {
   }
 
   // ── Pharmacist ───────────────────────────────────────────────────────
+
+  /// GET /api/pharmacist/dashboard — cache en memoria para panel y Pusher.
+  Future<Map<String, dynamic>?> loadPharmacistDashboard({
+    bool forceRefresh = false,
+  }) async {
+    if (!forceRefresh && _pharmacistDashboard != null && !_dashboardLoading) {
+      return _pharmacistDashboard;
+    }
+    _dashboardLoading = true;
+    _dashboardError = null;
+    notifyListeners();
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url = Uri.parse('${AppConfig.apiUrl}/api/pharmacist/dashboard');
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        if (body is Map &&
+            body['success'] == true &&
+            body['data'] is Map) {
+          _pharmacistDashboard =
+              Map<String, dynamic>.from(body['data'] as Map);
+          return _pharmacistDashboard;
+        }
+        _dashboardError =
+            pharmacistHttpErrorMessage('Dashboard', response);
+      } else {
+        _dashboardError =
+            pharmacistHttpErrorMessage('Dashboard', response);
+      }
+    } catch (e) {
+      _dashboardError = 'Error al cargar el panel: $e';
+    } finally {
+      _dashboardLoading = false;
+      notifyListeners();
+    }
+    return null;
+  }
 
   /// GET /api/pharmacist/prescriptions/{id}
   Future<Prescription?> loadPharmacistPrescriptionById(int id) async {

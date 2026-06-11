@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'package:zonix/config/app_config.dart';
@@ -10,7 +8,6 @@ import 'package:zonix/features/screens/pharmacist/validation_detail_page.dart';
 import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/features/services/pusher_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
-import 'package:zonix/helpers/auth_helper.dart';
 import 'package:zonix/models/prescription.dart';
 
 class PendingValidationsPage extends StatefulWidget {
@@ -47,22 +44,14 @@ class _PendingValidationsPageState extends State<PendingValidationsPage> {
   Future<void> _subscribeCommerceChannels() async {
     if (!AppConfig.enablePusher) return;
     try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final url = Uri.parse('${AppConfig.apiUrl}/api/pharmacist/dashboard');
-      final res = await http.get(url, headers: headers);
-      if (res.statusCode != 200 || !mounted) return;
-      final body = jsonDecode(res.body);
-      final data = body is Map ? body['data'] : null;
-      if (data is! Map || !mounted) return;
-      final raw = data['commerces'];
-      if (raw is! List) return;
-      _commerceIds.clear();
-      for (final v in raw) {
-        final id = int.tryParse(v.toString());
-        if (id != null && id > 0) {
-          _commerceIds.add(id);
-          await PusherService.instance.subscribeToCommerceChannel(id);
-        }
+      final svc = context.read<PrescriptionService>();
+      await svc.loadPharmacistDashboard();
+      if (!mounted) return;
+      _commerceIds
+        ..clear()
+        ..addAll(svc.pharmacistCommerceIds);
+      for (final id in _commerceIds) {
+        await PusherService.instance.subscribeToCommerceChannel(id);
       }
       if (!mounted) return;
       _pusherSub?.cancel();

@@ -521,7 +521,8 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
     final name = senderName.isNotEmpty ? senderName : null;
     switch (senderType) {
       case 'restaurant':
-        return name != null ? '$name (Comercio)' : 'Comercio';
+      case 'commerce':
+        return name != null ? '$name (Farmacia)' : 'Farmacia';
       case 'delivery_agent':
         return name != null ? '$name (Delivery)' : 'Delivery';
       case 'admin':
@@ -536,6 +537,7 @@ class _BuyerOrderChatPageState extends State<BuyerOrderChatPage> {
   Color _roleBadgeColor(String senderType) {
     switch (senderType) {
       case 'restaurant':
+      case 'commerce':
         return AppColors.brandCtaAccent;
       case 'delivery_agent':
         return AppColors.brandTealDeep;

@@ -321,13 +321,15 @@ class OrderService extends ChangeNotifier {
       if (data == null || data['success'] == true) {
         return;
       }
-      throw Exception(data['message']?.toString() ?? 'Error al subir comprobante de pago');
+      throw Exception(
+          orderHttpErrorMessage('Subir comprobante de pago', response));
     }
 
-    final message = _extractApiErrorMessage(data, 'Error al subir comprobante de pago: ${response.statusCode}');
-    throw Exception(message);
+    throw Exception(
+        orderHttpErrorMessage('Subir comprobante de pago', response));
   }
 
+  // Legacy helper — prefer orderHttpErrorMessage for new code.
   String _extractApiErrorMessage(Map<String, dynamic>? data, String fallback) {
     if (data == null) return fallback;
     final msg = data['message'] ?? data['error'];
@@ -537,32 +539,7 @@ class OrderService extends ChangeNotifier {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return;
     }
-    final body = response.body;
-    String errMsg = 'Error al enviar mensaje: ${response.statusCode}';
-    if (body.isNotEmpty) {
-      try {
-        final data = jsonDecode(body) as Map<String, dynamic>?;
-        if (data != null) {
-          final msg = data['message'] as String?;
-          final errors = data['errors'];
-          if (msg != null && msg.isNotEmpty) {
-            errMsg = msg;
-          }
-          if (errors is Map) {
-            final errMap = errors;
-            final first = errMap.values.isNotEmpty ? errMap.values.first : null;
-            if (first is List && first.isNotEmpty) {
-              errMsg = first.first.toString();
-            } else if (first != null) {
-              errMsg = first.toString();
-            }
-          }
-        }
-      } catch (e) {
-        debugPrint('[OrderService] uploadPaymentProof parse error: $e');
-      }
-    }
-    throw Exception(errMsg);
+    throw Exception(orderHttpErrorMessage('Enviar mensaje', response));
   }
 
   /// Valida o rechaza comprobante (commerce). Alineado con
