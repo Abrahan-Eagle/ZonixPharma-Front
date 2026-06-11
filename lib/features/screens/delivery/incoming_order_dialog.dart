@@ -162,7 +162,7 @@ class _IncomingOrderDialogState extends State<IncomingOrderDialog>
                     children: [
                       if (widget.commerceName != null)
                         _row(
-                            Icons.storefront, 'Comercio', widget.commerceName!),
+                            Icons.storefront, 'Farmacia', widget.commerceName!),
                       if (widget.deliveryAddress != null) ...[
                         const SizedBox(height: 8),
                         _row(Icons.location_on, 'Entregar en',

@@ -8,6 +8,7 @@ import '../utils/auth_utils.dart';
 import 'error_handler.dart';
 import 'cache_service.dart';
 import 'connectivity_service.dart';
+import '../utils/delivery_api_errors.dart';
 
 class DeliveryService extends ChangeNotifier {
   static String get baseUrl => AppConfig.apiUrl;
@@ -65,9 +66,12 @@ class DeliveryService extends ChangeNotifier {
       if (data['success'] == true && data['data'] != null) {
         return List<Map<String, dynamic>>.from(data['data']);
       }
+      if (data is Map && data['success'] == false) {
+        throw Exception(deliveryHttpErrorMessage('Órdenes disponibles', response));
+      }
       return [];
     }
-    throw Exception('Error al obtener órdenes disponibles: ${response.statusCode}');
+    throw Exception(deliveryHttpErrorMessage('Órdenes disponibles', response));
   }
 
   int? _agentId;
@@ -311,7 +315,7 @@ class DeliveryService extends ChangeNotifier {
         _cacheJson(_ordersCacheKey, result);
         return result;
       } else {
-        throw Exception('Error al obtener órdenes: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Mis órdenes', response));
       }
     } catch (e) {
       if (!_isAuthError(e)) {
@@ -392,12 +396,13 @@ class DeliveryService extends ChangeNotifier {
           notifyListeners();
           return;
         }
-        throw Exception('Error updating order status: ${data['message'] ?? 'Unknown error'}');
+        throw Exception(deliveryHttpErrorMessage('Actualizar estado', response));
       } else {
-        throw Exception('Error updating order status: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Actualizar estado', response));
       }
     } catch (e) {
-      throw Exception('Error updating order status: $e');
+      if (e is Exception) rethrow;
+      throw Exception('Actualizar estado: $e');
     }
   }
 
@@ -425,7 +430,7 @@ class DeliveryService extends ChangeNotifier {
         }
         return [];
       } else {
-        throw Exception('Error fetching available orders: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Órdenes disponibles', response));
       }
     } catch (e) {
       rethrow;
@@ -476,12 +481,13 @@ class DeliveryService extends ChangeNotifier {
         if (data['success'] == true && data['data'] != null) {
           return Order.fromJson(data['data']);
         }
-        throw Exception('Error accepting order: Invalid response');
+        throw Exception(deliveryHttpErrorMessage('Aceptar pedido', response));
       } else {
-        throw Exception('Error accepting order: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Aceptar pedido', response));
       }
     } catch (e) {
-      throw Exception('Error accepting order: $e');
+      if (e is Exception) rethrow;
+      throw Exception('Aceptar pedido: $e');
     }
   }
 
@@ -506,12 +512,16 @@ class DeliveryService extends ChangeNotifier {
         body: jsonEncode({'token': token}),
       );
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        if (data is Map && data['success'] == true) {
+          return Map<String, dynamic>.from(data);
+        }
+        throw Exception(deliveryHttpErrorMessage('Verificar recogida', response));
       }
-      final body = jsonDecode(response.body);
-      throw Exception(body['message'] ?? 'Error');
+      throw Exception(deliveryHttpErrorMessage('Verificar recogida', response));
     } catch (e) {
-      throw Exception('Error al verificar recogida: $e');
+      if (e is Exception) rethrow;
+      throw Exception('Verificar recogida: $e');
     }
   }
 
@@ -523,12 +533,16 @@ class DeliveryService extends ChangeNotifier {
         body: jsonEncode({'token': token}),
       );
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        if (data is Map && data['success'] == true) {
+          return Map<String, dynamic>.from(data);
+        }
+        throw Exception(deliveryHttpErrorMessage('Verificar entrega', response));
       }
-      final body = jsonDecode(response.body);
-      throw Exception(body['message'] ?? 'Error');
+      throw Exception(deliveryHttpErrorMessage('Verificar entrega', response));
     } catch (e) {
-      throw Exception('Error al verificar entrega: $e');
+      if (e is Exception) rethrow;
+      throw Exception('Verificar entrega: $e');
     }
   }
 
@@ -624,7 +638,7 @@ class DeliveryService extends ChangeNotifier {
         }
         return [];
       } else {
-        throw Exception('Error fetching delivery history: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Historial', response));
       }
     } catch (e) {
       rethrow;
@@ -659,9 +673,9 @@ class DeliveryService extends ChangeNotifier {
         if (data['success'] == true && data['data'] != null) {
           return Map<String, dynamic>.from(data['data']);
         }
-        throw Exception('Error fetching delivery earnings: Invalid response');
+        throw Exception(deliveryHttpErrorMessage('Ganancias', response));
       } else {
-        throw Exception('Error fetching delivery earnings: ${response.statusCode}');
+        throw Exception(deliveryHttpErrorMessage('Ganancias', response));
       }
     } catch (e) {
       rethrow;

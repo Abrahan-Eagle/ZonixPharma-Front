@@ -165,7 +165,7 @@ class _DeliveryHistoryPageState extends State<DeliveryHistoryPage> {
     final isDelivered = order.status == 'delivered';
     final statusColor = isDelivered ? AppColors.statusSuccess : AppColors.statusError;
     final statusLabel = isDelivered ? 'Entregada' : 'Cancelada';
-    final commerceName = order.commerce?['name']?.toString() ?? 'Comercio';
+    final commerceName = order.commerce?['name']?.toString() ?? 'Farmacia';
     final date = DateFormat('dd/MM/yyyy HH:mm').format(order.createdAt);
 
     return Card(

@@ -466,7 +466,7 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
 
   Widget _buildAvailableCard(BuildContext context, Map<String, dynamic> order) {
     final commerce = order['commerce'] as Map<String, dynamic>?;
-    final commerceName = commerce?['name']?.toString() ?? 'Comercio';
+    final commerceName = commerce?['name']?.toString() ?? 'Farmacia';
     final address = order['delivery_address']?.toString() ??
         order['shipping_address']?.toString() ??
         'Sin dirección';
@@ -560,7 +560,7 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
     final status = order['status']?.toString() ?? '';
     final hasDelivery = order['order_delivery'] != null;
     final commerce = order['commerce'] as Map<String, dynamic>?;
-    final commerceName = commerce?['name']?.toString() ?? 'Comercio';
+    final commerceName = commerce?['name']?.toString() ?? 'Farmacia';
     final profile = order['profile'] as Map<String, dynamic>?;
     final user = profile?['user'] as Map<String, dynamic>?;
     final customerName =
@@ -623,7 +623,7 @@ class DeliveryOrdersPageState extends State<DeliveryOrdersPage>
                 ],
               ),
               const Divider(height: 24),
-              _buildInfoRow(context, Icons.store, 'Comercio', commerceName),
+              _buildInfoRow(context, Icons.store, 'Farmacia', commerceName),
               const SizedBox(height: 8),
               _buildInfoRow(context, Icons.location_on, 'Dirección', address),
               const SizedBox(height: 8),
