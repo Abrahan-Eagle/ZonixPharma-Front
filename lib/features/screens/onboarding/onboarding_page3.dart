@@ -2,6 +2,7 @@ import 'package:zonix/features/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'onboarding_ether_theme.dart';
 import 'onboarding_provider.dart';
 import 'client_onboarding_flow.dart';
 import 'commerce_onboarding_flow.dart';
@@ -18,6 +19,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
 
   @override
   Widget build(BuildContext context) {
+    final ether = OnboardingEtherTheme.of(context);
     final w = MediaQuery.of(context).size.width;
     final h = MediaQuery.of(context).size.height;
     final isSmall = w < 360;
@@ -25,14 +27,15 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
 
     return Stack(
       children: [
-        _buildBackground(),
+        _buildBackground(ether),
         SafeArea(
           child: SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                  minHeight: h -
-                      MediaQuery.of(context).padding.top -
-                      MediaQuery.of(context).padding.bottom),
+                minHeight: h -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom,
+              ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: isSmall ? 20 : (isTablet ? 32 : 24),
@@ -41,11 +44,10 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Título con icono cohete
-                    _buildHeader(context, isSmall),
+                    _buildHeader(context, ether, isSmall),
                     const SizedBox(height: 32),
-                    // Cards de rol
                     _buildRoleCard(
+                      ether: ether,
                       role: 'users',
                       title: 'Soy Cliente',
                       subtitle: 'Quiero comprar mis medicamentos',
@@ -54,37 +56,62 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                     ),
                     const SizedBox(height: 16),
                     _buildRoleCard(
+                      ether: ether,
                       role: 'commerce',
                       title: 'Tengo una Farmacia',
                       subtitle: 'Quiero vender mis productos',
                       icon: Icons.storefront_outlined,
-                      iconColor: AppColors.onboardingPurpleAccent,
+                      iconColor: AppColors.brandMint,
                     ),
                     const SizedBox(height: 24),
-                    // ZONIX PHARMA UNIVERSE
                     Center(
                       child: Text(
                         'ZONIX PHARMA UNIVERSE',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.white.withValues(alpha: 0.4),
+                          color: ether.textMuted.withValues(alpha: 0.8),
                           letterSpacing: 2,
                         ),
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Botón Continuar
-                    _buildContinueButton(context, w),
+                    _buildContinueButton(context, ether, w),
                     const SizedBox(height: 16),
-                    // ¿Necesitas ayuda?
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog<void>(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text(
+                              '¿Cómo elegir?',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            content: Text(
+                              'Elige Soy Cliente si quieres comprar medicamentos. '
+                              'Elige Tengo una Farmacia si administras un comercio '
+                              'y quieres vender en Zonix Pharma.',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                height: 1.45,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(ctx).pop(),
+                                child: const Text('Entendido'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       child: Text(
                         '¿Necesitas ayuda para decidir?',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          color: AppColors.white.withValues(alpha: 0.5),
+                          color: ether.textMuted,
                         ),
                       ),
                     ),
@@ -99,20 +126,24 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
     );
   }
 
-  Widget _buildBackground() {
+  Widget _buildBackground(OnboardingEtherTheme ether) {
+    if (!ether.isDark) {
+      return Container(color: ether.scaffold);
+    }
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppColors.brandSurfaceDark, AppColors.backgroundDarker],
+          colors: [
+            AppColors.etherDarkScaffold,
+            AppColors.etherDarkScaffoldDeep,
+          ],
         ),
       ),
       child: Stack(
         children: [
-          // Estrellas sutiles
           ..._buildStars(),
-          // Glow top right
           Positioned(
             top: -80,
             right: -80,
@@ -124,13 +155,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                 gradient: RadialGradient(
                   colors: [
                     AppColors.brandTeal.withValues(alpha: 0.2),
-                    AppColors.transparent
+                    AppColors.transparent,
                   ],
                 ),
               ),
             ),
           ),
-          // Glow bottom left
           Positioned(
             bottom: -80,
             left: -80,
@@ -141,8 +171,8 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    AppColors.onboardingPurpleAccent.withValues(alpha: 0.1),
-                    AppColors.transparent
+                    AppColors.brandMint.withValues(alpha: 0.1),
+                    AppColors.transparent,
                   ],
                 ),
               ),
@@ -179,20 +209,32 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
     }).toList();
   }
 
-  Widget _buildHeader(BuildContext context, bool isSmall) {
+  Widget _buildHeader(
+    BuildContext context,
+    OnboardingEtherTheme ether,
+    bool isSmall,
+  ) {
     final titleSize = isSmall ? 24.0 : 28.0;
     return Column(
       children: [
-        // Icono cohete
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.brandSurfaceContainerDark.withValues(alpha: 0.5),
+            color: ether.isDark
+                ? AppColors.etherDarkSurface.withValues(alpha: 0.7)
+                : AppColors.brandSurfaceLight,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.white.withValues(alpha: 0.05)),
+            border: Border.all(
+              color: ether.isDark
+                  ? AppColors.white.withValues(alpha: 0.05)
+                  : AppColors.etherLightOutline.withValues(alpha: 0.15),
+            ),
           ),
-          child: const Icon(Icons.rocket_launch,
-              color: AppColors.brandTeal, size: 32),
+          child: Icon(
+            Icons.rocket_launch,
+            color: ether.isDark ? ether.accent : AppColors.etherPrimary,
+            size: 32,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
@@ -202,7 +244,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
             fontSize: titleSize,
             fontWeight: FontWeight.w800,
             height: 1.2,
-            color: AppColors.white,
+            color: ether.textPrimary,
           ),
         ),
         const SizedBox(height: 12),
@@ -212,7 +254,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
           style: GoogleFonts.plusJakartaSans(
             fontSize: isSmall ? 14 : 16,
             fontWeight: FontWeight.w500,
-            color: AppColors.white.withValues(alpha: 0.6),
+            color: ether.textSecondary,
           ),
         ),
       ],
@@ -220,6 +262,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
   }
 
   Widget _buildRoleCard({
+    required OnboardingEtherTheme ether,
     required String role,
     required String title,
     required String subtitle,
@@ -237,24 +280,40 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.surfaceHighlight : AppColors.brandSurfaceContainerDark,
+          color: ether.isDark
+              ? AppColors.etherDarkSurface
+              : AppColors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.brandTeal : AppColors.transparent,
-            width: 2,
+            color: isSelected
+                ? AppColors.brandTeal
+                : (ether.isDark
+                    ? AppColors.transparent
+                    : AppColors.etherLightOutline.withValues(alpha: 0.15)),
+            width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                      color: AppColors.brandTeal.withValues(alpha: 0.15),
-                      blurRadius: 30,
-                      spreadRadius: 0)
+                    color: AppColors.brandTeal.withValues(
+                      alpha: ether.isDark ? 0.15 : 0.08,
+                    ),
+                    blurRadius: ether.isDark ? 30 : 12,
+                    spreadRadius: 0,
+                  ),
                 ]
-              : null,
+              : (ether.isDark
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: const Color(0xFF005048).withValues(alpha: 0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]),
         ),
         child: Row(
           children: [
-            // Icono
             Container(
               width: 64,
               height: 64,
@@ -282,7 +341,7 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.white,
+                      color: ether.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -290,13 +349,12 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                     subtitle,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      color: AppColors.white.withValues(alpha: 0.6),
+                      color: ether.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-            // Radio/Check
             Container(
               width: 24,
               height: 24,
@@ -306,12 +364,18 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                 border: Border.all(
                   color: isSelected
                       ? AppColors.brandTeal
-                      : AppColors.white.withValues(alpha: 0.3),
+                      : ether.textMuted.withValues(alpha: 0.5),
                   width: 2,
                 ),
               ),
               child: isSelected
-                  ? const Icon(Icons.check, size: 16, color: AppColors.white)
+                  ? Icon(
+                      Icons.check,
+                      size: 16,
+                      color: ether.isDark
+                          ? AppColors.etherDarkScaffold
+                          : AppColors.white,
+                    )
                   : null,
             ),
           ],
@@ -320,7 +384,11 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
     );
   }
 
-  Widget _buildContinueButton(BuildContext context, double w) {
+  Widget _buildContinueButton(
+    BuildContext context,
+    OnboardingEtherTheme ether,
+    double w,
+  ) {
     final enabled = selectedRole != null;
 
     return SizedBox(
@@ -338,14 +406,16 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ClientOnboardingFlow()),
+                      builder: (context) => const ClientOnboardingFlow(),
+                    ),
                   );
                 } else if (selectedRole == 'commerce') {
                   onboardingProvider.setRole('commerce');
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const CommerceOnboardingFlow()),
+                      builder: (context) => const CommerceOnboardingFlow(),
+                    ),
                   );
                 }
               }
@@ -354,13 +424,14 @@ class _OnboardingPage3State extends State<OnboardingPage3> {
           backgroundColor: enabled
               ? AppColors.brandTeal
               : AppColors.brandTeal.withValues(alpha: 0.4),
-          foregroundColor: AppColors.brandNavy,
+          foregroundColor: ether.ctaForeground,
           disabledBackgroundColor: AppColors.brandTeal.withValues(alpha: 0.3),
-          disabledForegroundColor: AppColors.brandNavy.withValues(alpha: 0.5),
-          elevation: enabled ? 4 : 0,
+          disabledForegroundColor: ether.ctaForeground.withValues(alpha: 0.5),
+          elevation: enabled ? (ether.isDark ? 4 : 2) : 0,
           shadowColor: AppColors.brandTeal.withValues(alpha: 0.4),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

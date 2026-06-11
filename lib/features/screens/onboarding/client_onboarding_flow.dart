@@ -13,7 +13,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 import 'package:image_picker/image_picker.dart';
 
+import 'onboarding_ether_theme.dart';
 import 'onboarding_provider.dart';
+import 'onboarding_success_screen.dart';
 import 'package:zonix/features/services/commerce_data_service.dart';
 import 'onboarding_service.dart';
 import 'package:zonix/features/utils/user_provider.dart';
@@ -27,7 +29,6 @@ import 'package:zonix/features/DomainProfiles/Phones/api/phone_service.dart';
 import 'package:zonix/features/DomainProfiles/Documents/api/document_service.dart';
 import 'package:zonix/features/DomainProfiles/Documents/models/document.dart';
 import 'package:zonix/config/app_config.dart';
-import 'package:zonix/app/main_router.dart';
 
 /// Flujo de onboarding para Buyer (2 pasos) y Commerce (4 pasos).
 ///
@@ -90,6 +91,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   double? _longitude;
   DateTime? _lastGeocodingCall;
   bool _isLoadingLocation = false;
+  bool _mapReady = false;
+  String? _submitErrorMessage;
   bool _skipNextReverseGeocode =
       false; // Evitar loop al mover mapa desde inputs
   Timer? _streetDebounceTimer; // Debounce para geocodificar al cambiar calle
@@ -391,10 +394,48 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         _latitude = loc.latitude;
         _longitude = loc.longitude;
       });
-      _mapController.move(lat_lng.LatLng(loc.latitude, loc.longitude), 15);
+      _safeMapMove(lat_lng.LatLng(loc.latitude, loc.longitude), 15);
     } catch (_) {
       // Geocoding falló (red, límite, etc.) – ignorar silenciosamente
     }
+  }
+
+  void _onMapReady() {
+    if (!mounted) return;
+    setState(() => _mapReady = true);
+    if (_latitude != null && _longitude != null) {
+      _safeMapMove(lat_lng.LatLng(_latitude!, _longitude!), 15);
+    }
+  }
+
+  void _safeMapMove(lat_lng.LatLng point, double zoom) {
+    if (!_mapReady) return;
+    try {
+      _mapController.move(point, zoom);
+    } catch (e) {
+      debugPrint('MapController not ready: $e');
+    }
+  }
+
+  void _syncBuyerAddressToProvider() {
+    final provider = context.read<OnboardingProvider>();
+    provider.setAddressDetails(
+      street: _streetController.text.trim(),
+      houseNumber: _houseNumberController.text.trim(),
+      postalCode: _postalCodeController.text.trim(),
+      cityId: _selectedCity?.id ?? _cityId ?? 0,
+    );
+    if (_latitude != null && _longitude != null) {
+      provider.setLocationCoordinates(
+        latitude: _latitude!,
+        longitude: _longitude!,
+      );
+    }
+  }
+
+  void _clearSubmitError() {
+    if (_submitErrorMessage == null) return;
+    setState(() => _submitErrorMessage = null);
   }
 
   void _onStreetChanged() {
@@ -486,15 +527,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       });
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        try {
-          _mapController.move(
-            lat_lng.LatLng(_latitude!, _longitude!),
-            15,
-          );
-        } catch (e) {
-          debugPrint(
-              'Error refreshing user details in buyer onboarding submit: $e');
-        }
+        _safeMapMove(lat_lng.LatLng(_latitude!, _longitude!), 15);
       });
 
       await _autoFillFromLocation(position.latitude, position.longitude);
@@ -514,12 +547,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       _longitude = -66.9036;
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      try {
-        _mapController.move(
-          lat_lng.LatLng(_latitude!, _longitude!),
-          15,
-        );
-      } catch (_) {}
+      _safeMapMove(lat_lng.LatLng(_latitude!, _longitude!), 15);
     });
   }
 
@@ -821,7 +849,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   bool _step4PrefilledFromUser = false;
 
   void _goToStep(int step) {
-    setState(() => _currentStep = step);
+    setState(() {
+      _currentStep = step;
+      _submitErrorMessage = null;
+      final mapStep = widget.isCommerce ? 3 : 1;
+      if (step != mapStep) {
+        _mapReady = false;
+      }
+    });
     // Pre-llenar Step 4 (dirección establecimiento) con la dirección del usuario
     if (widget.isCommerce && step == 3 && !_step4PrefilledFromUser) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -890,21 +925,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         _longitude = 0.0;
       }
 
-      final provider = context.read<OnboardingProvider>();
-      provider.setAddressDetails(
-        street: _streetController.text.trim(),
-        houseNumber: _houseNumberController.text.trim().isEmpty
-            ? null
-            : _houseNumberController.text.trim(),
-        postalCode: _postalCodeController.text.trim().isEmpty
-            ? null
-            : _postalCodeController.text.trim(),
-        cityId: _selectedCity?.id ?? _cityId ?? 0,
-      );
-      provider.setLocationCoordinates(
-        latitude: _latitude!,
-        longitude: _longitude!,
-      );
+      _syncBuyerAddressToProvider();
 
       if (widget.isCommerce) {
         _goToStep(2);
@@ -1024,12 +1045,21 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       }
 
       // 2) Crear dirección
+      final houseNumber =
+          (onboarding.houseNumber ?? _houseNumberController.text).trim();
+      final postalCode =
+          (onboarding.postalCode ?? _postalCodeController.text).trim();
+      if (houseNumber.isEmpty || postalCode.isEmpty) {
+        throw Exception(
+          'Indica el número de casa/edificio y el código postal.',
+        );
+      }
+
       final address = Address(
         id: null,
         street: onboarding.street ?? _streetController.text.trim(),
-        houseNumber:
-            onboarding.houseNumber ?? _houseNumberController.text.trim(),
-        postalCode: onboarding.postalCode ?? _postalCodeController.text.trim(),
+        houseNumber: houseNumber,
+        postalCode: postalCode,
         latitude: onboarding.latitude ?? _latitude ?? 0.0,
         longitude: onboarding.longitude ?? _longitude ?? 0.0,
         status: 'notverified',
@@ -1079,14 +1109,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       await userProvider.registerFcmTokenAfterProfileReady();
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Onboarding completado exitosamente.'),
-        ),
-      );
-
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const MainRouter()),
+        MaterialPageRoute(
+          builder: (_) => const OnboardingSuccessScreen(isCommerce: false),
+        ),
         (route) => false,
       );
     } catch (e, stackTrace) {
@@ -1102,10 +1128,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         }
       }
       final message = _userFriendlyErrorMessage(e);
+      setState(() => _submitErrorMessage = message);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
           backgroundColor: AppColors.statusError,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
         ),
       );
     } finally {
@@ -1353,14 +1382,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       await userProvider.registerFcmTokenAfterProfileReady();
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Comercio registrado. Onboarding completado.'),
-        ),
-      );
-
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const MainRouter()),
+        MaterialPageRoute(
+          builder: (_) => const OnboardingSuccessScreen(isCommerce: true),
+        ),
         (route) => false,
       );
     } catch (e, stackTrace) {
@@ -1376,10 +1401,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         }
       }
       final message = _userFriendlyErrorMessage(e);
+      setState(() => _submitErrorMessage = message);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
           backgroundColor: AppColors.statusError,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
         ),
       );
     } finally {
@@ -1418,8 +1446,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       return 'Hubo un problema al registrar el comercio. Revisa nombre, RIF y dirección del local.';
     }
     if (msg.contains('Error al crear dirección') ||
-        msg.contains('/buyer/addresses')) {
-      return 'Hubo un problema con tu dirección. Revisa país, estado, ciudad y calle antes de intentar de nuevo.';
+        msg.contains('/buyer/addresses') ||
+        msg.contains('house number')) {
+      return 'Indica el número de casa o edificio y el código postal.';
     }
     if (msg.contains('Error al crear teléfono')) {
       return 'Hubo un problema al guardar tu teléfono. Verifica el código 0XXX y el número de 7 dígitos.';
@@ -1453,28 +1482,30 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
 
   // Colores Stitch (6) - Datos Personales
 
+  OnboardingEtherTheme _ether(BuildContext context) =>
+      OnboardingEtherTheme.of(context);
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final progress = (_currentStep + 1) / _totalSteps;
+    final ether = _ether(context);
 
     return Scaffold(
-      backgroundColor: AppColors.brandSurfaceDark,
+      backgroundColor: ether.scaffold,
       body: SafeArea(
         child: Column(
           children: [
-            // Header: back + título
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
                   IconButton(
                     onPressed: () => Navigator.maybePop(context),
-                    icon:
-                        const Icon(Icons.chevron_left, color: AppColors.white),
+                    icon: Icon(Icons.chevron_left, color: ether.backChipIcon),
                     style: IconButton.styleFrom(
-                      backgroundColor: AppColors.brandSurfaceContainerDark,
-                      foregroundColor: AppColors.white,
+                      backgroundColor: ether.backChipBg,
+                      foregroundColor: ether.backChipIcon,
                     ),
                   ),
                   Expanded(
@@ -1486,7 +1517,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.white,
+                          color: ether.textPrimary,
                         ),
                       ),
                     ),
@@ -1495,7 +1526,6 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 ],
               ),
             ),
-            // Progress
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
               child: Column(
@@ -1508,7 +1538,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         'Paso ${_currentStep + 1} de $_totalSteps',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          color: AppColors.white.withValues(alpha: 0.6),
+                          color: ether.textSecondary,
                         ),
                       ),
                       Text(
@@ -1516,7 +1546,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.brandTeal,
+                          color: ether.progressFill,
                         ),
                       ),
                     ],
@@ -1527,9 +1557,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     child: LinearProgressIndicator(
                       value: progress,
                       minHeight: 8,
-                      backgroundColor: AppColors.brandSurfaceContainerDark,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
-                          AppColors.brandTeal),
+                      backgroundColor: ether.progressTrack,
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(ether.progressFill),
                     ),
                   ),
                 ],
@@ -1564,8 +1594,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.brandSurfaceDark.withValues(alpha: 0),
-              AppColors.brandSurfaceDark,
+              ether.scaffold.withValues(alpha: 0),
+              ether.scaffold,
             ],
           ),
         ),
@@ -1575,11 +1605,15 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           child: ElevatedButton(
             onPressed: _isSubmitting ? null : _handleNext,
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.brandTeal,
-              foregroundColor: AppColors.white,
+              backgroundColor: (_currentStep >= _totalSteps - 1 && !ether.isDark)
+                  ? AppColors.etherPrimary
+                  : AppColors.brandTeal,
+              foregroundColor: ether.isDark
+                  ? AppColors.etherOnPrimaryFixed
+                  : AppColors.white,
               disabledBackgroundColor: AppColors.brandTeal.withValues(alpha: 0.5),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: Row(
@@ -1619,11 +1653,12 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildStep1(Size size) {
+    final ether = _ether(context);
     final isTablet = size.width > 600;
     final isSmall = size.width < 360;
     final inputPadding = EdgeInsets.symmetric(
       horizontal: isTablet ? 20 : (isSmall ? 12 : 16),
-      vertical: isSmall ? 12 : 14,
+      vertical: isSmall ? 16 : 18,
     );
 
     return SingleChildScrollView(
@@ -1636,7 +1671,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SizedBox(height: isSmall ? 8 : 16),
+            SizedBox(height: isSmall ? 16 : 24),
             // Profile photo placeholder (Stitch 6)
             Center(
               child: GestureDetector(
@@ -1648,10 +1683,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       width: isSmall ? 96 : 112,
                       height: isSmall ? 96 : 112,
                       decoration: BoxDecoration(
-                        color: AppColors.brandSurfaceContainerDark,
+                        color: ether.inputFill,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: AppColors.white.withValues(alpha: 0.2),
+                          color: ether.inputBorder,
                           width: 2,
                         ),
                       ),
@@ -1665,7 +1700,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                           : Icon(
                               Icons.person,
                               size: isSmall ? 40 : 48,
-                              color: AppColors.white.withValues(alpha: 0.5),
+                              color: ether.textMuted,
                             ),
                     ),
                     Positioned(
@@ -1674,10 +1709,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       child: Container(
                         padding: EdgeInsets.all(isSmall ? 6 : 8),
                         decoration: BoxDecoration(
-                          color: AppColors.brandTeal,
+                          color: AppColors.etherPrimary,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: AppColors.brandSurfaceDark,
+                            color: ether.scaffold,
                             width: 4,
                           ),
                         ),
@@ -1700,7 +1735,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: AppColors.white,
+                color: ether.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -1709,7 +1744,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               textAlign: TextAlign.center,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
-                color: AppColors.white.withValues(alpha: 0.6),
+                color: ether.textSecondary,
               ),
             ),
             const SizedBox(height: 24),
@@ -1767,55 +1802,31 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   padding: const EdgeInsets.only(left: 4, bottom: 6),
                   child: Text(
                     'Fecha de Nacimiento',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.white.withValues(alpha: 0.9),
-                    ),
+                    style: _etherLabelStyle(context),
                   ),
                 ),
                 InkWell(
                   onTap: _pickBirthDate,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                   child: InputDecorator(
-                    decoration: InputDecoration(
+                    decoration: _etherFieldDecoration(
+                      context,
                       hintText: 'mm/dd/yyyy',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.white.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: AppColors.white.withValues(alpha: 0.3),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColors.brandTeal,
-                          width: 1.5,
-                        ),
-                      ),
-                      filled: true,
-                      fillColor: AppColors.brandSurfaceContainerDark,
                       contentPadding: inputPadding,
                       suffixIcon: Icon(
                         Icons.calendar_today,
                         size: 20,
-                        color: AppColors.white.withValues(alpha: 0.5),
+                        color: ether.textMuted,
                       ),
                     ),
                     child: Text(
                       _birthDate == null
                           ? ''
                           : '${_birthDate!.month.toString().padLeft(2, '0')}/${_birthDate!.day.toString().padLeft(2, '0')}/${_birthDate!.year}',
-                      style: GoogleFonts.plusJakartaSans(
+                      style: _etherFieldStyle(context).copyWith(
                         color: _birthDate == null
-                            ? AppColors.white.withValues(alpha: 0.5)
-                            : AppColors.white,
+                            ? ether.textMuted
+                            : ether.textPrimary,
                       ),
                     ),
                   ),
@@ -1831,67 +1842,42 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   padding: const EdgeInsets.only(left: 4, bottom: 6),
                   child: Text(
                     'Sexo',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.white.withValues(alpha: 0.9),
-                    ),
+                    style: _etherLabelStyle(context),
                   ),
                 ),
                 DropdownButtonFormField<String>(
                   initialValue: _selectedSex,
                   isExpanded: true,
-                  dropdownColor: AppColors.brandSurfaceContainerDark,
-                  icon: Icon(
-                    Icons.expand_more,
-                    color: AppColors.white.withValues(alpha: 0.6),
-                  ),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: AppColors.white.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: AppColors.white.withValues(alpha: 0.3),
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(
-                        color: AppColors.brandTeal,
-                        width: 1.5,
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: AppColors.brandSurfaceContainerDark,
+                  dropdownColor: ether.inputFill,
+                  icon: Icon(Icons.expand_more, color: ether.textMuted),
+                  decoration: _etherFieldDecoration(
+                    context,
                     contentPadding: inputPadding,
                   ),
                   hint: Text(
                     'Selecciona tu sexo',
-                    style: GoogleFonts.plusJakartaSans(
-                        color: AppColors.white.withValues(alpha: 0.5)),
+                    style: _etherHintStyle(context),
                   ),
-                  items: const [
+                  items: [
                     DropdownMenuItem(
-                        value: 'M',
-                        child: Text('Masculino',
-                            style: TextStyle(color: AppColors.white))),
+                      value: 'M',
+                      child: Text('Masculino', style: _etherFieldStyle(context)),
+                    ),
                     DropdownMenuItem(
-                        value: 'F',
-                        child: Text('Femenino',
-                            style: TextStyle(color: AppColors.white))),
+                      value: 'F',
+                      child: Text('Femenino', style: _etherFieldStyle(context)),
+                    ),
                     DropdownMenuItem(
-                        value: 'O',
-                        child: Text('Otro',
-                            style: TextStyle(color: AppColors.white))),
+                      value: 'O',
+                      child: Text('Otro', style: _etherFieldStyle(context)),
+                    ),
                     DropdownMenuItem(
-                        value: 'X',
-                        child: Text('Prefiero no decir',
-                            style: TextStyle(color: AppColors.white))),
+                      value: 'X',
+                      child: Text(
+                        'Prefiero no decir',
+                        style: _etherFieldStyle(context),
+                      ),
+                    ),
                   ],
                   onChanged: (v) => setState(() => _selectedSex = v),
                   validator: (v) => v == null ? 'Selecciona tu sexo' : null,
@@ -1908,19 +1894,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   padding: const EdgeInsets.only(left: 4, bottom: 6),
                   child: Text(
                     'Teléfono',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.white.withValues(alpha: 0.9),
-                    ),
+                    style: _etherLabelStyle(context),
                   ),
                 ),
                 if (_isLoadingOperators)
-                  const Center(
+                  Center(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
-                      child:
-                          CircularProgressIndicator(color: AppColors.brandTeal),
+                      padding: const EdgeInsets.all(24),
+                      child: CircularProgressIndicator(
+                        color: ether.inputBorderFocused,
+                      ),
                     ),
                   )
                 else
@@ -1932,20 +1915,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         child: DropdownButtonFormField<Map<String, dynamic>>(
                           initialValue: _selectedPersonalOperator,
                           isExpanded: true,
-                          dropdownColor: AppColors.brandSurfaceContainerDark,
-                          decoration: InputDecoration(
+                          dropdownColor: ether.inputFill,
+                          decoration: _etherFieldDecoration(
+                            context,
                             hintText: 'Código',
-                            hintStyle: GoogleFonts.plusJakartaSans(
-                              color: AppColors.white.withValues(alpha: 0.5),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: AppColors.white.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: AppColors.brandSurfaceContainerDark,
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 14,
@@ -1959,8 +1932,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                                   value: c,
                                   child: Text(
                                     _formatOperatorCodeDisplay(c),
-                                    style:
-                                        const TextStyle(color: AppColors.white),
+                                    style: _etherFieldStyle(context),
                                   ),
                                 ),
                               )
@@ -1979,35 +1951,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                             FilteringTextInputFormatter.digitsOnly,
                             LengthLimitingTextInputFormatter(7),
                           ],
-                          style: GoogleFonts.plusJakartaSans(
-                            color: AppColors.white,
-                          ),
-                          decoration: InputDecoration(
+                          style: _etherFieldStyle(context),
+                          decoration: _etherFieldDecoration(
+                            context,
                             hintText: '600 000 000',
-                            hintStyle: GoogleFonts.plusJakartaSans(
-                              color: AppColors.white.withValues(alpha: 0.5),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: AppColors.white.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                color: AppColors.white.withValues(alpha: 0.3),
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: AppColors.brandTeal,
-                                width: 1.5,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: AppColors.brandSurfaceContainerDark,
                             contentPadding: inputPadding,
                           ),
                           keyboardType: TextInputType.phone,
@@ -2039,6 +1986,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     void Function(String)? onChanged,
     String? Function(String?)? validator,
   }) {
+    final ether = _ether(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2047,42 +1995,36 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           child: Text(
             label,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.white.withValues(alpha: 0.9),
+              color: ether.textPrimary.withValues(alpha: 0.9),
             ),
           ),
         ),
         TextFormField(
           controller: controller,
           onChanged: onChanged,
-          style: GoogleFonts.plusJakartaSans(color: AppColors.white),
+          style: GoogleFonts.plusJakartaSans(color: ether.textPrimary),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: GoogleFonts.plusJakartaSans(
-              color: AppColors.white.withValues(alpha: 0.5),
-            ),
+            hintStyle: GoogleFonts.plusJakartaSans(color: ether.textMuted),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.white.withValues(alpha: 0.3),
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: ether.inputBorder),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColors.white.withValues(alpha: 0.3),
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: ether.inputBorder),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.brandTeal,
-                width: 1.5,
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: ether.inputBorderFocused,
+                width: 2,
               ),
             ),
             filled: true,
-            fillColor: AppColors.brandSurfaceContainerDark,
+            fillColor: ether.inputFill,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 14,
@@ -2096,10 +2038,60 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   // Colores Stitch (7) - Dirección
-  static const Color _kAddressPrimary = AppColors.addressPrimary;
-  static const Color _kAddressSurface = AppColors.brandSurfaceContainerDark;
+  Color _addressAccent(BuildContext context) =>
+      _ether(context).isDark ? AppColors.brandTeal : AppColors.etherPrimary;
+
+  Color _addressSurface(BuildContext context) => _ether(context).inputFill;
+
+  TextStyle _etherLabelStyle(BuildContext context) {
+    final ether = _ether(context);
+    return GoogleFonts.plusJakartaSans(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      color: ether.textPrimary.withValues(alpha: 0.9),
+    );
+  }
+
+  TextStyle _etherFieldStyle(BuildContext context) =>
+      GoogleFonts.plusJakartaSans(color: _ether(context).textPrimary);
+
+  TextStyle _etherHintStyle(BuildContext context) =>
+      GoogleFonts.plusJakartaSans(color: _ether(context).textMuted);
+
+  InputDecoration _etherFieldDecoration(
+    BuildContext context, {
+    String? hintText,
+    Widget? suffixIcon,
+    Widget? prefixIcon,
+    EdgeInsetsGeometry? contentPadding,
+  }) {
+    final ether = _ether(context);
+    return InputDecoration(
+      hintText: hintText,
+      hintStyle: _etherHintStyle(context),
+      suffixIcon: suffixIcon,
+      prefixIcon: prefixIcon,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorderFocused, width: 2),
+      ),
+      filled: true,
+      fillColor: ether.inputFill,
+      contentPadding: contentPadding ??
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+    );
+  }
 
   Widget _buildStep2(Size size) {
+    final ether = _ether(context);
     final isTablet = size.width > 600;
     final isSmall = size.width < 360;
     final mapHeight = isSmall ? 160.0 : 192.0;
@@ -2131,7 +2123,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: AppColors.white,
+                color: ether.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -2139,7 +2131,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               '¿Dónde debemos llevar tu pedido?',
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
-                color: AppColors.white.withValues(alpha: 0.6),
+                color: ether.textSecondary,
               ),
             ),
             SizedBox(height: isSmall ? 16 : 24),
@@ -2175,6 +2167,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     hint: '123',
                     icon: Icons.tag,
                     keyboardType: TextInputType.number,
+                    onChanged: (_) => _clearSubmitError(),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Indica el número de casa/edificio';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 SizedBox(width: isSmall ? 12 : 16),
@@ -2185,6 +2184,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     hint: '00000',
                     icon: Icons.markunread_mailbox,
                     keyboardType: TextInputType.number,
+                    onChanged: (_) => _clearSubmitError(),
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty) {
+                        return 'Ingresa el código postal';
+                      }
+                      return null;
+                    },
                   ),
                 ),
               ],
@@ -2201,6 +2207,10 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               const SizedBox(height: 16),
               _buildAddressDropdownCity(),
             ],
+            if (_submitErrorMessage != null) ...[
+              const SizedBox(height: 16),
+              _buildSubmitErrorBanner(context),
+            ],
             const SizedBox(height: 80),
           ],
         ),
@@ -2209,6 +2219,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildMapCardStep2(BuildContext context, [double mapHeight = 192]) {
+    final ether = _ether(context);
     final hasCoords = _latitude != null && _longitude != null;
     final centerPoint = lat_lng.LatLng(
       _latitude ?? 10.4806,
@@ -2219,13 +2230,22 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       height: mapHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: ether.cardBorder),
+        boxShadow: ether.isDark
+            ? [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: const Color(0xFF005048).withValues(alpha: 0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
@@ -2237,6 +2257,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 options: MapOptions(
                   initialCenter: centerPoint,
                   initialZoom: 15,
+                  onMapReady: _onMapReady,
                   interactionOptions: const InteractionOptions(
                     flags: InteractiveFlag.drag |
                         InteractiveFlag.pinchZoom |
@@ -2275,12 +2296,12 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               )
             else
               Container(
-                color: _kAddressSurface,
+                color: _addressSurface(context),
                 alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const CircularProgressIndicator(color: _kAddressPrimary),
+                    CircularProgressIndicator(color: _addressAccent(context)),
                     const SizedBox(height: 12),
                     Text(
                       _isLoadingLocation
@@ -2288,7 +2309,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                           : 'Esperando ubicación',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
-                        color: AppColors.white.withValues(alpha: 0.7),
+                        color: ether.textSecondary,
                       ),
                     ),
                   ],
@@ -2305,7 +2326,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                         end: Alignment.bottomCenter,
                         colors: [
                           AppColors.transparent,
-                          AppColors.brandSurfaceDark.withValues(alpha: 0.9),
+                          ether.isDark
+                              ? AppColors.etherDarkScaffold.withValues(alpha: 0.5)
+                              : AppColors.etherLightScaffold.withValues(alpha: 0.3),
                         ],
                       ),
                     ),
@@ -2322,18 +2345,18 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: _kAddressPrimary,
+                          color: _addressAccent(context),
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: _kAddressPrimary.withValues(alpha: 0.4),
+                              color: _addressAccent(context).withValues(alpha: 0.4),
                               blurRadius: 12,
                             ),
                           ],
                         ),
                         child: const Icon(
                           Icons.location_on,
-                          color: AppColors.brandSurfaceContainerDark,
+                          color: AppColors.white,
                           size: 28,
                         ),
                       ),
@@ -2350,8 +2373,69 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                   ),
                 ),
               ),
+            Positioned(
+              bottom: 12,
+              right: 12,
+              child: Material(
+                color: ether.cardSurface,
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: _getCurrentLocation,
+                  child: SizedBox(
+                    height: 38,
+                    width: 38,
+                    child: Icon(
+                      Icons.my_location,
+                      size: 20,
+                      color: ether.textPrimary,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitErrorBanner(BuildContext context) {
+    final message = _submitErrorMessage;
+    if (message == null) return const SizedBox.shrink();
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.statusError.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.statusError.withValues(alpha: 0.35),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: AppColors.statusError,
+            size: 20,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                color: AppColors.statusError,
+                height: 1.35,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -2363,7 +2447,9 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     required IconData icon,
     String? Function(String?)? validator,
     TextInputType? keyboardType,
+    ValueChanged<String>? onChanged,
   }) {
+    final ether = _ether(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2374,44 +2460,22 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: AppColors.white.withValues(alpha: 0.7),
+              color: ether.textSecondary,
             ),
           ),
         ),
         TextFormField(
           controller: controller,
-          style: GoogleFonts.plusJakartaSans(color: AppColors.white),
-          decoration: InputDecoration(
+          style: _etherFieldStyle(context),
+          decoration: _etherFieldDecoration(
+            context,
             hintText: hint,
-            hintStyle: GoogleFonts.plusJakartaSans(
-                color: AppColors.white.withValues(alpha: 0.4)),
-            prefixIcon: Icon(
-              icon,
-              size: 20,
-              color: AppColors.white.withValues(alpha: 0.5),
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide:
-                  BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: _kAddressPrimary, width: 2),
-            ),
-            filled: true,
-            fillColor: _kAddressSurface,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            prefixIcon: Icon(icon, size: 20, color: ether.textMuted),
           ),
           validator: validator,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           keyboardType: keyboardType,
+          onChanged: onChanged,
         ),
       ],
     );
@@ -2424,16 +2488,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       child: DropdownButtonFormField<Country>(
         initialValue: _selectedCountry,
         isExpanded: true,
-        dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more,
-            color: AppColors.white.withValues(alpha: 0.6)),
+        dropdownColor: _addressSurface(context),
+        icon: Icon(Icons.expand_more, color: _ether(context).textMuted),
         decoration: _addressInputDecoration(prefixIcon: Icons.public),
         items: _countries
             .map(
               (c) => DropdownMenuItem<Country>(
                 value: c,
-                child: Text(c.name,
-                    style: const TextStyle(color: AppColors.white)),
+                child: Text(c.name, style: _etherFieldStyle(context)),
               ),
             )
             .toList(),
@@ -2451,16 +2513,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       child: DropdownButtonFormField<StateModel>(
         initialValue: _selectedState,
         isExpanded: true,
-        dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more,
-            color: AppColors.white.withValues(alpha: 0.6)),
+        dropdownColor: _addressSurface(context),
+        icon: Icon(Icons.expand_more, color: _ether(context).textMuted),
         decoration: _addressInputDecoration(prefixIcon: Icons.map_outlined),
         items: _states
             .map(
               (s) => DropdownMenuItem<StateModel>(
                 value: s,
-                child: Text(s.name,
-                    style: const TextStyle(color: AppColors.white)),
+                child: Text(s.name, style: _etherFieldStyle(context)),
               ),
             )
             .toList(),
@@ -2478,16 +2538,14 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       child: DropdownButtonFormField<City>(
         initialValue: _selectedCity,
         isExpanded: true,
-        dropdownColor: _kAddressSurface,
-        icon: Icon(Icons.expand_more,
-            color: AppColors.white.withValues(alpha: 0.6)),
+        dropdownColor: _addressSurface(context),
+        icon: Icon(Icons.expand_more, color: _ether(context).textMuted),
         decoration: _addressInputDecoration(prefixIcon: Icons.apartment),
         items: _cities
             .map(
               (c) => DropdownMenuItem<City>(
                 value: c,
-                child: Text(c.name,
-                    style: const TextStyle(color: AppColors.white)),
+                child: Text(c.name, style: _etherFieldStyle(context)),
               ),
             )
             .toList(),
@@ -2513,7 +2571,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: AppColors.white.withValues(alpha: 0.7),
+              color: _ether(context).textSecondary,
             ),
           ),
         ),
@@ -2523,31 +2581,28 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   InputDecoration _addressInputDecoration({required IconData prefixIcon}) {
+    final ether = _ether(context);
     return InputDecoration(
-      prefixIcon: Icon(
-        prefixIcon,
-        size: 20,
-        color: AppColors.white.withValues(alpha: 0.5),
-      ),
+      prefixIcon: Icon(prefixIcon, size: 20, color: ether.textMuted),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorder),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: AppColors.white.withValues(alpha: 0.2)),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorder),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: _kAddressPrimary, width: 2),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorderFocused, width: 2),
       ),
       filled: true,
-      fillColor: _kAddressSurface,
+      fillColor: ether.inputFill,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 
-  /// Input estilo Stitch 8: icono a la izquierda, fondo oscuro, rounded-2xl
+  /// Input estilo Stitch commerce wizard — dual mode Clinical Ether
   Widget _buildCommerceInput({
     required IconData icon,
     required TextEditingController controller,
@@ -2557,38 +2612,38 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     TextInputType? keyboardType,
     void Function(String)? onChanged,
   }) {
+    final ether = _ether(context);
     return TextFormField(
       controller: controller,
       onChanged: onChanged,
-      style: GoogleFonts.plusJakartaSans(color: AppColors.white, fontSize: 14),
+      style: GoogleFonts.plusJakartaSans(
+        color: ether.textPrimary,
+        fontSize: 14,
+      ),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: GoogleFonts.plusJakartaSans(
-          color: AppColors.white.withValues(alpha: 0.5),
+          color: ether.textMuted,
           fontSize: 14,
         ),
         prefixIcon: Padding(
           padding: const EdgeInsets.only(left: 16, right: 12),
-          child: Icon(
-            icon,
-            size: 22,
-            color: AppColors.white.withValues(alpha: 0.5),
-          ),
+          child: Icon(icon, size: 22, color: ether.textMuted),
         ),
         prefixIconConstraints: const BoxConstraints(minWidth: 48),
         filled: true,
-        fillColor: AppColors.brandSurfaceContainerDark,
+        fillColor: ether.inputFill,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: ether.inputBorder),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(color: ether.inputBorder),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.brandTeal, width: 2),
+          borderSide: BorderSide(color: ether.inputBorderFocused, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -2605,6 +2660,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildStep3Commerce(Size size) {
+    final ether = _ether(context);
     final isTablet = size.width > 600;
     final isSmall = size.width < 360;
 
@@ -2709,39 +2765,40 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                     child: DropdownButtonFormField<Map<String, dynamic>>(
                       initialValue: _selectedCommerceOperator,
                       isExpanded: true,
-                      dropdownColor: AppColors.brandSurfaceContainerDark,
-                      icon: Icon(Icons.arrow_drop_down,
-                          color: AppColors.white.withValues(alpha: 0.6)),
+                      dropdownColor: ether.inputFill,
+                      icon: Icon(Icons.arrow_drop_down, color: ether.textMuted),
                       decoration: InputDecoration(
                         prefixIcon: Padding(
                           padding: const EdgeInsets.only(left: 16, right: 8),
                           child: Icon(
                             Icons.phone_outlined,
                             size: 22,
-                            color: AppColors.white.withValues(alpha: 0.5),
+                            color: ether.textMuted,
                           ),
                         ),
                         prefixIconConstraints:
                             const BoxConstraints(minWidth: 44),
                         filled: true,
-                        fillColor: AppColors.brandSurfaceContainerDark,
+                        fillColor: ether.inputFill,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: BorderSide.none,
+                          borderSide: BorderSide(color: ether.inputBorder),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: ether.inputBorder),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(
-                              color: AppColors.brandTeal, width: 2),
+                          borderSide: BorderSide(
+                            color: ether.inputBorderFocused,
+                            width: 2,
+                          ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 16),
                       ),
-                      hint: Text(
-                        'Código',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: AppColors.white.withValues(alpha: 0.5)),
-                      ),
+                      hint: Text('Código', style: _etherHintStyle(context)),
                       items: (_operatorCodes.isNotEmpty
                               ? _operatorCodes
                               : _fallbackOperatorCodes())
@@ -2750,8 +2807,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                               value: code,
                               child: Text(
                                 _formatOperatorCodeDisplay(code),
-                                style: GoogleFonts.plusJakartaSans(
-                                    color: AppColors.white),
+                                style: _etherFieldStyle(context),
                               ),
                             ),
                           )
@@ -2792,30 +2848,29 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
-                color: AppColors.white.withValues(alpha: 0.8),
+                color: ether.textPrimary.withValues(alpha: 0.85),
               ),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.brandTeal.withValues(alpha: 0.1),
+                color: ether.bannerBg,
                 borderRadius: BorderRadius.circular(16),
-                border:
-                    Border.all(color: AppColors.brandTeal.withValues(alpha: 0.2)),
+                border: Border.all(color: ether.bannerBorder),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.verified_user_outlined,
-                      color: AppColors.brandTeal, size: 24),
+                  Icon(Icons.verified_user_outlined,
+                      color: ether.accent, size: 24),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Tus datos bancarios están protegidos. Usamos encriptación de grado bancario para todas las transacciones.',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 12,
-                        color: AppColors.white.withValues(alpha: 0.7),
+                        color: ether.textSecondary,
                         height: 1.5,
                       ),
                     ),
@@ -2916,6 +2971,12 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               controller: _postalCodeCommerceController,
               hint: 'Código postal',
               keyboardType: TextInputType.number,
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) {
+                  return 'Ingresa el código postal';
+                }
+                return null;
+              },
             ),
           ],
         ),
@@ -2932,9 +2993,8 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildMapCard(BuildContext context, [double mapHeight = 220]) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final borderRadius = BorderRadius.circular(20);
+    final ether = _ether(context);
+    final borderRadius = BorderRadius.circular(16);
 
     final hasCoords = _latitude != null && _longitude != null;
     final centerPoint = lat_lng.LatLng(
@@ -2946,14 +3006,22 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       height: mapHeight,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.3)),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.05),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: ether.cardBorder),
+        boxShadow: ether.isDark
+            ? [
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: const Color(0xFF005048).withValues(alpha: 0.05),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
@@ -2965,6 +3033,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 options: MapOptions(
                   initialCenter: centerPoint,
                   initialZoom: 15,
+                  onMapReady: _onMapReady,
                   interactionOptions: const InteractionOptions(
                     flags: InteractiveFlag.drag |
                         InteractiveFlag.pinchZoom |
@@ -3003,22 +3072,21 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               )
             else
               Container(
-                color: colorScheme.surfaceContainerHighest,
+                color: ether.inputFill,
                 alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        colorScheme.primary,
-                      ),
-                    ),
+                    CircularProgressIndicator(color: ether.pinColor),
                     const SizedBox(height: 12),
                     Text(
                       _isLoadingLocation
                           ? 'Obteniendo ubicación...'
                           : 'Esperando ubicación',
-                      style: const TextStyle(fontSize: 13),
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        color: ether.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -3028,16 +3096,30 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.location_on,
-                      color: colorScheme.primary,
-                      size: 46,
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: ether.pinColor,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: ether.pinColor.withValues(alpha: 0.4),
+                            blurRadius: 12,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.location_on,
+                        color: AppColors.white,
+                        size: 28,
+                      ),
                     ),
                     Container(
-                      width: 16,
-                      height: 4,
+                      width: 12,
+                      height: 6,
+                      margin: const EdgeInsets.only(top: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.black.withValues(alpha: 0.25),
+                        color: AppColors.black.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -3051,16 +3133,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.white.withValues(alpha: 0.9),
+                  color: ether.cardSurface.withValues(alpha: 0.95),
                   borderRadius: BorderRadius.circular(10),
-                  border:
-                      Border.all(color: AppColors.white.withValues(alpha: 0.7)),
+                  border: Border.all(color: ether.cardBorder),
                 ),
-                child: const Text(
+                child: Text(
                   'Ubicación del PIN',
-                  style: TextStyle(
+                  style: GoogleFonts.plusJakartaSans(
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
+                    color: ether.textPrimary,
                   ),
                 ),
               ),
@@ -3069,7 +3151,7 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
               bottom: 12,
               right: 12,
               child: Material(
-                color: AppColors.white,
+                color: ether.cardSurface,
                 elevation: 3,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
@@ -3077,12 +3159,13 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(14),
                   onTap: _getCurrentLocation,
-                  child: const SizedBox(
+                  child: SizedBox(
                     height: 38,
                     width: 38,
                     child: Icon(
                       Icons.my_location,
                       size: 20,
+                      color: ether.textPrimary,
                     ),
                   ),
                 ),
@@ -3100,19 +3183,18 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
     required Color color,
     bool darkStyle = false,
   }) {
+    final ether = _ether(context);
     return Row(
       children: [
         Icon(icon, color: color, size: 20),
         const SizedBox(width: 8),
         Text(
           label,
-          style: TextStyle(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
             fontWeight: FontWeight.w700,
             letterSpacing: 0.8,
-            color: darkStyle
-                ? AppColors.white.withValues(alpha: 0.85)
-                : AppColors.brandSurfaceContainerDark,
+            color: darkStyle ? ether.sectionHeader : ether.textPrimary,
           ),
         ),
       ],
@@ -3120,40 +3202,42 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   InputDecoration _commerceDropdownDecoration(String label) {
+    final ether = _ether(context);
     return InputDecoration(
       labelText: label,
-      labelStyle: GoogleFonts.plusJakartaSans(
-          color: AppColors.white.withValues(alpha: 0.6)),
+      labelStyle: GoogleFonts.plusJakartaSans(color: ether.textMuted),
       filled: true,
-      fillColor: AppColors.brandSurfaceContainerDark,
+      fillColor: ether.inputFill,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide.none,
+        borderSide: BorderSide(color: ether.inputBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: ether.inputBorder),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: AppColors.brandTeal, width: 2),
+        borderSide: BorderSide(color: ether.inputBorderFocused, width: 2),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
     );
   }
 
   Widget _buildCountryDropdownDark() {
+    final ether = _ether(context);
     return DropdownButtonFormField<Country>(
       initialValue: _selectedCountry,
       isExpanded: true,
-      dropdownColor: AppColors.brandSurfaceContainerDark,
+      dropdownColor: ether.inputFill,
+      style: _etherFieldStyle(context),
       decoration: _commerceDropdownDecoration('País'),
-      icon: Icon(Icons.arrow_drop_down,
-          color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down, color: ether.textMuted),
       items: _countries
           .map(
             (c) => DropdownMenuItem<Country>(
               value: c,
-              child: Text(
-                c.name,
-                style: GoogleFonts.plusJakartaSans(color: AppColors.white),
-              ),
+              child: Text(c.name, style: _etherFieldStyle(context)),
             ),
           )
           .toList(),
@@ -3163,21 +3247,19 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildStateDropdownDark() {
+    final ether = _ether(context);
     return DropdownButtonFormField<StateModel>(
       initialValue: _selectedState,
       isExpanded: true,
-      dropdownColor: AppColors.brandSurfaceContainerDark,
+      dropdownColor: ether.inputFill,
+      style: _etherFieldStyle(context),
       decoration: _commerceDropdownDecoration('Estado'),
-      icon: Icon(Icons.arrow_drop_down,
-          color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down, color: ether.textMuted),
       items: _states
           .map(
             (s) => DropdownMenuItem<StateModel>(
               value: s,
-              child: Text(
-                s.name,
-                style: GoogleFonts.plusJakartaSans(color: AppColors.white),
-              ),
+              child: Text(s.name, style: _etherFieldStyle(context)),
             ),
           )
           .toList(),
@@ -3187,21 +3269,19 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   }
 
   Widget _buildCityDropdownDark() {
+    final ether = _ether(context);
     return DropdownButtonFormField<City>(
       initialValue: _selectedCity,
       isExpanded: true,
-      dropdownColor: AppColors.brandSurfaceContainerDark,
+      dropdownColor: ether.inputFill,
+      style: _etherFieldStyle(context),
       decoration: _commerceDropdownDecoration('Ciudad'),
-      icon: Icon(Icons.arrow_drop_down,
-          color: AppColors.white.withValues(alpha: 0.6)),
+      icon: Icon(Icons.arrow_drop_down, color: ether.textMuted),
       items: _cities
           .map(
             (c) => DropdownMenuItem<City>(
               value: c,
-              child: Text(
-                c.name,
-                style: GoogleFonts.plusJakartaSans(color: AppColors.white),
-              ),
+              child: Text(c.name, style: _etherFieldStyle(context)),
             ),
           )
           .toList(),

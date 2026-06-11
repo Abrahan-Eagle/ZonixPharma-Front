@@ -1,32 +1,30 @@
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// Colores del template Stitch (Onboarding beneficios)
-const Color _kCardDark = AppColors.brandSurfaceContainerDark;
+import 'onboarding_ether_theme.dart';
 
 class OnboardingPage1 extends StatelessWidget {
   const OnboardingPage1({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ether = OnboardingEtherTheme.of(context);
     final w = MediaQuery.of(context).size.width;
     final isSmall = w < 360;
     final isTablet = w > 600;
     final padH = isSmall ? 16.0 : (isTablet ? 32.0 : 24.0);
     return Stack(
       children: [
-        _buildBackground(context),
+        _buildBackground(context, ether),
         SafeArea(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: padH, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildHeader(context),
+                _buildHeader(context, ether),
                 const SizedBox(height: 32),
-                _buildBenefitCards(context),
-                // Espacio para la barra de navegación inferior del padre
+                _buildBenefitCards(context, ether),
                 const SizedBox(height: 100),
               ],
             ),
@@ -36,44 +34,40 @@ class OnboardingPage1 extends StatelessWidget {
     );
   }
 
-  Widget _buildBackground(BuildContext context) {
+  Widget _buildBackground(BuildContext context, OnboardingEtherTheme ether) {
     final size = MediaQuery.of(context).size;
     return Container(
-      decoration: BoxDecoration(
-        gradient: RadialGradient(
-          center: Alignment.topRight,
-          radius: 1.2,
-          colors: [
-            AppColors.onboardingBlueDark.withValues(alpha: 0.6),
-            AppColors.brandSurfaceDark,
-          ],
-          stops: const [0.0, 0.6],
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-              top: size.height * 0.1,
-              left: size.width * 0.2,
-              child: _starDot(0.4, 2)),
-          Positioned(
-              top: size.height * 0.3,
-              right: size.width * 0.15,
-              child: _starDot(0.6, 3)),
-          Positioned(
-              bottom: size.height * 0.2,
-              left: size.width * 0.1,
-              child: _starDot(0.8, 1)),
-          Positioned(
-              top: size.height * 0.15,
-              right: size.width * 0.35,
-              child: _starDot(0.5, 2)),
-          Positioned(
-              bottom: size.height * 0.4,
-              right: size.width * 0.05,
-              child: _starDot(0.7, 1)),
-        ],
-      ),
+      decoration: ether.isDark
+          ? const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment.topRight,
+                radius: 1.2,
+                colors: [
+                  Color(0xFF0E2242),
+                  AppColors.etherDarkScaffold,
+                ],
+                stops: [0.0, 0.6],
+              ),
+            )
+          : BoxDecoration(color: ether.scaffold),
+      child: ether.isDark
+          ? Stack(
+              children: [
+                Positioned(
+                    top: size.height * 0.1,
+                    left: size.width * 0.2,
+                    child: _starDot(0.4, 2)),
+                Positioned(
+                    top: size.height * 0.3,
+                    right: size.width * 0.15,
+                    child: _starDot(0.6, 3)),
+                Positioned(
+                    bottom: size.height * 0.2,
+                    left: size.width * 0.1,
+                    child: _starDot(0.8, 1)),
+              ],
+            )
+          : null,
     );
   }
 
@@ -84,18 +78,11 @@ class OnboardingPage1 extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.white.withValues(alpha: opacity),
         shape: BoxShape.circle,
-        boxShadow: size >= 2
-            ? [
-                BoxShadow(
-                    color: AppColors.white.withValues(alpha: 0.3),
-                    blurRadius: 4)
-              ]
-            : null,
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, OnboardingEtherTheme ether) {
     final w = MediaQuery.of(context).size.width;
     final isSmall = w < 360;
     final iconSize = isSmall ? 56.0 : 64.0;
@@ -109,10 +96,15 @@ class OnboardingPage1 extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.brandTeal.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
+            border: Border.all(
+              color: AppColors.brandTeal.withValues(alpha: 0.3),
+            ),
           ),
-          child: Icon(Icons.health_and_safety,
-              size: iconSize * 0.56, color: AppColors.brandTeal),
+          child: Icon(
+            Icons.health_and_safety,
+            size: iconSize * 0.56,
+            color: ether.isDark ? ether.accent : AppColors.brandTeal,
+          ),
         ),
         const SizedBox(height: 16),
         Text(
@@ -121,7 +113,7 @@ class OnboardingPage1 extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: titleSize,
             fontWeight: FontWeight.bold,
-            color: AppColors.white,
+            color: ether.textPrimary,
             height: 1.2,
           ),
         ),
@@ -132,7 +124,7 @@ class OnboardingPage1 extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: bodySize,
             fontWeight: FontWeight.w500,
-            color: AppColors.white.withValues(alpha: 0.7),
+            color: ether.textSecondary,
             height: 1.5,
           ),
         ),
@@ -140,32 +132,42 @@ class OnboardingPage1 extends StatelessWidget {
     );
   }
 
-  Widget _buildBenefitCards(BuildContext context) {
+  Widget _buildBenefitCards(BuildContext context, OnboardingEtherTheme ether) {
     return Column(
       children: [
-        _buildBenefitCard(context,
-            icon: Icons.local_shipping_outlined,
-            title: 'Entrega confiable',
-            description:
-                'Recibe tus medicamentos en casa con seguimiento en tiempo real.'),
+        _buildBenefitCard(
+          context,
+          ether,
+          icon: Icons.local_shipping_outlined,
+          title: 'Entrega confiable',
+          description:
+              'Recibe tus medicamentos en casa con seguimiento en tiempo real.',
+        ),
         const SizedBox(height: 16),
-        _buildBenefitCard(context,
-            icon: Icons.local_pharmacy,
-            title: 'Farmacias verificadas',
-            description:
-                'Catálogo claro y farmacias de confianza para pedir con tranquilidad.'),
+        _buildBenefitCard(
+          context,
+          ether,
+          icon: Icons.local_pharmacy,
+          title: 'Farmacias verificadas',
+          description:
+              'Catálogo claro y farmacias de confianza para pedir con tranquilidad.',
+        ),
         const SizedBox(height: 16),
-        _buildBenefitCard(context,
-            icon: Icons.medication_liquid,
-            title: 'Recetas y OTC',
-            description:
-                'Gestiona medicamentos con y sin receta desde un solo lugar.'),
+        _buildBenefitCard(
+          context,
+          ether,
+          icon: Icons.medication_liquid,
+          title: 'Recetas y OTC',
+          description:
+              'Gestiona medicamentos con y sin receta desde un solo lugar.',
+        ),
       ],
     );
   }
 
   Widget _buildBenefitCard(
-    BuildContext context, {
+    BuildContext context,
+    OnboardingEtherTheme ether, {
     required IconData icon,
     required String title,
     required String description,
@@ -175,19 +177,23 @@ class OnboardingPage1 extends StatelessWidget {
     const pad = 16.0;
     final titleSize = isSmall ? 16.0 : 18.0;
     const bodySize = 14.0;
+    final iconColor = ether.isDark ? ether.accent : AppColors.etherPrimary;
+
     return Container(
       padding: const EdgeInsets.all(pad),
       decoration: BoxDecoration(
-        color: _kCardDark,
+        color: ether.cardSurface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.brandStrokeDark),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brandTeal.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: ether.cardBorder),
+        boxShadow: ether.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: const Color(0xFF005048).withValues(alpha: 0.05),
+                  blurRadius: 20,
+                  offset: const Offset(0, 4),
+                ),
+              ],
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,7 +205,7 @@ class OnboardingPage1 extends StatelessWidget {
               color: AppColors.brandTeal.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: AppColors.brandTeal, size: 24),
+            child: Icon(icon, color: iconColor, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -211,7 +217,7 @@ class OnboardingPage1 extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: titleSize,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.white,
+                    color: ether.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -220,7 +226,7 @@ class OnboardingPage1 extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: bodySize,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.white.withValues(alpha: 0.7),
+                    color: ether.textSecondary,
                     height: 1.4,
                   ),
                 ),

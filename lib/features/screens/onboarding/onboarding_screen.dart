@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'onboarding_ether_theme.dart';
 import 'onboarding_page1.dart';
 import 'onboarding_page2.dart';
 import 'onboarding_page3.dart';
@@ -22,9 +23,9 @@ class OnboardingScreenState extends State<OnboardingScreen> {
   List<Widget> get onboardingPages {
     return [
       const WelcomePage(),
-      const OnboardingPage1(), // Intro 1 - beneficios
-      const OnboardingPage2(), // Intro 2 - pedidos fáciles
-      const OnboardingPage3(), // Selección de rol (users / commerce) y punto de bifurcación por rol
+      const OnboardingPage1(),
+      const OnboardingPage2(),
+      const OnboardingPage3(),
     ];
   }
 
@@ -32,11 +33,6 @@ class OnboardingScreenState extends State<OnboardingScreen> {
     if (_isLoading) return;
 
     if (_currentPage == onboardingPages.length - 1) {
-      // Última página: el cierre visual del onboarding se maneja desde los
-      // flujos específicos de rol (Cliente / Farmacia) en OnboardingPage3
-      // y CommerceRegistrationPage. Aquí no marcamos el onboarding como
-      // completado para asegurarnos de que el usuario haya creado su perfil
-      // y dirección/comercio en las pantallas correspondientes.
       return;
     } else {
       _controller.nextPage(
@@ -63,12 +59,14 @@ class OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ether = OnboardingEtherTheme.of(context);
+
     return PopScope(
       canPop: false,
       child: Scaffold(
+        backgroundColor: ether.scaffold,
         body: Stack(
           children: [
-            // Contenido principal
             PageView(
               controller: _controller,
               physics: const ClampingScrollPhysics(),
@@ -77,8 +75,6 @@ class OnboardingScreenState extends State<OnboardingScreen> {
               },
               children: onboardingPages,
             ),
-
-            // Barra de navegación inferior
             Positioned(
               bottom: 0,
               left: 0,
@@ -91,53 +87,47 @@ class OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   child: Column(
                     children: [
-                      // Indicador de progreso
                       SmoothPageIndicator(
                         controller: _controller,
                         count: onboardingPages.length,
                         effect: ExpandingDotsEffect(
                           dotHeight: 6,
                           dotWidth: 6,
-                          activeDotColor: AppColors.brandTeal,
-                          dotColor: AppColors.brandTeal.withValues(alpha: 0.2),
+                          activeDotColor: ether.dotActive,
+                          dotColor: ether.dotInactive,
                           spacing: 8,
                           expansionFactor: 3,
                         ),
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Botones de navegación
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Botón Atrás (sin opción de Saltar el onboarding completo)
                           if (_currentPage > 0)
                             TextButton(
                               onPressed: _handleBack,
-                              child: const Text('Atrás'),
+                              child: Text(
+                                'Atrás',
+                                style: TextStyle(color: ether.textPrimary),
+                              ),
                             )
                           else
                             const SizedBox(width: 80),
-
-                          // Botón Siguiente solo en las intros.
-                          // En la última página (OnboardingPage3) el flujo
-                          // continúa mediante el botón propio de selección de rol.
                           if (_currentPage < onboardingPages.length - 1)
                             FloatingActionButton(
                               heroTag: 'onboarding_next',
                               onPressed: _handleNext,
-                              backgroundColor: AppColors.brandTeal,
-                              foregroundColor: AppColors.brandNavy,
-                              elevation: 2,
+                              backgroundColor: ether.ctaFill,
+                              foregroundColor: ether.fabIcon,
+                              elevation: ether.isDark ? 4 : 2,
                               child: _isLoading
-                                  ? const CircularProgressIndicator(
-                                      color: AppColors.brandNavy,
+                                  ? CircularProgressIndicator(
+                                      color: ether.fabIcon,
                                       strokeWidth: 2,
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.arrow_forward,
-                                      color: AppColors.brandNavy,
+                                      color: ether.fabIcon,
                                     ),
                             )
                           else
@@ -161,58 +151,55 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ether = OnboardingEtherTheme.of(context);
+    final isDark = ether.isDark;
+
     return Stack(
       children: [
-        // Fondo oscuro con gradiente y estrellas
-        _buildBackground(context),
-        // Contenido
+        _buildBackground(context, ether),
         SafeArea(
           child: Column(
             children: [
-              // Área central
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 32),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Glow radial detrás del planeta
                       Expanded(
                         flex: 2,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // Glow circular (blur)
-                            Positioned(
-                              top: 0,
-                              child: IgnorePointer(
-                                child: Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 1.2,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.4,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: RadialGradient(
-                                      colors: [
-                                        AppColors.brandTeal.withValues(alpha: 0.25),
-                                        AppColors.brandTeal.withValues(alpha: 0),
+                            if (isDark)
+                              Positioned(
+                                top: 0,
+                                child: IgnorePointer(
+                                  child: Container(
+                                    width: 300,
+                                    height: 300,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: AppColors.brandTeal
+                                              .withValues(alpha: 0.15),
+                                          blurRadius: 50,
+                                          spreadRadius: 0,
+                                        ),
                                       ],
-                                      stops: const [0.0, 0.7],
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                            // Contenedor planeta (escala responsive)
                             LayoutBuilder(
                               builder: (context, constraints) {
                                 final w = MediaQuery.of(context).size.width;
                                 final scale =
                                     (w < 360 ? 0.8 : (w / 400).clamp(0.85, 1.1))
                                         .toDouble();
-                                final outer = 288.0 * scale;
-                                final mid = 256.0 * scale;
+                                final outer = 320.0 * scale;
+                                final mid = 270.0 * scale;
                                 final inner = 224.0 * scale;
                                 return SizedBox(
                                   width: outer,
@@ -220,7 +207,6 @@ class WelcomePage extends StatelessWidget {
                                   child: Stack(
                                     alignment: Alignment.center,
                                     children: [
-                                      // Anillo exterior
                                       Container(
                                         width: outer,
                                         height: outer,
@@ -233,7 +219,6 @@ class WelcomePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // Anillo interior
                                       Container(
                                         width: mid,
                                         height: mid,
@@ -246,49 +231,62 @@ class WelcomePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // Círculo principal con imagen
                                       Container(
                                         width: inner,
                                         height: inner,
                                         decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: AppColors.brandNavy,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: AppColors.brandTeal
-                                                  .withValues(alpha: 0.25),
-                                              blurRadius: 50,
-                                              offset: const Offset(0, 20),
-                                            ),
-                                          ],
+                                          boxShadow: isDark
+                                              ? [
+                                                  BoxShadow(
+                                                    color: AppColors.brandTeal
+                                                        .withValues(alpha: 0.25),
+                                                    blurRadius: 50,
+                                                    offset: const Offset(0, 20),
+                                                  ),
+                                                ]
+                                              : [
+                                                  BoxShadow(
+                                                    color: const Color(0xFF005048)
+                                                        .withValues(alpha: 0.08),
+                                                    blurRadius: 24,
+                                                    offset: const Offset(0, 8),
+                                                  ),
+                                                ],
                                         ),
                                         child: ClipOval(
                                           child: Stack(
                                             fit: StackFit.expand,
                                             children: [
                                               Image.asset(
-                                                'assets/onboarding/onboarding_pharma.png',
+                                                'assets/onboarding/welcome_pharma_hero.png',
                                                 fit: BoxFit.cover,
                                               ),
-                                              // Overlay atmósfera
                                               Container(
                                                 decoration: BoxDecoration(
                                                   gradient: LinearGradient(
                                                     begin: Alignment.topLeft,
                                                     end: Alignment.bottomRight,
-                                                    colors: [
-                                                      AppColors.brandSurfaceDark
-                                                          .withValues(
-                                                              alpha: 0.8),
-                                                      AppColors.transparent,
-                                                      AppColors.brandTeal.withValues(
-                                                          alpha: 0.2),
-                                                    ],
-                                                    stops: const [
-                                                      0.0,
-                                                      0.5,
-                                                      1.0
-                                                    ],
+                                                    colors: isDark
+                                                        ? [
+                                                            AppColors
+                                                                .etherDarkScaffold
+                                                                .withValues(
+                                                                    alpha: 0.8),
+                                                            AppColors.transparent,
+                                                            AppColors.brandTeal
+                                                                .withValues(
+                                                                    alpha: 0.2),
+                                                          ]
+                                                        : [
+                                                            AppColors.brandMint
+                                                                .withValues(
+                                                                    alpha: 0.15),
+                                                            AppColors.transparent,
+                                                          ],
+                                                    stops: isDark
+                                                        ? const [0.0, 0.5, 1.0]
+                                                        : const [0.0, 0.7],
                                                   ),
                                                 ),
                                               ),
@@ -296,19 +294,23 @@ class WelcomePage extends StatelessWidget {
                                           ),
                                         ),
                                       ),
-                                      // Estrellas flotantes (dentro del área para evitar clipping)
-                                      Positioned(
+                                      if (isDark) ...[
+                                        Positioned(
                                           top: 8,
                                           right: 48,
-                                          child: _starWidget('★', 0.6)),
-                                      Positioned(
+                                          child: _starWidget('★', 0.6),
+                                        ),
+                                        Positioned(
                                           bottom: 24,
                                           left: 32,
-                                          child: _starWidget('✦', 0.4)),
-                                      Positioned(
+                                          child: _starWidget('✦', 0.4),
+                                        ),
+                                        Positioned(
                                           top: outer * 0.42,
                                           right: 16,
-                                          child: _dotStar(0.5)),
+                                          child: _dotStar(0.5),
+                                        ),
+                                      ],
                                     ],
                                   ),
                                 );
@@ -318,49 +320,33 @@ class WelcomePage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.width < 360
-                              ? 24
-                              : 40),
-                      // Textos
+                        height: MediaQuery.of(context).size.width < 360 ? 24 : 40,
+                      ),
                       Text.rich(
                         TextSpan(
                           text: '¡Tu ',
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: MediaQuery.of(context).size.width < 360
-                                ? 24.0
-                                : (MediaQuery.of(context).size.width < 400
-                                    ? 26.0
-                                    : 28.0),
+                            fontSize: _titleSize(context),
                             fontWeight: FontWeight.w800,
-                            color: AppColors.white,
+                            color: ether.textPrimary,
                             height: 1.25,
                           ),
                           children: [
                             TextSpan(
                               text: 'bienestar',
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: MediaQuery.of(context).size.width <
-                                        360
-                                    ? 24.0
-                                    : (MediaQuery.of(context).size.width < 400
-                                        ? 26.0
-                                        : 28.0),
+                                fontSize: _titleSize(context),
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.brandTeal,
+                                color: ether.accent,
                                 height: 1.25,
                               ),
                             ),
                             TextSpan(
                               text: ' comienza aquí!',
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: MediaQuery.of(context).size.width <
-                                        360
-                                    ? 24.0
-                                    : (MediaQuery.of(context).size.width < 400
-                                        ? 26.0
-                                        : 28.0),
+                                fontSize: _titleSize(context),
                                 fontWeight: FontWeight.w800,
-                                color: AppColors.white,
+                                color: ether.textPrimary,
                                 height: 1.25,
                               ),
                             ),
@@ -377,7 +363,7 @@ class WelcomePage extends StatelessWidget {
                               ? 14.0
                               : 16.0,
                           fontWeight: FontWeight.w500,
-                          color: AppColors.white.withValues(alpha: 0.7),
+                          color: ether.textSecondary,
                           height: 1.5,
                         ),
                       ),
@@ -393,41 +379,43 @@ class WelcomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBackground(BuildContext context) {
+  double _titleSize(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+    if (w < 360) return 24.0;
+    if (w < 400) return 26.0;
+    return 28.0;
+  }
+
+  Widget _buildBackground(BuildContext context, OnboardingEtherTheme ether) {
     final size = MediaQuery.of(context).size;
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.brandSurfaceDark,
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.brandNavy.withValues(alpha: 0.5),
-            AppColors.brandSurfaceDark,
-          ],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Estrellas distantes
-          Positioned(
-              top: size.height * 0.1,
-              left: size.width * 0.15,
-              child: _starDot(0.4, 4)),
-          Positioned(
-              top: size.height * 0.25,
-              right: size.width * 0.1,
-              child: _starDot(0.3, 2)),
-          Positioned(
-              bottom: size.height * 0.3,
-              left: size.width * 0.05,
-              child: _starDot(0.2, 4)),
-          Positioned(
-              top: size.height * 0.05,
-              right: size.width * 0.35,
-              child: _starDot(0.4, 2, color: AppColors.brandTeal)),
-        ],
-      ),
+      decoration: ether.scaffoldDecoration(),
+      child: ether.isDark
+          ? Stack(
+              children: [
+                Positioned(
+                  top: size.height * 0.1,
+                  left: size.width * 0.15,
+                  child: _starDot(0.4, 4),
+                ),
+                Positioned(
+                  top: size.height * 0.25,
+                  right: size.width * 0.1,
+                  child: _starDot(0.3, 2),
+                ),
+                Positioned(
+                  bottom: size.height * 0.3,
+                  left: size.width * 0.05,
+                  child: _starDot(0.2, 4),
+                ),
+                Positioned(
+                  top: size.height * 0.05,
+                  right: size.width * 0.35,
+                  child: _starDot(0.4, 2, color: AppColors.brandTeal),
+                ),
+              ],
+            )
+          : null,
     );
   }
 

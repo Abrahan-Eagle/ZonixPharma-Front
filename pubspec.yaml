@@ -99,6 +99,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/onboarding/onboarding_pharma.png
+    - assets/onboarding/welcome_pharma_hero.png
     - assets/onboarding/onboarding_pharma2.png
     - assets/onboarding/onboarding_pharma_familia.png
     - assets/images/logo_login.png

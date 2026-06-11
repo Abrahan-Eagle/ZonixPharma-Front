@@ -2,8 +2,7 @@ import 'package:zonix/features/utils/app_colors.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-// Colores del template Stitch (Onboarding 2 - Pedidos fáciles)
+import 'onboarding_ether_theme.dart';
 
 class OnboardingPage2 extends StatefulWidget {
   const OnboardingPage2({super.key});
@@ -39,18 +38,18 @@ class _OnboardingPage2State extends State<OnboardingPage2>
 
   @override
   Widget build(BuildContext context) {
+    final ether = OnboardingEtherTheme.of(context);
+
     return Stack(
       children: [
-        _buildBackground(context),
+        _buildBackground(context, ether),
         SafeArea(
           child: Column(
             children: [
-              // Ilustración central
               Expanded(
                 flex: 2,
-                child: _buildIllustration(context),
+                child: _buildIllustration(context, ether),
               ),
-              // Textos
               LayoutBuilder(
                 builder: (context, constraints) {
                   final w = MediaQuery.of(context).size.width;
@@ -65,7 +64,6 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     ),
                     child: Column(
                       children: [
-                        // Título: "Pide en un" + "par de clics" con subrayado curvo (como HTML)
                         Column(
                           children: [
                             Text(
@@ -74,7 +72,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: titleSize,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.white,
+                                color: ether.textPrimary,
                                 height: 1.25,
                               ),
                             ),
@@ -88,7 +86,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                                   style: GoogleFonts.plusJakartaSans(
                                     fontSize: titleSize,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.brandTeal,
+                                    color: ether.accent,
                                     height: 1.25,
                                   ),
                                 ),
@@ -97,8 +95,9 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                                   height: 8,
                                   child: CustomPaint(
                                     painter: _CurvedUnderlinePainter(
-                                        color: AppColors.brandTeal
-                                            .withValues(alpha: 0.3)),
+                                      color: AppColors.brandTeal
+                                          .withValues(alpha: 0.3),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -112,7 +111,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: bodySize,
                             fontWeight: FontWeight.w400,
-                            color: AppColors.white.withValues(alpha: 0.7),
+                            color: ether.textSecondary,
                             height: 1.5,
                           ),
                         ),
@@ -121,7 +120,6 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                   );
                 },
               ),
-              // Espacio para barra de navegación del padre
               const SizedBox(height: 100),
             ],
           ),
@@ -130,13 +128,19 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     );
   }
 
-  Widget _buildBackground(BuildContext context) {
+  Widget _buildBackground(BuildContext context, OnboardingEtherTheme ether) {
     final size = MediaQuery.of(context).size;
+    if (!ether.isDark) {
+      return Container(
+        decoration: ether.scaffoldDecoration(
+          radialCenter: Alignment.topCenter,
+        ),
+      );
+    }
     return Container(
-      color: AppColors.brandSurfaceDark,
+      color: AppColors.etherDarkScaffold,
       child: Stack(
         children: [
-          // space-bg: radial top center
           Positioned(
             top: 0,
             left: size.width * 0.5 - size.width * 0.6,
@@ -146,10 +150,8 @@ class _OnboardingPage2State extends State<OnboardingPage2>
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
-                  center: Alignment.center,
-                  radius: 1.0,
                   colors: [
-                    AppColors.brandTeal.withValues(alpha: 0.15),
+                    AppColors.etherPrimary.withValues(alpha: 0.2),
                     AppColors.transparent,
                   ],
                   stops: const [0.0, 0.6],
@@ -157,7 +159,6 @@ class _OnboardingPage2State extends State<OnboardingPage2>
               ),
             ),
           ),
-          // space-bg: radial bottom right
           Positioned(
             right: -size.width * 0.4,
             bottom: -size.height * 0.2,
@@ -181,20 +182,16 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     );
   }
 
-  Widget _buildIllustration(BuildContext context) {
+  Widget _buildIllustration(BuildContext context, OnboardingEtherTheme ether) {
     final size = MediaQuery.of(context).size;
+    final isDark = ether.isDark;
     final isSmallScreen = size.width < 360 || size.height < 600;
     final scale = isSmallScreen ? 0.8 : (size.width / 400).clamp(0.9, 1.05);
-    // HTML: glow 64, ring 72, dashed 22rem(352), center 64, planet 32
     final glowSize = 256.0 * scale;
     final ringSize = 288.0 * scale;
     final dashedSize = 352.0 * scale;
     final centerSize = 128.0 * scale;
-    final orbSizes = [
-      64.0 * scale,
-      56.0 * scale,
-      48.0 * scale,
-    ];
+    final orbSizes = [64.0 * scale, 56.0 * scale, 48.0 * scale];
     const orbIcons = [
       Icons.medication,
       Icons.local_pharmacy,
@@ -205,38 +202,38 @@ class _OnboardingPage2State extends State<OnboardingPage2>
       alignment: Alignment.center,
       clipBehavior: Clip.none,
       children: [
-        // Glow (w-64 h-64 = 256, blur)
-        AnimatedBuilder(
-          animation: _floatController,
-          builder: (context, _) {
-            final pulse =
-                0.5 + 0.15 * math.sin(_floatController.value * math.pi);
-            return Container(
-              width: glowSize,
-              height: glowSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.brandTeal.withValues(alpha: 0.2 * pulse),
-                    AppColors.transparent,
-                  ],
-                  stops: const [0.0, 0.7],
+        if (isDark)
+          AnimatedBuilder(
+            animation: _floatController,
+            builder: (context, _) {
+              final pulse =
+                  0.5 + 0.15 * math.sin(_floatController.value * math.pi);
+              return Container(
+                width: glowSize,
+                height: glowSize,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.brandTeal.withValues(alpha: 0.15 * pulse),
+                      AppColors.transparent,
+                    ],
+                    stops: const [0.0, 0.7],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-        // Anillo sólido (w-72 h-72)
+              );
+            },
+          ),
         Container(
           width: ringSize,
           height: ringSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.1)),
+            border: Border.all(
+              color: AppColors.brandTeal.withValues(alpha: 0.1),
+            ),
           ),
         ),
-        // Anillo dashed (22rem) con rotación
         AnimatedBuilder(
           animation: _spinController,
           builder: (context, _) {
@@ -247,13 +244,13 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                 height: dashedSize,
                 child: CustomPaint(
                   painter: _DashedCirclePainter(
-                      color: AppColors.brandTeal.withValues(alpha: 0.2)),
+                    color: AppColors.brandTeal.withValues(alpha: 0.2),
+                  ),
                 ),
               ),
             );
           },
         ),
-        // Composición central (w-64 h-64)
         SizedBox(
           width: 256 * scale,
           height: 256 * scale,
@@ -261,32 +258,46 @@ class _OnboardingPage2State extends State<OnboardingPage2>
             alignment: Alignment.center,
             clipBehavior: Clip.none,
             children: [
-              // Planeta/portal central (w-32 h-32)
               Container(
                 width: centerSize,
                 height: centerSize,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [AppColors.brandTeal, AppColors.onboardingBlueDark],
+                    colors: isDark
+                        ? [
+                            AppColors.etherPrimary,
+                            AppColors.etherSecondaryDeep,
+                          ]
+                        : [
+                            AppColors.brandTeal,
+                            AppColors.etherPrimaryFixed,
+                          ],
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.brandTeal.withValues(alpha: 0.4),
-                      blurRadius: 30,
-                      spreadRadius: 0,
-                    ),
-                  ],
+                  boxShadow: isDark
+                      ? [
+                          BoxShadow(
+                            color: AppColors.brandTeal.withValues(alpha: 0.4),
+                            blurRadius: 30,
+                          ),
+                        ]
+                      : [
+                          BoxShadow(
+                            color: AppColors.brandTeal.withValues(alpha: 0.25),
+                            blurRadius: 20,
+                          ),
+                        ],
                 ),
                 child: Icon(
                   Icons.local_pharmacy,
                   size: centerSize * 0.5,
-                  color: AppColors.white.withValues(alpha: 0.9),
+                  color: isDark
+                      ? AppColors.etherPrimaryFixed
+                      : AppColors.etherOnPrimaryFixed,
                 ),
               ),
-              // Medicamento: -top-4 right-4
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -296,12 +307,11 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     right: 16 * scale,
                     child: Transform.rotate(
                       angle: 12 * math.pi / 180,
-                      child: _buildPharmaOrb(orbIcons[0], orbSizes[0]),
+                      child: _buildPharmaOrb(ether, orbIcons[0], orbSizes[0]),
                     ),
                   );
                 },
               ),
-              // Farmacia: bottom-0 -left-2
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -312,12 +322,11 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     left: -8 * scale,
                     child: Transform.rotate(
                       angle: -12 * math.pi / 180,
-                      child: _buildPharmaOrb(orbIcons[1], orbSizes[1]),
+                      child: _buildPharmaOrb(ether, orbIcons[1], orbSizes[1]),
                     ),
                   );
                 },
               ),
-              // Vacunas: bottom-8 -right-6
               AnimatedBuilder(
                 animation: _floatController,
                 builder: (context, _) {
@@ -328,22 +337,28 @@ class _OnboardingPage2State extends State<OnboardingPage2>
                     right: -24 * scale,
                     child: Transform.rotate(
                       angle: 6 * math.pi / 180,
-                      child: _buildPharmaOrb(orbIcons[2], orbSizes[2]),
+                      child: _buildPharmaOrb(ether, orbIcons[2], orbSizes[2]),
                     ),
                   );
                 },
               ),
-              // Partículas (HTML positions)
-              Positioned(
-                  top: 0, left: 40 * scale, child: _particle(8 * scale, 0.6)),
-              Positioned(
+              if (isDark) ...[
+                Positioned(
+                  top: 0,
+                  left: 40 * scale,
+                  child: _particle(8 * scale, 0.6),
+                ),
+                Positioned(
                   bottom: 40 * scale,
                   right: 80 * scale,
-                  child: _particle(6 * scale, 0.4)),
-              Positioned(
+                  child: _particle(6 * scale, 0.4),
+                ),
+                Positioned(
                   top: 120 * scale,
                   right: -32 * scale,
-                  child: _particle(4 * scale, 0.8)),
+                  child: _particle(4 * scale, 0.8),
+                ),
+              ],
             ],
           ),
         ),
@@ -351,17 +366,24 @@ class _OnboardingPage2State extends State<OnboardingPage2>
     );
   }
 
-  Widget _buildPharmaOrb(IconData icon, double size) {
+  Widget _buildPharmaOrb(
+    OnboardingEtherTheme ether,
+    IconData icon,
+    double size,
+  ) {
+    final isDark = ether.isDark;
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.brandSurfaceDark,
+        color: isDark ? AppColors.etherDarkSurface : AppColors.white,
         borderRadius: BorderRadius.circular(size * 0.25),
-        border: Border.all(color: AppColors.brandTeal.withValues(alpha: 0.3)),
+        border: Border.all(
+          color: AppColors.brandTeal.withValues(alpha: 0.3),
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black.withValues(alpha: 0.3),
+            color: AppColors.black.withValues(alpha: isDark ? 0.3 : 0.08),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -370,7 +392,7 @@ class _OnboardingPage2State extends State<OnboardingPage2>
       child: Icon(
         icon,
         size: size * 0.45,
-        color: AppColors.brandTeal,
+        color: isDark ? ether.accent : AppColors.etherPrimary,
       ),
     );
   }
@@ -380,14 +402,19 @@ class _OnboardingPage2State extends State<OnboardingPage2>
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: AppColors.brandTeal.withValues(alpha: opacity),
+        color: AppColors.etherDarkAccent.withValues(alpha: opacity),
         shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.brandTeal.withValues(alpha: opacity * 0.5),
+            blurRadius: 6,
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Pinta un círculo punteado para el anillo orbital
 class _DashedCirclePainter extends CustomPainter {
   final Color color;
 
@@ -424,7 +451,6 @@ class _DashedCirclePainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-/// Subrayado curvo como en HTML (path M0 5 Q 50 10 100 5)
 class _CurvedUnderlinePainter extends CustomPainter {
   final Color color;
 
@@ -440,7 +466,11 @@ class _CurvedUnderlinePainter extends CustomPainter {
     final path = Path()
       ..moveTo(0, size.height * 0.5)
       ..quadraticBezierTo(
-          size.width * 0.5, size.height, size.width, size.height * 0.5);
+        size.width * 0.5,
+        size.height,
+        size.width,
+        size.height * 0.5,
+      );
     canvas.drawPath(path, paint);
   }
 

@@ -42,6 +42,27 @@ class AppColors {
   static const Color brandStrokeDark = Color(0xFF334155);
 
   // ─────────────────────────────────────────────────────────
+  // Clinical Ether — onboarding Stitch (dual artboard)
+  // ─────────────────────────────────────────────────────────
+  static const Color etherLightScaffold = Color(0xFFF4F9F8);
+  static const Color etherLightText = Color(0xFF003732);
+  static const Color etherLightTextSecondary = Color(0xFF005048);
+  static const Color etherLightOutline = Color(0xFF879390);
+  static const Color etherDarkScaffold = Color(0xFF071326);
+  static const Color etherDarkScaffoldDeep = Color(0xFF030E21);
+  static const Color etherDarkSurface = Color(0xFF1E2A3E);
+  static const Color etherDarkText = Color(0xFFD7E3FD);
+  static const Color etherDarkAccent = Color(0xFF74E3D4);
+  static const Color etherPrimary = Color(0xFF006A60);
+  static const Color etherPrimaryFixed = Color(0xFF87F5E5);
+  static const Color etherOnPrimaryFixed = Color(0xFF00201C);
+  static const Color etherSecondaryDeep = Color(0xFF266860);
+
+  /// Brillo de plataforma (mismo criterio que login Stitch).
+  static bool isPlatformDark(BuildContext context) =>
+      MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+
+  // ─────────────────────────────────────────────────────────
   // Estados semánticos (no del logo, pero parte del sistema)
   // ─────────────────────────────────────────────────────────
   static const Color statusInfo = Color(0xFF3B82F6);
