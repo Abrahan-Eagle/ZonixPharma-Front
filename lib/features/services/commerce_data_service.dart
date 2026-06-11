@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import '../../helpers/auth_helper.dart';
 import '../../config/app_config.dart';
+import '../utils/commerce_api_errors.dart';
 
 class CommerceDataService {
   static String get baseUrl => AppConfig.apiUrl;
@@ -37,11 +38,12 @@ class CommerceDataService {
         if (data['success'] == true && data['data'] != null) {
           return Map<String, dynamic>.from(data['data']);
         }
-        throw Exception('Respuesta inválida del servidor');
+        throw Exception('Respuesta inv?lida del servidor');
       } else if (response.statusCode == 404) {
         throw Exception('Comercio no encontrado');
       } else {
-        throw Exception('Error al obtener datos del comercio: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener datos del comercio', response));
       }
     } catch (e) {
       _logger.w('Error al obtener datos del comercio: $e');
@@ -74,7 +76,8 @@ class CommerceDataService {
         final result = jsonDecode(response.body);
         return Map<String, dynamic>.from(result);
       } else {
-        throw Exception('Error al actualizar datos del comercio: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al actualizar datos del comercio', response));
       }
     } catch (e) {
       _logger.w('Error al actualizar datos del comercio: $e');
@@ -82,23 +85,18 @@ class CommerceDataService {
     }
   }
 
-  // Actualizar datos de pago móvil
+  // Actualizar datos de pago m?vil
   static Future<Map<String, dynamic>> updatePaymentData(Map<String, dynamic> data) async {
     final headers = await AuthHelper.getAuthHeaders();
     try {
-      // Primero obtener el perfil actual
       final profileResponse = await http.get(
         Uri.parse('$baseUrl/api/buyer/profiles'),
         headers: headers,
       );
 
-      if (profileResponse.statusCode == 404) {
-        _logger.w('Endpoint de perfil no disponible (404), simulando actualización exitosa');
-        return {'success': true, 'message': 'Datos de pago actualizados (modo offline)'};
-      }
-
       if (profileResponse.statusCode != 200) {
-        throw Exception('Error al obtener perfil: ${profileResponse.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener perfil', profileResponse));
       }
 
       final profiles = jsonDecode(profileResponse.body);
@@ -108,8 +106,7 @@ class CommerceDataService {
       );
 
       final profileId = userProfile['id'];
-      
-      // Actualizar solo los datos de pago móvil
+
       final response = await http.post(
         Uri.parse('$baseUrl/api/buyer/profiles/$profileId'),
         headers: headers,
@@ -125,20 +122,18 @@ class CommerceDataService {
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
         return result;
-      } else if (response.statusCode == 404) {
-        _logger.w('Endpoint de actualización no disponible (404), simulando actualización exitosa');
-        return {'success': true, 'message': 'Datos de pago actualizados (modo offline)'};
       } else {
-        throw Exception('Error al actualizar datos de pago: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al actualizar datos de pago', response));
       }
     } catch (e) {
-      _logger.w('Error al actualizar datos de pago, simulando actualización exitosa: $e');
-      return {'success': true, 'message': 'Datos de pago actualizados (modo offline)'};
+      _logger.w('Error al actualizar datos de pago: $e');
+      rethrow;
     }
   }
 
   /// Crea comercio cuando el perfil ya existe (onboarding comercio).
-  /// Usa POST /api/profiles/add-commerce y devuelve data.id para vincular la dirección.
+  /// Usa POST /api/profiles/add-commerce y devuelve data.id para vincular la direcci?n.
   static Future<Map<String, dynamic>> createCommerceForExistingProfile(
     int profileId,
     Map<String, dynamic> data,
@@ -160,7 +155,7 @@ class CommerceDataService {
         return {'success': true, 'data': decoded['data']};
       }
     }
-    _logger.e('add-commerce falló: ${response.statusCode} body: ${response.body.length > 300 ? response.body.substring(0, 300) : response.body}');
+    _logger.e('add-commerce fall?: ${response.statusCode} body: ${response.body.length > 300 ? response.body.substring(0, 300) : response.body}');
     String msg = 'Error al crear comercio';
     try {
       final decoded = jsonDecode(response.body);
@@ -190,15 +185,13 @@ class CommerceDataService {
       if (response.statusCode == 201) {
         final result = jsonDecode(response.body);
         return result;
-      } else if (response.statusCode == 404) {
-        _logger.w('Endpoint de creación no disponible (404), simulando creación exitosa');
-        return {'success': true, 'message': 'Comercio creado (modo offline)'};
       } else {
-        throw Exception('Error al crear comercio: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al crear comercio', response));
       }
     } catch (e) {
-      _logger.w('Error al crear comercio, simulando creación exitosa: $e');
-      return {'success': true, 'message': 'Comercio creado (modo offline)'};
+      _logger.w('Error al crear comercio: $e');
+      rethrow;
     }
   }
 
@@ -207,7 +200,7 @@ class CommerceDataService {
   /// Retorna la URL de la imagen subida.
   static Future<String> uploadCommerceImage(String imagePath) async {
     if (imagePath.isEmpty) {
-      throw Exception('Ruta de imagen vacía');
+      throw Exception('Ruta de imagen vac?a');
     }
 
     final file = File(imagePath);
@@ -238,7 +231,7 @@ class CommerceDataService {
         final url = data['data']['image'] ?? data['data']['url'];
         if (url != null && url is String) return url;
       }
-      throw Exception(data['message'] ?? 'Respuesta inválida del servidor');
+      throw Exception(data['message'] ?? 'Respuesta inv?lida del servidor');
     } else if (response.statusCode == 404) {
       throw Exception('Comercio no encontrado');
     } else if (response.statusCode == 422) {
@@ -254,15 +247,10 @@ class CommerceDataService {
       } catch (e) {
         if (e is Exception) rethrow;
       }
-      throw Exception('Imagen no válida. Use JPEG, PNG o JPG (máx. 2MB).');
+      throw Exception('Imagen no v?lida. Use JPEG, PNG o JPG (m?x. 2MB).');
     } else {
-      try {
-        final data = jsonDecode(response.body);
-        throw Exception(data['message'] ?? 'Error ${response.statusCode}');
-      } catch (e) {
-        if (e is Exception && !e.toString().startsWith('Exception: ')) rethrow;
-        throw Exception('Error al subir imagen: ${response.statusCode}');
-      }
+      throw Exception(
+          commerceHttpErrorMessage('Error al subir imagen', response));
     }
   }
 } 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
+import '../utils/commerce_api_errors.dart';
 
 class CommerceAnalyticsService extends ChangeNotifier {
   static String get baseUrl => AppConfig.apiUrl;
@@ -22,10 +23,11 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener overview: ${response.statusCode}');
+        throw Exception(
+            commerceHttpErrorMessage('Error al obtener overview', response));
       }
     } catch (e) {
-      throw Exception('Error obteniendo overview analytics: $e');
+      rethrow;
     }
   }
 
@@ -55,7 +57,8 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener revenue analytics: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener revenue analytics', response));
       }
     } catch (e) {
       throw Exception('Error obteniendo revenue analytics: $e');
@@ -77,7 +80,8 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener order analytics: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener order analytics', response));
       }
     } catch (e) {
       throw Exception('Error obteniendo order analytics: $e');
@@ -99,10 +103,11 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener product analytics: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener product analytics', response));
       }
     } catch (e) {
-      throw Exception('Error obteniendo product analytics: $e');
+      rethrow;
     }
   }
 
@@ -121,7 +126,8 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener customer analytics: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener customer analytics', response));
       }
     } catch (e) {
       throw Exception('Error obteniendo customer analytics: $e');
@@ -143,7 +149,8 @@ class CommerceAnalyticsService extends ChangeNotifier {
         }
         throw Exception('Error en respuesta del servidor');
       } else {
-        throw Exception('Error al obtener performance analytics: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener performance analytics', response));
       }
     } catch (e) {
       throw Exception('Error obteniendo performance analytics: $e');

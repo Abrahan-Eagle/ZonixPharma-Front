@@ -371,10 +371,10 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
                       Expanded(
                         child: Text(
                           _commerceStatus == 'pending_review'
-                              ? 'Tu comercio está en revisión. Puedes configurar todo mientras el administrador aprueba tu solicitud.'
+                              ? 'Tu farmacia está en revisión. Mientras tanto puedes completar los datos del negocio; pedidos, productos y reportes se habilitan al ser aprobada.'
                               : _commerceStatus == 'rejected'
                                   ? 'Tu solicitud fue rechazada. Contacta soporte para más información.'
-                                  : 'Tu comercio está suspendido temporalmente.',
+                                  : 'Tu farmacia está suspendida temporalmente.',
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                       ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:zonix/config/app_config.dart';
+import 'package:zonix/features/utils/commerce_api_errors.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 
 /// Servicio para obtener publicaciones/posts de los comercios del usuario.
@@ -29,6 +30,7 @@ class CommercePostService {
       }
       return [];
     }
-    throw Exception('Error al obtener publicaciones: ${response.statusCode}');
+    throw Exception(
+        commerceHttpErrorMessage('Error al obtener publicaciones', response));
   }
 }

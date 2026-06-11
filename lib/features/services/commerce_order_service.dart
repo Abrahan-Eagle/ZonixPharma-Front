@@ -5,6 +5,7 @@ import '../../models/commerce_order.dart';
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
 import 'cache_service.dart';
+import '../utils/commerce_api_errors.dart';
 import '../utils/http_retry.dart';
 
 class CommerceOrderService {
@@ -113,7 +114,8 @@ class CommerceOrderService {
         }
         return list.map((json) => CommerceOrder.fromJson(json)).toList();
       } else {
-        throw Exception('Error al obtener órdenes: ${response.statusCode}');
+        throw Exception(
+            commerceHttpErrorMessage('Error al obtener órdenes', response));
       }
     } catch (e) {
       if (status == null) {

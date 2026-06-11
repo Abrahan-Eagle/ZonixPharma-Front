@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
+import '../utils/commerce_api_errors.dart';
 
 /// Servicio para gestión de farmacias/comercios
 /// 
@@ -17,7 +18,7 @@ class CommerceService extends ChangeNotifier {
   Future<List<Commerce>> getCommerces() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/api/commerces'),
+        Uri.parse('$baseUrl/api/commerce/commerces'),
         headers: await AuthHelper.getAuthHeaders(),
       );
 
@@ -32,7 +33,8 @@ class CommerceService extends ChangeNotifier {
         }
         return [];
       } else {
-        throw Exception('Error al obtener comercios: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener comercios', response));
       }
     } catch (e) {
       rethrow;
@@ -54,7 +56,8 @@ class CommerceService extends ChangeNotifier {
         }
         throw Exception('Commerce not found');
       } else {
-        throw Exception('Error fetching commerce: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener comercio', response));
       }
     } catch (e) {
       rethrow;
@@ -84,29 +87,9 @@ class CommerceService extends ChangeNotifier {
           'total_products': 0,
           'active_products': 0,
         };
-      } else if (response.statusCode == 403) {
-        try {
-          final data = jsonDecode(response.body);
-          if (data is Map &&
-              data['error_code'] == 'COMMERCE_PENDING_APPROVAL') {
-            throw Exception(
-              data['message']?.toString() ??
-                  'Tu farmacia está pendiente de aprobación por el administrador.',
-            );
-          }
-          if (data is Map &&
-              data['error_code'] == 'COMMERCE_PROFILE_REQUIRED') {
-            throw Exception(
-              data['message']?.toString() ??
-                  'Debes registrar tu farmacia antes de acceder al panel comercial.',
-            );
-          }
-        } catch (e) {
-          if (e is Exception) rethrow;
-        }
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
       } else {
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener estadísticas', response));
       }
     } catch (e) {
       rethrow;

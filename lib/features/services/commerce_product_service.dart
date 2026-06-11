@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../models/commerce_product.dart';
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
 import 'cache_service.dart';
+import '../utils/commerce_api_errors.dart';
 
 /// Resultado paginado de productos (para "cargar más").
 class ProductsPageResult {
@@ -62,7 +62,8 @@ class CommerceProductService {
     final response = await http.get(uri, headers: headers);
 
     if (response.statusCode != 200) {
-      throw Exception('Error al obtener productos: ${response.statusCode}');
+      throw Exception(
+          commerceHttpErrorMessage('Error al obtener productos', response));
     }
     final data = jsonDecode(response.body);
     if (data['success'] != true || data['data'] == null) {
@@ -127,10 +128,11 @@ class CommerceProductService {
         }
         throw Exception('Producto no encontrado');
       } else {
-        throw Exception('Error al obtener producto: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener producto', response));
       }
     } catch (e) {
-      throw Exception('Error al obtener producto: $e');
+      rethrow;
     }
   }
 
@@ -213,18 +215,11 @@ class CommerceProductService {
         }
         throw Exception('Error al crear producto');
       } else {
-        String errorMsg = 'Error al crear producto: ${response.statusCode}';
-        try {
-          final errorData = jsonDecode(response.body);
-          if (errorData['message'] != null) errorMsg += '\n${errorData['message']}';
-          if (errorData['errors'] != null) errorMsg += '\n${errorData['errors'].toString()}';
-        } catch (e) {
-          debugPrint('[CommerceProductService] createProduct parse error: $e');
-        }
-        throw Exception(errorMsg);
+        throw Exception(commerceHttpErrorMessage(
+            'Error al crear producto', response));
       }
     } catch (e) {
-      throw Exception('Error al crear producto: $e');
+      rethrow;
     }
   }
 
@@ -306,18 +301,11 @@ class CommerceProductService {
         }
         throw Exception('Error al actualizar producto');
       } else {
-        String errorMsg = 'Error al actualizar producto: ${response.statusCode}';
-        try {
-          final errorData = jsonDecode(response.body);
-          if (errorData['message'] != null) errorMsg += '\n${errorData['message']}';
-          if (errorData['errors'] != null) errorMsg += '\n${errorData['errors'].toString()}';
-        } catch (e) {
-          debugPrint('[CommerceProductService] updateProduct parse error: $e');
-        }
-        throw Exception(errorMsg);
+        throw Exception(commerceHttpErrorMessage(
+            'Error al actualizar producto', response));
       }
     } catch (e) {
-      throw Exception('Error al actualizar producto: $e');
+      rethrow;
     }
   }
 
@@ -331,10 +319,11 @@ class CommerceProductService {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Error al eliminar producto: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al eliminar producto', response));
       }
     } catch (e) {
-      throw Exception('Error al eliminar producto: $e');
+      rethrow;
     }
   }
 
@@ -354,68 +343,11 @@ class CommerceProductService {
         }
         throw Exception('Error al cambiar disponibilidad');
       } else {
-        throw Exception('Error al cambiar disponibilidad: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al cambiar disponibilidad', response));
       }
     } catch (e) {
-      throw Exception('Error al cambiar disponibilidad: $e');
-    }
-  }
-
-  // Obtener estadísticas de productos
-  static Future<Map<String, dynamic>> getProductStats() async {
-    final headers = await AuthHelper.getAuthHeaders();
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/products-stats'),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['success'] == true && data['data'] != null) {
-          return data['data'];
-        }
-        return {};
-      } else {
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener estadísticas: $e');
-    }
-  }
-
-  // Subir imagen de producto
-  static Future<String> uploadProductImage(File imageFile) async {
-    final headers = await AuthHelper.getAuthHeaders();
-    try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse('$baseUrl/api/commerce/products/upload-image'),
-      );
-
-      request.headers.addAll(headers);
-
-      final stream = http.ByteStream(imageFile.openRead());
-      final length = await imageFile.length();
-      final multipartFile = http.MultipartFile(
-        'image',
-        stream,
-        length,
-        filename: imageFile.path.split('/').last,
-      );
-      request.files.add(multipartFile);
-
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['image_url'] ?? '';
-      } else {
-        throw Exception('Error al subir imagen: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al subir imagen: $e');
+      rethrow;
     }
   }
 
@@ -432,10 +364,11 @@ class CommerceProductService {
         }
         return [];
       } else {
-        throw Exception('Error al obtener categorías: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener categorías', response));
       }
     } catch (e) {
-      throw Exception('Error al obtener categorías: $e');
+      rethrow;
     }
   }
 } 

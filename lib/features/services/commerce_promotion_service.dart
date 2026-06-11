@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import '../../config/app_config.dart';
 import '../../helpers/auth_helper.dart';
+import '../utils/commerce_api_errors.dart';
 
 class CommercePromotionService {
   static String get baseUrl => AppConfig.apiUrl;
@@ -52,7 +53,8 @@ class CommercePromotionService {
       } else if (response.statusCode == 404) {
         throw Exception('Error al obtener promociones: endpoint no disponible (404)');
       } else {
-        throw Exception('Error al obtener promociones: ${response.statusCode}');
+        throw Exception(
+            commerceHttpErrorMessage('Error al obtener promociones', response));
       }
     } catch (e) {
       _logger.w('Error al obtener promociones: $e');
@@ -71,12 +73,13 @@ class CommercePromotionService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return data;
+        return data['data'] ?? data;
       } else {
-        throw Exception('Error al obtener promoción: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al obtener promoción', response));
       }
     } catch (e) {
-      throw Exception('Error al obtener promoción: $e');
+      rethrow;
     }
   }
 
@@ -118,10 +121,11 @@ class CommercePromotionService {
         final data = jsonDecode(response.body);
         return data['data'] ?? data;
       } else {
-        throw Exception('Error al crear promoción: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al crear promoción', response));
       }
     } catch (e) {
-      throw Exception('Error al crear promoción: $e');
+      rethrow;
     }
   }
 
@@ -166,10 +170,11 @@ class CommercePromotionService {
         final data = jsonDecode(response.body);
         return data['data'] ?? data;
       } else {
-        throw Exception('Error al actualizar promoción: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al actualizar promoción', response));
       }
     } catch (e) {
-      throw Exception('Error al actualizar promoción: $e');
+      rethrow;
     }
   }
 
@@ -183,10 +188,11 @@ class CommercePromotionService {
       );
 
       if (response.statusCode != 200) {
-        throw Exception('Error al eliminar promoción: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al eliminar promoción', response));
       }
     } catch (e) {
-      throw Exception('Error al eliminar promoción: $e');
+      rethrow;
     }
   }
 
@@ -203,32 +209,10 @@ class CommercePromotionService {
         final data = jsonDecode(response.body);
         return data['data'] ?? data;
       } else {
-        throw Exception('Error al cambiar estado de promoción: ${response.statusCode}');
+        throw Exception(commerceHttpErrorMessage(
+            'Error al cambiar estado de promoción', response));
       }
     } catch (e) {
-      throw Exception('Error al cambiar estado de promoción: $e');
-    }
-  }
-
-  // Obtener estadísticas de promociones
-  static Future<Map<String, dynamic>> getPromotionStats() async {
-    try {
-      final headers = await AuthHelper.getAuthHeaders();
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/commerce/promotions/stats'),
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['data'] ?? {};
-      } else if (response.statusCode == 404) {
-        throw Exception('Error al obtener estadísticas de promociones: endpoint no disponible (404)');
-      } else {
-        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
-      }
-    } catch (e) {
-      _logger.w('Error al obtener estadísticas de promociones: $e');
       rethrow;
     }
   }

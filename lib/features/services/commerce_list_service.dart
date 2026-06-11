@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:zonix/config/app_config.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 import 'package:zonix/models/my_commerce.dart';
+import 'package:zonix/features/utils/commerce_api_errors.dart';
 
 /// Servicio para listar y gestionar las farmacias del usuario commerce (multi-sede).
 class CommerceListService {
@@ -30,7 +31,8 @@ class CommerceListService {
       }
       return [];
     }
-    throw Exception('Error al obtener farmacias: ${response.statusCode}');
+    throw Exception(
+        commerceHttpErrorMessage('Error al obtener farmacias', response));
   }
 
   /// Crear una nueva farmacia (comercio)
@@ -64,7 +66,8 @@ class CommerceListService {
         return MyCommerce.fromJson(Map<String, dynamic>.from(data['data']));
       }
     }
-    throw Exception('Error al crear farmacia: ${response.statusCode}');
+    throw Exception(
+        commerceHttpErrorMessage('Error al crear farmacia', response));
   }
 
   /// Establecer un comercio como principal (selector activo)
@@ -76,7 +79,8 @@ class CommerceListService {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Error al cambiar farmacia principal: ${response.statusCode}');
+      throw Exception(commerceHttpErrorMessage(
+          'Error al cambiar farmacia principal', response));
     }
   }
 }

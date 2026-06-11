@@ -35,6 +35,7 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
 
   final List<Map<String, String>> _tabs = [
     {'key': '', 'label': 'Todas'},
+    {'key': 'pending_prescription_validation', 'label': 'Receta Rx'},
     {'key': 'pending_payment', 'label': 'Pendientes'},
     {'key': 'processing', 'label': 'En Proceso'},
     {'key': 'shipped', 'label': 'Enviadas'},
@@ -82,11 +83,22 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
         });
       }
     } catch (e) {
-      if (mounted && _orders.isEmpty) {
+      if (!mounted) return;
+      final message = e.toString().replaceFirst('Exception: ', '');
+      if (_orders.isEmpty) {
         setState(() {
-          _error = e.toString().replaceFirst('Exception: ', '');
+          _error = message;
           _loading = false;
         });
+      } else {
+        // Hay caché en pantalla: avisar que el refresco falló para no
+        // mostrar datos viejos como si fueran actuales.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('No se pudo actualizar: $message'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     }
   }
@@ -248,6 +260,8 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
   Color _statusColor(BuildContext context, String status) {
     final cs = Theme.of(context).colorScheme;
     switch (status) {
+      case 'pending_prescription_validation':
+        return AppColors.brandTealDeep;
       case 'pending_payment':
         return AppColors.brandCtaAccent;
       case 'paid':
@@ -306,7 +320,8 @@ class _CommerceOrdersPageState extends State<CommerceOrdersPage>
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        color: key == 'pending_payment'
+                        color: key == 'pending_payment' ||
+                                key == 'pending_prescription_validation'
                             ? AppColors.statusError
                             : AppColors.brandCtaAccent,
                         borderRadius: BorderRadius.circular(10),
