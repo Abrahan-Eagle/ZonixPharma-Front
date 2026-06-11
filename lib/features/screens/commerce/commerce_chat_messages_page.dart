@@ -235,7 +235,7 @@ class _CommerceChatMessagesPageState extends State<CommerceChatMessagesPage> {
       backgroundColor: AppColors.stitchChatAppBar,
       foregroundColor: AppColors.white,
       elevation: 0,
-      shadowColor: Colors.transparent,
+      shadowColor: AppColors.transparent,
       titleSpacing: 0,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),

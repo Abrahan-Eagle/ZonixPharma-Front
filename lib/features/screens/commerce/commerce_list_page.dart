@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../utils/app_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:zonix/features/services/commerce_list_service.dart';
+import 'package:zonix/features/utils/commerce_context.dart';
 import 'package:zonix/models/my_commerce.dart';
 import 'package:zonix/features/screens/settings/commerce_data_page.dart';
 import 'package:zonix/features/screens/commerce/commerce_add_restaurant_page.dart';
@@ -47,6 +48,11 @@ class _CommerceListPageState extends State<CommerceListPage> {
     try {
       final list = await CommerceListService.getMyCommerces();
       if (mounted) {
+        final primary = list.where((c) => c.isPrimary).firstOrNull ??
+            (list.isNotEmpty ? list.first : null);
+        if (primary != null) {
+          await CommerceContext.setActiveCommerceId(primary.id);
+        }
         setState(() {
           _commerces = list;
           _loading = false;
@@ -100,7 +106,9 @@ class _CommerceListPageState extends State<CommerceListPage> {
     }
   }
 
-  void _onVer(MyCommerce c) {
+  Future<void> _onVer(MyCommerce c) async {
+    await CommerceContext.setActiveCommerceId(c.id);
+    if (!mounted) return;
     Navigator.push(
       context,
       MaterialPageRoute(

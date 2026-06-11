@@ -6,6 +6,14 @@
 
 ## Última actualización de contexto
 
+### Remediación módulo Commerce + multi-sede — 10 junio 2026
+
+- **Hecho:** `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en `updatePaymentData`/`createCommerce`. **`CommerceContext`**: persiste `active_commerce_id`, envía `X-Commerce-Id` en `commerce_*_service`. Sincroniza sede al cargar lista / Ver / set-primary. Push `dev` → `f24bf47`.
+- **Docs auditoría (Backend):** [`../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md`](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+- **Verificación:** `flutter analyze` 0 issues; `flutter test` → **227 passed** (~1 skip).
+- **Smoke manual:** login commerce multi-sede → Mis Comercios → Ver sede B → panel productos/órdenes solo de B; Editar/set-primary cambia default.
+- **Brand commerce:** pantallas `screens/commerce/*` ya usan `AppColors.*`; quedaban 3 `Colors.transparent` → `AppColors.transparent`.
+
 ### Verificación local 9 junio 2026
 
 - **Backend** (`ZonixPharma-Backend`): `php artisan test --parallel` → **399 passed**. Detalle en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md).

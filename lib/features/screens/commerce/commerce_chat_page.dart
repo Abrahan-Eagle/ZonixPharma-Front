@@ -133,7 +133,7 @@ class _CommerceChatPageState extends State<CommerceChatPage> {
                     child: Material(
                       color: Theme.of(context).colorScheme.surfaceContainerLow,
                       elevation: 0,
-                      shadowColor: Colors.transparent,
+                      shadowColor: AppColors.transparent,
                       borderRadius: BorderRadius.circular(12),
                       child: InkWell(
                         onTap: () {
