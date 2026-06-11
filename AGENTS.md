@@ -51,6 +51,8 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
   - `CommerceContext`: `X-Commerce-Id` en panel; sync sede en lista/Ver/set-primary.
   - Brand commerce: `AppColors.*` en 22 pantallas; `Colors.transparent` residual eliminado.
   - Docs: [../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+- **10 jun 2026 — Remediación módulo pharmacist (lote 2 — historial).**
+  - Tab **Historial** → `PrescriptionsHistoryPage` con filtros por estado.
 - **10 jun 2026 — Remediación módulo pharmacist (lote 1).**
   - `pharmacist_api_errors.dart`; `PrescriptionService` con `success` + detalle Rx; refresh en `ValidationDetailPage`.
 - **10 jun 2026 — Remediación buyer orders (Rx post-checkout, lote 2).**

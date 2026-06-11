@@ -25,11 +25,13 @@ import 'package:zonix/models/prescription.dart';
 class PrescriptionService extends ChangeNotifier {
   List<Prescription> _myPrescriptions = const [];
   List<Prescription> _pendingForPharmacist = const [];
+  List<Prescription> _historyForPharmacist = const [];
   bool _isLoading = false;
   String? _error;
 
   List<Prescription> get myPrescriptions => _myPrescriptions;
   List<Prescription> get pendingForPharmacist => _pendingForPharmacist;
+  List<Prescription> get historyForPharmacist => _historyForPharmacist;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -219,6 +221,42 @@ class PrescriptionService extends ChangeNotifier {
       }
     } catch (e) {
       _error = 'Error al cargar pendientes: $e';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  /// GET /api/pharmacist/prescriptions/history?status=approved|rejected|expired
+  Future<void> loadHistoryForPharmacist({String? status}) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final query = <String, String>{};
+      if (status != null && status.isNotEmpty) {
+        query['status'] = status;
+      }
+      final url = Uri.parse(
+        '${AppConfig.apiUrl}/api/pharmacist/prescriptions/history',
+      ).replace(queryParameters: query.isEmpty ? null : query);
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['success'] == true && body['data'] is List) {
+          final list = List<Map<String, dynamic>>.from(body['data'] as List);
+          _historyForPharmacist = list.map(Prescription.fromJson).toList();
+        } else {
+          _error = pharmacistHttpErrorMessage(
+              'No se pudo cargar el historial', response);
+        }
+      } else {
+        _error = pharmacistHttpErrorMessage(
+            'No se pudo cargar el historial', response);
+      }
+    } catch (e) {
+      _error = 'Error al cargar historial: $e';
     } finally {
       _isLoading = false;
       notifyListeners();

@@ -31,6 +31,7 @@ import 'package:zonix/features/screens/notifications/notifications_page.dart';
 import 'package:zonix/features/screens/orders/orders_page.dart';
 import 'package:zonix/features/screens/pharmacist/pending_validations_page.dart';
 import 'package:zonix/features/screens/pharmacist/pharmacist_dashboard_page.dart';
+import 'package:zonix/features/screens/pharmacist/prescriptions_history_page.dart';
 import 'package:zonix/features/screens/products/products_page.dart';
 import 'package:zonix/features/screens/restaurants/restaurants_page.dart';
 import 'package:zonix/features/screens/restaurants/restaurant_details_page.dart';
@@ -696,11 +697,7 @@ class MainRouterState extends State<MainRouter> {
                   case 1:
                     return const PendingValidationsPage();
                   case 2:
-                    // Por ahora reusamos la pantalla de pendientes como
-                    // historial; en una iteración posterior se añadirá una
-                    // pantalla `PrescriptionsHistoryPage` con filtros por
-                    // status approved/rejected/expired.
-                    return const PendingValidationsPage();
+                    return const PrescriptionsHistoryPage();
                   default:
                     return const PharmacistDashboardPage();
                 }

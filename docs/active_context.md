@@ -8,6 +8,11 @@
 
 - **Pendiente:** auditoría 360° módulo orders completa.
 
+### Remediación módulo pharmacist (lote 2 — historial) — 10 junio 2026
+
+- **Hecho:** `PrescriptionsHistoryPage` en tab Historial (shell level 5); filtros Todas/Aprobadas/Rechazadas/Expiradas; `PrescriptionService.loadHistoryForPharmacist`.
+- **Backend (espejo):** endpoint `/api/pharmacist/prescriptions/history`.
+
 ### Remediación módulo pharmacist (lote 1) — 10 junio 2026
 
 - **Hecho:** `pharmacist_api_errors.dart`; `PrescriptionService` exige `success`, carga detalle Rx autenticado; `ValidationDetailPage` refresca receta al abrir; dashboard usa mensajes API.
