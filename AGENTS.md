@@ -41,11 +41,17 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
 | **Plataformas** | Android + iOS |
 | **Archivos Dart (`lib/`)** | 203 |
 | **Pantallas** | 89 |
-| **Tests** | 216 passed (~1 skip) |
-| **Última actualización** | 9 junio 2026 |
+| **Tests** | 227 passed (~1 skip) |
+| **Última actualización** | 10 junio 2026 |
 
 ### Cambios recientes
 
+- **10 jun 2026 — Remediación módulo commerce (auditoría 360° + multi-sede).**
+  - `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en writes.
+  - `CommerceContext`: `X-Commerce-Id` en panel; sync sede en lista/Ver/set-primary.
+  - Brand commerce: `AppColors.*` en 22 pantallas; `Colors.transparent` residual eliminado.
+  - Docs: [../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+  - Verificación: `flutter analyze` 0 issues; `flutter test` → **227 passed**.
 - **27 may 2026 — Spec Kit (SDD) espejo Cursor:** skills `speckit-*` en `.cursor/skills/`; hub de specs en repo Backend.
 - **30 abr 2026 — Transformación Zonix Eats → Zonix Pharma (fork destructivo, MVP completo Rx).**
   - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}`.

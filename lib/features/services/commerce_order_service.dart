@@ -296,18 +296,19 @@ class CommerceOrderService {
     );
   }
 
-  // Obtener órdenes pendientes
+  // Obtener órdenes pendientes (pago / receta / cola activa).
   static Future<List<CommerceOrder>> getPendingOrders() async {
     return getOrders(status: 'pending_payment');
   }
 
+  /// Alias legacy Eats (`preparing` → `processing` en state machine Pharma).
   static Future<List<CommerceOrder>> getPreparingOrders() async {
     return getOrders(status: 'processing');
   }
 
-  static Future<List<CommerceOrder>> getReadyOrders() async {
-    return getOrders(status: 'processing');
-  }
+  /// Alias legacy Eats (`ready` → `processing`; no hay subestado separado).
+  static Future<List<CommerceOrder>> getReadyOrders() =>
+      getPreparingOrders();
 
   static Future<List<CommerceOrder>> getOnWayOrders() async {
     return getOrders(status: 'shipped');
