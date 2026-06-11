@@ -11,8 +11,8 @@
 - **Helpers API:** `commerce_api_errors`, `pharmacist_api_errors` (+ prescription), `order_api_errors`, `product_api_errors`, `delivery_api_errors`, `admin_api_errors`, `delivery_company_api_errors`.
 - **Lote 10:** `DeliveryCompanyService` mensajes backend en errores + snackbar asignación con `lastActionError`.
 - **Lotes 8–9:** delivery (Farmacia copy) + admin (Farmacias copy, `AdminService` errores).
-- **Smoke Rx:** API strict OK; widget `checkout_strict_rx_test`; checkout usa `forceRefresh` en política pharma.
-- **Pendiente:** smoke UI en **dispositivo** (runbook en Backend `docs/SMOKE_RX_E2E.md`).
+- **Backend local:** modo Rx **estricto activo** (`.env` true); usar receta **#2** en checkout; hot restart app antes de probar.
+- **Pendiente:** smoke UI dispositivo → restaurar backend `.env` permisivo.
 
 ### Buyer catalog lote 7 — 10 junio 2026
 
