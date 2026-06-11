@@ -49,8 +49,8 @@ Map<String, String> extractApiError(String responseBody, String fallbackMessage)
 class BuyerReviewService {
   final Logger _logger = Logger();
 
-  // POST /api/buyer/reviews/restaurant (alias) — calificar farmacia
-  Future<Map<String, dynamic>> rateRestaurant({
+  // POST /api/buyer/reviews/restaurant (alias legacy) — calificar farmacia
+  Future<Map<String, dynamic>> ratePharmacy({
     required int orderId,
     required double rating,
     required String comment,
@@ -88,10 +88,24 @@ class BuyerReviewService {
         throw Exception('${apiError['error_code']}|${apiError['message']}');
       }
     } catch (e) {
-      _logger.e('Error en rateRestaurant: $e');
+      _logger.e('Error en ratePharmacy: $e');
       throw Exception('Error al calificar la farmacia: $e');
     }
   }
+
+  /// Alias legacy — preferir [ratePharmacy].
+  Future<Map<String, dynamic>> rateRestaurant({
+    required int orderId,
+    required double rating,
+    required String comment,
+    Map<String, dynamic>? criteria,
+  }) =>
+      ratePharmacy(
+        orderId: orderId,
+        rating: rating,
+        comment: comment,
+        criteria: criteria,
+      );
 
   // POST /api/buyer/reviews/delivery-agent - Calificar agente de delivery
   Future<Map<String, dynamic>> rateDeliveryAgent({
@@ -138,7 +152,7 @@ class BuyerReviewService {
   }
 
   // GET /api/buyer/reviews/restaurant/{commerceId} — calificaciones de la farmacia
-  Future<List<Map<String, dynamic>>> getRestaurantReviews(
+  Future<List<Map<String, dynamic>>> getPharmacyReviews(
     int commerceId, {
     int? page,
     int? limit,
@@ -170,11 +184,26 @@ class BuyerReviewService {
         throw Exception('Error al obtener calificaciones de la farmacia: ${response.statusCode}');
       }
     } catch (e) {
-      _logger.e('Error en getRestaurantReviews: $e');
-      // En caso de error, devolver lista vacía en lugar de lanzar excepción
+      _logger.e('Error en getPharmacyReviews: $e');
       return [];
     }
   }
+
+  /// Alias legacy — preferir [getPharmacyReviews].
+  Future<List<Map<String, dynamic>>> getRestaurantReviews(
+    int commerceId, {
+    int? page,
+    int? limit,
+    String? sortBy,
+    String? order,
+  }) =>
+      getPharmacyReviews(
+        commerceId,
+        page: page,
+        limit: limit,
+        sortBy: sortBy,
+        order: order,
+      );
 
   // GET /api/buyer/reviews/delivery-agent/{agentId} - Obtener calificaciones de agente de delivery
   Future<List<Map<String, dynamic>>> getDeliveryAgentReviews(

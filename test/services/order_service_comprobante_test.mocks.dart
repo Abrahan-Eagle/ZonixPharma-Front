@@ -78,6 +78,7 @@ class MockOrderService extends _i1.Mock implements _i3.OrderService {
     double? deliveryLongitude,
     String? couponCode,
     String? idempotencyKey,
+    int? prescriptionId,
     double deliveryFee = 0.0,
   }) =>
       (super.noSuchMethod(
@@ -91,6 +92,7 @@ class MockOrderService extends _i1.Mock implements _i3.OrderService {
             #deliveryLongitude: deliveryLongitude,
             #couponCode: couponCode,
             #idempotencyKey: idempotencyKey,
+            #prescriptionId: prescriptionId,
             #deliveryFee: deliveryFee,
           },
         ),
@@ -106,6 +108,7 @@ class MockOrderService extends _i1.Mock implements _i3.OrderService {
               #deliveryLongitude: deliveryLongitude,
               #couponCode: couponCode,
               #idempotencyKey: idempotencyKey,
+              #prescriptionId: prescriptionId,
               #deliveryFee: deliveryFee,
             },
           ),

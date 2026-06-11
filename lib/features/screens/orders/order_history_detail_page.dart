@@ -782,7 +782,7 @@ class _OrderHistoryDetailPageState extends State<OrderHistoryDetailPage> {
     setState(() {
       _order = _order.copyWith(
         restaurantReviewCount:
-            result.restaurantRated ? 1 : _order.restaurantReviewCount,
+            result.pharmacyRated ? 1 : _order.restaurantReviewCount,
         deliveryReviewCount:
             result.deliveryRated ? 1 : _order.deliveryReviewCount,
       );

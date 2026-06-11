@@ -4,6 +4,7 @@ import 'package:zonix/features/screens/cart/checkout_page.dart';
 import 'package:zonix/features/services/cart_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
+import 'package:zonix/features/services/pharma_policy_service.dart';
 import 'package:zonix/models/cart_item.dart';
 
 class CartPage extends StatelessWidget {
@@ -126,47 +127,58 @@ class CartPage extends StatelessWidget {
   Widget _buildRxBanner(BuildContext context, CartService cartService) {
     final rxItems = cartService.prescriptionRequiredItems;
     final names = rxItems.map((e) => e.nombre).take(3).join(', ');
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.brandTealDeep.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(12),
-        border:
-            Border.all(color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.receipt_long, color: AppColors.brandTealDeep),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Tu pedido requiere receta médica',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.brandTealDeep,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  rxItems.length == 1
-                      ? '$names necesita una receta válida emitida por un médico colegiado.'
-                      : '${rxItems.length} medicamentos en tu carrito requieren receta. Podrás subirla al confirmar el pedido.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.primaryText(context),
-                  ),
-                ),
-              ],
-            ),
+    return FutureBuilder<bool>(
+      future: PharmaPolicyService.blockRxWithoutPrescription(),
+      builder: (context, snapshot) {
+        final strict = snapshot.data == true;
+        final subtitle = strict
+            ? 'Modo estricto: necesitas una receta ya aprobada por esta farmacia antes de confirmar el pedido.'
+            : (rxItems.length == 1
+                ? '$names necesita una receta válida emitida por un médico colegiado.'
+                : '${rxItems.length} medicamentos en tu carrito requieren receta. Podrás subirla al confirmar el pedido.');
+        return Container(
+          margin: const EdgeInsets.only(bottom: 16),
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.brandTealDeep.withValues(alpha: 0.10),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: AppColors.brandTealDeep.withValues(alpha: 0.4)),
           ),
-        ],
-      ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.receipt_long, color: AppColors.brandTealDeep),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      strict
+                          ? 'Receta aprobada requerida'
+                          : 'Tu pedido requiere receta médica',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.brandTealDeep,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.primaryText(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

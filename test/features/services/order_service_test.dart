@@ -15,6 +15,7 @@ class MockOrderService extends OrderService {
     double? deliveryLongitude,
     String? couponCode,
     String? idempotencyKey,
+    int? prescriptionId,
     double deliveryFee = 0.0,
   }) async {
     // Simula una respuesta exitosa

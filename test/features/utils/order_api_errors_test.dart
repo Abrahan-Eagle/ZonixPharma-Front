@@ -26,6 +26,14 @@ void main() {
       );
     });
 
+    test('ORDER_RX_PRESCRIPTION_REQUIRED', () {
+      final response = http.Response(
+        '{"success":false,"message":"Falta receta","error_code":"ORDER_RX_PRESCRIPTION_REQUIRED"}',
+        422,
+      );
+      expect(orderHttpErrorMessage('Checkout', response), 'Falta receta');
+    });
+
     test('usa message genérico', () {
       final response = http.Response(
         '{"success":false,"message":"Orden no encontrada"}',

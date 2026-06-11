@@ -26,6 +26,12 @@ String orderHttpErrorMessage(String action, http.Response response) {
         case 'ORDER_CREATE_ERROR':
           return data['message']?.toString() ??
               'No se pudo crear el pedido. Intenta de nuevo.';
+        case 'ORDER_RX_PRESCRIPTION_REQUIRED':
+          return data['message']?.toString() ??
+              'Debes vincular una receta médica ya aprobada por esta farmacia antes de confirmar el pedido.';
+        case 'ORDER_RX_PRESCRIPTION_INVALID':
+          return data['message']?.toString() ??
+              'La receta seleccionada no es válida para este pedido.';
       }
       for (final key in ['message', 'error']) {
         final value = data[key];

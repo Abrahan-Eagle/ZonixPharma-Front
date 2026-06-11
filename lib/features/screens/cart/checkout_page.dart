@@ -10,6 +10,10 @@ import 'package:zonix/features/utils/safe_parse.dart';
 import 'package:zonix/models/cart_item.dart';
 import 'package:zonix/features/screens/orders/order_confirmation_page.dart';
 import 'package:zonix/features/screens/prescriptions/prescription_upload_page.dart';
+import 'package:zonix/features/screens/prescriptions/my_prescriptions_page.dart';
+import 'package:zonix/features/services/pharma_policy_service.dart';
+import 'package:zonix/features/services/prescription_service.dart';
+import 'package:zonix/models/prescription.dart';
 import 'package:zonix/features/utils/network_image_with_fallback.dart';
 
 class CheckoutPage extends StatefulWidget {
@@ -38,6 +42,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
   int? _deliveryTimeMinutes;
   bool _deliveryFeeLoading = false;
   String? _currentIdempotencyKey;
+  bool _strictRxMode = false;
+  bool _loadingPharmaPolicy = false;
+  List<Prescription> _eligibleRxPrescriptions = [];
+  int? _selectedPrescriptionId;
 
   @override
   void initState() {
@@ -52,6 +60,41 @@ class _CheckoutPageState extends State<CheckoutPage> {
           _calculatedDeliveryFee = null;
         });
       }
+      if (cart.requiresPrescription) {
+        _loadPharmaCheckoutContext();
+      }
+    });
+  }
+
+  Future<void> _loadPharmaCheckoutContext() async {
+    setState(() => _loadingPharmaPolicy = true);
+    final cart = Provider.of<CartService>(context, listen: false);
+    final strict = await PharmaPolicyService.blockRxWithoutPrescription();
+    if (!mounted) return;
+    if (!strict || !cart.requiresPrescription) {
+      setState(() {
+        _strictRxMode = false;
+        _loadingPharmaPolicy = false;
+      });
+      return;
+    }
+    final rxService = context.read<PrescriptionService>();
+    await rxService.loadMyPrescriptions();
+    if (!mounted) return;
+    final commerceId = cart.items.first.commerceId;
+    final eligible = rxService.myPrescriptions
+        .where((p) =>
+            p.isApproved &&
+            p.orderId == null &&
+            commerceId != null &&
+            p.commerceId == commerceId)
+        .toList();
+    setState(() {
+      _strictRxMode = true;
+      _eligibleRxPrescriptions = eligible;
+      _selectedPrescriptionId =
+          eligible.length == 1 ? eligible.first.id : _selectedPrescriptionId;
+      _loadingPharmaPolicy = false;
     });
   }
 
@@ -191,6 +234,85 @@ class _CheckoutPageState extends State<CheckoutPage> {
     return parts.join(', ');
   }
 
+  Widget _buildStrictCheckoutRxBanner(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.statusWarning.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.statusWarning.withValues(alpha: 0.5)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.health_and_safety, color: AppColors.brandTealDeep),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Modo estricto Rx',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.brandTealDeep,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Debes tener una receta médica ya aprobada por esta farmacia antes de confirmar el pedido.',
+            style: TextStyle(fontSize: 12),
+          ),
+          const SizedBox(height: 12),
+          if (_eligibleRxPrescriptions.isEmpty)
+            Text(
+              'No tienes recetas aprobadas disponibles para esta farmacia. '
+              'Solicita validación previa o revisa Mis recetas.',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppColors.secondaryText(context),
+              ),
+            )
+          else
+            DropdownButtonFormField<int>(
+              value: _selectedPrescriptionId,
+              decoration: const InputDecoration(
+                labelText: 'Receta aprobada',
+                isDense: true,
+              ),
+              items: _eligibleRxPrescriptions
+                  .map(
+                    (p) => DropdownMenuItem(
+                      value: p.id,
+                      child: Text(
+                        '#${p.id} · ${p.prescribingDoctorName}',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: (v) => setState(() => _selectedPrescriptionId = v),
+            ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const MyPrescriptionsPage(),
+                ),
+              );
+            },
+            child: const Text('Ver mis recetas'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildCheckoutRxBanner(BuildContext context, CartService cartService) {
     final rxItems = cartService.prescriptionRequiredItems;
     return Container(
@@ -314,6 +436,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         deliveryFee: deliveryFee,
         couponCode: _appliedCoupon?['code']?.toString(),
         idempotencyKey: _currentIdempotencyKey,
+        prescriptionId: _strictRxMode ? _selectedPrescriptionId : null,
       );
       // Si la orden quedó en estado `pending_prescription_validation`
       // (productos Rx en el carrito), enviamos al buyer a subir la receta
@@ -373,8 +496,15 @@ class _CheckoutPageState extends State<CheckoutPage> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            if (cartService.requiresPrescription)
-              _buildCheckoutRxBanner(context, cartService),
+            if (cartService.requiresPrescription && _loadingPharmaPolicy)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 12),
+                child: LinearProgressIndicator(minHeight: 2),
+              ),
+            if (cartService.requiresPrescription && !_loadingPharmaPolicy)
+              _strictRxMode
+                  ? _buildStrictCheckoutRxBanner(context)
+                  : _buildCheckoutRxBanner(context, cartService),
             if (cartService.coldChainRequired)
               _buildCheckoutColdChainBanner(context),
             Container(
@@ -1117,6 +1247,10 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     ),
                   ),
                   onPressed: (_loading ||
+                          (_strictRxMode &&
+                              cartService.requiresPrescription &&
+                              (_selectedPrescriptionId == null ||
+                                  _eligibleRxPrescriptions.isEmpty)) ||
                           (_deliveryType == 'delivery' &&
                               (_deliveryFeeLoading ||
                                   _calculatedDeliveryFee == null)))

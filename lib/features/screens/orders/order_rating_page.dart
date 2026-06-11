@@ -6,12 +6,15 @@ import 'package:zonix/models/order.dart';
 /// Resultado al cerrar el modal de calificación tras envío exitoso (parcial o total).
 class OrderRatingModalResult {
   const OrderRatingModalResult({
-    required this.restaurantRated,
+    required this.pharmacyRated,
     required this.deliveryRated,
   });
 
-  /// Reseña al comercio guardada en esta sesión.
-  final bool restaurantRated;
+  /// Reseña a la farmacia guardada en esta sesión.
+  final bool pharmacyRated;
+
+  /// Alias legacy API Eats.
+  bool get restaurantRated => pharmacyRated;
 
   /// Reseña al repartidor guardada, o no requerida (sin agente).
   final bool deliveryRated;
@@ -30,17 +33,17 @@ class OrderRatingPage extends StatefulWidget {
 }
 
 class _OrderRatingPageState extends State<OrderRatingPage> {
-  final _restaurantCommentController = TextEditingController();
+  final _pharmacyCommentController = TextEditingController();
   final _deliveryCommentController = TextEditingController();
   final _reviewService = BuyerReviewService();
 
-  double _restaurantRating = 5;
+  double _pharmacyRating = 5;
   double _deliveryRating = 5;
   bool _submitting = false;
 
   @override
   void dispose() {
-    _restaurantCommentController.dispose();
+    _pharmacyCommentController.dispose();
     _deliveryCommentController.dispose();
     super.dispose();
   }
@@ -71,7 +74,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _buildRestaurantCard(context, surface, isDark),
+              _buildPharmacyCard(context, surface, isDark),
               const SizedBox(height: 16),
               if (hasDeliveryAgent)
                 _buildDeliveryCard(context, surface, isDark),
@@ -122,7 +125,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
     );
   }
 
-  Widget _buildRestaurantCard(
+  Widget _buildPharmacyCard(
       BuildContext context, Color surface, bool isDark) {
     final commerceName =
         widget.order.commerce?['business_name']?.toString() ?? 'Farmacia';
@@ -159,15 +162,15 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
             const SizedBox(height: 12),
             _buildStars(
               context: context,
-              value: _restaurantRating,
+              value: _pharmacyRating,
               onChanged: (v) {
-                setState(() => _restaurantRating = v);
+                setState(() => _pharmacyRating = v);
               },
               size: 32,
             ),
             const SizedBox(height: 12),
             TextField(
-              controller: _restaurantCommentController,
+              controller: _pharmacyCommentController,
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: 'Comparte tu experiencia...',
@@ -279,7 +282,7 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
   }
 
   Future<void> _submitRating() async {
-    if (_restaurantRating <= 0) {
+    if (_pharmacyRating <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('Selecciona una calificación para la farmacia')),
@@ -292,16 +295,16 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
     });
 
     try {
-      bool restaurantOk = false;
+      bool pharmacyOk = false;
       bool deliveryOk = false;
       String? lastErrorMessage;
       try {
-        await _reviewService.rateRestaurant(
+        await _reviewService.ratePharmacy(
           orderId: widget.order.id,
-          rating: _restaurantRating,
-          comment: _restaurantCommentController.text.trim(),
+          rating: _pharmacyRating,
+          comment: _pharmacyCommentController.text.trim(),
         );
-        restaurantOk = true;
+        pharmacyOk = true;
       } catch (e) {
         lastErrorMessage = _sanitizeErrorMessage(e);
       }
@@ -322,14 +325,14 @@ class _OrderRatingPageState extends State<OrderRatingPage> {
       }
 
       if (!mounted) return;
-      if (restaurantOk || deliveryOk) {
+      if (pharmacyOk || deliveryOk) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('¡Gracias por tu calificación!')),
         );
         final noDeliveryReviewNeeded = widget.order.deliveryAgentId == null;
         Navigator.of(context).pop(
           OrderRatingModalResult(
-            restaurantRated: restaurantOk,
+            pharmacyRated: pharmacyOk,
             deliveryRated: noDeliveryReviewNeeded || deliveryOk,
           ),
         );

@@ -84,6 +84,7 @@ class OrderService extends ChangeNotifier {
     double deliveryFee = 0.0,
     String? couponCode,
     String? idempotencyKey,
+    int? prescriptionId,
   }) async {
     if (items.isEmpty) {
       throw Exception('El carrito está vacío');
@@ -122,6 +123,8 @@ class OrderService extends ChangeNotifier {
         if (deliveryLatitude != null) 'delivery_latitude': deliveryLatitude,
         if (deliveryLongitude != null) 'delivery_longitude': deliveryLongitude,
       },
+      if (prescriptionId != null && prescriptionId > 0)
+        'prescription_id': prescriptionId,
     });
     
     final response = await http.post(

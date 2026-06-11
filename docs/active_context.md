@@ -6,6 +6,12 @@
 
 ## Última actualización de contexto
 
+### Lote 6 — smoke + rating pharma + strict checkout — 10 junio 2026
+
+- **Smoke doc:** Backend `SMOKE_RX_E2E_RESULTS_2026-06-10.md` (22 tests automatizados).
+- **Strict Rx:** `PharmaPolicyService`, checkout picker receta aprobada, `createOrder(prescriptionId)`.
+- **Rating:** `ratePharmacy`, `pharmacyRated` en modal calificación.
+
 ### Buyer prescriptions lote 5 — 10 junio 2026
 
 - **Mis recetas:** tap → `OrderDetailPage`; botón eliminar si `pending_validation`.
