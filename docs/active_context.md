@@ -11,8 +11,8 @@
 - **Helpers API:** `commerce_api_errors`, `pharmacist_api_errors` (+ prescription), `order_api_errors`, `product_api_errors`, `delivery_api_errors`, `admin_api_errors`, `delivery_company_api_errors`.
 - **Lote 10:** `DeliveryCompanyService` mensajes backend en errores + snackbar asignación con `lastActionError`.
 - **Lotes 8–9:** delivery (Farmacia copy) + admin (Farmacias copy, `AdminService` errores).
-- **Pendiente:** smoke Rx estricto **UI Flutter** (API + seed listos en local 11 jun).
-- **Verificación 11 jun 2026:** `flutter test` **238** passed (~1 skip); helpers API errors cubren commerce→admin.
+- **Pendiente:** smoke Rx **UI Flutter** (API strict OK 11 jun en Backend).
+- **Verificación 11 jun 2026:** `flutter test` **238** passed (~1 skip).
 
 ### Buyer catalog lote 7 — 10 junio 2026
 
