@@ -97,12 +97,12 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   }
 
   void _shareProduct() {
-    final link = '${AppConfig.apiUrl}/product/${_product.id}';
-    final restName = _restaurant?.nombreLocal ?? '';
+    final link = AppConfig.buildCommerceShareUrl(_product.commerceId);
+    final pharmacyName = _restaurant?.nombreLocal ?? '';
     final text =
         '💊 *${_product.name}* - \$${_product.price.toStringAsFixed(2)}\n'
         '${_product.description.isNotEmpty ? '${_product.description}\n' : ''}'
-        '${restName.isNotEmpty ? '🏥 En *$restName* - Zonix Pharma\n' : ''}'
+        '${pharmacyName.isNotEmpty ? '🏥 En *$pharmacyName* - Zonix Pharma\n' : ''}'
         '\n👉 $link';
     SharePlus.instance.share(ShareParams(text: text));
   }

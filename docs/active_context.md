@@ -6,6 +6,11 @@
 
 ## Última actualización de contexto
 
+### Buyer catalog lote 7 — 10 junio 2026
+
+- **`product_api_errors.dart`** + `ProductService` valida `success == false`.
+- Share producto usa `AppConfig.buildCommerceShareUrl`.
+
 ### Lote 6 — smoke + rating pharma + strict checkout — 10 junio 2026
 
 - **Smoke doc:** Backend `SMOKE_RX_E2E_RESULTS_2026-06-10.md` (22 tests automatizados).

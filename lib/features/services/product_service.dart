@@ -8,6 +8,7 @@ import 'package:zonix/config/app_config.dart';
 import 'cache_service.dart';
 import 'connectivity_service.dart';
 import '../utils/http_retry.dart';
+import '../utils/product_api_errors.dart';
 
 final Logger _logger = Logger();
 
@@ -128,6 +129,11 @@ class ProductService {
       _logger.i('Status code:  ${response.statusCode}');
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        if (data is Map && data['success'] == false) {
+          throw Exception(
+            productHttpErrorMessage('Error al cargar productos', response),
+          );
+        }
         final result = _parseProductsPageResult(data, fallbackPage: page);
         _logger.i('Cantidad de productos recibidos: ${result.products.length}');
         if (categoryId == null && page == 1) {
@@ -139,7 +145,9 @@ class ProductService {
         }
         return result;
       } else {
-        throw Exception('Error al cargar productos: ${response.statusCode}');
+        throw Exception(
+          productHttpErrorMessage('Error al cargar productos', response),
+        );
       }
     } catch (e) {
       _logger.e('fetchProducts network error, trying cache');
@@ -223,10 +231,17 @@ class ProductService {
         .replace(queryParameters: query);
     final response = await withRetry(() => http.get(uri, headers: headers));
     if (response.statusCode != 200) {
-      throw Exception('Error al buscar productos: ${response.statusCode}');
+      throw Exception(
+        productHttpErrorMessage('Error al buscar productos', response),
+      );
     }
 
     final data = json.decode(response.body);
+    if (data is Map && data['success'] == false) {
+      throw Exception(
+        productHttpErrorMessage('Error al buscar productos', response),
+      );
+    }
     return _parseProductsPageResult(data, fallbackPage: page);
   }
 
@@ -248,8 +263,11 @@ class ProductService {
     
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (kDebugMode) {
-        _logger.d('Decoded data type: ${data.runtimeType}');
+      
+      if (data is Map && data['success'] == false) {
+        throw Exception(
+          productHttpErrorMessage('Error al cargar producto', response),
+        );
       }
       
       // Handle different response structures
@@ -274,10 +292,9 @@ class ProductService {
       return Product.fromJson(productData);
     } else {
       _logger.e('Error al cargar producto: ${response.statusCode}');
-      if (kDebugMode) {
-        _logger.e('Error payload length: ${response.body.length}');
-      }
-      throw Exception('Error al cargar producto: ${response.statusCode}');
+      throw Exception(
+        productHttpErrorMessage('Error al cargar producto', response),
+      );
     }
   }
 }
