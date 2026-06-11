@@ -6,6 +6,13 @@
 
 ## Última actualización de contexto
 
+### Cierre cadena auditorías 360° + lote 10 — 10 junio 2026
+
+- **Helpers API:** `commerce_api_errors`, `pharmacist_api_errors` (+ prescription), `order_api_errors`, `product_api_errors`, `delivery_api_errors`, `admin_api_errors`, `delivery_company_api_errors`.
+- **Lote 10:** `DeliveryCompanyService` mensajes backend en errores + snackbar asignación con `lastActionError`.
+- **Lotes 8–9:** delivery (Farmacia copy) + admin (Farmacias copy, `AdminService` errores).
+- **Pendiente:** smoke Rx estricto manual en dispositivo; alias Eats residual (`RestaurantService` en detalle producto).
+
 ### Buyer catalog lote 7 — 10 junio 2026
 
 - **`product_api_errors.dart`** + `ProductService` valida `success == false`.

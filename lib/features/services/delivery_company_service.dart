@@ -7,9 +7,17 @@ import 'error_handler.dart';
 import 'cache_service.dart';
 import 'connectivity_service.dart';
 import '../utils/http_retry.dart';
+import '../utils/delivery_company_api_errors.dart';
 
 class DeliveryCompanyService extends ChangeNotifier {
   static String get _baseUrl => AppConfig.apiUrl;
+
+  String? _lastActionError;
+  String? get lastActionError => _lastActionError;
+
+  String _httpError(String action, http.Response response) {
+    return deliveryCompanyHttpErrorMessage(action, response);
+  }
 
   /// Populates [_dashboardData] from cache without loading spinner.
   Future<void> loadCachedDashboard() async {
@@ -91,7 +99,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           CacheService.setRawJson('dc_dashboard', jsonEncode(_dashboardData), expiration: const Duration(minutes: 10));
         }
       } else {
-        _dashboardError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _dashboardError = _httpError('Dashboard', res);
       }
     } catch (e) {
       final cached = await CacheService.getRawJson('dc_dashboard');
@@ -149,7 +157,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _observabilitySummary = Map<String, dynamic>.from(body['data']);
         }
       } else {
-        _observabilityError = ErrorHandler.handleHttpResponse(summaryRes.statusCode, summaryRes.body);
+        _observabilityError = _httpError('Observabilidad', summaryRes);
       }
 
       if (incidentsRes.statusCode == 200) {
@@ -161,7 +169,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _observabilityIncidents = [];
         }
       } else {
-        _observabilityError = _observabilityError ?? ErrorHandler.handleHttpResponse(incidentsRes.statusCode, incidentsRes.body);
+        _observabilityError = _observabilityError ?? _httpError('Incidentes', incidentsRes);
       }
 
       final historyRes = await withRetry(() => http.get(
@@ -227,7 +235,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           CacheService.setRawJson('dc_agents', jsonEncode(_agents), expiration: const Duration(minutes: 5));
         }
       } else {
-        _agentsError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _agentsError = _httpError('Agentes', res);
       }
     } catch (e) {
       final cached = await CacheService.getRawJson('dc_agents');
@@ -267,7 +275,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _mapAgents = List<Map<String, dynamic>>.from(body['data']);
         }
       } else {
-        _mapAgentsError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _mapAgentsError = _httpError('Mapa de agentes', res);
       }
     } catch (e) {
       _mapAgentsError = ErrorHandler.getUserFriendlyMessage(e);
@@ -320,7 +328,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           }
         }
       } else {
-        _ordersError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _ordersError = _httpError('Pedidos', res);
       }
     } catch (e) {
       _ordersError = ErrorHandler.getUserFriendlyMessage(e);
@@ -364,7 +372,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _pendingOrders = [];
         }
       } else {
-        _pendingOrdersError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _pendingOrdersError = _httpError('Pedidos pendientes', res);
         _pendingOrders = [];
       }
     } catch (e) {
@@ -408,7 +416,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _availableAgentsForOrder = [];
         }
       } else {
-        _availableAgentsError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _availableAgentsError = _httpError('Agentes disponibles', res);
         _availableAgentsForOrder = [];
       }
     } catch (e) {
@@ -423,6 +431,7 @@ class DeliveryCompanyService extends ChangeNotifier {
 
   /// Asignar orden a un agente.
   Future<bool> assignOrderToAgent(int orderId, int agentId) async {
+    _lastActionError = null;
     try {
       final res = await http.post(
         Uri.parse('$_baseUrl/api/delivery-company/orders/$orderId/assign'),
@@ -434,8 +443,10 @@ class DeliveryCompanyService extends ChangeNotifier {
         await loadOrders();
         return true;
       }
+      _lastActionError = _httpError('Asignar pedido', res);
       return false;
-    } catch (_) {
+    } catch (e) {
+      _lastActionError = ErrorHandler.getUserFriendlyMessage(e);
       return false;
     }
   }
@@ -465,7 +476,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           _earningsData = Map<String, dynamic>.from(body['data']);
         }
       } else {
-        _earningsError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _earningsError = _httpError('Ganancias', res);
       }
     } catch (e) {
       _earningsError = ErrorHandler.getUserFriendlyMessage(e);
@@ -580,7 +591,7 @@ class DeliveryCompanyService extends ChangeNotifier {
           }
         }
       } else {
-        _pendingPaymentOrdersError = ErrorHandler.handleHttpResponse(res.statusCode, res.body);
+        _pendingPaymentOrdersError = _httpError('Pagos pendientes', res);
       }
     } catch (e) {
       _pendingPaymentOrdersError = ErrorHandler.getUserFriendlyMessage(e);

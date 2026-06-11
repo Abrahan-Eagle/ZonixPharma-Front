@@ -882,9 +882,12 @@ class _AssignOrderPageState extends State<_AssignOrderPage> {
                                 navigator.pop(true);
                               } else {
                                 messenger.showSnackBar(
-                                  const SnackBar(
-                                      content: Text(
-                                          'No se pudo asignar. Intenta de nuevo.')),
+                                  SnackBar(
+                                    content: Text(
+                                      widget.service.lastActionError ??
+                                          'No se pudo asignar. Intenta de nuevo.',
+                                    ),
+                                  ),
                                 );
                               }
                             },
