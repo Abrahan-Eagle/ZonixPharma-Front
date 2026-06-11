@@ -329,35 +329,25 @@ class CommerceOrderService {
     return getOrders(search: customerName);
   }
 
-  // Obtener órdenes por rango de fechas
-  static Future<List<CommerceOrder>> getOrdersByDateRange(DateTime startDate, DateTime endDate) async {
-    try {
-      final headers = await CommerceContext.getAuthHeaders();
-      final queryParams = <String, String>{
-        'start_date': startDate.toIso8601String(),
-        'end_date': endDate.toIso8601String(),
-      };
-
-      final uri = Uri.parse('$baseUrl/api/commerce/orders').replace(queryParameters: queryParams);
-      
-      final response = await http.get(
-        uri,
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data is List) {
-          return data.map((json) => CommerceOrder.fromJson(json)).toList();
-        } else if (data['data'] != null) {
-          return (data['data'] as List).map((json) => CommerceOrder.fromJson(json)).toList();
-        }
-        return [];
-      } else {
-        throw Exception('Error al obtener órdenes por fecha: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Error al obtener órdenes por fecha: $e');
-    }
+  // Obtener órdenes por rango de fechas (filtro en cliente; el backend no aplica start_date/end_date).
+  static Future<List<CommerceOrder>> getOrdersByDateRange(
+      DateTime startDate, DateTime endDate) async {
+    final normalizedStart =
+        DateTime(startDate.year, startDate.month, startDate.day);
+    final normalizedEnd = DateTime(
+      endDate.year,
+      endDate.month,
+      endDate.day,
+      23,
+      59,
+      59,
+      999,
+    );
+    final all = await getOrders();
+    return all
+        .where((o) =>
+            !o.createdAt.isBefore(normalizedStart) &&
+            !o.createdAt.isAfter(normalizedEnd))
+        .toList();
   }
-} 
+}

@@ -52,6 +52,31 @@ void main() {
       expect(rx.isPendingPrescriptionValidation, isTrue);
     });
 
+    test('parsea expires_at y requires_prescription', () {
+      final deadline = DateTime.now().add(const Duration(minutes: 45));
+      final o = Order.fromJson({
+        'id': 4,
+        'user_id': 1,
+        'commerce_id': 1,
+        'order_number': 'RX-4',
+        'status': 'pending_prescription_validation',
+        'total': 10.0,
+        'payment_method': '',
+        'payment_status': 'pending',
+        'delivery_address': '',
+        'created_at': '2025-01-01T10:00:00.000Z',
+        'updated_at': '2025-01-01T10:00:00.000Z',
+        'items': <dynamic>[],
+        'requires_prescription': true,
+        'expires_at': deadline.toIso8601String(),
+      });
+      expect(o.requiresPrescription, isTrue);
+      expect(o.expiresAt, isNotNull);
+      expect(o.hasRxUploadDeadline, isTrue);
+      expect(o.isRxUploadExpired, isFalse);
+      expect(o.rxTimeRemaining, isNotNull);
+    });
+
     test('OrderItem.quantity parsea string numérico', () {
       final item = OrderItem.fromJson({
         'id': 1,

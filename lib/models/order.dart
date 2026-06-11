@@ -101,6 +101,10 @@ class Order {
   final int deliveryReviewCount;
   /// Receta vinculada al pedido (Rx); backend: `prescription_id`.
   final int? prescriptionId;
+  /// Plazo para subir/validar receta (TTL); backend: `expires_at`.
+  final DateTime? expiresAt;
+  /// Pedido con líneas Rx; backend: `requires_prescription`.
+  final bool requiresPrescription;
 
   Order({
     required this.id,
@@ -140,6 +144,8 @@ class Order {
     this.restaurantReviewCount = 0,
     this.deliveryReviewCount = 0,
     this.prescriptionId,
+    this.expiresAt,
+    this.requiresPrescription = false,
   });
 
   factory Order.fromJson(Map<String, dynamic> json) {
@@ -205,6 +211,11 @@ class Order {
         final v = safeInt(raw, 0);
         return v > 0 ? v : null;
       }(),
+      expiresAt: json['expires_at'] != null
+          ? DateTime.tryParse(json['expires_at'].toString())
+          : null,
+      requiresPrescription: json['requires_prescription'] == true ||
+          json['requires_prescription'] == 1,
     );
   }
 
@@ -248,6 +259,8 @@ class Order {
       'restaurant_review_count': restaurantReviewCount,
       'delivery_review_count': deliveryReviewCount,
       if (prescriptionId != null) 'prescription_id': prescriptionId,
+      if (expiresAt != null) 'expires_at': expiresAt!.toIso8601String(),
+      'requires_prescription': requiresPrescription,
     };
   }
 
@@ -289,6 +302,8 @@ class Order {
     int? restaurantReviewCount,
     int? deliveryReviewCount,
     int? prescriptionId,
+    DateTime? expiresAt,
+    bool? requiresPrescription,
   }) {
     return Order(
       id: id ?? this.id,
@@ -329,6 +344,8 @@ class Order {
       restaurantReviewCount: restaurantReviewCount ?? this.restaurantReviewCount,
       deliveryReviewCount: deliveryReviewCount ?? this.deliveryReviewCount,
       prescriptionId: prescriptionId ?? this.prescriptionId,
+      expiresAt: expiresAt ?? this.expiresAt,
+      requiresPrescription: requiresPrescription ?? this.requiresPrescription,
     );
   }
 
@@ -388,6 +405,17 @@ class Order {
   bool get isPending => status == 'pending_payment';
   bool get isPendingPrescriptionValidation =>
       status == 'pending_prescription_validation';
+  bool get hasRxUploadDeadline =>
+      expiresAt != null &&
+      isPendingPrescriptionValidation &&
+      prescriptionId == null;
+  bool get isRxUploadExpired =>
+      expiresAt != null && DateTime.now().isAfter(expiresAt!);
+  Duration? get rxTimeRemaining {
+    if (expiresAt == null) return null;
+    final remaining = expiresAt!.difference(DateTime.now());
+    return remaining.isNegative ? Duration.zero : remaining;
+  }
   /// Incluye validación Rx: fase previa al pago donde el buyer aún puede cancelar.
   bool get isPendingPayment =>
       status == 'pending_payment' ||

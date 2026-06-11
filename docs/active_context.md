@@ -6,6 +6,18 @@
 
 ## Última actualización de contexto
 
+### Remediación buyer orders (lote 2) — 10 junio 2026
+
+- **Hecho:** modelo `Order` con `expiresAt` / `requiresPrescription`; chip cuenta regresiva TTL Rx en `order_detail_page`; `getOrdersByDateRange` filtra en cliente (backend no soporta fechas).
+- **Backend (espejo):** `OrderTrackingController` Pharma + Rx; test comando TTL recetas.
+- **Verificación:** `flutter test` → **228 passed** (~1 skip); `flutter analyze` 0 issues.
+- **Pendiente:** smoke manual Rx end-to-end (subir receta → validación farmacéutico → pago).
+
+### Remediación buyer orders (lote 1) — 10 junio 2026
+
+- **Front:** CTA **Subir receta** en `order_detail_page` (Rx sin receta); `order_service.cancelOrder` exige `success == true`.
+- **Backend (espejo):** timeline tracking Rx; cancel 409; throttle cancel/pago.
+
 ### Remediación módulo Commerce + multi-sede — 10 junio 2026
 
 - **Hecho:** `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en `updatePaymentData`/`createCommerce`. **`CommerceContext`**: persiste `active_commerce_id`, envía `X-Commerce-Id` en `commerce_*_service`. Sincroniza sede al cargar lista / Ver / set-primary. Push `dev` → `f24bf47`.
@@ -13,12 +25,6 @@
 - **Verificación:** `flutter analyze` 0 issues; `flutter test` → **227 passed** (~1 skip).
 - **Smoke manual:** login commerce multi-sede → Mis Comercios → Ver sede B → panel productos/órdenes solo de B; Editar/set-primary cambia default.
 - **Brand commerce:** pantallas `screens/commerce/*` ya usan `AppColors.*`; quedaban 3 `Colors.transparent` → `AppColors.transparent`.
-
-### Remediación buyer orders (lote 1) — 10 junio 2026
-
-- **Front:** CTA **Subir receta** en `order_detail_page` (Rx sin receta); `order_service.cancelOrder` exige `success == true`.
-- **Backend (espejo):** timeline tracking Rx; cancel 409; throttle cancel/pago.
-- **Pendiente lote 2:** `expires_at` en modelo Order; test comando Rx TTL; `OrderTrackingController` legacy.
 
 ### Verificación local 9 junio 2026
 

@@ -616,6 +616,22 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 fontSize: 14,
                               ),
                             ),
+                            if (order.hasRxUploadDeadline) ...[
+                              const SizedBox(height: 12),
+                              if (order.isRxUploadExpired)
+                                Text(
+                                  'El plazo para subir la receta ha vencido. El pedido puede cancelarse automáticamente.',
+                                  style: TextStyle(
+                                    color: textSecondary,
+                                    fontSize: 13,
+                                  ),
+                                )
+                              else
+                                _CountdownTimerChip(
+                                  until: order.expiresAt!,
+                                  color: AppColors.brandTeal,
+                                ),
+                            ],
                             const SizedBox(height: 16),
                             FilledButton.icon(
                               onPressed: _updating
@@ -2533,6 +2549,59 @@ class _UploadProofDialogState extends State<_UploadProofDialog> {
           return w[0].toUpperCase() + w.substring(1).toLowerCase();
         }).join(' ');
     }
+  }
+}
+
+/// Chip que muestra tiempo restante hasta un plazo (TTL receta Rx).
+class _CountdownTimerChip extends StatefulWidget {
+  const _CountdownTimerChip({required this.until, required this.color});
+  final DateTime until;
+  final Color color;
+
+  @override
+  State<_CountdownTimerChip> createState() => _CountdownTimerChipState();
+}
+
+class _CountdownTimerChipState extends State<_CountdownTimerChip> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String _remaining() {
+    final diff = widget.until.difference(DateTime.now());
+    if (diff.isNegative || diff.inSeconds <= 0) return 'Plazo vencido';
+    if (diff.inMinutes < 1) return 'Queda menos de 1 min';
+    if (diff.inMinutes < 60) return 'Quedan ${diff.inMinutes} min';
+    final h = diff.inHours;
+    final m = diff.inMinutes % 60;
+    return m > 0 ? 'Quedan ${h}h ${m}min' : 'Quedan ${h}h';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.timer_outlined, size: 14, color: widget.color),
+        const SizedBox(width: 4),
+        Text(
+          _remaining(),
+          style: TextStyle(
+              fontSize: 12, fontWeight: FontWeight.w600, color: widget.color),
+        ),
+      ],
+    );
   }
 }
 
