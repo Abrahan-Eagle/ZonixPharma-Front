@@ -51,7 +51,9 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
   - `CommerceContext`: `X-Commerce-Id` en panel; sync sede en lista/Ver/set-primary.
   - Brand commerce: `AppColors.*` en 22 pantallas; `Colors.transparent` residual eliminado.
   - Docs: [../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
-  - Verificación: `flutter analyze` 0 issues; `flutter test` → **227 passed**.
+- **10 jun 2026 — Remediación buyer orders (Rx post-checkout, lote 1).**
+  - `order_detail_page`: CTA **Subir receta** cuando `pending_prescription_validation` sin `prescription_id`.
+  - `order_service.cancelOrder`: exige `success == true` (sin falso positivo).
 - **27 may 2026 — Spec Kit (SDD) espejo Cursor:** skills `speckit-*` en `.cursor/skills/`; hub de specs en repo Backend.
 - **30 abr 2026 — Transformación Zonix Eats → Zonix Pharma (fork destructivo, MVP completo Rx).**
   - Branding: `MaterialApp.title = 'Zonix Pharma'`, `AppConfig.appName` por defecto `Zonix Pharma`, web manifest/title `Zonix Pharma`, canal FCM `zonix_pharma_fcm`, deep link `zonix://pharmacy/{id}`.

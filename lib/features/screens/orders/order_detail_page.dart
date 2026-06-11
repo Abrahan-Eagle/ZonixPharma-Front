@@ -21,6 +21,7 @@ import 'package:zonix/features/screens/orders/buyer_order_chat_page.dart';
 import 'package:zonix/features/screens/orders/buyer_disputes_page.dart';
 import 'package:zonix/features/screens/orders/order_rating_page.dart';
 import 'package:zonix/features/services/prescription_service.dart';
+import 'package:zonix/features/screens/prescriptions/prescription_upload_page.dart';
 import 'package:zonix/widgets/payment_timeline.dart';
 import 'package:zonix/widgets/app_skeleton.dart';
 import 'package:zonix/features/utils/order_tracking_controller.dart';
@@ -385,17 +386,30 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     }
   }
 
+  Future<void> _navigateToPrescriptionUpload(int orderId) async {
+    if (!mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PrescriptionUploadPage(orderId: orderId),
+      ),
+    );
+    if (mounted) await _loadOrder();
+  }
+
   Future<void> _openPrescriptionDetail(Order order) async {
     final id = order.prescriptionId;
     if (id == null) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Aún no hay receta vinculada. Súbela desde la pantalla de subir receta.',
+      if (order.status == 'pending_prescription_validation') {
+        await _navigateToPrescriptionUpload(order.id);
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Aún no hay receta vinculada a este pedido.',
+            ),
           ),
-        ),
-      );
+        );
+      }
       return;
     }
     showDialog<void>(
@@ -569,7 +583,54 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       surfaceColor: surfaceColor,
                       borderColor: borderColor,
                       badgeBg: badgeBg),
-                  if (order.prescriptionId != null ||
+                  if (order.status == 'pending_prescription_validation' &&
+                      order.prescriptionId == null) ...[
+                    const SizedBox(height: 16),
+                    Card(
+                      color: AppColors.brandTeal.withValues(alpha: 0.08),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(Icons.receipt_long,
+                                    color: AppColors.brandTeal),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Este pedido requiere receta médica',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Sube una foto o PDF de tu receta para que el farmacéutico la valide.',
+                              style: TextStyle(
+                                color: textSecondary,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            FilledButton.icon(
+                              onPressed: _updating
+                                  ? null
+                                  : () => _navigateToPrescriptionUpload(
+                                        order.id,
+                                      ),
+                              icon: const Icon(Icons.upload_file),
+                              label: const Text('Subir receta médica'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ] else if (order.prescriptionId != null ||
                       order.status == 'pending_prescription_validation') ...[
                     const SizedBox(height: 16),
                     Card(
@@ -580,7 +641,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         title: const Text('Receta médica'),
                         subtitle: Text(
                           order.status == 'pending_prescription_validation'
-                              ? 'En validación por el farmacéutico colegiado.'
+                              ? 'Receta enviada. En validación por el farmacéutico colegiado.'
                               : 'Ver detalle de la receta adjunta.',
                         ),
                         trailing: const Icon(Icons.chevron_right),

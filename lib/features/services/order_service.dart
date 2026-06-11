@@ -382,12 +382,12 @@ class OrderService extends ChangeNotifier {
     
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body) as Map<String, dynamic>?;
-      if (data != null && (data['success'] == true || data['message'] != null)) return;
+      if (data != null && data['success'] == true) return;
       if (data != null) {
-        String errorMessage = data['message']?.toString() ?? 'Error al cancelar la orden';
-        throw Exception(errorMessage);
+        throw Exception(
+            data['message']?.toString() ?? 'Error al cancelar la orden');
       }
-      return;
+      throw Exception('Error al cancelar la orden');
     } else {
       final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
       String errorMessage = data?['message'] ?? 'Error al cancelar la orden: ${response.statusCode}';

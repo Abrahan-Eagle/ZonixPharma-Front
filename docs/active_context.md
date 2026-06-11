@@ -14,6 +14,12 @@
 - **Smoke manual:** login commerce multi-sede → Mis Comercios → Ver sede B → panel productos/órdenes solo de B; Editar/set-primary cambia default.
 - **Brand commerce:** pantallas `screens/commerce/*` ya usan `AppColors.*`; quedaban 3 `Colors.transparent` → `AppColors.transparent`.
 
+### Remediación buyer orders (lote 1) — 10 junio 2026
+
+- **Front:** CTA **Subir receta** en `order_detail_page` (Rx sin receta); `order_service.cancelOrder` exige `success == true`.
+- **Backend (espejo):** timeline tracking Rx; cancel 409; throttle cancel/pago.
+- **Pendiente lote 2:** `expires_at` en modelo Order; test comando Rx TTL; `OrderTrackingController` legacy.
+
 ### Verificación local 9 junio 2026
 
 - **Backend** (`ZonixPharma-Backend`): `php artisan test --parallel` → **399 passed**. Detalle en [`../ZonixPharma-Backend/docs/active_context.md`](../ZonixPharma-Backend/docs/active_context.md).
