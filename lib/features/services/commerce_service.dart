@@ -84,6 +84,27 @@ class CommerceService extends ChangeNotifier {
           'total_products': 0,
           'active_products': 0,
         };
+      } else if (response.statusCode == 403) {
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map &&
+              data['error_code'] == 'COMMERCE_PENDING_APPROVAL') {
+            throw Exception(
+              data['message']?.toString() ??
+                  'Tu farmacia está pendiente de aprobación por el administrador.',
+            );
+          }
+          if (data is Map &&
+              data['error_code'] == 'COMMERCE_PROFILE_REQUIRED') {
+            throw Exception(
+              data['message']?.toString() ??
+                  'Debes registrar tu farmacia antes de acceder al panel comercial.',
+            );
+          }
+        } catch (e) {
+          if (e is Exception) rethrow;
+        }
+        throw Exception('Error al obtener estadísticas: ${response.statusCode}');
       } else {
         throw Exception('Error al obtener estadísticas: ${response.statusCode}');
       }

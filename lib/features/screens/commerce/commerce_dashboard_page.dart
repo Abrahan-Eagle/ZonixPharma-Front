@@ -104,34 +104,43 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
         _commerceId = commerceData['id'] ?? 0;
         _commerceName = (commerceData['business_name'] ?? '').toString();
         _commerceImageUrl = (commerceData['image'] ?? '').toString().trim();
-        _commerceStatus = (commerceData['status'] ?? 'approved').toString();
+        _commerceStatus = (commerceData['status'] ?? 'pending_review').toString();
       } catch (_) {
         _commerceOpen = false;
         _commerceId = 0;
         _commerceName = '';
         _commerceImageUrl = '';
-        _commerceStatus = 'approved';
+        _commerceStatus = 'pending_review';
       }
 
       if (!mounted) return;
-      final commerceService =
-          Provider.of<CommerceService>(context, listen: false);
-      final stats = await commerceService.getCommerceStatistics(_commerceId);
-      if (!mounted) return;
-      List<dynamic> recent = stats['recent_orders'] as List<dynamic>? ?? [];
-      if (recent.isEmpty) {
-        final orders = await CommerceOrderService.getOrders(perPage: 5);
+
+      Map<String, dynamic> stats;
+      List<dynamic> recent;
+
+      if (_commerceStatus != 'approved') {
+        stats = _emptyCommerceStats();
+        recent = [];
+      } else {
+        final commerceService =
+            Provider.of<CommerceService>(context, listen: false);
+        stats = await commerceService.getCommerceStatistics(_commerceId);
         if (!mounted) return;
-        recent = orders
-            .map((o) => {
-                  'id': o.id,
-                  'status': o.status,
-                  'total': o.total,
-                  'customer_name': o.customerName,
-                  'created_at': o.createdAt.toIso8601String(),
-                  'items_count': o.itemCount,
-                })
-            .toList();
+        recent = stats['recent_orders'] as List<dynamic>? ?? [];
+        if (recent.isEmpty) {
+          final orders = await CommerceOrderService.getOrders(perPage: 5);
+          if (!mounted) return;
+          recent = orders
+              .map((o) => {
+                    'id': o.id,
+                    'status': o.status,
+                    'total': o.total,
+                    'customer_name': o.customerName,
+                    'created_at': o.createdAt.toIso8601String(),
+                    'items_count': o.itemCount,
+                  })
+              .toList();
+        }
       }
 
       if (mounted) {
@@ -140,7 +149,9 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
           _recentOrders = recent;
           _loading = false;
         });
-        _subscribeToCommerceUpdates();
+        if (_commerceStatus == 'approved') {
+          _subscribeToCommerceUpdates();
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -151,6 +162,15 @@ class _CommerceDashboardPageState extends State<CommerceDashboardPage> {
       }
     }
   }
+
+  Map<String, dynamic> _emptyCommerceStats() => {
+        'total_orders': 0,
+        'total_revenue': 0.0,
+        'average_order_value': 0.0,
+        'total_products': 0,
+        'active_products': 0,
+        'recent_orders': <dynamic>[],
+      };
 
   Future<void> _toggleCommerceOpen(bool value) async {
     try {
