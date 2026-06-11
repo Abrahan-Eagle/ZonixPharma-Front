@@ -6,6 +6,13 @@
 
 ## Última actualización de contexto
 
+### Buyer prescriptions lote 5 — 10 junio 2026
+
+- **Mis recetas:** tap → `OrderDetailPage`; botón eliminar si `pending_validation`.
+- **Errores:** `prescriptionHttpErrorMessage` (alias `pharmacistHttpErrorMessage`) + códigos buyer Rx.
+- **Doc Backend:** `AUDIT_buyer_prescriptions_2026-06-10.md`.
+- **Verificación:** **238** tests (~1 skip), analyze OK.
+
 ### P2 backlog lote 4 — 10 junio 2026
 
 - Dashboard pharmacist cache en `PrescriptionService`; chat orden muestra **Farmacia**; util `formatRxCountdownLabel` testeada.

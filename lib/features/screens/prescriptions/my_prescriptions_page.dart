@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'package:zonix/features/screens/orders/order_detail_page.dart';
 import 'package:zonix/features/services/prescription_service.dart';
 import 'package:zonix/features/utils/app_colors.dart';
 import 'package:zonix/models/prescription.dart';
@@ -34,6 +35,50 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
       default:
         return AppColors.brandTeal;
     }
+  }
+
+  Future<void> _confirmDelete(Prescription p, PrescriptionService service) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Eliminar receta'),
+        content: Text(
+          '¿Eliminar la receta #${p.id}? Solo puedes hacerlo mientras está pendiente de validación.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final deleted = await service.deletePrescription(p.id);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          deleted
+              ? 'Receta eliminada.'
+              : (service.error ?? 'No se pudo eliminar la receta.'),
+        ),
+      ),
+    );
+  }
+
+  void _openOrder(Prescription p) {
+    final orderId = p.orderId;
+    if (orderId == null) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OrderDetailPage(orderId: orderId),
+      ),
+    );
   }
 
   @override
@@ -88,6 +133,7 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
                 final p = service.myPrescriptions[index];
                 return Card(
                   child: ListTile(
+                    onTap: p.orderId != null ? () => _openOrder(p) : null,
                     leading: CircleAvatar(
                       backgroundColor: _statusColor(p.status),
                       child: const Icon(Icons.receipt_long,
@@ -98,7 +144,8 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Médico: ${p.prescribingDoctorName}'),
-                        if (p.orderId != null) Text('Pedido: #${p.orderId}'),
+                        if (p.orderId != null)
+                          Text('Pedido: #${p.orderId} · Toca para ver detalle'),
                         Text('Estado: ${p.statusLabel}'),
                         if (p.rejectionReason != null &&
                             p.rejectionReason!.isNotEmpty)
@@ -107,6 +154,15 @@ class _MyPrescriptionsPageState extends State<MyPrescriptionsPage> {
                                   color: AppColors.statusError)),
                       ],
                     ),
+                    trailing: p.status == Prescription.statusPending
+                        ? IconButton(
+                            tooltip: 'Eliminar receta pendiente',
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () => _confirmDelete(p, service),
+                          )
+                        : (p.orderId != null
+                            ? const Icon(Icons.chevron_right)
+                            : null),
                   ),
                 );
               },

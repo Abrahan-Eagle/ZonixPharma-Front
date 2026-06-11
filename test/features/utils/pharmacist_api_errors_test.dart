@@ -15,6 +15,17 @@ void main() {
       );
     });
 
+    test('PRESCRIPTION_ALREADY_PROCESSED', () {
+      final response = http.Response(
+        '{"success":false,"message":"No se puede eliminar","error_code":"PRESCRIPTION_ALREADY_PROCESSED"}',
+        422,
+      );
+      expect(
+        prescriptionHttpErrorMessage('Eliminar', response),
+        'No se puede eliminar',
+      );
+    });
+
     test('usa message del backend', () {
       final response = http.Response(
         '{"success":false,"message":"Receta no encontrada."}',
