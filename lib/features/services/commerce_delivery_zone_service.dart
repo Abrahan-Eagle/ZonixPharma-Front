@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 
 class CommerceDeliveryZoneService {
   static String get baseUrl => AppConfig.apiUrl;
@@ -22,7 +22,7 @@ class CommerceDeliveryZoneService {
     String? sortOrder,
   }) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final queryParams = <String, String>{};
       if (status != null && status.isNotEmpty) queryParams['status'] = status;
       if (sortBy != null) queryParams['sort_by'] = sortBy;

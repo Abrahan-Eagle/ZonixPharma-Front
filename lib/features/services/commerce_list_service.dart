@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:zonix/config/app_config.dart';
-import 'package:zonix/helpers/auth_helper.dart';
 import 'package:zonix/models/my_commerce.dart';
 import 'package:zonix/features/utils/commerce_api_errors.dart';
+import 'package:zonix/features/utils/commerce_context.dart';
 
 /// Servicio para listar y gestionar las farmacias del usuario commerce (multi-sede).
 class CommerceListService {
@@ -11,7 +11,7 @@ class CommerceListService {
 
   /// Listar todos los comercios del perfil
   static Future<List<MyCommerce>> getMyCommerces({int page = 1, int perPage = 50}) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final uri = Uri.parse('$baseUrl/api/commerce/commerces').replace(queryParameters: {
       'page': '$page',
       'per_page': '${perPage.clamp(1, 100)}',
@@ -44,7 +44,7 @@ class CommerceListService {
     bool open = false,
     String? schedule,
   }) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final body = {
       'business_name': businessName,
       'business_type': businessType,
@@ -72,7 +72,7 @@ class CommerceListService {
 
   /// Establecer un comercio como principal (selector activo)
   static Future<void> setPrimary(int commerceId) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final response = await http.put(
       Uri.parse('$baseUrl/api/commerce/commerces/$commerceId/set-primary'),
       headers: headers,
@@ -82,5 +82,6 @@ class CommerceListService {
       throw Exception(commerceHttpErrorMessage(
           'Error al cambiar farmacia principal', response));
     }
+    await CommerceContext.setActiveCommerceId(commerceId);
   }
 }

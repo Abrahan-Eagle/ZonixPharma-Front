@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import '../../config/app_config.dart';
 import '../utils/commerce_api_errors.dart';
 
@@ -27,7 +27,7 @@ class CommerceDataService {
 
   static Future<Map<String, dynamic>> _getCommerceDataImpl() async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce'),
         headers: headers,
@@ -36,7 +36,14 @@ class CommerceDataService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true && data['data'] != null) {
-          return Map<String, dynamic>.from(data['data']);
+          final commerce = Map<String, dynamic>.from(data['data']);
+          final id = commerce['id'] is int
+              ? commerce['id'] as int
+              : int.tryParse(commerce['id']?.toString() ?? '') ?? 0;
+          if (id > 0) {
+            await CommerceContext.setActiveCommerceId(id);
+          }
+          return commerce;
         }
         throw Exception('Respuesta inv?lida del servidor');
       } else if (response.statusCode == 404) {
@@ -53,7 +60,7 @@ class CommerceDataService {
 
   // Actualizar datos del comercio (PUT /api/commerce)
   static Future<Map<String, dynamic>> updateCommerceData(Map<String, dynamic> data) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final body = <String, dynamic>{};
       if (data['business_name'] != null) body['business_name'] = data['business_name'];
@@ -87,7 +94,7 @@ class CommerceDataService {
 
   // Actualizar datos de pago m?vil
   static Future<Map<String, dynamic>> updatePaymentData(Map<String, dynamic> data) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final profileResponse = await http.get(
         Uri.parse('$baseUrl/api/buyer/profiles'),
@@ -138,7 +145,7 @@ class CommerceDataService {
     int profileId,
     Map<String, dynamic> data,
   ) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final body = Map<String, dynamic>.from(data)..['profile_id'] = profileId;
     final response = await http.post(
       Uri.parse('$baseUrl/api/profiles/add-commerce'),
@@ -174,7 +181,7 @@ class CommerceDataService {
 
   // Crear nuevo comercio (perfil + comercio en una llamada; para flujos sin perfil previo)
   static Future<Map<String, dynamic>> createCommerce(Map<String, dynamic> data) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/profiles/commerce'),
@@ -208,7 +215,7 @@ class CommerceDataService {
       throw Exception('El archivo de imagen no existe');
     }
 
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     // Para multipart no incluir Content-Type - el request lo establece con boundary
     headers.remove('Content-Type');
 

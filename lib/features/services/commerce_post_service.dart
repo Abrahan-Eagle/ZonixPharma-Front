@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:zonix/config/app_config.dart';
 import 'package:zonix/features/utils/commerce_api_errors.dart';
-import 'package:zonix/helpers/auth_helper.dart';
+import 'package:zonix/features/utils/commerce_context.dart';
 
 /// Servicio para obtener publicaciones/posts de los comercios del usuario.
 class CommercePostService {
@@ -10,7 +10,7 @@ class CommercePostService {
 
   /// GET /api/commerce/posts - Listar posts de los comercios del perfil
   static Future<List<Map<String, dynamic>>> getMyPosts({int page = 1, int perPage = 20}) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final uri = Uri.parse('$baseUrl/api/commerce/posts').replace(queryParameters: {
       'page': '$page',
       'per_page': '${perPage.clamp(1, 100)}',

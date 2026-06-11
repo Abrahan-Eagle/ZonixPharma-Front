@@ -3,7 +3,7 @@ import 'package:zonix/models/commerce.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import '../utils/commerce_api_errors.dart';
 
 /// Servicio para gestión de farmacias/comercios
@@ -19,7 +19,7 @@ class CommerceService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/commerces'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -46,7 +46,7 @@ class CommerceService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/buyer/restaurants/$id'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -71,7 +71,7 @@ class CommerceService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/dashboard'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {

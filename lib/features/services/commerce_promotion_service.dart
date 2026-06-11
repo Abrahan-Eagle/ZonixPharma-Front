@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import '../utils/commerce_api_errors.dart';
 
 class CommercePromotionService {
@@ -20,7 +20,7 @@ class CommercePromotionService {
     int perPage = 50,
   }) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final queryParams = <String, String>{
         'page': '$page',
         'per_page': '${perPage.clamp(1, 100)}',
@@ -65,7 +65,7 @@ class CommercePromotionService {
   // Obtener una promoción específica
   static Future<Map<String, dynamic>> getPromotion(int id) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/promotions/$id'),
         headers: headers,
@@ -86,7 +86,7 @@ class CommercePromotionService {
   // Crear nueva promoción
   static Future<Map<String, dynamic>> createPromotion(Map<String, dynamic> data, {File? imageFile}) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/api/commerce/promotions'),
@@ -132,7 +132,7 @@ class CommercePromotionService {
   // Actualizar promoción
   static Future<Map<String, dynamic>> updatePromotion(int id, Map<String, dynamic> data, {File? imageFile}) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       var request = http.MultipartRequest(
         'POST',
         Uri.parse('$baseUrl/api/commerce/promotions/$id'),
@@ -181,7 +181,7 @@ class CommercePromotionService {
   // Eliminar promoción
   static Future<void> deletePromotion(int id) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.delete(
         Uri.parse('$baseUrl/api/commerce/promotions/$id'),
         headers: headers,
@@ -199,7 +199,7 @@ class CommercePromotionService {
   // Activar/desactivar promoción
   static Future<Map<String, dynamic>> togglePromotionStatus(int id) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.put(
         Uri.parse('$baseUrl/api/commerce/promotions/$id/toggle'),
         headers: headers,

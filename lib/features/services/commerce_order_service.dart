@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../models/commerce_order.dart';
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import 'cache_service.dart';
 import '../utils/commerce_api_errors.dart';
 import '../utils/http_retry.dart';
@@ -92,7 +92,7 @@ class CommerceOrderService {
     int? perPage,
   }) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       
       final queryParams = <String, String>{};
       if (status != null && status.isNotEmpty) queryParams['status'] = status;
@@ -132,7 +132,7 @@ class CommerceOrderService {
   // Obtener una orden específica
   static Future<CommerceOrder> getOrder(int id) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/orders/$id'),
         headers: headers,
@@ -155,7 +155,7 @@ class CommerceOrderService {
 
   static Future<String?> getPickupQrPayload(int orderId) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/orders/$orderId/pickup-qr'),
         headers: headers,
@@ -173,7 +173,7 @@ class CommerceOrderService {
   // Actualizar estado de una orden
   static Future<CommerceOrder> updateOrderStatus(int id, String status) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.put(
         Uri.parse('$baseUrl/api/commerce/orders/$id/status'),
         headers: headers,
@@ -202,7 +202,7 @@ class CommerceOrderService {
   // Rechazar orden en pending_payment (cuando no hay acuerdo tras chat)
   static Future<void> rejectOrder(int orderId, {String? reason}) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.post(
         Uri.parse('$baseUrl/api/commerce/orders/$orderId/reject'),
         headers: {...headers, 'Content-Type': 'application/json'},
@@ -226,7 +226,7 @@ class CommerceOrderService {
   // Aprobar orden para que el comprador pueda proceder al pago
   static Future<void> approveForPayment(int orderId) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.post(
         Uri.parse('$baseUrl/api/commerce/orders/$orderId/approve-for-payment'),
         headers: headers,
@@ -251,7 +251,7 @@ class CommerceOrderService {
         throw Exception('Debes indicar un motivo de rechazo.');
       }
 
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final response = await http.post(
         Uri.parse('$baseUrl/api/commerce/orders/$orderId/validate-payment'),
         headers: headers,
@@ -331,7 +331,7 @@ class CommerceOrderService {
   // Obtener órdenes por rango de fechas
   static Future<List<CommerceOrder>> getOrdersByDateRange(DateTime startDate, DateTime endDate) async {
     try {
-      final headers = await AuthHelper.getAuthHeaders();
+      final headers = await CommerceContext.getAuthHeaders();
       final queryParams = <String, String>{
         'start_date': startDate.toIso8601String(),
         'end_date': endDate.toIso8601String(),

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import '../utils/commerce_api_errors.dart';
 
 class CommerceAnalyticsService extends ChangeNotifier {
@@ -13,7 +13,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/analytics/overview'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -47,7 +47,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
       
       final response = await http.get(
         uri,
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -70,7 +70,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/analytics/orders'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -93,7 +93,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/analytics/products'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -116,7 +116,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/analytics/customers'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {
@@ -139,7 +139,7 @@ class CommerceAnalyticsService extends ChangeNotifier {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/analytics/performance'),
-        headers: await AuthHelper.getAuthHeaders(),
+        headers: await CommerceContext.getAuthHeaders(),
       );
 
       if (response.statusCode == 200) {

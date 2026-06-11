@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../models/commerce_product.dart';
 import '../../config/app_config.dart';
-import '../../helpers/auth_helper.dart';
+import '../utils/commerce_context.dart';
 import 'package:zonix/features/utils/safe_parse.dart';
 import 'cache_service.dart';
 import '../utils/commerce_api_errors.dart';
@@ -46,7 +46,7 @@ class CommerceProductService {
     String? sortBy,
     String? sortOrder,
   }) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     final queryParams = <String, String>{
       'page': page.toString(),
       'per_page': perPage.toString(),
@@ -114,7 +114,7 @@ class CommerceProductService {
 
   // Obtener un producto específico
   static Future<CommerceProduct> getProduct(int id) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/commerce/products/$id'),
@@ -138,7 +138,7 @@ class CommerceProductService {
 
   // Crear nuevo producto
   static Future<CommerceProduct> createProduct(Map<String, dynamic> data, {File? imageFile}) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -225,7 +225,7 @@ class CommerceProductService {
 
   // Actualizar producto
   static Future<CommerceProduct> updateProduct(int id, Map<String, dynamic> data, {File? imageFile}) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       var request = http.MultipartRequest(
         'POST',
@@ -311,7 +311,7 @@ class CommerceProductService {
 
   // Eliminar producto
   static Future<void> deleteProduct(int id) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/api/commerce/products/$id'),
@@ -329,7 +329,7 @@ class CommerceProductService {
 
   // Cambiar disponibilidad del producto
   static Future<CommerceProduct> toggleAvailability(int id) async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/commerce/products/$id/toggle-disponible'),
@@ -353,7 +353,7 @@ class CommerceProductService {
 
   // Obtener categorías de productos desde el endpoint real
   static Future<List<Map<String, dynamic>>> getProductCategories() async {
-    final headers = await AuthHelper.getAuthHeaders();
+    final headers = await CommerceContext.getAuthHeaders();
     try {
       final url = Uri.parse('$baseUrl/api/buyer/search/categories');
       final response = await http.get(url, headers: headers);
