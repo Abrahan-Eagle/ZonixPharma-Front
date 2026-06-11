@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 import 'package:zonix/config/app_config.dart';
+import 'package:zonix/features/utils/pharmacist_api_errors.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 import 'package:zonix/models/prescription.dart';
 
@@ -169,6 +170,30 @@ class PrescriptionService extends ChangeNotifier {
 
   // ── Pharmacist ───────────────────────────────────────────────────────
 
+  /// GET /api/pharmacist/prescriptions/{id}
+  Future<Prescription?> loadPharmacistPrescriptionById(int id) async {
+    try {
+      final headers = await AuthHelper.getAuthHeaders();
+      final url =
+          Uri.parse('${AppConfig.apiUrl}/api/pharmacist/prescriptions/$id');
+      final response = await http.get(url, headers: headers);
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+        if (body is Map && body['success'] == true && body['data'] is Map) {
+          return Prescription.fromJson(
+              Map<String, dynamic>.from(body['data'] as Map));
+        }
+      }
+      _error = pharmacistHttpErrorMessage('Receta', response);
+      notifyListeners();
+      return null;
+    } catch (e) {
+      _error = 'Error al cargar la receta: $e';
+      notifyListeners();
+      return null;
+    }
+  }
+
   Future<void> loadPendingForPharmacist() async {
     _isLoading = true;
     _error = null;
@@ -180,13 +205,17 @@ class PrescriptionService extends ChangeNotifier {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        final list = (body is Map && body['data'] is List)
-            ? List<Map<String, dynamic>>.from(body['data'] as List)
-            : <Map<String, dynamic>>[];
-        _pendingForPharmacist = list.map(Prescription.fromJson).toList();
+        if (body is Map && body['success'] == true && body['data'] is List) {
+          final list =
+              List<Map<String, dynamic>>.from(body['data'] as List);
+          _pendingForPharmacist = list.map(Prescription.fromJson).toList();
+        } else {
+          _error = pharmacistHttpErrorMessage(
+              'No se pudieron cargar las recetas pendientes', response);
+        }
       } else {
-        _error = _extractMessage(response,
-            'No se pudieron cargar las recetas pendientes.');
+        _error = pharmacistHttpErrorMessage(
+            'No se pudieron cargar las recetas pendientes', response);
       }
     } catch (e) {
       _error = 'Error al cargar pendientes: $e';
@@ -221,7 +250,7 @@ class PrescriptionService extends ChangeNotifier {
       );
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final body = jsonDecode(response.body);
-        if (body is Map && body['data'] is Map) {
+        if (body is Map && body['success'] == true && body['data'] is Map) {
           final updated = Prescription.fromJson(
               Map<String, dynamic>.from(body['data'] as Map));
           _pendingForPharmacist = _pendingForPharmacist
@@ -231,8 +260,9 @@ class PrescriptionService extends ChangeNotifier {
           return updated;
         }
       }
-      _error = _extractMessage(response,
-          approve ? 'No se pudo aprobar la receta.' : 'No se pudo rechazar la receta.');
+      _error = pharmacistHttpErrorMessage(
+          approve ? 'No se pudo aprobar la receta' : 'No se pudo rechazar la receta',
+          response);
       notifyListeners();
       return null;
     } catch (e) {

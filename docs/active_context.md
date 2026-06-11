@@ -6,6 +6,14 @@
 
 ## Última actualización de contexto
 
+- **Pendiente:** auditoría 360° módulo orders completa.
+
+### Remediación módulo pharmacist (lote 1) — 10 junio 2026
+
+- **Hecho:** `pharmacist_api_errors.dart`; `PrescriptionService` exige `success`, carga detalle Rx autenticado; `ValidationDetailPage` refresca receta al abrir; dashboard usa mensajes API.
+- **Backend (espejo):** throttle approve/reject; tests dashboard + licencia inválida.
+- **Verificación:** `flutter test` → **230 passed** (~1 skip).
+
 ### Remediación buyer orders (lote 2) — 10 junio 2026
 
 - **Hecho:** modelo `Order` con `expiresAt` / `requiresPrescription`; chip cuenta regresiva TTL Rx en `order_detail_page`; `getOrdersByDateRange` filtra en cliente (backend no soporta fechas).

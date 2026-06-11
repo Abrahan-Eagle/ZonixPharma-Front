@@ -18,12 +18,32 @@ class ValidationDetailPage extends StatefulWidget {
 
 class _ValidationDetailPageState extends State<ValidationDetailPage> {
   bool _busy = false;
+  late Prescription _prescription;
+  bool _loadingDetail = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _prescription = widget.prescription;
+    _refreshPrescription();
+  }
+
+  Future<void> _refreshPrescription() async {
+    setState(() => _loadingDetail = true);
+    final fresh = await context
+        .read<PrescriptionService>()
+        .loadPharmacistPrescriptionById(widget.prescription.id);
+    if (mounted && fresh != null) {
+      setState(() => _prescription = fresh);
+    }
+    if (mounted) setState(() => _loadingDetail = false);
+  }
 
   Future<void> _approve() async {
     setState(() => _busy = true);
     final result = await context
         .read<PrescriptionService>()
-        .approve(widget.prescription.id);
+        .approve(_prescription.id);
     if (!mounted) return;
     setState(() => _busy = false);
     if (result != null) {
@@ -72,7 +92,7 @@ class _ValidationDetailPageState extends State<ValidationDetailPage> {
     setState(() => _busy = true);
     final result = await context
         .read<PrescriptionService>()
-        .reject(widget.prescription.id, reason);
+        .reject(_prescription.id, reason);
     if (!mounted) return;
     setState(() => _busy = false);
     if (result != null) {
@@ -91,12 +111,14 @@ class _ValidationDetailPageState extends State<ValidationDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final p = widget.prescription;
+    final p = _prescription;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: Text('Receta #${p.id}')),
       body: SafeArea(
-        child: ListView(
+        child: _loadingDetail
+            ? const Center(child: CircularProgressIndicator())
+            : ListView(
           padding: const EdgeInsets.all(16),
           children: [
             AspectRatio(

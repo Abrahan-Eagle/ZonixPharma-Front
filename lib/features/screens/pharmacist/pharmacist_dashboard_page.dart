@@ -7,6 +7,7 @@ import 'package:zonix/config/app_config.dart';
 import 'package:zonix/features/screens/pharmacist/pending_validations_page.dart';
 import 'package:zonix/features/screens/pharmacist/pharmacist_onboarding_page.dart';
 import 'package:zonix/features/utils/app_colors.dart';
+import 'package:zonix/features/utils/pharmacist_api_errors.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 
 /// Dashboard del farmacéutico colegiado responsable.
@@ -45,8 +46,7 @@ class _PharmacistDashboardPageState extends State<PharmacistDashboardPage> {
           _data = Map<String, dynamic>.from(body['data'] as Map);
         }
       } else {
-        _error =
-            'No se pudo cargar el dashboard (HTTP ${response.statusCode}).';
+        _error = pharmacistHttpErrorMessage('Dashboard', response);
       }
     } catch (e) {
       _error = 'Error: $e';
