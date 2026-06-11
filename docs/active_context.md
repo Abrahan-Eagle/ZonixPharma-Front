@@ -6,7 +6,19 @@
 
 ## Última actualización de contexto
 
-- **Pendiente:** auditoría 360° módulo orders completa.
+### Cierre auditorías Rx/Orders — 10 junio 2026
+
+- **Orders:** `order_api_errors.dart`; `OrderService` exige `success` en list/show/tracking/cancel.
+- **Doc Backend:** `AUDIT_orders_2026-06-10.md`, `SMOKE_RX_E2E.md`.
+- **Verificación:** `flutter test` **233** passed (~1 skip).
+
+### Auditoría pharmacist lote 3 — 10 junio 2026
+
+- **Hecho:** Buyer Rx en `PrescriptionService` exige `success == true` (list/upload/delete); onboarding MPPS parsea envelope + `pharmacistHttpErrorMessage`.
+- **Doc Backend:** `docs/AUDIT_pharmacist_2026-06-10.md`.
+- **Verificación:** `flutter analyze` OK; `flutter test` → **230 passed** (~1 skip).
+
+- **Pendiente:** auditoría 360° módulo orders completa; smoke E2E Rx.
 
 ### Remediación módulo pharmacist (lote 2 — historial) — 10 junio 2026
 

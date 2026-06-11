@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -7,6 +8,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:zonix/config/app_config.dart';
+import 'package:zonix/features/utils/pharmacist_api_errors.dart';
 import 'package:zonix/helpers/auth_helper.dart';
 
 /// Registro de datos colegiados (MPPS, licencia, título opcional).
@@ -134,24 +136,30 @@ class _PharmacistOnboardingPageState extends State<PharmacistOnboardingPage> {
       final res = await http.Response.fromStream(streamed);
       if (!mounted) return;
       if (res.statusCode >= 200 && res.statusCode < 300) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Datos enviados. Un administrador validará tu colegiación MPPS.'),
-          ),
-        );
-        Navigator.of(context).pop(true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(
-                  'No se pudo guardar (${res.statusCode}). Revisa los datos.')),
-        );
+        final body = jsonDecode(res.body);
+        if (body is Map && body['success'] == true) {
+          final msg = body['message']?.toString() ??
+              'Datos enviados. Un administrador validará tu colegiación MPPS.';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg)),
+          );
+          Navigator.of(context).pop(true);
+          return;
+        }
       }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            pharmacistHttpErrorMessage('No se pudo guardar el registro', res),
+          ),
+        ),
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
+          const SnackBar(
+            content: Text('Error de conexión. Intenta de nuevo.'),
+          ),
         );
       }
     } finally {

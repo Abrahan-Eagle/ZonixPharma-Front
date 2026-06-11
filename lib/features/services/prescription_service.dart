@@ -46,10 +46,14 @@ class PrescriptionService extends ChangeNotifier {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        if (body is Map && body['data'] is Map) {
+        if (body is Map &&
+            body['success'] == true &&
+            body['data'] is Map) {
           return Prescription.fromJson(
               Map<String, dynamic>.from(body['data'] as Map));
         }
+        _error = pharmacistHttpErrorMessage('Receta', response);
+        notifyListeners();
       }
       return null;
     } catch (_) {
@@ -67,12 +71,16 @@ class PrescriptionService extends ChangeNotifier {
       final response = await http.get(url, headers: headers);
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
-        final list = (body is Map && body['data'] is List)
-            ? List<Map<String, dynamic>>.from(body['data'] as List)
-            : <Map<String, dynamic>>[];
-        _myPrescriptions = list.map(Prescription.fromJson).toList();
+        if (body is Map && body['success'] == true && body['data'] is List) {
+          final list = List<Map<String, dynamic>>.from(body['data'] as List);
+          _myPrescriptions = list.map(Prescription.fromJson).toList();
+        } else {
+          _error = pharmacistHttpErrorMessage(
+              'No se pudieron cargar las recetas', response);
+        }
       } else {
-        _error = _extractMessage(response, 'No se pudieron cargar las recetas.');
+        _error = pharmacistHttpErrorMessage(
+            'No se pudieron cargar las recetas', response);
       }
     } catch (e) {
       _error = 'Error al cargar recetas: $e';
@@ -130,14 +138,17 @@ class PrescriptionService extends ChangeNotifier {
       final response = await http.Response.fromStream(streamed);
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final body = jsonDecode(response.body);
-        if (body is Map && body['data'] is Map) {
+        if (body is Map &&
+            body['success'] == true &&
+            body['data'] is Map) {
           final prescription = Prescription.fromJson(
               Map<String, dynamic>.from(body['data'] as Map));
           _myPrescriptions = [prescription, ..._myPrescriptions];
           return prescription;
         }
       }
-      _error = _extractMessage(response, 'No se pudo enviar la receta.');
+      _error =
+          pharmacistHttpErrorMessage('No se pudo enviar la receta', response);
       return null;
     } catch (e) {
       _error = 'Error al enviar la receta: $e';
@@ -155,12 +166,16 @@ class PrescriptionService extends ChangeNotifier {
           '${AppConfig.apiUrl}/api/buyer/prescriptions/$prescriptionId');
       final response = await http.delete(url, headers: headers);
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        _myPrescriptions =
-            _myPrescriptions.where((p) => p.id != prescriptionId).toList();
-        notifyListeners();
-        return true;
+        final body = jsonDecode(response.body);
+        if (body is Map && body['success'] == true) {
+          _myPrescriptions =
+              _myPrescriptions.where((p) => p.id != prescriptionId).toList();
+          notifyListeners();
+          return true;
+        }
       }
-      _error = _extractMessage(response, 'No se pudo eliminar la receta.');
+      _error = pharmacistHttpErrorMessage(
+          'No se pudo eliminar la receta', response);
       notifyListeners();
       return false;
     } catch (e) {
@@ -310,14 +325,4 @@ class PrescriptionService extends ChangeNotifier {
     }
   }
 
-  String _extractMessage(http.Response response, String fallback) {
-    try {
-      final body = jsonDecode(response.body);
-      if (body is Map) {
-        final msg = body['message'] ?? body['error'];
-        if (msg is String && msg.isNotEmpty) return msg;
-      }
-    } catch (_) {}
-    return fallback;
-  }
 }

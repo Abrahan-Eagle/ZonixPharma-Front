@@ -10,6 +10,7 @@ import '../../features/utils/auth_utils.dart';
 import 'cache_service.dart';
 import 'connectivity_service.dart';
 import '../utils/http_retry.dart';
+import '../utils/order_api_errors.dart';
 
 class OrderService extends ChangeNotifier {
   List<dynamic> _extractListFromEnvelope(dynamic body, {String dataKey = 'data'}) {
@@ -147,30 +148,22 @@ class OrderService extends ChangeNotifier {
         throw Exception(errorMessage);
       }
     } else {
-      // Manejar códigos de error HTTP específicos
       final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-      String errorMessage = 'Error al crear la orden: ${response.statusCode}';
-      
-      if (data != null && data['message'] != null) {
+      String errorMessage = orderHttpErrorMessage('Error al crear la orden', response);
+
+      if (data != null && data is Map && data['message'] != null) {
         final code = data['error_code']?.toString();
-        errorMessage = data['message'];
-        // Detectar si falta photo_users
-        if (data['missing_field'] == 'photo_users' || 
-            (errorMessage.contains('photo_users') || errorMessage.contains('foto'))) {
-          errorMessage = 'Se requiere una foto de perfil para crear una orden. Por favor, completa tu perfil.';
-        } else if (code == 'ORDER_TOTAL_MISMATCH') {
-          final recalculated = data['recalculated_total'];
-          if (recalculated != null) {
-            errorMessage = 'El total cambió durante el checkout. Nuevo total: \$${recalculated.toString()}';
-          }
-        } else if (code == 'ORDER_IDEMPOTENCY_CONFLICT') {
-          errorMessage = 'Se detectó un reintento inválido de compra. Intenta de nuevo.';
-        } else if (code == 'ORDER_MAX_CONCURRENT_OPEN') {
-          errorMessage = data['message']?.toString() ??
-              'Has alcanzado el máximo de pedidos activos. Cancela uno o espera a que finalice antes de crear otro.';
+        errorMessage = orderHttpErrorMessage('Error al crear la orden', response);
+        if (data['missing_field'] == 'photo_users' ||
+            errorMessage.contains('photo_users') ||
+            errorMessage.contains('foto')) {
+          errorMessage =
+              'Se requiere una foto de perfil para crear una orden. Por favor, completa tu perfil.';
+        } else if (code == 'ORDER_TOTAL_MISMATCH' && data['recalculated_total'] != null) {
+          errorMessage = orderHttpErrorMessage('Error al crear la orden', response);
         }
       }
-      
+
       throw Exception(errorMessage);
     }
   }
@@ -237,6 +230,10 @@ class OrderService extends ChangeNotifier {
 
       if (response.statusCode == 200) {
         final decoded = jsonDecode(response.body);
+        if (decoded is Map && decoded['success'] == false) {
+          throw Exception(
+              orderHttpErrorMessage('Error al obtener órdenes', response));
+        }
         final ordersData = _extractListFromEnvelope(decoded);
         if (ordersData.isEmpty) return [];
 
@@ -245,7 +242,7 @@ class OrderService extends ChangeNotifier {
         }
         return ordersData.map<Order>((item) => Order.fromJson(item)).toList();
       } else {
-        throw Exception('Error al obtener órdenes: ${response.statusCode}');
+        throw Exception(orderHttpErrorMessage('Error al obtener órdenes', response));
       }
     } catch (e) {
       final cached = await CacheService.getRawJson(_ordersCacheKey);
@@ -271,14 +268,15 @@ class OrderService extends ChangeNotifier {
       final decoded = jsonDecode(response.body);
       final data = decoded is Map<String, dynamic> ? decoded : null;
       if (data == null) throw Exception('Respuesta inválida');
+      if (data['success'] == false) {
+        throw Exception(orderHttpErrorMessage('Orden', response));
+      }
       if (data['error'] != null) throw Exception(data['error'].toString());
       final orderMap = _extractMapFromEnvelope(data);
       if (orderMap == null) throw Exception('Orden inválida');
       return Order.fromJson(orderMap);
     } else {
-      final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-      final msg = data is Map ? (data['message'] ?? data['error']) : null;
-      throw Exception(msg?.toString() ?? 'Error al obtener la orden: ${response.statusCode}');
+      throw Exception(orderHttpErrorMessage('Orden', response));
     }
   }
 
@@ -389,9 +387,7 @@ class OrderService extends ChangeNotifier {
       }
       throw Exception('Error al cancelar la orden');
     } else {
-      final data = response.body.isNotEmpty ? jsonDecode(response.body) : null;
-      String errorMessage = data?['message'] ?? 'Error al cancelar la orden: ${response.statusCode}';
-      throw Exception(errorMessage);
+      throw Exception(orderHttpErrorMessage('Cancelar orden', response));
     }
   }
 
@@ -423,12 +419,12 @@ class OrderService extends ChangeNotifier {
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Error al obtener tracking: ${response.statusCode}');
+      throw Exception(orderHttpErrorMessage('Tracking', response));
     }
 
     final data = jsonDecode(response.body);
     if (data['success'] != true) {
-      throw Exception(data['message'] ?? 'Error al obtener tracking');
+      throw Exception(orderHttpErrorMessage('Tracking', response));
     }
 
     final dataPayload = data['data'];
@@ -515,7 +511,7 @@ class OrderService extends ChangeNotifier {
       }
       return [];
     } else {
-      throw Exception('Error al obtener mensajes: ${response.statusCode}');
+      throw Exception(orderHttpErrorMessage('Mensajes', response));
     }
   }
 
