@@ -107,6 +107,15 @@ class PrescriptionService extends ChangeNotifier {
     }
   }
 
+  /// Solo tests: evita HTTP al simular recetas del buyer.
+  @visibleForTesting
+  void seedMyPrescriptionsForTesting(List<Prescription> list) {
+    _myPrescriptions = List<Prescription>.from(list);
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+  }
+
   Future<Prescription?> uploadPrescription({
     required int orderId,
     required String prescribingDoctorName,

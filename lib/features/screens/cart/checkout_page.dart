@@ -69,7 +69,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Future<void> _loadPharmaCheckoutContext() async {
     setState(() => _loadingPharmaPolicy = true);
     final cart = Provider.of<CartService>(context, listen: false);
-    final strict = await PharmaPolicyService.blockRxWithoutPrescription();
+    final strict = await PharmaPolicyService.blockRxWithoutPrescription(
+      forceRefresh: true,
+    );
     if (!mounted) return;
     if (!strict || !cart.requiresPrescription) {
       setState(() {

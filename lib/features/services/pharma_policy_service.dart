@@ -46,4 +46,10 @@ class PharmaPolicyService {
     _blockRxWithoutPrescription = null;
     _loading = false;
   }
+
+  /// Solo tests: fija cache sin HTTP (p. ej. widget test modo estricto).
+  static void seedCacheForTesting({required bool blockRx}) {
+    _blockRxWithoutPrescription = blockRx;
+    _loading = false;
+  }
 }
