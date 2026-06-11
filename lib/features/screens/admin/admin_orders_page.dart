@@ -235,7 +235,7 @@ class _AdminOrdersPageState extends State<AdminOrdersPage> {
                     ),
                     const SizedBox(height: 16),
                     _detailRow(
-                        Icons.storefront, 'Comercio', _commerceName(order)),
+                        Icons.storefront, 'Farmacia', _commerceName(order)),
                     _detailRow(Icons.attach_money, 'Total',
                         '\$${safeDouble(order['total']).toStringAsFixed(2)}'),
                     _detailRow(Icons.calendar_today, 'Fecha',

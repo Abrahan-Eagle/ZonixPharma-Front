@@ -36,7 +36,7 @@ class _AdminNotificationsPageState extends State<AdminNotificationsPage> {
   static const _targets = <String, String>{
     'all': 'Todos',
     'users': 'Compradores',
-    'commerce': 'Comercios',
+    'commerce': 'Farmacias',
     'delivery': 'Delivery',
     'delivery_agent': 'Agentes delivery',
     'delivery_company': 'Empresas',

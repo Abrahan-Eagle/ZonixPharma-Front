@@ -6,6 +6,7 @@ import '../../helpers/auth_helper.dart';
 import 'cache_service.dart';
 import 'connectivity_service.dart';
 import '../utils/http_retry.dart';
+import '../utils/admin_api_errors.dart';
 
 class AdminService extends ChangeNotifier {
   static String get baseUrl => AppConfig.apiUrl;
@@ -31,27 +32,11 @@ class AdminService extends ChangeNotifier {
   }
 
   String _extractErrorMessage(http.Response response, {required String fallback}) {
-    try {
-      if (response.body.isEmpty) return '$fallback: ${response.statusCode}';
-      final decoded = jsonDecode(response.body);
-      if (decoded is Map<String, dynamic>) {
-        final message = decoded['message']?.toString();
-        if (message != null && message.trim().isNotEmpty) {
-          return message.trim();
-        }
-        final errors = decoded['errors'];
-        if (errors is Map) {
-          for (final value in errors.values) {
-            if (value is List && value.isNotEmpty) {
-              final first = value.first?.toString();
-              if (first != null && first.trim().isNotEmpty) return first.trim();
-            }
-            if (value is String && value.trim().isNotEmpty) return value.trim();
-          }
-        }
-      }
-    } catch (_) {}
-    return '$fallback: ${response.statusCode}';
+    return adminHttpErrorMessage(fallback, response);
+  }
+
+  Never _throwApiError(String action, http.Response response) {
+    throw Exception(adminHttpErrorMessage(action, response));
   }
 
   /// Stale-while-revalidate: returns cached admin stats instantly.
@@ -91,7 +76,7 @@ class AdminService extends ChangeNotifier {
         }
         return list;
       } else {
-        throw Exception('Error fetching users: ${response.statusCode}');
+        throw Exception(adminHttpErrorMessage('Usuarios', response));
       }
     } catch (e) {
       if (role == null && status == null) {
@@ -114,7 +99,7 @@ class AdminService extends ChangeNotifier {
         final data = jsonDecode(response.body);
         return data is Map ? Map<String, dynamic>.from(data) : {'id': userId};
       } else {
-        throw Exception('Error fetching user: ${response.statusCode}');
+        _throwApiError('Usuario', response);
       }
     } catch (e) {
       throw Exception('Error fetching user: $e');
@@ -135,7 +120,7 @@ class AdminService extends ChangeNotifier {
         notifyListeners();
         return data is Map ? Map<String, dynamic>.from(data['user'] ?? data) : {'id': userId, 'status': status};
       } else {
-        throw Exception('Error updating user status: ${response.statusCode}');
+        _throwApiError('Estado de usuario', response);
       }
     } catch (e) {
       throw Exception('Error updating user status: $e');
@@ -156,7 +141,7 @@ class AdminService extends ChangeNotifier {
         notifyListeners();
         return data is Map ? Map<String, dynamic>.from(data) : {'id': userId, 'role': role};
       } else {
-        throw Exception('Error updating user role: ${response.statusCode}');
+        _throwApiError('Rol de usuario', response);
       }
     } catch (e) {
       throw Exception('Error updating user role: $e');
@@ -175,7 +160,7 @@ class AdminService extends ChangeNotifier {
         notifyListeners();
         return;
       } else {
-        throw Exception('Error deleting user: ${response.statusCode}');
+        _throwApiError('Eliminar usuario', response);
       }
     } catch (e) {
       throw Exception('Error deleting user: $e');
@@ -201,7 +186,7 @@ class AdminService extends ChangeNotifier {
         CacheService.setRawJson('admin_stats', jsonEncode(result), expiration: const Duration(minutes: 5));
         return result;
       } else {
-        throw Exception('Error fetching system statistics: ${response.statusCode}');
+        _throwApiError('Estadísticas', response);
       }
     } catch (e) {
       final cached = await CacheService.getRawJson('admin_stats');
@@ -231,7 +216,7 @@ class AdminService extends ChangeNotifier {
         }
         return _extractListPayload(data);
       } else {
-        throw Exception('Error fetching security logs: ${response.statusCode}');
+        _throwApiError('Logs de seguridad', response);
       }
     } catch (e) {
       throw Exception('Error fetching security logs: $e');
@@ -256,7 +241,7 @@ class AdminService extends ChangeNotifier {
         final data = jsonDecode(response.body);
         return data is Map ? Map<String, dynamic>.from(data) : {};
       } else {
-        throw Exception('Error fetching analytics: ${response.statusCode}');
+        _throwApiError('Analíticas', response);
       }
     } catch (e) {
       throw Exception('Error fetching analytics: $e');
@@ -275,7 +260,7 @@ class AdminService extends ChangeNotifier {
         final data = jsonDecode(response.body);
         return data is Map ? Map<String, dynamic>.from(data) : {};
       } else {
-        throw Exception('Error fetching system health: ${response.statusCode}');
+        _throwApiError('Salud del sistema', response);
       }
     } catch (e) {
       throw Exception('Error fetching system health: $e');
@@ -302,7 +287,7 @@ class AdminService extends ChangeNotifier {
         }
         return List<Map<String, dynamic>>.from(data);
       } else {
-        throw Exception('Error fetching user activity: ${response.statusCode}');
+        _throwApiError('Actividad de usuario', response);
       }
     } catch (e) {
       throw Exception('Error fetching user activity: $e');
@@ -326,7 +311,7 @@ class AdminService extends ChangeNotifier {
           'status': 'sent',
         };
       } else {
-        throw Exception('Error sending system notification: ${response.statusCode}');
+        _throwApiError('Notificación', response);
       }
     } catch (e) {
       throw Exception('Error sending system notification: $e');
@@ -345,7 +330,7 @@ class AdminService extends ChangeNotifier {
         final data = jsonDecode(response.body);
         return data is Map ? Map<String, dynamic>.from(data) : {};
       } else {
-        throw Exception('Error fetching system settings: ${response.statusCode}');
+        _throwApiError('Configuración', response);
       }
     } catch (e) {
       throw Exception('Error fetching system settings: $e');
@@ -369,7 +354,7 @@ class AdminService extends ChangeNotifier {
           'message': 'System settings updated successfully',
         };
       } else {
-        throw Exception('Error updating system settings: ${response.statusCode}');
+        _throwApiError('Actualizar configuración', response);
       }
     } catch (e) {
       throw Exception('Error updating system settings: $e');
@@ -386,7 +371,7 @@ class AdminService extends ChangeNotifier {
       final data = jsonDecode(response.body);
       return _extractMapPayload(data);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Configuración delivery', response);
   }
 
   Future<Map<String, dynamic>> updateDeliverySettings(Map<String, dynamic> settings) async {
@@ -399,7 +384,7 @@ class AdminService extends ChangeNotifier {
       notifyListeners();
       return jsonDecode(response.body);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Guardar configuración delivery', response);
   }
 
   // ---- Delivery Zones ----
@@ -412,7 +397,7 @@ class AdminService extends ChangeNotifier {
       final data = jsonDecode(response.body);
       return _extractListPayload(data);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Zonas de delivery', response);
   }
 
   Future<Map<String, dynamic>> createDeliveryZone(Map<String, dynamic> zone) async {
@@ -425,7 +410,7 @@ class AdminService extends ChangeNotifier {
       notifyListeners();
       return jsonDecode(response.body);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Crear zona', response);
   }
 
   Future<Map<String, dynamic>> updateDeliveryZone(int id, Map<String, dynamic> zone) async {
@@ -438,7 +423,7 @@ class AdminService extends ChangeNotifier {
       notifyListeners();
       return jsonDecode(response.body);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Actualizar zona', response);
   }
 
   Future<void> deleteDeliveryZone(int id) async {
@@ -450,7 +435,7 @@ class AdminService extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Eliminar zona', response);
   }
 
   // ---- Commerces ----
@@ -462,7 +447,7 @@ class AdminService extends ChangeNotifier {
     final uri = Uri.parse('$baseUrl/api/admin/commerces').replace(queryParameters: params);
     final response = await http.get(uri, headers: await AuthHelper.getAuthHeaders());
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Farmacias', response);
   }
 
   Future<Map<String, dynamic>> getCommerceById(int id) async {
@@ -471,7 +456,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Farmacia', response);
   }
 
   Future<void> updateCommerceApproval(int id, String status, {String? rejectionReason}) async {
@@ -485,7 +470,7 @@ class AdminService extends ChangeNotifier {
       body: jsonEncode(body),
     );
     if (response.statusCode == 200) { notifyListeners(); return; }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Aprobar farmacia', response);
   }
 
   Future<void> toggleCommerceOpen(int id, bool open) async {
@@ -495,7 +480,7 @@ class AdminService extends ChangeNotifier {
       body: jsonEncode({'open': open}),
     );
     if (response.statusCode == 200) { notifyListeners(); return; }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Estado farmacia', response);
   }
 
   // ---- Delivery Companies ----
@@ -505,7 +490,7 @@ class AdminService extends ChangeNotifier {
     final uri = Uri.parse('$baseUrl/api/admin/delivery-companies').replace(queryParameters: params);
     final response = await http.get(uri, headers: await AuthHelper.getAuthHeaders());
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Empresas delivery', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryCompanyById(int id) async {
@@ -514,7 +499,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Empresa delivery', response);
   }
 
   Future<List<Map<String, dynamic>>> getDeliveryCompanyAgents(int companyId) async {
@@ -526,7 +511,7 @@ class AdminService extends ChangeNotifier {
       final data = jsonDecode(response.body);
       return _extractListPayload(data);
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Agentes delivery', response);
   }
 
   // ---- Orders (admin) ----
@@ -537,7 +522,7 @@ class AdminService extends ChangeNotifier {
     final uri = Uri.parse('$baseUrl/api/admin/orders').replace(queryParameters: params);
     final response = await http.get(uri, headers: await AuthHelper.getAuthHeaders());
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Pedidos', response);
   }
 
   Future<void> updateOrderStatus(int orderId, String status) async {
@@ -547,7 +532,7 @@ class AdminService extends ChangeNotifier {
       body: jsonEncode({'status': status}),
     );
     if (response.statusCode == 200) { notifyListeners(); return; }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Estado del pedido', response);
   }
 
   // ---- Disputes ----
@@ -558,7 +543,7 @@ class AdminService extends ChangeNotifier {
     final uri = Uri.parse('$baseUrl/api/admin/disputes').replace(queryParameters: params);
     final response = await http.get(uri, headers: await AuthHelper.getAuthHeaders());
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Disputas', response);
   }
 
   Future<Map<String, dynamic>> getDisputeStats() async {
@@ -567,7 +552,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Estadísticas disputas', response);
   }
 
   Future<Map<String, dynamic>> getDisputeById(int id) async {
@@ -576,7 +561,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Disputa', response);
   }
 
   Future<void> resolveDispute(int id, String resolution, String adminNotes) async {
@@ -602,7 +587,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Resumen analíticas', response);
   }
 
   Future<Map<String, dynamic>> getAnalyticsRevenue() async {
@@ -611,7 +596,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Ingresos', response);
   }
 
   Future<Map<String, dynamic>> getAnalyticsOrders() async {
@@ -620,7 +605,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Pedidos analíticas', response);
   }
 
   Future<Map<String, dynamic>> getAnalyticsRealtime() async {
@@ -629,7 +614,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Tiempo real', response);
   }
 
   Future<Map<String, dynamic>> getAnalyticsKpi() async {
@@ -638,7 +623,7 @@ class AdminService extends ChangeNotifier {
       headers: await AuthHelper.getAuthHeaders(),
     );
     if (response.statusCode == 200) return Map<String, dynamic>.from(jsonDecode(response.body));
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('KPIs', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryObservabilitySummary({int? windowHours}) async {
@@ -653,7 +638,7 @@ class AdminService extends ChangeNotifier {
     if (response.statusCode == 200) {
       return Map<String, dynamic>.from(jsonDecode(response.body));
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Observabilidad delivery', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryObservabilityIncidents({
@@ -679,7 +664,7 @@ class AdminService extends ChangeNotifier {
     if (response.statusCode == 200) {
       return Map<String, dynamic>.from(jsonDecode(response.body));
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Incidentes delivery', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryObservabilityIncidentOrders({
@@ -703,7 +688,7 @@ class AdminService extends ChangeNotifier {
     if (response.statusCode == 200) {
       return Map<String, dynamic>.from(jsonDecode(response.body));
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Pedidos con incidente', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryObservabilityHistory({
@@ -725,7 +710,7 @@ class AdminService extends ChangeNotifier {
     if (response.statusCode == 200) {
       return Map<String, dynamic>.from(jsonDecode(response.body));
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Historial observabilidad', response);
   }
 
   Future<Map<String, dynamic>> getDeliveryObservabilityRunbooks() async {
@@ -736,6 +721,6 @@ class AdminService extends ChangeNotifier {
     if (response.statusCode == 200) {
       return Map<String, dynamic>.from(jsonDecode(response.body));
     }
-    throw Exception('Error: ${response.statusCode}');
+    _throwApiError('Runbooks delivery', response);
   }
 }

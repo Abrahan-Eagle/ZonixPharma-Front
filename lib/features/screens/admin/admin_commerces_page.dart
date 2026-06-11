@@ -292,7 +292,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                                   _loadData();
                                   ScaffoldMessenger.of(ctx).showSnackBar(
                                     const SnackBar(
-                                        content: Text('Comercio aprobado'),
+                                        content: Text('Farmacia aprobada'),
                                         backgroundColor:
                                             AppColors.statusSuccess),
                                   );
@@ -329,7 +329,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                                   _loadData();
                                   ScaffoldMessenger.of(ctx).showSnackBar(
                                     const SnackBar(
-                                        content: Text('Comercio rechazado'),
+                                        content: Text('Farmacia rechazada'),
                                         backgroundColor:
                                             AppColors.brandCtaAccent),
                                   );
@@ -446,7 +446,7 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg(context),
       appBar: AppBar(
-        title: const Text('Comercios'),
+        title: const Text('Farmacias'),
         backgroundColor: isDark
             ? Theme.of(context).colorScheme.surfaceContainerHigh
             : AppColors.brandNavy,

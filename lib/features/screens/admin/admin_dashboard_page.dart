@@ -345,7 +345,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           AppColors.brandCtaAccent),
       _Metric(Icons.payments_rounded, _shortCurrency(revenueToday),
           'Ingresos hoy', AppColors.statusSuccess),
-      _Metric(Icons.storefront_rounded, '$activeCommerces', 'Comercios',
+      _Metric(Icons.storefront_rounded, '$activeCommerces', 'Farmacias',
           AppColors.brandTealDeep),
       _Metric(Icons.delivery_dining_rounded, '$activeDelivery',
           'Delivery activos', AppColors.brandTeal),
@@ -439,7 +439,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final actions = <_QuickAction>[
       _QuickAction(
           'Usuarios', Icons.people_alt_rounded, AppColors.brandTeal, _goUsers),
-      _QuickAction('Comercios', Icons.storefront_rounded,
+      _QuickAction('Farmacias', Icons.storefront_rounded,
           AppColors.brandCtaAccent, _goCommerces),
       _QuickAction('Órdenes', Icons.receipt_long_rounded,
           AppColors.statusSuccess, _goOrders),
@@ -538,7 +538,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final roles = <_RoleEntry>[
       _RoleEntry('Compradores', safeInt(dist['buyers']), AppColors.brandTeal),
       _RoleEntry(
-          'Comercios', safeInt(dist['commerce']), AppColors.brandCtaAccent),
+          'Farmacias', safeInt(dist['commerce']), AppColors.brandCtaAccent),
       _RoleEntry(
           'Delivery', safeInt(dist['delivery']), AppColors.statusSuccess),
       _RoleEntry('Emp. Delivery', safeInt(dist['delivery_company']),
