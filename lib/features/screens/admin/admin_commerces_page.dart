@@ -152,6 +152,43 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
     return '';
   }
 
+  /// Pide el motivo del rechazo. Devuelve null si el admin cancela.
+  Future<String?> _askRejectionReason(BuildContext ctx) async {
+    final controller = TextEditingController(
+      text: 'Datos incompletos o incorrectos',
+    );
+    final reason = await showDialog<String>(
+      context: ctx,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Motivo del rechazo'),
+        content: TextField(
+          controller: controller,
+          maxLines: 3,
+          maxLength: 500,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Explica brevemente por qué se rechaza la solicitud',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.pop(dialogCtx, controller.text.trim()),
+            child: const Text('Rechazar'),
+          ),
+        ],
+      ),
+    );
+    controller.dispose();
+    if (reason == null || reason.isEmpty) return null;
+    return reason;
+  }
+
   void _showCommerceSheet(Map<String, dynamic> commerce) {
     final isOpen = commerce['open'] == true || commerce['open'] == 1;
     final id = safeInt(commerce['id']);
@@ -279,12 +316,14 @@ class _AdminCommercesPageState extends State<AdminCommercesPage> {
                           Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
+                                final adminService =
+                                    context.read<AdminService>();
+                                final reason = await _askRejectionReason(ctx);
+                                if (reason == null || !ctx.mounted) return;
                                 try {
-                                  await context
-                                      .read<AdminService>()
-                                      .updateCommerceApproval(id, 'rejected',
-                                          rejectionReason:
-                                              'Datos incompletos o incorrectos');
+                                  await adminService.updateCommerceApproval(
+                                      id, 'rejected',
+                                      rejectionReason: reason);
                                   if (!ctx.mounted) return;
                                   Navigator.pop(ctx);
                                   _loadData();
