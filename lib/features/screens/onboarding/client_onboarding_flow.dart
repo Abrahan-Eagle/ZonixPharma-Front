@@ -124,6 +124,17 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
   // Foto
   XFile? _selectedPhoto;
 
+  // Idempotencia de reintentos del submit: el backend no es idempotente
+  // (comercio/teléfono/CI se duplican o devuelven 4xx en un segundo POST),
+  // así que recordamos qué pasos ya se completaron en esta sesión.
+  int? _createdProfileId;
+  bool _ownerAddressCreated = false;
+  bool _personalPhoneCreated = false;
+  int? _createdCommerceId;
+  bool _ciDocumentCreated = false;
+  bool _commercePhoneCreated = false;
+  bool _establishmentAddressCreated = false;
+
   @override
   void initState() {
     super.initState();
@@ -1035,14 +1046,16 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       );
 
       final profileService = ProfileService();
-      final profileId = await profileService.createProfile(
-        profile,
-        userId,
-        imageFile: File(_selectedPhoto!.path),
-      );
+      final profileId = _createdProfileId ??
+          await profileService.createProfile(
+            profile,
+            userId,
+            imageFile: File(_selectedPhoto!.path),
+          );
       if (profileId <= 0) {
         throw Exception('No se pudo obtener el perfil.');
       }
+      _createdProfileId = profileId;
 
       // 2) Crear dirección
       final houseNumber =
@@ -1054,47 +1067,57 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           'Indica el número de casa/edificio y el código postal.',
         );
       }
+      final cityId = onboarding.cityId ?? _cityId ?? 0;
+      if (cityId <= 0) {
+        throw Exception('Selecciona país, estado y ciudad de tu dirección.');
+      }
 
-      final address = Address(
-        id: null,
-        street: onboarding.street ?? _streetController.text.trim(),
-        houseNumber: houseNumber,
-        postalCode: postalCode,
-        latitude: onboarding.latitude ?? _latitude ?? 0.0,
-        longitude: onboarding.longitude ?? _longitude ?? 0.0,
-        status: 'notverified',
-        profileId: profileId,
-        cityId: onboarding.cityId ?? _cityId ?? 0,
-      );
-      final addressService = AddressService();
-      await addressService.createAddress(address, profileId);
+      if (!_ownerAddressCreated) {
+        final address = Address(
+          id: null,
+          street: onboarding.street ?? _streetController.text.trim(),
+          houseNumber: houseNumber,
+          postalCode: postalCode,
+          latitude: onboarding.latitude ?? _latitude ?? 0.0,
+          longitude: onboarding.longitude ?? _longitude ?? 0.0,
+          status: 'notverified',
+          profileId: profileId,
+          cityId: cityId,
+        );
+        final addressService = AddressService();
+        await addressService.createAddress(address, profileId);
+        _ownerAddressCreated = true;
+      }
 
       // 3) Crear teléfono (exactamente 7 dígitos)
       final number = _phoneController.text.trim();
-      if (number.length == 7) {
+      if (number.length == 7 && !_personalPhoneCreated) {
         final op = _selectedPersonalOperator ??
             (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
-        final operatorId = op?['id'] ?? 0;
+        final rawOperatorId = op?['id'];
+        final operatorId = rawOperatorId is int
+            ? rawOperatorId
+            : int.tryParse(rawOperatorId?.toString() ?? '') ?? 0;
         final operatorName =
             op?['code']?.toString() ?? op?['name']?.toString() ?? '';
 
-        if (operatorId > 0) {
-          final phone = Phone(
-            id: 0,
-            profileId: profileId,
-            context: PhoneContext.personal,
-            operatorCodeId: operatorId is int
-                ? operatorId
-                : int.tryParse(operatorId.toString()) ?? 0,
-            operatorCodeName: operatorName,
-            number: number,
-            isPrimary: true,
-            status: true,
-          );
-          final phoneService = PhoneService();
-          await phoneService.createPhone(phone, userId);
-          userProvider.setPhoneCreated(true);
+        if (operatorId <= 0) {
+          throw Exception('Selecciona el operador de tu teléfono.');
         }
+        final phone = Phone(
+          id: 0,
+          profileId: profileId,
+          context: PhoneContext.personal,
+          operatorCodeId: operatorId,
+          operatorCodeName: operatorName,
+          number: number,
+          isPrimary: true,
+          status: true,
+        );
+        final phoneService = PhoneService();
+        await phoneService.createPhone(phone, userId);
+        _personalPhoneCreated = true;
+        userProvider.setPhoneCreated(true);
       }
 
       // 4) Flujo comprador: marcar onboarding completado y llevar al MainRouter
@@ -1219,54 +1242,67 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
         licenseNumber: null,
       );
       final profileService = ProfileService();
-      final profileId = await profileService.createProfile(
-        profile,
-        userId,
-        imageFile: File(_selectedPhoto!.path),
-      );
+      final profileId = _createdProfileId ??
+          await profileService.createProfile(
+            profile,
+            userId,
+            imageFile: File(_selectedPhoto!.path),
+          );
       if (profileId <= 0) throw Exception('No se pudo obtener el perfil.');
+      _createdProfileId = profileId;
 
       // 2) Dirección del dueño (formulario 2)
-      final addressOwner = Address(
-        id: null,
-        street: onboarding.street ?? _streetController.text.trim(),
-        houseNumber:
-            onboarding.houseNumber ?? _houseNumberController.text.trim(),
-        postalCode: onboarding.postalCode ?? _postalCodeController.text.trim(),
-        latitude: onboarding.latitude ?? _latitude ?? 0.0,
-        longitude: onboarding.longitude ?? _longitude ?? 0.0,
-        status: 'notverified',
-        profileId: profileId,
-        cityId: onboarding.cityId ?? _cityId ?? 0,
-      );
+      final ownerCityId = onboarding.cityId ?? _cityId ?? 0;
+      if (ownerCityId <= 0) {
+        throw Exception('Selecciona país, estado y ciudad de tu dirección.');
+      }
       final addressService = AddressService();
-      await addressService.createAddress(addressOwner, profileId);
+      if (!_ownerAddressCreated) {
+        final addressOwner = Address(
+          id: null,
+          street: onboarding.street ?? _streetController.text.trim(),
+          houseNumber:
+              onboarding.houseNumber ?? _houseNumberController.text.trim(),
+          postalCode:
+              onboarding.postalCode ?? _postalCodeController.text.trim(),
+          latitude: onboarding.latitude ?? _latitude ?? 0.0,
+          longitude: onboarding.longitude ?? _longitude ?? 0.0,
+          status: 'notverified',
+          profileId: profileId,
+          cityId: ownerCityId,
+        );
+        await addressService.createAddress(addressOwner, profileId);
+        _ownerAddressCreated = true;
+      }
 
       // 3) Teléfono
       final number = _phoneController.text.trim();
-      if (number.length == 7) {
+      if (number.length == 7 && !_personalPhoneCreated) {
         final op = _selectedPersonalOperator ??
             (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
-        final operatorId = op?['id'] ?? 0;
+        final rawOperatorId = op?['id'];
+        final operatorId = rawOperatorId is int
+            ? rawOperatorId
+            : int.tryParse(rawOperatorId?.toString() ?? '') ?? 0;
         final operatorName =
             op?['code']?.toString() ?? op?['name']?.toString() ?? '';
-        if (operatorId > 0) {
-          final phone = Phone(
-            id: 0,
-            profileId: profileId,
-            context: PhoneContext.personal,
-            operatorCodeId: operatorId is int
-                ? operatorId
-                : int.tryParse(operatorId.toString()) ?? 0,
-            operatorCodeName: operatorName,
-            number: number,
-            isPrimary: true,
-            status: true,
-          );
-          final phoneService = PhoneService();
-          await phoneService.createPhone(phone, userId);
-          userProvider.setPhoneCreated(true);
+        if (operatorId <= 0) {
+          throw Exception('Selecciona el operador de tu teléfono.');
         }
+        final phone = Phone(
+          id: 0,
+          profileId: profileId,
+          context: PhoneContext.personal,
+          operatorCodeId: operatorId,
+          operatorCodeName: operatorName,
+          number: number,
+          isPrimary: true,
+          status: true,
+        );
+        final phoneService = PhoneService();
+        await phoneService.createPhone(phone, userId);
+        _personalPhoneCreated = true;
+        userProvider.setPhoneCreated(true);
       }
 
       // 4) Crear comercio (tabla commerces; la dirección va en addresses con role commerce)
@@ -1281,35 +1317,45 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
       if (opCode != null && opCode.isNotEmpty && commercePhone.length == 7) {
         commercePhone = '0$opCode$commercePhone';
       }
-      final commerceResult =
-          await CommerceDataService.createCommerceForExistingProfile(
-        profileId,
-        {
-          'business_name': _commerceNameController.text.trim(),
-          'business_type': 'Farmacia',
-          'tax_id': _commerceTaxIdController.text.trim().isEmpty
-              ? 'N/A'
-              : _commerceTaxIdController.text.trim(),
-          'address': addressEstablishmentStr,
-          'open': false,
-          'schedule':
-              _commerceSchedule.isEmpty ? '' : jsonEncode(_commerceSchedule),
-        },
-      );
-      if (commerceResult['success'] != true) {
-        throw Exception(
-            commerceResult['message'] ?? 'No se pudo registrar el comercio');
+      int? commerceId = _createdCommerceId;
+      if (commerceId == null) {
+        final commerceResult =
+            await CommerceDataService.createCommerceForExistingProfile(
+          profileId,
+          {
+            'business_name': _commerceNameController.text.trim(),
+            'business_type': 'Farmacia',
+            'tax_id': _commerceTaxIdController.text.trim().isEmpty
+                ? 'N/A'
+                : _commerceTaxIdController.text.trim(),
+            'address': addressEstablishmentStr,
+            'open': false,
+            'schedule':
+                _commerceSchedule.isEmpty ? '' : jsonEncode(_commerceSchedule),
+          },
+        );
+        if (commerceResult['success'] != true) {
+          throw Exception(
+              commerceResult['message'] ?? 'No se pudo registrar el comercio');
+        }
+        // Id del comercio recién creado para vincular la dirección del establecimiento.
+        commerceId = commerceResult['data']?['id'] is int
+            ? commerceResult['data']['id'] as int
+            : (commerceResult['data']?['id'] != null
+                ? int.tryParse(commerceResult['data']['id'].toString())
+                : null);
+        _createdCommerceId = commerceId;
       }
-      // Id del comercio recién creado para vincular la dirección del establecimiento.
-      final commerceId = commerceResult['data']?['id'] is int
-          ? commerceResult['data']['id'] as int
-          : (commerceResult['data']?['id'] != null
-              ? int.tryParse(commerceResult['data']['id'].toString())
-              : null);
+      if (commerceId == null || commerceId <= 0) {
+        // Sin id de comercio la dirección del establecimiento quedaría
+        // vinculada al perfil (mal tipada); mejor fallar explícito.
+        throw Exception(
+            'No se pudo registrar la farmacia. Intenta de nuevo en unos minutos.');
+      }
 
       // 5) CI del titular → tabla documents (type=ci)
       final ownerCi = _commerceOwnerCiController.text.trim();
-      if (ownerCi.isNotEmpty) {
+      if (ownerCi.isNotEmpty && !_ciDocumentCreated) {
         final ciDigits = ownerCi.replaceAll(RegExp(r'\D'), '');
         if (ciDigits.isEmpty) {
           throw Exception('La cédula del titular no es válida.');
@@ -1322,10 +1368,11 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
           status: true,
         );
         await DocumentService().createDocument(doc, profileId);
+        _ciDocumentCreated = true;
       }
 
       // 6) Teléfono del comercio → tabla phones (context=commerce)
-      if (commerceId != null && commerceId > 0) {
+      if (!_commercePhoneCreated) {
         final commercePhoneDigits = _commercePhoneController.text.trim();
         final opCommerce = _selectedCommerceOperator ??
             (_operatorCodes.isNotEmpty ? _operatorCodes.first : null);
@@ -1345,31 +1392,40 @@ class _ClientOnboardingFlowState extends State<ClientOnboardingFlow> {
             commerceId: commerceId,
           );
           await PhoneService().createPhone(commercePhoneObj, userId);
+          _commercePhoneCreated = true;
         } else {
           throw Exception('El teléfono del comercio no es válido.');
         }
       }
 
       // 7) Dirección del establecimiento (formulario 4) en addresses con role commerce y commerce_id.
-      final addressEstablishment = Address(
-        id: null,
-        street: _streetCommerceController.text.trim(),
-        houseNumber: _houseNumberCommerceController.text.trim(),
-        postalCode: _postalCodeCommerceController.text.trim().isEmpty
-            ? ''
-            : _postalCodeCommerceController.text.trim(),
-        latitude: _latitude ?? 0.0,
-        longitude: _longitude ?? 0.0,
-        status: 'notverified',
-        profileId: profileId,
-        cityId: _selectedCity?.id ?? _cityId ?? 0,
-      );
-      await addressService.createAddress(
-        addressEstablishment,
-        profileId,
-        role: 'commerce',
-        commerceId: commerceId,
-      );
+      if (!_establishmentAddressCreated) {
+        final establishmentCityId = _selectedCity?.id ?? _cityId ?? 0;
+        if (establishmentCityId <= 0) {
+          throw Exception(
+              'Selecciona país, estado y ciudad del establecimiento.');
+        }
+        final addressEstablishment = Address(
+          id: null,
+          street: _streetCommerceController.text.trim(),
+          houseNumber: _houseNumberCommerceController.text.trim(),
+          postalCode: _postalCodeCommerceController.text.trim().isEmpty
+              ? ''
+              : _postalCodeCommerceController.text.trim(),
+          latitude: _latitude ?? 0.0,
+          longitude: _longitude ?? 0.0,
+          status: 'notverified',
+          profileId: profileId,
+          cityId: establishmentCityId,
+        );
+        await addressService.createAddress(
+          addressEstablishment,
+          profileId,
+          role: 'commerce',
+          commerceId: commerceId,
+        );
+        _establishmentAddressCreated = true;
+      }
 
       if (!mounted) return;
       if (dialogShown) Navigator.of(context).pop();
