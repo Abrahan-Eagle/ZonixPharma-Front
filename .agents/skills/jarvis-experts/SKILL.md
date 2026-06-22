@@ -17,6 +17,7 @@ metadata:
   related-skills:
     - jarvis-core
     - agent-loop-engineering
+    - fan-out-synthesize-ops
 allowed-tools: [Read, Glob, Grep, Task]
 ---
 
@@ -64,18 +65,19 @@ Consultar `AGENTS.md` del repo para dominio (`{producto}-*` skills en `.agents/s
 
 ## Delegation triggers (gentle-ai)
 
-Mantén el hilo orquestador **delgado**. Cuando la tarea deja de ser pequeña, delegar o acotar fase SDD es **esperado**, no opcional. Fuente: [gentle-ai README](https://github.com/Gentleman-Programming/gentle-ai/blob/main/README.md). Ver también `agent-loop-engineering`.
+Mantén el hilo orquestador **delgado**. Cuando la tarea deja de ser pequeña, delegar vía **`fan-out-synthesize-ops`** (N workers paralelos → síntesis) es **obligatorio**, no opcional. Fuente: [gentle-ai README](https://github.com/Gentleman-Programming/gentle-ai/blob/main/README.md). Ver también `agent-loop-engineering`.
 
 | Trigger | Comportamiento JARVIS |
 |---------|----------------------|
-| Leer **4+ archivos** para entender un flujo | Task `explore` (readonly) o fase de exploración (`speckit-clarify`, Task subagent) |
-| Tocar **2+ archivos no triviales** | Un writer thread; review fresco antes de cerrar (`code-review-playbook`, `parallel-judge-ops`) |
-| Commit, push o PR tras cambios de código | Review fresco salvo diff trivial (docs/texto) — `verification-before-completion` |
-| cwd equivocado, worktree/git accident, merge recovery, test/env confuso | **Parar** y auditar (`systematic-debugging`) antes de continuar |
-| Sesión monolítica larga con complejidad acumulada | Pausar, delegar, re-planificar (`brainstorming-ops`, `handoff`) o justificar por qué no |
-| Review adversarial de diffs, conflictos, PR readiness o incidentes | Contexto fresco: Task `readonly` (`parallel-judge-ops`, `doubt-driven-development`) |
+| **Cualquier tarea no trivial** | `fan-out-synthesize-ops`: slice → N≥2 Task paralelos → síntesis → writer único → verify |
+| Leer **4+ archivos** para entender un flujo | **Obligatorio** 2+ Task `explore` en **paralelo** (un mensaje); no secuencial en hilo principal |
+| Tocar **2+ archivos no triviales** | Fan-out explore → writer único → verify (`fan-out-synthesize-ops` § Implement) |
+| Commit, push o PR tras cambios de código | Review fresco salvo diff trivial — `verification-before-completion`; diff grande → `parallel-judge-ops` |
+| cwd equivocado, worktree/git accident, merge recovery, test/env confuso | **Parar** y auditar (`systematic-debugging`) antes de continuar fan-out |
+| Sesión monolítica larga con complejidad acumulada | Pausar, re-orquestar con fan-out (`handoff`, `brainstorming-ops`) o justificar por qué no |
+| Review adversarial de diffs, conflictos, PR readiness o incidentes | Fase Verify: `parallel-judge-ops` o 2+ Task `readonly` (`doubt-driven-development` in-flight si una sola decisión) |
 
-Objetivo: evitar caos accidental con **un orquestador responsable** y **un writer thread**.
+Objetivo: evitar caos accidental con **un orquestador responsable**, **workers paralelos para recaudar** y **un writer thread**.
 
 ## Anti-patrones
 
@@ -83,12 +85,15 @@ Objetivo: evitar caos accidental con **un orquestador responsable** y **un write
 - Rol sin justificación (CTO en fix de typo)
 - Pedir permiso para activar AppSec en cambio de auth
 - Explorar 6 archivos en el hilo principal sin delegar
+- Explorar secuencialmente 4+ archivos en hilo principal sin Task paralelo
 - Mezclar exploración + implementación + review en una sola vuelta monolítica
+- Un solo worker cuando la tarea tiene 2+ ángulos independientes
 
 ## Referencias
 
 - `AGENTS.md` del proyecto — roster y reglas locales
 - `jarvis-core` — workflow modular
+- `fan-out-synthesize-ops` — orquestación paralela obligatoria
 
 ---
 

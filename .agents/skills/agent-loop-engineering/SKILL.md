@@ -21,6 +21,7 @@ metadata:
     - skill-loop-router
     - human-in-the-loop-ops
     - parallel-judge-ops
+    - fan-out-synthesize-ops
     - test-driven-development
     - doubt-driven-development
     - verification-before-completion
@@ -32,7 +33,7 @@ allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Task]
 
 - **Precedencia:** `jarvis-core` > esta skill. Es disciplina de **diseño**, no ejecuta el loop por sí sola.
 - **Gobernanza:** todo loop autónomo pasa por `human-in-the-loop-ops` (modo, terminación, gates) **antes** de correr.
-- **Ejecución:** loop declarativo YAML+CLI → `skill-loop-router` → skill `skill-loop`. Verificación adversarial paralela → `parallel-judge-ops`.
+- **Ejecución:** loop declarativo YAML+CLI → `skill-loop-router` → skill `skill-loop`. Orquestación paralela por defecto → `fan-out-synthesize-ops`. Verificación adversarial paralela → `parallel-judge-ops`.
 - **Plataforma:** `/loop`, `/goal`, `goal mode` y dynamic workflows **no existen** en Cursor. Aproximación JARVIS: Task subagents + `using-git-worktrees` + `skill-loop` + `human-in-the-loop-ops`.
 - Doc de origen: [docs/GENTLE_AI_LOOP_INTEGRATION.md](../../docs/GENTLE_AI_LOOP_INTEGRATION.md). Mapa: [docs/LOOP_AI_ECOSYSTEM.md](../../docs/LOOP_AI_ECOSYSTEM.md).
 
@@ -99,7 +100,7 @@ Todo loop bien diseñado define **cuatro piezas** antes de correr:
 | **Impl→review→rework** | loop declarativo multi-skill (YAML + router LLM) | `skill-loop-router` → `skill-loop` + CLI |
 | **Judge-evaluate-iterate** | evaluador adversarial con rúbrica → fixes → re-juzga | `doubt-driven-development` (in-flight) |
 | **Jueces paralelos ("día del juicio")** | 2+ jueces independientes → orquestador valida → fix → itera | `parallel-judge-ops` |
-| **Fan-out + síntesis** | subagentes en paralelo → barrera de merge | Task paralelo + orquestador |
+| **Fan-out + síntesis (default JARVIS)** | N subagentes en paralelo → barrera → orquestador sintetiza → writer único | **`fan-out-synthesize-ops`** |
 | **Loop largo / overnight** | iterar con tests + stop hook | `skill-loop` + `human-in-the-loop-ops` + `create-hook` |
 
 ## Procedimiento
@@ -114,7 +115,7 @@ Todo loop bien diseñado define **cuatro piezas** antes de correr:
 
 ## Delegation triggers
 
-Cuando el loop crece más allá de una vuelta pequeña, aplicar la tabla de `jarvis-experts` (fuente: gentle-ai): exploración 4+ archivos → Task explore; 2+ archivos no triviales → un writer + review fresco; commit/PR → verificación; sesión monolítica → pausar o re-planificar.
+Cuando el loop crece más allá de una vuelta pequeña, aplicar `fan-out-synthesize-ops` y la tabla de `jarvis-experts` (fuente: gentle-ai): exploración 4+ archivos → 2+ Task explore en paralelo; 2+ archivos no triviales → fan-out explore → writer único + verify; commit/PR → verificación; sesión monolítica → pausar o re-orquestar.
 
 ## Anti-patrones
 
@@ -132,5 +133,6 @@ Cuando el loop crece más allá de una vuelta pequeña, aplicar la tabla de `jar
 - `jarvis-experts` — delegation triggers (hilo orquestador delgado).
 - `human-in-the-loop-ops` — gates, terminación, umbrales.
 - `skill-loop-router` / `skill-loop` — ejecución de loops YAML+CLI.
-- `parallel-judge-ops` — patrón dual-judge ("día del juicio").
+- `parallel-judge-ops` — patrón dual-judge ("día del juicio"; fase Verify).
+- `fan-out-synthesize-ops` — orquestación Map-Reduce por defecto.
 - `test-driven-development`, `doubt-driven-development`, `verification-before-completion` — señales de evaluación.

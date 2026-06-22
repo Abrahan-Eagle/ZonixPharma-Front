@@ -23,6 +23,7 @@
 | `engram-router` | local | passthrough | Memoria persistente Engram MCP; Configurar engram en Cursor… |
 | `enhance-prompt` | local | local-only | — |
 | `executing-plans` | local | passthrough | — |
+| `fan-out-synthesize-ops` | local | passthrough | Cualquier tarea no trivial; Explorar codebase… |
 | `finishing-a-development-branch` | local | passthrough | Terminar módulo |
 | `flutter-animations` | local | passthrough | — |
 | `flutter-expert` | local | passthrough | — |

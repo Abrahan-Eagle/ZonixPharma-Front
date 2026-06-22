@@ -48,6 +48,7 @@ metadata:
     - using-git-worktrees
     - finishing-a-development-branch
     - project-bootstrap-ops
+    - fan-out-synthesize-ops
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task]
 ---
 
@@ -91,6 +92,8 @@ Para pack Rezvani/claude-skills (auditoría pre-install vs megapack), ver `claud
 
 Para gobernanza humana en bucles agénticos (HITL/HOTL, umbrales, terminación), ver `human-in-the-loop-ops` ([docs/LOOP_AI_ECOSYSTEM.md](../../docs/LOOP_AI_ECOSYSTEM.md)) — complementa `git-guardrails-ops` y `skill-loop-router`.
 
+Para orquestación por defecto (Map-Reduce agentico / Fan-out-and-synthesize: N workers paralelos → orquestador sintetiza), ver `fan-out-synthesize-ops` — **obligatorio** en tareas no triviales salvo exenciones documentadas en esa skill.
+
 Para SD-X (dev + diseño + docs + validate), ver `sdd-x-index` ([docs/SDX_ECOSYSTEM.md](../../docs/SDX_ECOSYSTEM.md)).
 
 ## Protocolo de calidad
@@ -115,7 +118,7 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 | Fase | Cadena |
 |------|--------|
 | Integrar / diagnosticar JARVIS (`init jarvis`) | `project-bootstrap-ops` → [PROJECT_ONBOARDING.md](../../docs/PROJECT_ONBOARDING.md) → OK usuario → Paso A/B/C |
-| Cualquier tarea no trivial | `jarvis-experts` → (resto según fase) |
+| Cualquier tarea no trivial | `jarvis-experts` → **`fan-out-synthesize-ops`** → (resto según fase) |
 | Nueva feature de producto (con `.kittify/`) | `kitty-router` → charter/specify/plan/tasks (Cursor) → `spec-kitty next` → review/accept/merge (OK usuario) |
 | Nueva feature de producto (con `openspec/`) | `openspec-router` → `/opsx:propose` → `/opsx:apply` (OK usuario) → `/opsx:archive` |
 | Nueva feature de producto (con `.specify/`) | `sdd-router` → `speckit-constitution` → `speckit-specify` → `speckit-clarify` (opc.) → `speckit-plan` → `speckit-tasks` → `speckit-taskstoissues` (opc.) → `speckit-analyze` → `speckit-implement` (OK usuario) → `speckit-converge` (opc.) |
@@ -150,7 +153,8 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 | Diseño defensa runtime / spikes / política DDoS | `kalman-anomaly-router` → `kalman-anomaly-defense` |
 | Diseñar loop de agente (loop vs prompt, anatomía, conciso/controlado) | `agent-loop-engineering` → `skill-loop-router` / `human-in-the-loop-ops` |
 | Loop automático impl→review→verify (YAML) | `skill-loop-router` → skill `skill-loop` + `skill-loop run` (OK usuario) |
-| Verificación adversarial paralela / "día del juicio" | `parallel-judge-ops` (Task readonly en paralelo) |
+| Orquestación fan-out (explore, audit, implement, debug) | `fan-out-synthesize-ops` (N Task paralelos → síntesis → writer único) |
+| Verificación adversarial paralela / "día del juicio" | `parallel-judge-ops` (fase Verify de `fan-out-synthesize-ops`; Task readonly en paralelo) |
 | Auditoría automática pre-gate (LLM-as-judge) | `llm-as-judge-ops` |
 | Loop autónomo / decisión alta stakes con gate humano | `human-in-the-loop-ops` → `git-guardrails-ops` / `approval-gate` según acción |
 | SD-X ambiguo / multi-arte (dev+UI+docs) | `sdd-x-index` → `sdd-router` o `ui-router` según tabla SD-X |
@@ -167,6 +171,10 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 ### 0. Panel de expertos
 
 Identificar roles y declarar en una línea antes de planificar.
+
+### 0.5. Fan-out (orquestación paralela)
+
+Antes de explorar o implementar en el hilo principal, aplicar `fan-out-synthesize-ops`: slice → N≥2 Task en paralelo → síntesis → (writer único) → verify. Exento solo en tareas triviales o si el usuario pide respuesta directa.
 
 ### 1. Planificación
 
@@ -189,6 +197,7 @@ Identificar roles y declarar en una línea antes de planificar.
 
 ### 4. Testing
 
+- Fase Verify: fan-out de reviewers o `parallel-judge-ops` si el diff es no trivial.
 - Ejecutar comandos de verificación del stack (ver `verification-before-completion`).
 - Invocar `verification-before-completion` con evidencia fresca.
 

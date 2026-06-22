@@ -237,6 +237,7 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | `engram-router` | Orquesta memoria persistente Engram (MCP) vs context-updater/handoff/active_context JARVIS. | [.agents/skills/engram-router/SKILL.md](.agents/skills/engram-router/SKILL.md) |
 | `enhance-prompt` | Transforms vague UI ideas into polished, Stitch-optimized prompts. Enhances specificity, adds UI/UX keywords, injects design system context, and structures output for better generation results. | [.agents/skills/enhance-prompt/SKILL.md](.agents/skills/enhance-prompt/SKILL.md) |
 | `executing-plans` | Ejecutar plan Flutter paso a paso. | [.agents/skills/executing-plans/SKILL.md](.agents/skills/executing-plans/SKILL.md) |
+| `fan-out-synthesize-ops` | Orquestación por defecto JARVIS: Map-Reduce agentico / Fan-out-and-synthesize — N subagentes en paralelo recaudan contexto → sesión principal (orquestador) sintetiza → writer único aplica → verify. | [.agents/skills/fan-out-synthesize-ops/SKILL.md](.agents/skills/fan-out-synthesize-ops/SKILL.md) |
 | `finishing-a-development-branch` | Cerrar feature Flutter: analyze + test, opciones merge/PR. | [.agents/skills/finishing-a-development-branch/SKILL.md](.agents/skills/finishing-a-development-branch/SKILL.md) |
 | `flutter-animations` | Comprehensive guide for implementing animations in Flutter. Use when adding motion and visual effects to Flutter apps: implicit animations (AnimatedContainer, AnimatedOpacity, TweenAnimationBuilder), explicit animations (AnimationController, Tween, AnimatedWidget/AnimatedBuilder), hero animations (shared element transitions), staggered animations (sequential/overlapping), and physics-based animations. Includes workflow for choosing the right animation type, implementation patterns, and best practices for performance and user experience. | [.agents/skills/flutter-animations/SKILL.md](.agents/skills/flutter-animations/SKILL.md) |
 | `flutter-expert` | Flutter advanced patterns, widgets, lifecycle, state management, performance. | [.agents/skills/flutter-expert/SKILL.md](.agents/skills/flutter-expert/SKILL.md) |
@@ -313,6 +314,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Agent loop engineering / no prompts haz loops | `agent-loop-engineering` |
 | Alta stakes verificar antes de commit | `doubt-driven-development` |
 | Auditar open issues como maintainer | `backlog-triage-ops` |
+| Auditoría módulo | `fan-out-synthesize-ops` |
 | Buscar contexto previo mem_search mem_context | `engram-memory-protocol` |
 | Cambio API CLI setup que afecta documentación | `docs-alignment-ops` |
 | Cerrar sesión con cambios | `documentar-avances` |
@@ -329,6 +331,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Crear commit | `verification-before-completion` |
 | Crear o preparar pull request | `branch-pr-ops` |
 | Crear/modificar pantallas o widgets | `zonix-ui-design` |
+| Cualquier tarea no trivial | `fan-out-synthesize-ops` |
 | Cualquier tarea no trivial | `jarvis-experts` |
 | Decidir loop vs prompt simple | `agent-loop-engineering` |
 | Decisión cross-rol | `jarvis-experts` |
@@ -348,6 +351,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Escribir feedback de code review para humano | `comment-writer-ops` |
 | Estados / flujo de órdenes | `zonix-order-lifecycle` |
 | Evitar PR monolítico desde SDD tasks | `work-unit-commits-ops` |
+| Explorar codebase | `fan-out-synthesize-ops` |
 | Finalizar tarea | `documentar-avances` |
 | Gates humanos antes de acción irreversible | `human-in-the-loop-ops` |
 | Guardar decisión o bugfix en Engram | `engram-memory-protocol` |
@@ -356,10 +360,12 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` |
 | Human-in-the-loop diseño de loop | `human-in-the-loop-ops` |
 | Implementar Pusher / FCM | `zonix-realtime-events` |
+| Implementar feature multi-archivo | `fan-out-synthesize-ops` |
 | Implementar feature o bugfix | `test-driven-development` |
 | Iniciar módulo | `brainstorming-ops` |
 | Iniciar módulo | `jarvis-core` |
 | Iniciar módulo | `task-pipeline-ops` |
+| Investigar bug | `fan-out-synthesize-ops` |
 | Iterar hasta lograr un objetivo medible | `agent-loop-engineering` |
 | Landing page o dashboard | `ui-router` |
 | Landing page o dashboard | `ui-ux-pro-max` |

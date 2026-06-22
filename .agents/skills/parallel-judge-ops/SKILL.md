@@ -23,12 +23,13 @@ metadata:
     - human-in-the-loop-ops
     - llm-as-judge-ops
     - verification-before-completion
+    - fan-out-synthesize-ops
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, Task]
 ---
 
 ## JARVIS / Cursor (mandatory)
 
-- **Precedencia:** `jarvis-core` > esta skill. Diseño del loop: `agent-loop-engineering`. Gobernanza: `human-in-the-loop-ops`.
+- **Precedencia:** `jarvis-core` > `fan-out-synthesize-ops` > esta skill. Esta skill es la **fase Verify adversarial** del patrón fan-out general.
 - **Jueces = Task `readonly`** desde la sesión principal (`subagent_type: code-reviewer`, `security-reviewer` o `generalPurpose`). **No anidar Task** desde un subagent: si estás dentro de uno, escala a la sesión principal.
 - **Diferencia con `doubt-driven-development`:** doubt-driven es **in-flight** con 1 revisor fresco; esta skill es verificación **adversarial paralela** (2+ jueces independientes) sobre un artefacto terminado o casi.
 - **Diferencia con `llm-as-judge-ops`:** un juez + rúbrica + score pre-gate; parallel-judge = 2+ jueces frescos en paralelo.
@@ -47,7 +48,7 @@ El valor está en la **independencia**: jueces que comparten contexto comparten 
 
 - Artefacto de **alto valor o alto riesgo** (diff grande, módulo crítico, cambio de API pública) antes de cerrar/mergear.
 - Quieres **más cobertura** que una sola revisión y reducir falsos negativos.
-- Como paso `review`/`verify` dentro de un loop mayor (`skill-loop`, `agent-loop-engineering`).
+- Como paso **`Verify`** dentro de `fan-out-synthesize-ops`, un loop mayor (`skill-loop`, `agent-loop-engineering`), o antes de merge/PR de alto riesgo.
 
 **Cuándo NO usar:**
 
@@ -125,6 +126,7 @@ Ver `human-in-the-loop-ops` para el detalle de umbrales y escalamiento.
 
 ## Skills relacionadas
 
+- `fan-out-synthesize-ops` — orquestación Map-Reduce general; esta skill = fase Verify adversarial.
 - `agent-loop-engineering` — diseño del loop que contiene este patrón.
 - `doubt-driven-development` — variante in-flight con 1 revisor fresco.
 - `code-review-playbook` — review estándar pre-merge.
