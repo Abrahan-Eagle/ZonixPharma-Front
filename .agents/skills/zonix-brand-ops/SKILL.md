@@ -1,8 +1,9 @@
 ---
 name: zonix-brand-ops
 description: Branding operativo Zonix Pharma — copia de referencia. Contenido completo en ZonixPharma-Backend.
+metadata:
+  auto_invoke: "Copy / naming / branding app"
 ---
-
 # zonix-brand-ops (Frontend)
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-brand-ops/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-brand-ops/SKILL.md)

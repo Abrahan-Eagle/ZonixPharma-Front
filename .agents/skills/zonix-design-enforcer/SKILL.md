@@ -6,8 +6,9 @@ scope: lib/features/**, lib/features/utils/app_colors.dart, lib/features/utils/a
 related-skills: zonix-ui-design, zonix-brand-ops, ui-ux-pro-max, mobile-developer, responsive-design
 author: Zonix Team
 version: 1.0
+metadata:
+  auto_invoke: "Diseñar UI/UX Flutter"
 ---
-
 # Zonix Pharma — Design Enforcer (Flutter)
 
 > Sistema de componentes: `zonix-ui-design`.

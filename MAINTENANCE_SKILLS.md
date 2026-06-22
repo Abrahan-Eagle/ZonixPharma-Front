@@ -10,7 +10,29 @@ Las skills (`.agents/skills/*/SKILL.md`) no son simple documentación; son **gu�
 
 ---
 
-## 2. Precedencia de diseño y branding (obligatoria)
+## 2. Capas de skills y sync global (Paso C — jarvis-skills-library)
+
+| Capa | Patrón | Ejemplos |
+|------|--------|----------|
+| 0 Máquina | `~/.cursor/skills/` | `jarvis-core`, `sdd-router` |
+| 0 Global-sync | `.global-sync-manifest` | `ui-router`, `ui-ux-pro-max` (overlay) |
+| 3 Dominio Zonix | `zonix-*` | **solo locales** |
+| 5 Solo local | no en manifest | `playwright-skill`, Stitch/React, `speckit-*` en `.cursor/skills/` |
+
+```bash
+JARVIS_SKILLS_LIBRARY=/var/www/html/proyectos/AIPP/jarvis-skills-library \
+  ./scripts/sync-global-skills-from-library.sh
+./scripts/check-global-skills-sync.sh
+python3 .agents/skills/sync.sh
+bash $JARVIS_SKILLS_LIBRARY/scripts/init-jarvis.sh --min c
+```
+
+- **`ui-ux-pro-max`:** editar [.agents/skills/ui-ux-pro-max/OVERLAY.md](.agents/skills/ui-ux-pro-max/OVERLAY.md) (canon marca en Backend `docs/BRAND_ZONIX_PHARMA.md`).
+- **WARN Fase 2:** `.cursor/skills/` versionado — ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
+
+---
+
+## 3. Precedencia de diseño y branding (obligatoria)
 
 Al tocar UI, copy o CSS, aplicar este orden **sin excepción**:
 
@@ -104,5 +126,5 @@ Toda skill debe referenciar otras si hay solapamiento:
 
 ---
 
-**Última actualización:** 10 Junio 2026  
+**Última actualización:** 21 junio 2026  
 **Zonix Team**

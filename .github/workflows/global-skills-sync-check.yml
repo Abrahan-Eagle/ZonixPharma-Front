@@ -1,0 +1,38 @@
+name: Global Skills Sync Check
+
+on:
+  pull_request:
+    paths:
+      - '.agents/skills/**'
+      - 'scripts/sync-global-skills-from-library.sh'
+      - 'scripts/check-global-skills-sync.sh'
+  push:
+    branches:
+      - dev
+      - develop
+      - main
+    paths:
+      - '.agents/skills/**'
+      - 'scripts/sync-global-skills-from-library.sh'
+      - 'scripts/check-global-skills-sync.sh'
+
+jobs:
+  check-global-skills:
+    name: Verify .agents/skills vs jarvis-skills-library manifest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout ZonixPharma-Front
+        uses: actions/checkout@v4
+
+      - name: Checkout jarvis-skills-library
+        uses: actions/checkout@v4
+        with:
+          repository: Abrahan-Eagle/jarvis-skills-library
+          ref: main
+          path: jarvis-skills-library
+
+      - name: Run check-global-skills-sync.sh
+        env:
+          JARVIS_SKILLS_LIBRARY: ${{ github.workspace }}/jarvis-skills-library
+        run: ./scripts/check-global-skills-sync.sh

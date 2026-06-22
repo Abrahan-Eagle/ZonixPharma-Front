@@ -5,8 +5,12 @@ trigger: Cuando se diseñe o construya UI, pantallas, widgets, cards, botones, o
 scope: lib/features/screens/, lib/features/widgets/, lib/features/utils/app_colors.dart, lib/features/utils/app_theme.dart
 author: Zonix Team
 version: 3.0
+metadata:
+  auto_invoke:
+    - "Diseñar UI/UX Flutter"
+    - "Crear/modificar pantallas o widgets"
+    - "Nueva feature producto (spec en Backend hub)"
 ---
-
 # Zonix Pharma — Sistema de Diseño (Flutter)
 
 > Marketplace farmacéutico digital del ecosistema Zonix (vertical Pharma, no Eats).

@@ -5,8 +5,9 @@ trigger: Cuando se trabaje con órdenes, cambios de estado, cancelaciones, track
 scope: app/Models/Order.php, app/Http/Controllers/Commerce/OrderController.php, app/Http/Controllers/Delivery/OrderController.php, app/Http/Controllers/Buyer/OrderController.php
 author: Zonix Team
 version: 2.0
+metadata:
+  auto_invoke: "Estados / flujo de órdenes"
 ---
-
 # Ciclo de vida de órdenes — Zonix Pharma (Flutter)
 
 ## Roles (Terminología Estándar)

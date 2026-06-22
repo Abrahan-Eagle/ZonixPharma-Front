@@ -7,6 +7,17 @@ alwaysApply: true
 
 **Jarvis** = todo el ecosistema de guía para la IA en este proyecto: este archivo (`.cursorrules`), las skills en `.agents/skills/`, y los documentos de referencia (`AGENTS.md`, `docs/*.md`). Cuando el usuario diga **"Jarvis"** se refiere a este conjunto. Mantener coherencia entre todos estos elementos.
 
+## Panel de Expertos JARVIS (siempre activo)
+
+Declara roles en tareas no triviales: `> Roles: frontend (Flutter) + UX`. Roster: `jarvis-experts`. Routing dominio: `zonix-jarvis-subagents-map` (Backend).
+
+## Skill Bootstrap (no negociable en tareas no triviales)
+
+1. Leer `.agents/skills/SKILL_INDEX.md` y `jarvis-core/SKILL.md` antes de actuar.
+2. Declarar `> Skills: ui-router (local) → zonix-ui-design (local) → ui-ux-pro-max (local)` junto a `> Roles:`.
+3. `Read` de cada skill declarada antes de editar código.
+4. Onboarding: ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
+
 ---
 
 ## Brand (referencia única)

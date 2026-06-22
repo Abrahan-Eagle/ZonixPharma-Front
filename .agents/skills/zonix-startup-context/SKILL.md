@@ -1,8 +1,9 @@
 ---
 name: zonix-startup-context
 description: Contexto canónico Zonix Pharma — copia de referencia. Contenido completo en ZonixPharma-Backend.
+metadata:
+  auto_invoke: "UI alineada a pack inversor / claims salud"
 ---
-
 # zonix-startup-context (Frontend)
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-startup-context/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-startup-context/SKILL.md)

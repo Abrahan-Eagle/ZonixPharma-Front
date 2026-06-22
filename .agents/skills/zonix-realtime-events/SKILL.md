@@ -5,8 +5,9 @@ trigger: Cuando se trabaje con Pusher, broadcasting, notificaciones push (FCM), 
 scope: app/Events/, app/Http/Controllers/Notification/, config/broadcasting.php, routes/channels.php
 author: Zonix Team
 version: 2.0
+metadata:
+  auto_invoke: "Implementar Pusher / FCM"
 ---
-
 # Eventos en tiempo real — Zonix Pharma (Flutter)
 
 > **⚠️ NO se usa WebSocket directo.** Se usa Pusher Channels (broadcasting) + FCM (push).

@@ -1,8 +1,9 @@
 ---
 name: zonix-empresa-ve
 description: Empresa VE (C.A., SAFE, laboral) — referencia Backend.
+metadata:
+  auto_invoke: "Constitución / SAFE / textos legales app (checklist)"
 ---
-
 # zonix-empresa-ve (Frontend)
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-empresa-ve/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-empresa-ve/SKILL.md)

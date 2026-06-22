@@ -6,8 +6,9 @@ scope: lib/features/screens/auth/, lib/features/screens/onboarding/, lib/feature
 author: Zonix Team
 version: 3.0
 updated: 2026-03-31
+metadata:
+  auto_invoke: "Onboarding (incluye pharmacist)"
 ---
-
 # Onboarding — Zonix Pharma (Flutter)
 
 ## Roles del sistema (6)

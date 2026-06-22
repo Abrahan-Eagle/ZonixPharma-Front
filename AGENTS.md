@@ -197,66 +197,205 @@ notifyListeners() → Consumer<Service>
 
 ---
 
+## Panel de Expertos JARVIS (siempre activo)
+
+JARVIS opera como agencia de desarrollo completa. Declarar roles: `> Roles: frontend (Flutter) + UX`. Roster global: `jarvis-experts`. Routing dominio: `zonix-jarvis-subagents-map` (Backend).
+
+---
+
+## Skills — Capas y sync global
+
+**Precedencia UI:** `ui-router` → `zonix-ui-design` → `ui-ux-pro-max` (ver OVERLAY).
+
+Tras `git pull` en jarvis-skills-library: `./scripts/sync-global-skills-from-library.sh` + `./scripts/check-global-skills-sync.sh`. Ver `MAINTENANCE_SKILLS.md`.
+
+---
+
 ## Available Skills
 
-| Skill | Ruta |
-| ----- | ---- |
-| `flutter-expert` | [.agents/skills/flutter-expert/SKILL.md](.agents/skills/flutter-expert/SKILL.md) |
-| `clean-architecture` | [.agents/skills/clean-architecture/SKILL.md](.agents/skills/clean-architecture/SKILL.md) |
-| `mobile-developer` | [.agents/skills/mobile-developer/SKILL.md](.agents/skills/mobile-developer/SKILL.md) |
-| `ui-ux-pro-max` | [.agents/skills/ui-ux-pro-max/SKILL.md](.agents/skills/ui-ux-pro-max/SKILL.md) |
-| `responsive-design` | [.agents/skills/responsive-design/SKILL.md](.agents/skills/responsive-design/SKILL.md) |
-| `systematic-debugging` | [.agents/skills/systematic-debugging/SKILL.md](.agents/skills/systematic-debugging/SKILL.md) |
-| `test-driven-development` | [.agents/skills/test-driven-development/SKILL.md](.agents/skills/test-driven-development/SKILL.md) |
-| `flutter-animations` | [.agents/skills/flutter-animations/SKILL.md](.agents/skills/flutter-animations/SKILL.md) |
-| `git-commit` | [.agents/skills/git-commit/SKILL.md](.agents/skills/git-commit/SKILL.md) |
+Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 
-### Custom (Zonix)
-
+<!-- SKILLS-START -->
 | Skill | Descripción | Ruta |
-| ----- | ----------- | ---- |
-| `zonix-onboarding` | Onboarding por rol (incluye pharmacist) | [.agents/skills/zonix-onboarding/SKILL.md](.agents/skills/zonix-onboarding/SKILL.md) |
-| `zonix-order-lifecycle` | Estados de orden incluyendo `pending_prescription_validation` | [.agents/skills/zonix-order-lifecycle/SKILL.md](.agents/skills/zonix-order-lifecycle/SKILL.md) |
-| `zonix-realtime-events` | Pusher, FCM, eventos | [.agents/skills/zonix-realtime-events/SKILL.md](.agents/skills/zonix-realtime-events/SKILL.md) |
-| `zonix-ui-design` | Paleta Pharma, cards, layouts | [.agents/skills/zonix-ui-design/SKILL.md](.agents/skills/zonix-ui-design/SKILL.md) |
-| `zonix-design-enforcer` | Grid 8pt, WCAG, tokens brand*, M3/HIG | [.agents/skills/zonix-design-enforcer/SKILL.md](.agents/skills/zonix-design-enforcer/SKILL.md) |
-| `zonix-brand-ops` | Naming, tono pharma, 60-30-10 (stub → Backend) | [.agents/skills/zonix-brand-ops/SKILL.md](.agents/skills/zonix-brand-ops/SKILL.md) |
-| `zonix-web-design` | Landing Blade/CSS (stub → Backend) | [.agents/skills/zonix-web-design/SKILL.md](.agents/skills/zonix-web-design/SKILL.md) |
-| `context-updater` | Actualizar `docs/active_context.md` | [.agents/skills/context-updater/SKILL.md](.agents/skills/context-updater/SKILL.md) |
-| `documentar-avances` | Proponer "Cambios recientes" | [.agents/skills/documentar-avances/SKILL.md](.agents/skills/documentar-avances/SKILL.md) |
-| `zonix-startup-context` | Contexto canónico inversor (stub → Backend) | [.agents/skills/zonix-startup-context/SKILL.md](.agents/skills/zonix-startup-context/SKILL.md) |
-| `zonix-investor-materials` | Data room / pack Lanzamiento (stub → Backend) | [.agents/skills/zonix-investor-materials/SKILL.md](.agents/skills/zonix-investor-materials/SKILL.md) |
-| `zonix-lanzamiento-roles` | Roles pack inversor (stub → Backend) | [.agents/skills/zonix-lanzamiento-roles/SKILL.md](.agents/skills/zonix-lanzamiento-roles/SKILL.md) |
-| `zonix-launch-piloto` | Plan piloto T+0→Day-D (stub → Backend) | [.agents/skills/zonix-launch-piloto/SKILL.md](.agents/skills/zonix-launch-piloto/SKILL.md) |
-| `zonix-jarvis-subagents-map` | Subagents lente → skill canon (stub → Backend) | [.agents/skills/zonix-jarvis-subagents-map/SKILL.md](.agents/skills/zonix-jarvis-subagents-map/SKILL.md) |
-| `zonix-legal-contracts-ve` | Checklist contratos VE (stub → Backend) | [.agents/skills/zonix-legal-contracts-ve/SKILL.md](.agents/skills/zonix-legal-contracts-ve/SKILL.md) |
-| `zonix-founder-ops-index` | Índice CEO/CTO (stub → Backend) | [.agents/skills/zonix-founder-ops-index/SKILL.md](.agents/skills/zonix-founder-ops-index/SKILL.md) |
-| `zonix-empresa-ve` | Constitución / SAFE / laboral VE (stub → Backend) | [.agents/skills/zonix-empresa-ve/SKILL.md](.agents/skills/zonix-empresa-ve/SKILL.md) |
+|-------|-------------|------|
+| `agent-loop-engineering` | Diseño de loops de agente concisos, reducidos y controlados: anatomía estímulo→iteración→stop, cuándo loop vs prompt, tipos de loop y mapeo a skills JARVIS. | [.agents/skills/agent-loop-engineering/SKILL.md](.agents/skills/agent-loop-engineering/SKILL.md) |
+| `backlog-triage-ops` | Triage de backlog GitHub: auditar issues/PRs abiertos, clasificar disposición (merge, request-changes, close, needs-design), priorizar y generar reporte accionable. | [.agents/skills/backlog-triage-ops/SKILL.md](.agents/skills/backlog-triage-ops/SKILL.md) |
+| `brainstorming-ops` | OBLIGATORIO antes de tareas complejas en proyecto activo: pantallas, providers, navegación, flujos KYC/onboarding. Propone alternativas y obtiene aprobación antes de codificar. | [.agents/skills/brainstorming-ops/SKILL.md](.agents/skills/brainstorming-ops/SKILL.md) |
+| `branch-pr-ops` | Workflow branch + PR: naming conventional, checklist pre-PR, issue linking, presupuesto review, gh integration. Adaptable al AGENTS.md del repo. | [.agents/skills/branch-pr-ops/SKILL.md](.agents/skills/branch-pr-ops/SKILL.md) |
+| `chained-pr-ops` | Divide PRs grandes en cadenas reviewables (stacked o feature-branch chain): regla 400 líneas, diagrama de dependencias, integración gh. | [.agents/skills/chained-pr-ops/SKILL.md](.agents/skills/chained-pr-ops/SKILL.md) |
+| `clean-architecture` | Clean Architecture, SOLID principles, dependency injection, separation of concerns. | [.agents/skills/clean-architecture/SKILL.md](.agents/skills/clean-architecture/SKILL.md) |
+| `code-review-playbook` | Use this skill when conducting or improving code reviews. Provides structured review processes, conventional comments patterns, language-specific checklists, and feedback templates. Use when reviewing PRs or standardizing review practices. | [.agents/skills/code-review-playbook/SKILL.md](.agents/skills/code-review-playbook/SKILL.md) |
+| `cognitive-doc-design-ops` | Diseñar docs con baja carga cognitiva: lead with answer, progressive disclosure, checklists para review. | [.agents/skills/cognitive-doc-design-ops/SKILL.md](.agents/skills/cognitive-doc-design-ops/SKILL.md) |
+| `comment-writer-ops` | Redactar comentarios de colaboración cálidos y directos: PR, issues, reviews, Slack. | [.agents/skills/comment-writer-ops/SKILL.md](.agents/skills/comment-writer-ops/SKILL.md) |
+| `context-updater` | Actualizar el contexto de sesión para que la IA "recuerde" entre sesiones. Resumir cambios relevantes en docs/active_context.md al cerrar o finalizar una sesión de trabajo significativa. | [.agents/skills/context-updater/SKILL.md](.agents/skills/context-updater/SKILL.md) |
+| `deep-interview-ops` | Entrevista socrática antes de tareas ambiguas en proyecto activo. Gate claridad mínima 3.5/5. | [.agents/skills/deep-interview-ops/SKILL.md](.agents/skills/deep-interview-ops/SKILL.md) |
+| `design-md` | Analyze Stitch projects and synthesize a semantic design system into DESIGN.md files | [.agents/skills/design-md/SKILL.md](.agents/skills/design-md/SKILL.md) |
+| `docs-alignment-ops` | Alinear documentación con código: docs describen comportamiento actual, mismo PR que el cambio, ejemplos verificables. | [.agents/skills/docs-alignment-ops/SKILL.md](.agents/skills/docs-alignment-ops/SKILL.md) |
+| `documentar-avances` | Al finalizar una tarea relevante, proponer el párrafo para "Cambios recientes" en AGENTS.md y/o README. El usuario aprueba antes de que se escriba en el repo. | [.agents/skills/documentar-avances/SKILL.md](.agents/skills/documentar-avances/SKILL.md) |
+| `doubt-driven-development` | Revisión adversarial in-flight de decisiones no triviales: CLAIM → EXTRACT → DOUBT → RECONCILE → STOP. | [.agents/skills/doubt-driven-development/SKILL.md](.agents/skills/doubt-driven-development/SKILL.md) |
+| `engram-memory-protocol` | Disciplina de memoria persistente con Engram MCP: mem_save, mem_search, mem_context, cierre de sesión y recuperación post-compactación. | [.agents/skills/engram-memory-protocol/SKILL.md](.agents/skills/engram-memory-protocol/SKILL.md) |
+| `engram-router` | Orquesta memoria persistente Engram (MCP) vs context-updater/handoff/active_context JARVIS. | [.agents/skills/engram-router/SKILL.md](.agents/skills/engram-router/SKILL.md) |
+| `enhance-prompt` | Transforms vague UI ideas into polished, Stitch-optimized prompts. Enhances specificity, adds UI/UX keywords, injects design system context, and structures output for better generation results. | [.agents/skills/enhance-prompt/SKILL.md](.agents/skills/enhance-prompt/SKILL.md) |
+| `executing-plans` | Ejecutar plan Flutter paso a paso. | [.agents/skills/executing-plans/SKILL.md](.agents/skills/executing-plans/SKILL.md) |
+| `finishing-a-development-branch` | Cerrar feature Flutter: analyze + test, opciones merge/PR. | [.agents/skills/finishing-a-development-branch/SKILL.md](.agents/skills/finishing-a-development-branch/SKILL.md) |
+| `flutter-animations` | Comprehensive guide for implementing animations in Flutter. Use when adding motion and visual effects to Flutter apps: implicit animations (AnimatedContainer, AnimatedOpacity, TweenAnimationBuilder), explicit animations (AnimationController, Tween, AnimatedWidget/AnimatedBuilder), hero animations (shared element transitions), staggered animations (sequential/overlapping), and physics-based animations. Includes workflow for choosing the right animation type, implementation patterns, and best practices for performance and user experience. | [.agents/skills/flutter-animations/SKILL.md](.agents/skills/flutter-animations/SKILL.md) |
+| `flutter-expert` | Flutter advanced patterns, widgets, lifecycle, state management, performance. | [.agents/skills/flutter-expert/SKILL.md](.agents/skills/flutter-expert/SKILL.md) |
+| `git-commit` | Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping | [.agents/skills/git-commit/SKILL.md](.agents/skills/git-commit/SKILL.md) |
+| `git-guardrails-ops` | Protección git: bloquea push a main, advierte en dev, exige confirmación antes de comandos destructivos. | [.agents/skills/git-guardrails-ops/SKILL.md](.agents/skills/git-guardrails-ops/SKILL.md) |
+| `github-code-review` | Comprehensive GitHub code review with AI-powered swarm coordination | [.agents/skills/github-code-review/SKILL.md](.agents/skills/github-code-review/SKILL.md) |
+| `handoff` | Compactar la sesion actual en un documento de traspaso para continuar en otro agente o chat. Complementa session-learner-ops (cierre de modulo) y active_context.md. | [.agents/skills/handoff/SKILL.md](.agents/skills/handoff/SKILL.md) |
+| `human-in-the-loop-ops` | Gobernanza humana en bucles agénticos: HITL/HOTL/automation-bounded, umbrales de confianza, condiciones de terminación y escalamiento. | [.agents/skills/human-in-the-loop-ops/SKILL.md](.agents/skills/human-in-the-loop-ops/SKILL.md) |
+| **`jarvis-core`** | **Protocolo base del sistema JARVIS para cualquier proyecto. Define honestidad, foco de negocio y flujo de trabajo modular.** | [.agents/skills/jarvis-core/SKILL.md](.agents/skills/jarvis-core/SKILL.md) |
+| `jarvis-experts` | Panel de Expertos JARVIS (agencia de desarrollo virtual). Define roster de roles, criterios de activación, combinaciones recomendadas y plantilla de declaración. | [.agents/skills/jarvis-experts/SKILL.md](.agents/skills/jarvis-experts/SKILL.md) |
+| `mobile-developer` | Mobile development patterns, platform-specific code, deep linking, push notifications. | [.agents/skills/mobile-developer/SKILL.md](.agents/skills/mobile-developer/SKILL.md) |
+| `parallel-judge-ops` | Patrón "día del juicio": 2+ jueces adversariales en paralelo e independientes → orquestador valida real vs ruido → subagente aplica fixes → itera hasta sin hallazgos o max iterations. | [.agents/skills/parallel-judge-ops/SKILL.md](.agents/skills/parallel-judge-ops/SKILL.md) |
+| `playwright-skill` | Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links, automate any browser task. Use when user wants to test websites, automate browser interactions, validate web functionality, or perform any browser-based testing. | [.agents/skills/playwright-skill/SKILL.md](.agents/skills/playwright-skill/SKILL.md) |
+| `qa-testing-playwright` | E2E web testing with Playwright. Use when writing tests, debugging flakes, or setting up CI with selectors, sharding, and network mocking. | [.agents/skills/qa-testing-playwright/SKILL.md](.agents/skills/qa-testing-playwright/SKILL.md) |
+| `react:components` | Converts Stitch designs into modular Vite and React components using system-level networking and AST-based validation. | [.agents/skills/react-components/SKILL.md](.agents/skills/react-components/SKILL.md) |
+| `receiving-code-review` | Recibir feedback de review UI/código con verificación. | [.agents/skills/receiving-code-review/SKILL.md](.agents/skills/receiving-code-review/SKILL.md) |
+| `remotion` | Generate walkthrough videos from Stitch projects using Remotion with smooth transitions, zooming, and text overlays | [.agents/skills/remotion/SKILL.md](.agents/skills/remotion/SKILL.md) |
+| `requesting-code-review` | Code review antes de merge. | [.agents/skills/requesting-code-review/SKILL.md](.agents/skills/requesting-code-review/SKILL.md) |
+| `responsive-design` | Implement modern responsive layouts using container queries, fluid typography, CSS Grid, and mobile-first breakpoint strategies. Use when building adaptive interfaces, implementing fluid layouts, or creating component-level responsive behavior. | [.agents/skills/responsive-design/SKILL.md](.agents/skills/responsive-design/SKILL.md) |
+| `session-learner-ops` | Tras cerrar módulo UI: patrones en docs/active_context.md y walkthrough. | [.agents/skills/session-learner-ops/SKILL.md](.agents/skills/session-learner-ops/SKILL.md) |
+| `shadcn-ui` | Expert guidance for integrating and building applications with shadcn/ui components, including component discovery, installation, customization, and best practices. | [.agents/skills/shadcn-ui/SKILL.md](.agents/skills/shadcn-ui/SKILL.md) |
+| `skill-creator` | Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations. | [.agents/skills/skill-creator/SKILL.md](.agents/skills/skill-creator/SKILL.md) |
+| `speckit-git-commit` | Auto-commit changes after a Spec Kit command completes | [.agents/skills/speckit-git-commit/SKILL.md](.agents/skills/speckit-git-commit/SKILL.md) |
+| `speckit-git-feature` | Create a feature branch with sequential or timestamp numbering | [.agents/skills/speckit-git-feature/SKILL.md](.agents/skills/speckit-git-feature/SKILL.md) |
+| `speckit-git-initialize` | Initialize a Git repository with an initial commit | [.agents/skills/speckit-git-initialize/SKILL.md](.agents/skills/speckit-git-initialize/SKILL.md) |
+| `speckit-git-remote` | Detect Git remote URL for GitHub integration | [.agents/skills/speckit-git-remote/SKILL.md](.agents/skills/speckit-git-remote/SKILL.md) |
+| `speckit-git-validate` | Validate current branch follows feature branch naming conventions | [.agents/skills/speckit-git-validate/SKILL.md](.agents/skills/speckit-git-validate/SKILL.md) |
+| `stitch-loop` | Teaches agents to iteratively build websites using Stitch with an autonomous baton-passing loop pattern | [.agents/skills/stitch-loop/SKILL.md](.agents/skills/stitch-loop/SKILL.md) |
+| `structured-commits-ops` | Commits con trailers de decisión en proyecto activo. Complementa git-commit. | [.agents/skills/structured-commits-ops/SKILL.md](.agents/skills/structured-commits-ops/SKILL.md) |
+| `systematic-debugging` | Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes | [.agents/skills/systematic-debugging/SKILL.md](.agents/skills/systematic-debugging/SKILL.md) |
+| `task-pipeline-ops` | Pipeline multi-paso proyecto activo: Plan → Spec → Exec → Verify → Fix (máx. 3). | [.agents/skills/task-pipeline-ops/SKILL.md](.agents/skills/task-pipeline-ops/SKILL.md) |
+| `test-driven-development` | Use when implementing any feature or bugfix, before writing implementation code | [.agents/skills/test-driven-development/SKILL.md](.agents/skills/test-driven-development/SKILL.md) |
+| `ui-router` | Orquesta precedencia UI/UX: skill dominio del producto, ui-ux-pro-max, responsive-design. | [.agents/skills/ui-router/SKILL.md](.agents/skills/ui-router/SKILL.md) |
+| `ui-ux-pro-max` | UI/UX design intelligence: design system generator, 67+ styles, palettes, typography, UX guidelines, charts, google-fonts domain, stacks Flutter/React/Next/Vue/Tailwind/shadcn. | [.agents/skills/ui-ux-pro-max/SKILL.md](.agents/skills/ui-ux-pro-max/SKILL.md) |
+| `using-git-worktrees` | Worktree aislado para features Flutter proyecto. Base dev. | [.agents/skills/using-git-worktrees/SKILL.md](.agents/skills/using-git-worktrees/SKILL.md) |
+| `verification-before-completion` | OBLIGATORIO antes de declarar cualquier tarea completada en cualquier proyecto. Ejecuta verificación fresca del stack y solo entonces afirma éxito. | [.agents/skills/verification-before-completion/SKILL.md](.agents/skills/verification-before-completion/SKILL.md) |
+| `webapp-testing` | Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs. | [.agents/skills/webapp-testing/SKILL.md](.agents/skills/webapp-testing/SKILL.md) |
+| `work-unit-commits-ops` | Commits por unidad de trabajo reviewable: un propósito, tests/docs con el código, historia clara. Puente a chained PRs. | [.agents/skills/work-unit-commits-ops/SKILL.md](.agents/skills/work-unit-commits-ops/SKILL.md) |
+| `writing-plans` | Plan bite-sized Flutter antes de codificar. .agents/plans/implementation_plan.md | [.agents/skills/writing-plans/SKILL.md](.agents/skills/writing-plans/SKILL.md) |
+| **`zonix-admin-analytics-ui`** | **UI dashboards admin/commerce Zonix Pharma (Flutter). Métricas, tablas, filtros; alinear KPIs con zonix-analytics Backend.** | [.agents/skills/zonix-admin-analytics-ui/SKILL.md](.agents/skills/zonix-admin-analytics-ui/SKILL.md) |
+| **`zonix-brand-ops`** | **Branding operativo Zonix Pharma — copia de referencia. Contenido completo en ZonixPharma-Backend.** | [.agents/skills/zonix-brand-ops/SKILL.md](.agents/skills/zonix-brand-ops/SKILL.md) |
+| **`zonix-design-enforcer`** | **Enforcer de calidad visual Flutter Zonix Pharma — grid 8pt, WCAG, un CTA primario, tokens brand* obligatorios, M3/HIG, badges Rx. Complementa zonix-ui-design.** | [.agents/skills/zonix-design-enforcer/SKILL.md](.agents/skills/zonix-design-enforcer/SKILL.md) |
+| **`zonix-empresa-ve`** | **Empresa VE (C.A., SAFE, laboral) — referencia Backend.** | [.agents/skills/zonix-empresa-ve/SKILL.md](.agents/skills/zonix-empresa-ve/SKILL.md) |
+| **`zonix-founder-ops-index`** | **Índice founder CEO/CTO — referencia Backend.** | [.agents/skills/zonix-founder-ops-index/SKILL.md](.agents/skills/zonix-founder-ops-index/SKILL.md) |
+| **`zonix-investor-materials`** | **Materiales inversor Zonix — referencia Backend. Data room en docs/Lanzamiento.** | [.agents/skills/zonix-investor-materials/SKILL.md](.agents/skills/zonix-investor-materials/SKILL.md) |
+| **`zonix-jarvis-subagents-map`** | **Mapeo JARVIS — referencia Backend.** | [.agents/skills/zonix-jarvis-subagents-map/SKILL.md](.agents/skills/zonix-jarvis-subagents-map/SKILL.md) |
+| **`zonix-lanzamiento-roles`** | **Panel roles pack Lanzamiento — referencia Backend.** | [.agents/skills/zonix-lanzamiento-roles/SKILL.md](.agents/skills/zonix-lanzamiento-roles/SKILL.md) |
+| **`zonix-launch-piloto`** | **Plan piloto T+0→Day-D — referencia Backend.** | [.agents/skills/zonix-launch-piloto/SKILL.md](.agents/skills/zonix-launch-piloto/SKILL.md) |
+| **`zonix-lean-canvas`** | **Lean Canvas piloto Zonix — referencia Backend (UniMOOC Steve Blank).** | [.agents/skills/zonix-lean-canvas/SKILL.md](.agents/skills/zonix-lean-canvas/SKILL.md) |
+| **`zonix-legal-contracts-ve`** | **Contratos VE — referencia Backend.** | [.agents/skills/zonix-legal-contracts-ve/SKILL.md](.agents/skills/zonix-legal-contracts-ve/SKILL.md) |
+| **`zonix-onboarding`** | **Onboarding Zonix Pharma (Flutter). Paciente (users), farmacia (commerce), farmacéutico (pharmacist); delivery desde paneles company/admin.** | [.agents/skills/zonix-onboarding/SKILL.md](.agents/skills/zonix-onboarding/SKILL.md) |
+| **`zonix-order-lifecycle`** | **Ciclo de vida de órdenes Zonix Pharma (Flutter). pending_prescription_validation, timelines UI; alinear con Backend zonix-order-lifecycle.** | [.agents/skills/zonix-order-lifecycle/SKILL.md](.agents/skills/zonix-order-lifecycle/SKILL.md) |
+| **`zonix-order-tracking-ui`** | **UI tracking de órdenes Zonix Pharma (Flutter). Estados Rx, timelines, mapa y pending_prescription_validation.** | [.agents/skills/zonix-order-tracking-ui/SKILL.md](.agents/skills/zonix-order-tracking-ui/SKILL.md) |
+| **`zonix-realtime-events`** | **Eventos en tiempo real Zonix Pharma (Flutter). Pusher, FCM zonix_pharma_fcm; alinear con Backend zonix-realtime-events.** | [.agents/skills/zonix-realtime-events/SKILL.md](.agents/skills/zonix-realtime-events/SKILL.md) |
+| **`zonix-startup-context`** | **Contexto canónico Zonix Pharma — copia de referencia. Contenido completo en ZonixPharma-Backend.** | [.agents/skills/zonix-startup-context/SKILL.md](.agents/skills/zonix-startup-context/SKILL.md) |
+| **`zonix-ui-design`** | **Sistema de diseño visual de Zonix Pharma. Paleta fría Pharma (navy + teal + mint), tipografía Plus Jakarta Sans, cards de medicamento, badges Rx / cold chain / controlado, bottom nav por rol incluido pharmacist, layouts de receta médica.** | [.agents/skills/zonix-ui-design/SKILL.md](.agents/skills/zonix-ui-design/SKILL.md) |
+| **`zonix-web-design`** | **Diseño web Blade/CSS Zonix Pharma — copia de referencia. Contenido completo en ZonixPharma-Backend.** | [.agents/skills/zonix-web-design/SKILL.md](.agents/skills/zonix-web-design/SKILL.md) |
+| `zoom-out` | Explicar código o un cambio en el contexto del sistema completo del proyecto activo (módulos, capas, flujos). Uso bajo demanda. | [.agents/skills/zoom-out/SKILL.md](.agents/skills/zoom-out/SKILL.md) |
+<!-- SKILLS-END -->
 
-> **Skills financieras completas** (`zonix-financial-model`, `zonix-fundraising-narrative`, `zonix-regulatory-ve`): solo en [ZonixPharma-Backend/.agents/skills/](../ZonixPharma-Backend/.agents/skills/).
+> **Skills financieras/regulatorias completas** (`zonix-financial-model`, `zonix-fundraising-narrative`, `zonix-regulatory-ve`): solo en [ZonixPharma-Backend/.agents/skills/](../ZonixPharma-Backend/.agents/skills/).
 
 ---
 
 ## Auto-invoke Skills
 
+Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
+
+<!-- AUTO-INVOKE-START -->
 | Acción | Skill |
-| ------ | ----- |
-| Crear/modificar pantallas o widgets | `flutter-expert` |
-| Crear/modificar servicios | `flutter-expert` |
-| Diseñar UI/UX Flutter | `zonix-ui-design` + `zonix-design-enforcer` + `ui-ux-pro-max` (secundaria) |
-| Copy / naming / branding app | `zonix-brand-ops` (stub → Backend) |
-| Onboarding (incluye pharmacist) | `zonix-onboarding` |
+|--------|-------|
+| Abrir PR con gh | `branch-pr-ops` |
+| Actualizar docs tras cambio de código | `docs-alignment-ops` |
+| Agent loop engineering / no prompts haz loops | `agent-loop-engineering` |
+| Alta stakes verificar antes de commit | `doubt-driven-development` |
+| Auditar open issues como maintainer | `backlog-triage-ops` |
+| Buscar contexto previo mem_search mem_context | `engram-memory-protocol` |
+| Cambio API CLI setup que afecta documentación | `docs-alignment-ops` |
+| Cerrar sesión con cambios | `documentar-avances` |
+| Cierre sesión con mem_session_summary | `engram-memory-protocol` |
+| Clasificar PRs merge request-changes close | `backlog-triage-ops` |
+| Comando git destructivo | `git-guardrails-ops` |
+| Compactar o traspasar sesion | `handoff` |
+| Condiciones de terminación bucle autónomo | `human-in-the-loop-ops` |
+| Configurar engram en Cursor | `engram-router` |
+| Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` |
+| Copy / naming / branding app | `zonix-brand-ops` |
+| Crear commit | `git-commit` |
+| Crear commit | `structured-commits-ops` |
+| Crear commit | `verification-before-completion` |
+| Crear o preparar pull request | `branch-pr-ops` |
+| Crear/modificar pantallas o widgets | `zonix-ui-design` |
+| Cualquier tarea no trivial | `jarvis-experts` |
+| Decidir loop vs prompt simple | `agent-loop-engineering` |
+| Decisión cross-rol | `jarvis-experts` |
+| Decisión no trivial seguridad producción | `doubt-driven-development` |
+| Definir alcance de un módulo | `jarvis-experts` |
+| Diseñar UI o UX | `ui-router` |
+| Diseñar UI o UX | `ui-ux-pro-max` |
+| Diseñar UI/UX Flutter | `zonix-design-enforcer` |
+| Diseñar UI/UX Flutter | `zonix-ui-design` |
+| Diseñar loop de agente | `agent-loop-engineering` |
+| Dividir diff grande en slices reviewables | `chained-pr-ops` |
+| Dividir implementación en commits reviewables | `work-unit-commits-ops` |
+| Doc largo, denso o difícil de escanear | `cognitive-doc-design-ops` |
+| Día del juicio / jueces paralelos | `parallel-judge-ops` |
+| Encontrar bug o test fallido | `systematic-debugging` |
+| Escribir descripción de PR o notas para review | `cognitive-doc-design-ops` |
+| Escribir feedback de code review para humano | `comment-writer-ops` |
 | Estados / flujo de órdenes | `zonix-order-lifecycle` |
-| Implementar Pusher / FCM | `zonix-realtime-events` |
-| Hacer git commit | `git-commit` |
-| Cerrar sesión con cambios | `context-updater` |
+| Evitar PR monolítico desde SDD tasks | `work-unit-commits-ops` |
 | Finalizar tarea | `documentar-avances` |
-| UI alineada a pack inversor / claims salud | `zonix-startup-context` + `zonix-lanzamiento-roles` + Backend `zonix-regulatory-ve` |
-| Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` (stub → Backend) |
-| Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` (stub → Backend) |
-| Nueva feature producto (spec en Backend hub) | Spec Kit `speckit-*` + `zonix-ui-design` + `zonix-design-enforcer` / `zonix-order-lifecycle` — ver Backend [SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md) |
-| Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` (stub → Backend) |
-| Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` (stub → Backend) |
+| Gates humanos antes de acción irreversible | `human-in-the-loop-ops` |
+| Guardar decisión o bugfix en Engram | `engram-memory-protocol` |
+| HITL HOTL umbrales de confianza | `human-in-the-loop-ops` |
+| Hacer git push o merge | `git-guardrails-ops` |
+| Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` |
+| Human-in-the-loop diseño de loop | `human-in-the-loop-ops` |
+| Implementar Pusher / FCM | `zonix-realtime-events` |
+| Implementar feature o bugfix | `test-driven-development` |
+| Iniciar módulo | `brainstorming-ops` |
+| Iniciar módulo | `jarvis-core` |
+| Iniciar módulo | `task-pipeline-ops` |
+| Iterar hasta lograr un objetivo medible | `agent-loop-engineering` |
+| Landing page o dashboard | `ui-router` |
+| Landing page o dashboard | `ui-ux-pro-max` |
+| Memoria persistente Engram MCP | `engram-router` |
+| Naming de branch y checklist pre-PR | `branch-pr-ops` |
+| Nueva feature producto (spec en Backend hub) | `zonix-ui-design` |
+| Onboarding (incluye pharmacist) | `zonix-onboarding` |
+| PR supera 400 líneas o presupuesto de review | `chained-pr-ops` |
+| Paleta de colores o tipografía | `ui-router` |
+| Paleta de colores o tipografía | `ui-ux-pro-max` |
+| Planificar desarrollo | `brainstorming-ops` |
+| Planificar desarrollo | `jarvis-core` |
+| Planificar desarrollo | `writing-plans` |
+| Preparar commits antes de abrir PR | `work-unit-commits-ops` |
+| Redactar comentario de PR o issue | `comment-writer-ops` |
+| Redactar o mejorar README, RFC, onboarding o guía | `cognitive-doc-design-ops` |
+| Requisitos ambiguos | `deep-interview-ops` |
+| Respuesta de maintainer o mensaje async al equipo | `comment-writer-ops` |
+| Revisar accesibilidad o layout | `ui-router` |
+| Revisar accesibilidad o layout | `ui-ux-pro-max` |
+| Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` |
+| Stacked PRs o chained PRs | `chained-pr-ops` |
+| Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` |
+| Terminar módulo | `finishing-a-development-branch` |
+| Terminar módulo | `jarvis-core` |
+| Terminar módulo | `session-learner-ops` |
+| Terminar módulo | `verification-before-completion` |
+| Triage backlog issues y PRs | `backlog-triage-ops` |
+| UI alineada a pack inversor / claims salud | `zonix-lanzamiento-roles` |
+| UI alineada a pack inversor / claims salud | `zonix-startup-context` |
+| Validar diff/PR con 2+ revisores independientes | `parallel-judge-ops` |
+| Verificación adversarial paralela de un artefacto | `parallel-judge-ops` |
+| Verificar que docs igualan comportamiento actual | `docs-alignment-ops` |
+| doubt-driven revisión adversarial | `doubt-driven-development` |
+| mem_save mem_search contexto entre sesiones | `engram-router` |
+<!-- AUTO-INVOKE-END -->
 
 ---
 

@@ -1,8 +1,9 @@
 ---
 name: zonix-jarvis-subagents-map
 description: Mapeo JARVIS — referencia Backend.
+metadata:
+  auto_invoke: "Tarea multi-rol (subagent + skill canon)"
 ---
-
 # zonix-jarvis-subagents-map (Frontend)
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-jarvis-subagents-map/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-jarvis-subagents-map/SKILL.md)

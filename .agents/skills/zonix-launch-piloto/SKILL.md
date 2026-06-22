@@ -1,8 +1,9 @@
 ---
 name: zonix-launch-piloto
 description: Plan piloto T+0→Day-D — referencia Backend.
+metadata:
+  auto_invoke: "Hitos piloto / calendario Day-D (solo planificación)"
 ---
-
 # zonix-launch-piloto (Frontend)
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-launch-piloto/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-launch-piloto/SKILL.md)
