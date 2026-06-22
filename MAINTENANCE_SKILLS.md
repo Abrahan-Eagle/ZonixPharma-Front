@@ -17,7 +17,7 @@ Las skills (`.agents/skills/*/SKILL.md`) no son simple documentación; son **gu�
 | 0 Máquina | `~/.cursor/skills/` | `jarvis-core`, `sdd-router` |
 | 0 Global-sync | `.global-sync-manifest` | `ui-router`, `ui-ux-pro-max` (overlay) |
 | 3 Dominio Zonix | `zonix-*` | **solo locales** |
-| 5 Solo local | no en manifest | `playwright-skill`, Stitch/React, `speckit-*` en `.cursor/skills/` |
+| 5 Solo local | no en manifest | `playwright-skill`, Stitch/React, `speckit-git-*` |
 
 ```bash
 JARVIS_SKILLS_LIBRARY=/var/www/html/proyectos/AIPP/jarvis-skills-library \
@@ -28,7 +28,7 @@ bash $JARVIS_SKILLS_LIBRARY/scripts/init-jarvis.sh --min c
 ```
 
 - **`ui-ux-pro-max`:** editar [.agents/skills/ui-ux-pro-max/OVERLAY.md](.agents/skills/ui-ux-pro-max/OVERLAY.md) (canon marca en Backend `docs/BRAND_ZONIX_PHARMA.md`).
-- **WARN Fase 2:** `.cursor/skills/` versionado — ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
+- **Spec Kit:** core en `~/.cursor/skills/` (`install.sh --all`); git hooks en `.agents/skills/speckit-git-*`. `.cursor/skills/` gitignored — ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
 
 ---
 

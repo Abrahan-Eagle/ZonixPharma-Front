@@ -1,6 +1,7 @@
 ## Overlay ZonixPharma Front — ui-ux-pro-max
 
 Precede sobre queries BM25 genéricas. Leer **`zonix-ui-design`** y canon de marca antes de aplicar tokens.
+Canon compartido Blade + anti-patterns: `../ZonixPharma-Backend/.agents/skills/ui-ux-pro-max/ZONIX.md`.
 
 ### Producto
 

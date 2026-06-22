@@ -43,7 +43,7 @@ Features de **producto** (API + Flutter) siguen Spec-Driven Development en el **
 - **Constitution:** [../ZonixPharma-Backend/.specify/memory/constitution.md](../ZonixPharma-Backend/.specify/memory/constitution.md)
 - **Specs (canon):** [../ZonixPharma-Backend/specs/](../ZonixPharma-Backend/specs/)
 - **Guía:** [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md)
-- **Skills proceso:** `.cursor/skills/speckit-*` (complementan `.agents/skills/zonix-*`)
+- **Skills proceso:** `~/.cursor/skills/speckit-*` (global vía `install.sh`) + `.agents/skills/speckit-git-*` (local)
 - Cambios solo Front: documentar rutas como `front:lib/...` en la carpeta spec del Backend hub
 
 Leer el `plan.md` activo en `../ZonixPharma-Backend/specs/[feature]/`.
@@ -100,7 +100,7 @@ Leer el `plan.md` activo en `../ZonixPharma-Backend/specs/[feature]/`.
 
 ### Skills de dominio (selección — catálogo completo en `AGENTS.md`)
 
-Para **nueva feature de producto**: skills `.cursor/skills/speckit-*` + `zonix-*` del dominio (stubs → canon en Backend).
+Para **nueva feature de producto**: skills `~/.cursor/skills/speckit-*` + `zonix-*` del dominio (stubs → canon en Backend).
 
 - **zonix-ui-design**: pantallas, widgets, cards, botones, layouts.
 - **zonix-onboarding**: registro / onboarding por rol (incluye `pharmacist`).

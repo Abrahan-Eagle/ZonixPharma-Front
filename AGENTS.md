@@ -23,7 +23,7 @@ Implementación en código Flutter: `lib/features/utils/app_colors.dart`, `lib/f
 
 Specs SDD viven en **[../ZonixPharma-Backend/specs/](../ZonixPharma-Backend/specs/)**. Constitution: [../ZonixPharma-Backend/.specify/memory/constitution.md](../ZonixPharma-Backend/.specify/memory/constitution.md).
 
-Skills proceso: `.cursor/skills/speckit-*`. Dominio: `.agents/skills/zonix-*` (stubs → Backend).
+Skills proceso: `~/.cursor/skills/speckit-*` (global) + `.agents/skills/speckit-git-*` (local). Dominio: `.agents/skills/zonix-*` (stubs → Backend).
 
 Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md).
 

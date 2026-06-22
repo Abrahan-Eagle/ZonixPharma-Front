@@ -25,7 +25,7 @@ Features de **producto** siguen Spec Kit en hub Backend (`specs/`). Front es esp
 
 | Ámbito | Cadena |
 |--------|--------|
-| Feature producto | `sdd-router` (global) → `.cursor/skills/speckit-*` → `zonix-ui-design` / `zonix-order-lifecycle` |
+| Feature producto | `sdd-router` (global) → `~/.cursor/skills/speckit-*` → `zonix-ui-design` / `zonix-order-lifecycle` |
 | Guía | [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md) |
 
 **No Spec Kit** para `docs/Lanzamiento/` → Backend `zonix-lanzamiento-docs`.
