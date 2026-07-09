@@ -35,6 +35,7 @@
 | `jarvis-core` | local | overlay | Iniciar módulo; Planificar desarrollo… |
 | `jarvis-experts` | local | overlay | Cualquier tarea no trivial; Decisión cross-rol… |
 | `mobile-developer` | local | passthrough | — |
+| `notebooklm-router` | local | passthrough | Consultar NotebookLM / notebook con citas; Configurar NotebookLM MCP en Cursor… |
 | `parallel-judge-ops` | local | passthrough | Día del juicio / jueces paralelos; Verificación adversarial paralela de un artefacto… |
 | `playwright-skill` | local | local-only | — |
 | `qa-testing-playwright` | local | local-only | — |

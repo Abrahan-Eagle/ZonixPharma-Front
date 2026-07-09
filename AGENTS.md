@@ -249,6 +249,7 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | **`jarvis-core`** | **Protocolo base del sistema JARVIS para cualquier proyecto. Define honestidad, foco de negocio y flujo de trabajo modular.** | [.agents/skills/jarvis-core/SKILL.md](.agents/skills/jarvis-core/SKILL.md) |
 | `jarvis-experts` | Panel de Expertos JARVIS (agencia de desarrollo virtual). Define roster de roles, criterios de activación, combinaciones recomendadas y plantilla de declaración. | [.agents/skills/jarvis-experts/SKILL.md](.agents/skills/jarvis-experts/SKILL.md) |
 | `mobile-developer` | Mobile development patterns, platform-specific code, deep linking, push notifications. | [.agents/skills/mobile-developer/SKILL.md](.agents/skills/mobile-developer/SKILL.md) |
+| `notebooklm-router` | Orquesta consulta RAG a Google NotebookLM (corpus grande/duradero con citas) vía MCP `notebooklm-mcp` vs subida directa al contexto y vs Engram (memoria cross-session). | [.agents/skills/notebooklm-router/SKILL.md](.agents/skills/notebooklm-router/SKILL.md) |
 | `parallel-judge-ops` | Patrón "día del juicio": 2+ jueces adversariales en paralelo e independientes → orquestador valida real vs ruido → subagente aplica fixes → itera hasta sin hallazgos o max iterations. | [.agents/skills/parallel-judge-ops/SKILL.md](.agents/skills/parallel-judge-ops/SKILL.md) |
 | `playwright-skill` | Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links, automate any browser task. Use when user wants to test websites, automate browser interactions, validate web functionality, or perform any browser-based testing. | [.agents/skills/playwright-skill/SKILL.md](.agents/skills/playwright-skill/SKILL.md) |
 | `qa-testing-playwright` | E2E web testing with Playwright. Use when writing tests, debugging flakes, or setting up CI with selectors, sharding, and network mocking. | [.agents/skills/qa-testing-playwright/SKILL.md](.agents/skills/qa-testing-playwright/SKILL.md) |
@@ -323,9 +324,12 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Comando git destructivo | `git-guardrails-ops` |
 | Compactar o traspasar sesion | `handoff` |
 | Condiciones de terminación bucle autónomo | `human-in-the-loop-ops` |
+| Configurar NotebookLM MCP en Cursor | `notebooklm-router` |
 | Configurar engram en Cursor | `engram-router` |
 | Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` |
+| Consultar NotebookLM / notebook con citas | `notebooklm-router` |
 | Copy / naming / branding app | `zonix-brand-ops` |
+| Corpus grande de documentos para RAG | `notebooklm-router` |
 | Crear commit | `git-commit` |
 | Crear commit | `structured-commits-ops` |
 | Crear commit | `verification-before-completion` |
@@ -401,6 +405,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Verificar que docs igualan comportamiento actual | `docs-alignment-ops` |
 | doubt-driven revisión adversarial | `doubt-driven-development` |
 | mem_save mem_search contexto entre sesiones | `engram-router` |
+| nlm login nlm setup add cursor | `notebooklm-router` |
 <!-- AUTO-INVOKE-END -->
 
 ---
