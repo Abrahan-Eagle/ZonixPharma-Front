@@ -322,6 +322,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Auditoría módulo | `fan-out-synthesize-ops` |
 | Buscar contexto previo mem_search mem_context | `engram-memory-protocol` |
 | Cambio API CLI setup que afecta documentación | `docs-alignment-ops` |
+| Cerrar sesión | `context-updater` |
 | Cerrar sesión con cambios | `documentar-avances` |
 | Cierre sesión con mem_session_summary | `engram-memory-protocol` |
 | Clasificar PRs merge request-changes close | `backlog-triage-ops` |
@@ -331,6 +332,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Comando git destructivo | `git-guardrails-ops` |
 | Compactar contexto | `strategic-compact-ops` |
 | Compactar o traspasar sesion | `handoff` |
+| Compactar o traspasar sesion | `strategic-compact-ops` |
 | Condiciones de terminación bucle autónomo | `human-in-the-loop-ops` |
 | Configurar NotebookLM MCP en Cursor | `notebooklm-router` |
 | Configurar engram en Cursor | `engram-router` |
@@ -341,6 +343,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Crear commit | `git-commit` |
 | Crear commit | `structured-commits-ops` |
 | Crear commit | `verification-before-completion` |
+| Crear commit | `work-unit-commits-ops` |
 | Crear o preparar pull request | `branch-pr-ops` |
 | Crear/modificar pantallas o widgets | `zonix-ui-design` |
 | Cualquier tarea no trivial | `fan-out-synthesize-ops` |
@@ -378,6 +381,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Iniciar módulo | `brainstorming-ops` |
 | Iniciar módulo | `jarvis-core` |
 | Iniciar módulo | `task-pipeline-ops` |
+| Iniciar módulo | `writing-plans` |
 | Iniciar sesión | `session-startup-ops` |
 | Investigar bug | `fan-out-synthesize-ops` |
 | Iterar hasta lograr un objetivo medible | `agent-loop-engineering` |

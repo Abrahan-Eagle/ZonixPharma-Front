@@ -14,7 +14,7 @@
 | `cognitive-doc-design-ops` | local | passthrough | Redactar o mejorar README, RFC, onboarding o guía; Escribir descripción de PR o notas para review… |
 | `comment-writer-ops` | local | passthrough | Redactar comentario de PR o issue; Escribir feedback de code review para humano… |
 | `context-packs-ops` | local | passthrough | Modo research; Modo produce… |
-| `context-updater` | local | passthrough | — |
+| `context-updater` | local | passthrough | Cerrar sesión |
 | `deep-interview-ops` | local | overlay | Requisitos ambiguos |
 | `design-md` | local | local-only | — |
 | `docs-alignment-ops` | local | passthrough | Actualizar docs tras cambio de código; Verificar que docs igualan comportamiento actual… |
@@ -55,7 +55,7 @@
 | `speckit-git-remote` | local | local-only | — |
 | `speckit-git-validate` | local | local-only | — |
 | `stitch-loop` | local | local-only | — |
-| `strategic-compact-ops` | local | passthrough | Compactar contexto; Sesión larga sugerir compactación |
+| `strategic-compact-ops` | local | passthrough | Compactar contexto; Sesión larga sugerir compactación… |
 | `structured-commits-ops` | local | overlay | Crear commit |
 | `systematic-debugging` | local | passthrough | Encontrar bug o test fallido |
 | `task-pipeline-ops` | local | overlay | Iniciar módulo |
@@ -66,7 +66,7 @@
 | `verification-before-completion` | local | passthrough | Terminar módulo; Crear commit |
 | `webapp-testing` | local | passthrough | — |
 | `work-unit-commits-ops` | local | passthrough | Dividir implementación en commits reviewables; Preparar commits antes de abrir PR… |
-| `writing-plans` | local | passthrough | Planificar desarrollo |
+| `writing-plans` | local | passthrough | Planificar desarrollo; Iniciar módulo |
 | `zonix-admin-analytics-ui` | local | local-only | — |
 | `zonix-brand-ops` | local | local-only | Copy / naming / branding app |
 | `zonix-design-enforcer` | local | local-only | Diseñar UI/UX Flutter |
