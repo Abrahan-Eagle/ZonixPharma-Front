@@ -75,8 +75,9 @@ class SignInScreenState extends State<SignInScreen> {
 
   Future<void> _handleSignIn() async {
     try {
-      await GoogleSignInService.signInWithGoogle();
-      _currentUser = await GoogleSignInService.getCurrentUser();
+      // Usar el retorno del login (incluye backend); no signInSilently, que
+      // puede devolver cuenta Google aunque Laravel haya rechazado el token.
+      _currentUser = await GoogleSignInService.signInWithGoogle();
       setState(() {
         _loginError = null;
       });

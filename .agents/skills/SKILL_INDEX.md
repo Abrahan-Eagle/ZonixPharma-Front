@@ -72,6 +72,7 @@
 | `zonix-design-enforcer` | local | local-only | Diseñar UI/UX Flutter |
 | `zonix-empresa-ve` | local | local-only | Constitución / SAFE / textos legales app (checklist) |
 | `zonix-founder-ops-index` | local | local-only | — |
+| `zonix-inversionistas-crm` | local | local-only | — |
 | `zonix-investor-materials` | local | local-only | — |
 | `zonix-jarvis-subagents-map` | local | local-only | Tarea multi-rol (subagent + skill canon) |
 | `zonix-lanzamiento-roles` | local | local-only | UI alineada a pack inversor / claims salud |
