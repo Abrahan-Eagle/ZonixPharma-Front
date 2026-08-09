@@ -7,6 +7,6 @@ description: Lean Canvas piloto Zonix — referencia Backend (UniMOOC Steve Blan
 
 **Canon:** [../../../ZonixPharma-Backend/.agents/skills/zonix-lean-canvas/SKILL.md](../../../ZonixPharma-Backend/.agents/skills/zonix-lean-canvas/SKILL.md)
 
-**Forense curso:** [../../../ZonixPharma-Backend/docs/zonix/ANALISIS_FORENSE_CURSO_UNIMOOC_2026-06.md](../../../ZonixPharma-Backend/docs/zonix/ANALISIS_FORENSE_CURSO_UNIMOOC_2026-06.md)
+**Router startup:** [../../../ZonixPharma-Backend/docs/zonix/SKILLS_STARTUP_USAR_NO_USAR.md](../../../ZonixPharma-Backend/docs/zonix/SKILLS_STARTUP_USAR_NO_USAR.md)
 
 Usar en workshops founder/Co-CEO alineados a Fase 0 pre-Day-D (sin cifras inventadas).

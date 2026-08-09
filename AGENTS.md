@@ -50,7 +50,7 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
   - `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en writes.
   - `CommerceContext`: `X-Commerce-Id` en panel; sync sede en lista/Ver/set-primary.
   - Brand commerce: `AppColors.*` en 22 pantallas; `Colors.transparent` residual eliminado.
-  - Docs: [../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+  - Docs: [../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md).
 - **10 jun 2026 — Remediación módulo pharmacist (lote 2 — historial).**
   - Tab **Historial** → `PrescriptionsHistoryPage` con filtros por estado.
 - **10 jun 2026 — Remediación módulo pharmacist (lote 1).**
@@ -224,9 +224,10 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | `branch-pr-ops` | Workflow branch + PR: naming conventional, checklist pre-PR, issue linking, presupuesto review, gh integration. Adaptable al AGENTS.md del repo. | [.agents/skills/branch-pr-ops/SKILL.md](.agents/skills/branch-pr-ops/SKILL.md) |
 | `chained-pr-ops` | Divide PRs grandes en cadenas reviewables (stacked o feature-branch chain): regla 400 líneas, diagrama de dependencias, integración gh. | [.agents/skills/chained-pr-ops/SKILL.md](.agents/skills/chained-pr-ops/SKILL.md) |
 | `clean-architecture` | Clean Architecture, SOLID principles, dependency injection, separation of concerns. | [.agents/skills/clean-architecture/SKILL.md](.agents/skills/clean-architecture/SKILL.md) |
-| `code-review-playbook` | Use this skill when conducting or improving code reviews. Provides structured review processes, conventional comments patterns, language-specific checklists, and feedback templates. Use when reviewing PRs or standardizing review practices. | [.agents/skills/code-review-playbook/SKILL.md](.agents/skills/code-review-playbook/SKILL.md) |
+| `code-review-playbook` | Use this skill when conducting or improving code reviews. Provides structured review processes, conventional comments patterns, language-specific checklists, and feedback templates. | [.agents/skills/code-review-playbook/SKILL.md](.agents/skills/code-review-playbook/SKILL.md) |
 | `cognitive-doc-design-ops` | Diseñar docs con baja carga cognitiva: lead with answer, progressive disclosure, checklists para review. | [.agents/skills/cognitive-doc-design-ops/SKILL.md](.agents/skills/cognitive-doc-design-ops/SKILL.md) |
 | `comment-writer-ops` | Redactar comentarios de colaboración cálidos y directos: PR, issues, reviews, Slack. | [.agents/skills/comment-writer-ops/SKILL.md](.agents/skills/comment-writer-ops/SKILL.md) |
+| `context-packs-ops` | Modos de sesión ligeros research / produce / review (concepto ECC contexts/, sin inyección runtime). Define qué skills primar y qué evitar por modo. | [.agents/skills/context-packs-ops/SKILL.md](.agents/skills/context-packs-ops/SKILL.md) |
 | `context-updater` | Actualizar el contexto de sesión para que la IA "recuerde" entre sesiones. Resumir cambios relevantes en docs/active_context.md al cerrar o finalizar una sesión de trabajo significativa. | [.agents/skills/context-updater/SKILL.md](.agents/skills/context-updater/SKILL.md) |
 | `deep-interview-ops` | Entrevista socrática antes de tareas ambiguas en proyecto activo. Gate claridad mínima 3.5/5. | [.agents/skills/deep-interview-ops/SKILL.md](.agents/skills/deep-interview-ops/SKILL.md) |
 | `design-md` | Analyze Stitch projects and synthesize a semantic design system into DESIGN.md files | [.agents/skills/design-md/SKILL.md](.agents/skills/design-md/SKILL.md) |
@@ -237,26 +238,29 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | `engram-router` | Orquesta memoria persistente Engram (MCP) vs context-updater/handoff/active_context JARVIS. | [.agents/skills/engram-router/SKILL.md](.agents/skills/engram-router/SKILL.md) |
 | `enhance-prompt` | Transforms vague UI ideas into polished, Stitch-optimized prompts. Enhances specificity, adds UI/UX keywords, injects design system context, and structures output for better generation results. | [.agents/skills/enhance-prompt/SKILL.md](.agents/skills/enhance-prompt/SKILL.md) |
 | `executing-plans` | Ejecutar plan Flutter paso a paso. | [.agents/skills/executing-plans/SKILL.md](.agents/skills/executing-plans/SKILL.md) |
+| `fan-out-synthesize-ops` | Orquestación por defecto JARVIS: Map-Reduce agentico / Fan-out-and-synthesize — N subagentes en paralelo recaudan contexto → sesión principal (orquestador) sintetiza → writer único aplica → verify. | [.agents/skills/fan-out-synthesize-ops/SKILL.md](.agents/skills/fan-out-synthesize-ops/SKILL.md) |
 | `finishing-a-development-branch` | Cerrar feature Flutter: analyze + test, opciones merge/PR. | [.agents/skills/finishing-a-development-branch/SKILL.md](.agents/skills/finishing-a-development-branch/SKILL.md) |
 | `flutter-animations` | Comprehensive guide for implementing animations in Flutter. Use when adding motion and visual effects to Flutter apps: implicit animations (AnimatedContainer, AnimatedOpacity, TweenAnimationBuilder), explicit animations (AnimationController, Tween, AnimatedWidget/AnimatedBuilder), hero animations (shared element transitions), staggered animations (sequential/overlapping), and physics-based animations. Includes workflow for choosing the right animation type, implementation patterns, and best practices for performance and user experience. | [.agents/skills/flutter-animations/SKILL.md](.agents/skills/flutter-animations/SKILL.md) |
 | `flutter-expert` | Flutter advanced patterns, widgets, lifecycle, state management, performance. | [.agents/skills/flutter-expert/SKILL.md](.agents/skills/flutter-expert/SKILL.md) |
 | `git-commit` | Execute git commit with conventional commit message analysis, intelligent staging, and message generation. Use when user asks to commit changes, create a git commit, or mentions "/commit". Supports: (1) Auto-detecting type and scope from changes, (2) Generating conventional commit messages from diff, (3) Interactive commit with optional type/scope/description overrides, (4) Intelligent file staging for logical grouping | [.agents/skills/git-commit/SKILL.md](.agents/skills/git-commit/SKILL.md) |
 | `git-guardrails-ops` | Protección git: bloquea push a main, advierte en dev, exige confirmación antes de comandos destructivos. | [.agents/skills/git-guardrails-ops/SKILL.md](.agents/skills/git-guardrails-ops/SKILL.md) |
-| `github-code-review` | Comprehensive GitHub code review with AI-powered swarm coordination | [.agents/skills/github-code-review/SKILL.md](.agents/skills/github-code-review/SKILL.md) |
+| `github-code-review` | DEPRECATED — usar code-review-playbook. Stub de compatibilidad para manifests legacy. | [.agents/skills/github-code-review/SKILL.md](.agents/skills/github-code-review/SKILL.md) |
 | `handoff` | Compactar la sesion actual en un documento de traspaso para continuar en otro agente o chat. Complementa session-learner-ops (cierre de modulo) y active_context.md. | [.agents/skills/handoff/SKILL.md](.agents/skills/handoff/SKILL.md) |
 | `human-in-the-loop-ops` | Gobernanza humana en bucles agénticos: HITL/HOTL/automation-bounded, umbrales de confianza, condiciones de terminación y escalamiento. | [.agents/skills/human-in-the-loop-ops/SKILL.md](.agents/skills/human-in-the-loop-ops/SKILL.md) |
 | **`jarvis-core`** | **Protocolo base del sistema JARVIS para cualquier proyecto. Define honestidad, foco de negocio y flujo de trabajo modular.** | [.agents/skills/jarvis-core/SKILL.md](.agents/skills/jarvis-core/SKILL.md) |
 | `jarvis-experts` | Panel de Expertos JARVIS (agencia de desarrollo virtual). Define roster de roles, criterios de activación, combinaciones recomendadas y plantilla de declaración. | [.agents/skills/jarvis-experts/SKILL.md](.agents/skills/jarvis-experts/SKILL.md) |
 | `mobile-developer` | Mobile development patterns, platform-specific code, deep linking, push notifications. | [.agents/skills/mobile-developer/SKILL.md](.agents/skills/mobile-developer/SKILL.md) |
+| `notebooklm-router` | Orquesta consulta RAG a Google NotebookLM (corpus grande/duradero con citas) vía MCP `notebooklm-mcp` vs subida directa al contexto y vs Engram (memoria cross-session). | [.agents/skills/notebooklm-router/SKILL.md](.agents/skills/notebooklm-router/SKILL.md) |
 | `parallel-judge-ops` | Patrón "día del juicio": 2+ jueces adversariales en paralelo e independientes → orquestador valida real vs ruido → subagente aplica fixes → itera hasta sin hallazgos o max iterations. | [.agents/skills/parallel-judge-ops/SKILL.md](.agents/skills/parallel-judge-ops/SKILL.md) |
 | `playwright-skill` | Complete browser automation with Playwright. Auto-detects dev servers, writes clean test scripts to /tmp. Test pages, fill forms, take screenshots, check responsive design, validate UX, test login flows, check links, automate any browser task. Use when user wants to test websites, automate browser interactions, validate web functionality, or perform any browser-based testing. | [.agents/skills/playwright-skill/SKILL.md](.agents/skills/playwright-skill/SKILL.md) |
 | `qa-testing-playwright` | E2E web testing with Playwright. Use when writing tests, debugging flakes, or setting up CI with selectors, sharding, and network mocking. | [.agents/skills/qa-testing-playwright/SKILL.md](.agents/skills/qa-testing-playwright/SKILL.md) |
 | `react:components` | Converts Stitch designs into modular Vite and React components using system-level networking and AST-based validation. | [.agents/skills/react-components/SKILL.md](.agents/skills/react-components/SKILL.md) |
-| `receiving-code-review` | Recibir feedback de review UI/código con verificación. | [.agents/skills/receiving-code-review/SKILL.md](.agents/skills/receiving-code-review/SKILL.md) |
+| `receiving-code-review` | Recibir feedback de review con verificación. Delega estándares a code-review-playbook. | [.agents/skills/receiving-code-review/SKILL.md](.agents/skills/receiving-code-review/SKILL.md) |
 | `remotion` | Generate walkthrough videos from Stitch projects using Remotion with smooth transitions, zooming, and text overlays | [.agents/skills/remotion/SKILL.md](.agents/skills/remotion/SKILL.md) |
-| `requesting-code-review` | Code review antes de merge. | [.agents/skills/requesting-code-review/SKILL.md](.agents/skills/requesting-code-review/SKILL.md) |
+| `requesting-code-review` | Pedir code review antes de merge. Delega checklist a code-review-playbook. | [.agents/skills/requesting-code-review/SKILL.md](.agents/skills/requesting-code-review/SKILL.md) |
 | `responsive-design` | Implement modern responsive layouts using container queries, fluid typography, CSS Grid, and mobile-first breakpoint strategies. Use when building adaptive interfaces, implementing fluid layouts, or creating component-level responsive behavior. | [.agents/skills/responsive-design/SKILL.md](.agents/skills/responsive-design/SKILL.md) |
 | `session-learner-ops` | Tras cerrar módulo UI: patrones en docs/active_context.md y walkthrough. | [.agents/skills/session-learner-ops/SKILL.md](.agents/skills/session-learner-ops/SKILL.md) |
+| `session-startup-ops` | Protocolo de arranque de sesión (concepto ECC session-start, sin hooks). Checklist: active_context, Engram si activo, Roles/Skills, plan/handoff pendiente. | [.agents/skills/session-startup-ops/SKILL.md](.agents/skills/session-startup-ops/SKILL.md) |
 | `shadcn-ui` | Expert guidance for integrating and building applications with shadcn/ui components, including component discovery, installation, customization, and best practices. | [.agents/skills/shadcn-ui/SKILL.md](.agents/skills/shadcn-ui/SKILL.md) |
 | `skill-creator` | Guide for creating effective skills. This skill should be used when users want to create a new skill (or update an existing skill) that extends Claude's capabilities with specialized knowledge, workflows, or tool integrations. | [.agents/skills/skill-creator/SKILL.md](.agents/skills/skill-creator/SKILL.md) |
 | `speckit-git-commit` | Auto-commit changes after a Spec Kit command completes | [.agents/skills/speckit-git-commit/SKILL.md](.agents/skills/speckit-git-commit/SKILL.md) |
@@ -265,6 +269,7 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | `speckit-git-remote` | Detect Git remote URL for GitHub integration | [.agents/skills/speckit-git-remote/SKILL.md](.agents/skills/speckit-git-remote/SKILL.md) |
 | `speckit-git-validate` | Validate current branch follows feature branch naming conventions | [.agents/skills/speckit-git-validate/SKILL.md](.agents/skills/speckit-git-validate/SKILL.md) |
 | `stitch-loop` | Teaches agents to iteratively build websites using Stitch with an autonomous baton-passing loop pattern | [.agents/skills/stitch-loop/SKILL.md](.agents/skills/stitch-loop/SKILL.md) |
+| `strategic-compact-ops` | Compactación estratégica (concepto ECC strategic-compact, sin hooks). Sugiere compactar en hitos lógicos; preserva decisiones, verificación y TODOs vía handoff + Engram. | [.agents/skills/strategic-compact-ops/SKILL.md](.agents/skills/strategic-compact-ops/SKILL.md) |
 | `structured-commits-ops` | Commits con trailers de decisión en proyecto activo. Complementa git-commit. | [.agents/skills/structured-commits-ops/SKILL.md](.agents/skills/structured-commits-ops/SKILL.md) |
 | `systematic-debugging` | Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes | [.agents/skills/systematic-debugging/SKILL.md](.agents/skills/systematic-debugging/SKILL.md) |
 | `task-pipeline-ops` | Pipeline multi-paso proyecto activo: Plan → Spec → Exec → Verify → Fix (máx. 3). | [.agents/skills/task-pipeline-ops/SKILL.md](.agents/skills/task-pipeline-ops/SKILL.md) |
@@ -281,6 +286,7 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | **`zonix-design-enforcer`** | **Enforcer de calidad visual Flutter Zonix Pharma — grid 8pt, WCAG, un CTA primario, tokens brand* obligatorios, M3/HIG, badges Rx. Complementa zonix-ui-design.** | [.agents/skills/zonix-design-enforcer/SKILL.md](.agents/skills/zonix-design-enforcer/SKILL.md) |
 | **`zonix-empresa-ve`** | **Empresa VE (C.A., SAFE, laboral) — referencia Backend.** | [.agents/skills/zonix-empresa-ve/SKILL.md](.agents/skills/zonix-empresa-ve/SKILL.md) |
 | **`zonix-founder-ops-index`** | **Índice founder CEO/CTO — referencia Backend.** | [.agents/skills/zonix-founder-ops-index/SKILL.md](.agents/skills/zonix-founder-ops-index/SKILL.md) |
+| **`zonix-inversionistas-crm`** | **CRM candidatos a capital Zonix — referencia Backend. Canon en ZonixPharma-Backend/docs/Inversionistas.** | [.agents/skills/zonix-inversionistas-crm/SKILL.md](.agents/skills/zonix-inversionistas-crm/SKILL.md) |
 | **`zonix-investor-materials`** | **Materiales inversor Zonix — referencia Backend. Data room en docs/Lanzamiento.** | [.agents/skills/zonix-investor-materials/SKILL.md](.agents/skills/zonix-investor-materials/SKILL.md) |
 | **`zonix-jarvis-subagents-map`** | **Mapeo JARVIS — referencia Backend.** | [.agents/skills/zonix-jarvis-subagents-map/SKILL.md](.agents/skills/zonix-jarvis-subagents-map/SKILL.md) |
 | **`zonix-lanzamiento-roles`** | **Panel roles pack Lanzamiento — referencia Backend.** | [.agents/skills/zonix-lanzamiento-roles/SKILL.md](.agents/skills/zonix-lanzamiento-roles/SKILL.md) |
@@ -310,25 +316,38 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 |--------|-------|
 | Abrir PR con gh | `branch-pr-ops` |
 | Actualizar docs tras cambio de código | `docs-alignment-ops` |
+| Address review feedback | `receiving-code-review` |
 | Agent loop engineering / no prompts haz loops | `agent-loop-engineering` |
 | Alta stakes verificar antes de commit | `doubt-driven-development` |
 | Auditar open issues como maintainer | `backlog-triage-ops` |
+| Auditoría módulo | `fan-out-synthesize-ops` |
 | Buscar contexto previo mem_search mem_context | `engram-memory-protocol` |
 | Cambio API CLI setup que afecta documentación | `docs-alignment-ops` |
+| Cerrar sesión | `context-updater` |
 | Cerrar sesión con cambios | `documentar-avances` |
 | Cierre sesión con mem_session_summary | `engram-memory-protocol` |
 | Clasificar PRs merge request-changes close | `backlog-triage-ops` |
+| Code review | `code-review-playbook` |
+| Code review GitHub | `github-code-review` |
+| Code review antes de merge | `requesting-code-review` |
 | Comando git destructivo | `git-guardrails-ops` |
+| Compactar contexto | `strategic-compact-ops` |
 | Compactar o traspasar sesion | `handoff` |
+| Compactar o traspasar sesion | `strategic-compact-ops` |
 | Condiciones de terminación bucle autónomo | `human-in-the-loop-ops` |
+| Configurar NotebookLM MCP en Cursor | `notebooklm-router` |
 | Configurar engram en Cursor | `engram-router` |
 | Constitución / SAFE / textos legales app (checklist) | `zonix-empresa-ve` |
+| Consultar NotebookLM / notebook con citas | `notebooklm-router` |
 | Copy / naming / branding app | `zonix-brand-ops` |
+| Corpus grande de documentos para RAG | `notebooklm-router` |
 | Crear commit | `git-commit` |
 | Crear commit | `structured-commits-ops` |
 | Crear commit | `verification-before-completion` |
+| Crear commit | `work-unit-commits-ops` |
 | Crear o preparar pull request | `branch-pr-ops` |
 | Crear/modificar pantallas o widgets | `zonix-ui-design` |
+| Cualquier tarea no trivial | `fan-out-synthesize-ops` |
 | Cualquier tarea no trivial | `jarvis-experts` |
 | Decidir loop vs prompt simple | `agent-loop-engineering` |
 | Decisión cross-rol | `jarvis-experts` |
@@ -347,7 +366,9 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Escribir descripción de PR o notas para review | `cognitive-doc-design-ops` |
 | Escribir feedback de code review para humano | `comment-writer-ops` |
 | Estados / flujo de órdenes | `zonix-order-lifecycle` |
+| Estandarizar prácticas de review | `code-review-playbook` |
 | Evitar PR monolítico desde SDD tasks | `work-unit-commits-ops` |
+| Explorar codebase | `fan-out-synthesize-ops` |
 | Finalizar tarea | `documentar-avances` |
 | Gates humanos antes de acción irreversible | `human-in-the-loop-ops` |
 | Guardar decisión o bugfix en Engram | `engram-memory-protocol` |
@@ -356,31 +377,43 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Hitos piloto / calendario Day-D (solo planificación) | `zonix-launch-piloto` |
 | Human-in-the-loop diseño de loop | `human-in-the-loop-ops` |
 | Implementar Pusher / FCM | `zonix-realtime-events` |
+| Implementar feature multi-archivo | `fan-out-synthesize-ops` |
 | Implementar feature o bugfix | `test-driven-development` |
 | Iniciar módulo | `brainstorming-ops` |
 | Iniciar módulo | `jarvis-core` |
 | Iniciar módulo | `task-pipeline-ops` |
+| Iniciar módulo | `writing-plans` |
+| Iniciar sesión | `session-startup-ops` |
+| Investigar bug | `fan-out-synthesize-ops` |
 | Iterar hasta lograr un objetivo medible | `agent-loop-engineering` |
 | Landing page o dashboard | `ui-router` |
 | Landing page o dashboard | `ui-ux-pro-max` |
 | Memoria persistente Engram MCP | `engram-router` |
+| Modo produce | `context-packs-ops` |
+| Modo research | `context-packs-ops` |
+| Modo review | `context-packs-ops` |
 | Naming de branch y checklist pre-PR | `branch-pr-ops` |
 | Nueva feature producto (spec en Backend hub) | `zonix-ui-design` |
 | Onboarding (incluye pharmacist) | `zonix-onboarding` |
 | PR supera 400 líneas o presupuesto de review | `chained-pr-ops` |
 | Paleta de colores o tipografía | `ui-router` |
 | Paleta de colores o tipografía | `ui-ux-pro-max` |
+| Pedir code review | `requesting-code-review` |
 | Planificar desarrollo | `brainstorming-ops` |
 | Planificar desarrollo | `jarvis-core` |
 | Planificar desarrollo | `writing-plans` |
 | Preparar commits antes de abrir PR | `work-unit-commits-ops` |
+| Recibir code review | `receiving-code-review` |
 | Redactar comentario de PR o issue | `comment-writer-ops` |
 | Redactar o mejorar README, RFC, onboarding o guía | `cognitive-doc-design-ops` |
 | Requisitos ambiguos | `deep-interview-ops` |
 | Respuesta de maintainer o mensaje async al equipo | `comment-writer-ops` |
+| Retomar proyecto | `session-startup-ops` |
 | Revisar accesibilidad o layout | `ui-router` |
 | Revisar accesibilidad o layout | `ui-ux-pro-max` |
 | Revisar contrato / T&C farmacia (checklist) | `zonix-legal-contracts-ve` |
+| Revisar pull request | `code-review-playbook` |
+| Sesión larga sugerir compactación | `strategic-compact-ops` |
 | Stacked PRs o chained PRs | `chained-pr-ops` |
 | Tarea multi-rol (subagent + skill canon) | `zonix-jarvis-subagents-map` |
 | Terminar módulo | `finishing-a-development-branch` |
@@ -395,6 +428,7 @@ Aplicar precedencia de [`jarvis-core`](.agents/skills/jarvis-core/SKILL.md).
 | Verificar que docs igualan comportamiento actual | `docs-alignment-ops` |
 | doubt-driven revisión adversarial | `doubt-driven-development` |
 | mem_save mem_search contexto entre sesiones | `engram-router` |
+| nlm login nlm setup add cursor | `notebooklm-router` |
 <!-- AUTO-INVOKE-END -->
 
 ---
@@ -435,9 +469,9 @@ Mostrar advertencia en checkout si `cartService.coldChainRequired`. Restringir U
 - **[../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md](../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md)**
 - **[../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md](../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md)**
 - **[../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md](../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md)**
-- **[../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md)**
+- **[../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md)**
 - **[../ZonixPharma-Backend/docs/Lanzamiento/README.md](../ZonixPharma-Backend/docs/Lanzamiento/README.md)** — pack inversor
-- **[../ZonixPharma-Backend/docs/zonix/research_links.md](../ZonixPharma-Backend/docs/zonix/research_links.md)** — skills GitHub
+- **[../ZonixPharma-Backend/docs/zonix/roles_matrix.json](../ZonixPharma-Backend/docs/zonix/roles_matrix.json)** — routing JARVIS / skills
 
 ---
 

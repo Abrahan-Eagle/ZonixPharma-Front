@@ -29,7 +29,7 @@
 
 - **Mis recetas:** tap → `OrderDetailPage`; botón eliminar si `pending_validation`.
 - **Errores:** `prescriptionHttpErrorMessage` (alias `pharmacistHttpErrorMessage`) + códigos buyer Rx.
-- **Doc Backend:** `AUDIT_buyer_prescriptions_2026-06-10.md`.
+- **Doc Backend:** `../ZonixPharma-Backend/docs/audits/README.md` (snapshots eliminados ola 2).
 - **Verificación:** **238** tests (~1 skip), analyze OK.
 
 ### P2 backlog lote 4 — 10 junio 2026
@@ -40,13 +40,13 @@
 ### Cierre auditorías Rx/Orders — 10 junio 2026
 
 - **Orders:** `order_api_errors.dart`; `OrderService` exige `success` en list/show/tracking/cancel.
-- **Doc Backend:** `AUDIT_orders_2026-06-10.md`, `SMOKE_RX_E2E.md`.
+- **Doc Backend:** `audits/README.md` + `qa/SMOKE_RX_E2E.md`.
 - **Verificación:** `flutter test` **233** passed (~1 skip).
 
 ### Auditoría pharmacist lote 3 — 10 junio 2026
 
 - **Hecho:** Buyer Rx en `PrescriptionService` exige `success == true` (list/upload/delete); onboarding MPPS parsea envelope + `pharmacistHttpErrorMessage`.
-- **Doc Backend:** `docs/AUDIT_pharmacist_2026-06-10.md`.
+- **Doc Backend:** `../ZonixPharma-Backend/docs/audits/README.md`.
 - **Verificación:** `flutter analyze` OK; `flutter test` → **230 passed** (~1 skip).
 
 - **Pendiente:** auditoría 360° módulo orders completa; smoke E2E Rx.
@@ -77,7 +77,7 @@
 ### Remediación módulo Commerce + multi-sede — 10 junio 2026
 
 - **Hecho:** `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en `updatePaymentData`/`createCommerce`. **`CommerceContext`**: persiste `active_commerce_id`, envía `X-Commerce-Id` en `commerce_*_service`. Sincroniza sede al cargar lista / Ver / set-primary. Push `dev` → `f24bf47`.
-- **Docs auditoría (Backend):** [`../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md`](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+- **Docs auditoría (Backend):** [`../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md`](../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md).
 - **Verificación:** `flutter analyze` 0 issues; `flutter test` → **227 passed** (~1 skip).
 - **Smoke manual:** login commerce multi-sede → Mis Comercios → Ver sede B → panel productos/órdenes solo de B; Editar/set-primary cambia default.
 - **Brand commerce:** pantallas `screens/commerce/*` ya usan `AppColors.*`; quedaban 3 `Colors.transparent` → `AppColors.transparent`.
@@ -137,7 +137,7 @@
 - `../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md`
 - `../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md`
 - `../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md`
-- `../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md`
+- `../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md`
 
 ---
 

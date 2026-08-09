@@ -16,7 +16,7 @@ Declara roles en tareas no triviales: `> Roles: frontend (Flutter) + UX`. Roster
 1. Leer `.agents/skills/SKILL_INDEX.md` y `jarvis-core/SKILL.md` antes de actuar.
 2. Declarar `> Skills: ui-router (local) → zonix-ui-design (local) → ui-ux-pro-max (local)` junto a `> Roles:`.
 3. `Read` de cada skill declarada antes de editar código.
-4. Onboarding: ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
+4. Onboarding: ver [../ZonixPharma-Backend/docs/zonix/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/zonix/ZONIX_JARVIS_INTEGRATION.md).
 
 ---
 
@@ -121,7 +121,7 @@ flutter analyze
 - **[../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md](../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md)** — paleta, tipografía, do/don't, tokens.
 - **[../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md](../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md)** — flujo de validación de receta.
 - **[../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md](../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md)** — regulación VE.
-- **[../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md)** — qué cambió.
+- **[../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md)** — qué cambió.
 
 ---
 

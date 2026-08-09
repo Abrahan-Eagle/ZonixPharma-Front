@@ -6,12 +6,16 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
+import 'package:zonix/config/app_config.dart';
 import 'package:zonix/features/services/auth/api_service.dart';
 import 'package:zonix/features/utils/auth_utils.dart';
 
 const FlutterSecureStorage _storage = FlutterSecureStorage();
 final Logger logger = Logger();
 final ApiService _apiService = ApiService();
+
+/// Visible en logcat release (`adb logcat | grep GoogleSignIn`). Quitar tras diagnóstico.
+void _diag(String msg) => print('GoogleSignIn DIAG: $msg');
 
 GoogleSignIn? _googleSignInCached;
 
@@ -58,98 +62,129 @@ class GoogleSignInService {
   // Método para iniciar sesión con Google
   static Future<GoogleSignInAccount?> signInWithGoogle() async {
     try {
+      final webClientId = _readGoogleSignInServerClientId();
+      _diag(
+        'start apiUrl=${AppConfig.apiUrl} '
+        'serverClientIdSet=${webClientId != null && webClientId.isNotEmpty} '
+        'serverClientIdPrefix=${webClientId == null ? "null" : webClientId.split("-").first}',
+      );
+
       final user = await _googleSignIn().signIn();
       if (user == null) {
+        _diag('cancelled: signIn() returned null');
         logger.i('Inicio de sesión cancelado');
-        return null; // Retorna null si el usuario cancela la autenticación
+        return null;
       }
+      _diag('account email=${user.email}');
 
       final googleAuth = await user.authentication;
 
       final accessToken = googleAuth.accessToken;
       final idToken = googleAuth.idToken;
+      final idTokenLen = idToken?.length ?? 0;
+      final accessTokenLen = accessToken?.length ?? 0;
       final backendToken = (idToken != null && idToken.isNotEmpty)
           ? idToken
           : accessToken;
+      final usingIdToken = idToken != null && idToken.isNotEmpty;
+      _diag(
+        'idTokenLen=$idTokenLen accessTokenLen=$accessTokenLen '
+        'usingIdToken=$usingIdToken backendTokenLen=${backendToken?.length ?? 0}',
+      );
+
       if (backendToken == null || backendToken.isEmpty) {
+        _diag('early_return: no backendToken (id+access empty)');
         logger.e('Error: tokens Google ausentes, no se puede autenticar con backend');
         await AuthUtils.clearTokens();
         return null;
       }
-      final usingIdToken = idToken != null && idToken.isNotEmpty;
       logger.i(
         usingIdToken
             ? 'Google auth: usando idToken para backend'
             : 'Google auth: idToken ausente, usando accessToken fallback para backend',
       );
 
-      // Guardar tokens de Google (id token) solo como referencia local temporal.
       if (idToken != null && idToken.isNotEmpty) {
         await _storage.write(key: 'google_idToken', value: idToken);
       }
 
-      // Obtener datos del perfil del usuario utilizando access token.
-      // Para backend SIEMPRE usamos idToken verificado por Google tokeninfo.
-      if (accessToken == null || accessToken.isEmpty) {
-        logger.e('Error: Google accessToken ausente para consultar userinfo');
+      Map<String, dynamic> profileData = {
+        'sub': user.id,
+        'email': user.email,
+        'name': user.displayName,
+        'picture': user.photoUrl,
+        'email_verified': true,
+      };
+
+      if (accessToken != null && accessToken.isNotEmpty) {
+        final profileResponse = await http.get(
+          Uri.parse('https://www.googleapis.com/oauth2/v3/userinfo'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+          },
+        );
+        _diag('userinfo status=${profileResponse.statusCode}');
+
+        if (profileResponse.statusCode == 200) {
+          final decoded = jsonDecode(profileResponse.body);
+          if (decoded is Map<String, dynamic>) {
+            profileData = decoded;
+          }
+          logger.i('Perfil Google obtenido OK');
+        } else {
+          _diag(
+            'userinfo failed status=${profileResponse.statusCode}; '
+            'using GoogleSignInAccount profile fallback',
+          );
+        }
+      } else {
+        _diag('accessToken missing; using GoogleSignInAccount profile + backendToken');
+      }
+
+      final processedResult = jsonEncode({
+        'token': backendToken,
+        'profile': profileData,
+      });
+
+      _diag('calling sendTokenToBackend…');
+      final response = await _apiService.sendTokenToBackend(processedResult);
+      _diag('backend statusCode=${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>?;
+        if (data == null) {
+          _diag('early_return: backend empty body');
+          logger.e('Backend devolvió respuesta vacía');
+          return null;
+        }
+        final inner = data['data'] is Map<String, dynamic> ? data['data'] as Map<String, dynamic> : data;
+        final token = inner['token']?.toString();
+        final rawExpiresIn = data['expires_in'];
+        final expiresIn = (rawExpiresIn is int && rawExpiresIn > 0) ? rawExpiresIn : 3600;
+        if (token == null || token.isEmpty) {
+          _diag('early_return: backend no Sanctum token');
+          logger.e('Backend no devolvió token');
+          return null;
+        }
+        await AuthUtils.saveToken(token, expiresIn);
+        final role = inner['user']?['role']?.toString() ?? data['user']?['role']?.toString() ?? 'users';
+        await _storage.write(key: 'role', value: role);
+        _diag('OK sanctum saved role=$role');
+        logger.i('Token guardado correctamente con su expiración.');
+        return user;
+      } else {
+        _diag('backend_error status=${response.statusCode} bodyLen=${response.body.length}');
+        logger.e('Error al enviar el token al backend: ${response.statusCode}');
         await AuthUtils.clearTokens();
         return null;
       }
-
-      final profileResponse = await http.get(
-        Uri.parse('https://www.googleapis.com/oauth2/v3/userinfo'),
-        headers: {
-          'Authorization': 'Bearer $accessToken',
-        },
-      );
-
-      if (profileResponse.statusCode == 200) {
-        final profileData = jsonDecode(profileResponse.body);
-        logger.i('Perfil Google obtenido OK');
-
-        // Enviar el token al backend
-        final processedResult = jsonEncode({
-          'token': backendToken,
-          'profile': profileData,
-        });
-
-        final response = await _apiService.sendTokenToBackend(processedResult);
-
-        if (response.statusCode == 200) {
-          final data = jsonDecode(response.body) as Map<String, dynamic>?;
-          if (data == null) {
-            logger.e('Backend devolvió respuesta vacía');
-            return null;
-          }
-          // Backend puede devolver { data: { user, token } } o { token } directo
-          final inner = data['data'] is Map<String, dynamic> ? data['data'] as Map<String, dynamic> : data;
-          final token = inner['token']?.toString();
-          final rawExpiresIn = data['expires_in'];
-          final expiresIn = (rawExpiresIn is int && rawExpiresIn > 0) ? rawExpiresIn : 3600;
-          if (token == null || token.isEmpty) {
-            logger.e('Backend no devolvió token');
-            return null;
-          }
-          await AuthUtils.saveToken(token, expiresIn);
-          final role = inner['user']?['role']?.toString() ?? data['user']?['role']?.toString() ?? 'users';
-          await _storage.write(key: 'role', value: role);
-          logger.i('Token guardado correctamente con su expiración.');
-          return user; // Retorna el usuario autenticado
-        } else {
-          logger.e('Error al enviar el token al backend: ${response.statusCode}');
-          await AuthUtils.clearTokens();
-          return null; // Retorna null si hay error al enviar el token al backend
-        }
-      } else {
-        logger.e('Error al obtener los datos del perfil: ${profileResponse.statusCode}');
-        await AuthUtils.clearTokens();
-        return null; // Retorna null si no se pueden obtener los datos del perfil
-      }
     } catch (error) {
+      _diag('ERROR: $error');
+      print('GoogleSignIn ERROR: $error');
       logger.e('Error durante el inicio de sesión con Google: $error');
       _logGoogleSignInDeveloperHint(error);
       await AuthUtils.clearTokens();
-      return null; // Retorna null si hay una excepción
+      return null;
     }
   }
 

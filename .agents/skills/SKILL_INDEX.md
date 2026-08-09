@@ -10,10 +10,11 @@
 | `branch-pr-ops` | local | passthrough | Crear o preparar pull request; Naming de branch y checklist pre-PR… |
 | `chained-pr-ops` | local | passthrough | PR supera 400 líneas o presupuesto de review; Stacked PRs o chained PRs… |
 | `clean-architecture` | local | passthrough | — |
-| `code-review-playbook` | local | passthrough | — |
+| `code-review-playbook` | local | passthrough | Code review; Revisar pull request… |
 | `cognitive-doc-design-ops` | local | passthrough | Redactar o mejorar README, RFC, onboarding o guía; Escribir descripción de PR o notas para review… |
 | `comment-writer-ops` | local | passthrough | Redactar comentario de PR o issue; Escribir feedback de code review para humano… |
-| `context-updater` | local | passthrough | — |
+| `context-packs-ops` | local | passthrough | Modo research; Modo produce… |
+| `context-updater` | local | passthrough | Cerrar sesión |
 | `deep-interview-ops` | local | overlay | Requisitos ambiguos |
 | `design-md` | local | local-only | — |
 | `docs-alignment-ops` | local | passthrough | Actualizar docs tras cambio de código; Verificar que docs igualan comportamiento actual… |
@@ -23,26 +24,29 @@
 | `engram-router` | local | passthrough | Memoria persistente Engram MCP; Configurar engram en Cursor… |
 | `enhance-prompt` | local | local-only | — |
 | `executing-plans` | local | passthrough | — |
+| `fan-out-synthesize-ops` | local | passthrough | Cualquier tarea no trivial; Explorar codebase… |
 | `finishing-a-development-branch` | local | passthrough | Terminar módulo |
 | `flutter-animations` | local | passthrough | — |
 | `flutter-expert` | local | passthrough | — |
 | `git-commit` | local | passthrough | Crear commit |
 | `git-guardrails-ops` | local | overlay | Hacer git push o merge; Comando git destructivo |
-| `github-code-review` | local | passthrough | — |
+| `github-code-review` | local | passthrough | Code review GitHub |
 | `handoff` | local | passthrough | Compactar o traspasar sesion |
 | `human-in-the-loop-ops` | local | passthrough | Human-in-the-loop diseño de loop; Gates humanos antes de acción irreversible… |
 | `jarvis-core` | local | overlay | Iniciar módulo; Planificar desarrollo… |
 | `jarvis-experts` | local | overlay | Cualquier tarea no trivial; Decisión cross-rol… |
 | `mobile-developer` | local | passthrough | — |
+| `notebooklm-router` | local | passthrough | Consultar NotebookLM / notebook con citas; Configurar NotebookLM MCP en Cursor… |
 | `parallel-judge-ops` | local | passthrough | Día del juicio / jueces paralelos; Verificación adversarial paralela de un artefacto… |
 | `playwright-skill` | local | local-only | — |
 | `qa-testing-playwright` | local | local-only | — |
 | `react:components` | local | local-only | — |
-| `receiving-code-review` | local | passthrough | — |
+| `receiving-code-review` | local | passthrough | Recibir code review; Address review feedback |
 | `remotion` | local | local-only | — |
-| `requesting-code-review` | local | passthrough | — |
+| `requesting-code-review` | local | passthrough | Pedir code review; Code review antes de merge |
 | `responsive-design` | local | passthrough | — |
 | `session-learner-ops` | local | overlay | Terminar módulo |
+| `session-startup-ops` | local | passthrough | Iniciar sesión; Retomar proyecto |
 | `shadcn-ui` | local | local-only | — |
 | `skill-creator` | local | passthrough | — |
 | `speckit-git-commit` | local | local-only | — |
@@ -51,6 +55,7 @@
 | `speckit-git-remote` | local | local-only | — |
 | `speckit-git-validate` | local | local-only | — |
 | `stitch-loop` | local | local-only | — |
+| `strategic-compact-ops` | local | passthrough | Compactar contexto; Sesión larga sugerir compactación… |
 | `structured-commits-ops` | local | overlay | Crear commit |
 | `systematic-debugging` | local | passthrough | Encontrar bug o test fallido |
 | `task-pipeline-ops` | local | overlay | Iniciar módulo |
@@ -61,12 +66,13 @@
 | `verification-before-completion` | local | passthrough | Terminar módulo; Crear commit |
 | `webapp-testing` | local | passthrough | — |
 | `work-unit-commits-ops` | local | passthrough | Dividir implementación en commits reviewables; Preparar commits antes de abrir PR… |
-| `writing-plans` | local | passthrough | Planificar desarrollo |
+| `writing-plans` | local | passthrough | Planificar desarrollo; Iniciar módulo |
 | `zonix-admin-analytics-ui` | local | local-only | — |
 | `zonix-brand-ops` | local | local-only | Copy / naming / branding app |
 | `zonix-design-enforcer` | local | local-only | Diseñar UI/UX Flutter |
 | `zonix-empresa-ve` | local | local-only | Constitución / SAFE / textos legales app (checklist) |
 | `zonix-founder-ops-index` | local | local-only | — |
+| `zonix-inversionistas-crm` | local | local-only | — |
 | `zonix-investor-materials` | local | local-only | — |
 | `zonix-jarvis-subagents-map` | local | local-only | Tarea multi-rol (subagent + skill canon) |
 | `zonix-lanzamiento-roles` | local | local-only | UI alineada a pack inversor / claims salud |

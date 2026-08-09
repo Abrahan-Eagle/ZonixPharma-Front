@@ -17,6 +17,9 @@ test-driven-development passthrough
 executing-plans passthrough
 writing-plans passthrough
 handoff passthrough
+session-startup-ops passthrough
+strategic-compact-ops passthrough
+context-packs-ops passthrough
 zoom-out passthrough
 code-review-playbook passthrough
 receiving-code-review passthrough
@@ -27,6 +30,7 @@ skill-creator passthrough
 git-commit passthrough
 
 parallel-judge-ops passthrough
+fan-out-synthesize-ops passthrough
 agent-loop-engineering passthrough
 human-in-the-loop-ops passthrough
 cognitive-doc-design-ops passthrough
@@ -40,6 +44,7 @@ docs-alignment-ops passthrough
 backlog-triage-ops passthrough
 engram-router passthrough
 engram-memory-protocol passthrough
+notebooklm-router passthrough
 context-updater passthrough
 doubt-driven-development passthrough
 

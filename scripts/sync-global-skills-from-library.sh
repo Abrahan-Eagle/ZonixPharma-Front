@@ -4,7 +4,7 @@
 #   JARVIS_SKILLS_LIBRARY=/var/www/html/proyectos/AIPP/jarvis-skills-library \
 #     ./scripts/sync-global-skills-from-library.sh
 #
-# See: MAINTENANCE_SKILLS.md, docs/ZONIX_JARVIS_INTEGRATION.md
+# See: MAINTENANCE_SKILLS.md, ../ZonixPharma-Backend/docs/zonix/ZONIX_JARVIS_INTEGRATION.md
 
 set -euo pipefail
 

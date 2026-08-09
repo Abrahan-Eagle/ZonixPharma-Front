@@ -30,8 +30,15 @@ class ApiService {
         'message': 'Datos recibidos correctamente.',
       });
 
+      final url = '${AppConfig.apiUrl}/api/auth/google';
+      // Visible en release: adb logcat | grep GoogleSignIn
+      print(
+        'GoogleSignIn DIAG: POST $url tokenLen=${token.length} '
+        'apiUrl=${AppConfig.apiUrl}',
+      );
+
       final response = await http.post(
-      Uri.parse( '${AppConfig.apiUrl}/api/auth/google'), // Cambia por la URL de tu backend
+        Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -39,6 +46,7 @@ class ApiService {
         },
         body: body,
       );
+      print('GoogleSignIn DIAG: POST done statusCode=${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -63,7 +71,15 @@ class ApiService {
         final completedOnboarding = userData['completed_onboarding']?.toString();
 
         if (authToken != null) {
+          // AuthUtils.isAuthenticated exige token + expiryDate.
+          final rawExpiresIn = responseData['expires_in'];
+          final expiresIn =
+              (rawExpiresIn is int && rawExpiresIn > 0) ? rawExpiresIn : 3600;
           await _storage.write(key: 'token', value: authToken);
+          final expiryDate =
+              DateTime.now().add(Duration(seconds: expiresIn));
+          await _storage.write(
+              key: 'expiryDate', value: expiryDate.toIso8601String());
           await _storage.write(key: 'role', value: role);
           await _storage.write(key: 'userCompletedOnboarding', value: completedOnboarding);
 
@@ -93,6 +109,7 @@ class ApiService {
 
       return response; // Devuelve la respuesta
     } catch (error) {
+      print('GoogleSignIn DIAG: POST exception $error');
       logger.e('Error: $error');
       throw Exception('Error en el envío de datos: $error'); // Lanza una excepción
     }

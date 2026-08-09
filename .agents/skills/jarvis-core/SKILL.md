@@ -15,6 +15,7 @@ metadata:
   triggers: jarvis, workflow, módulo, feature, plan, core
   related-skills:
     - jarvis-experts
+    - session-startup-ops
     - sdd-router
     - kitty-router
     - openspec-router
@@ -48,6 +49,9 @@ metadata:
     - using-git-worktrees
     - finishing-a-development-branch
     - project-bootstrap-ops
+    - fan-out-synthesize-ops
+    - strategic-compact-ops
+    - context-packs-ops
 allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task]
 ---
 
@@ -55,43 +59,45 @@ allowed-tools: [Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch, Task]
 
 Skill global en `jarvis-skills-library` → `~/.cursor/skills/`. Skills de **dominio** del producto (`{producto}-*`) viven en `.agents/skills/` del repo activo.
 
-Proyecto **nuevo o legacy sin JARVIS**: escribe **`init jarvis`** en el chat (skill `project-bootstrap-ops`, [PROJECT_ONBOARDING.md](../../docs/PROJECT_ONBOARDING.md)) antes de planificar features.
+Proyecto **nuevo o legacy sin JARVIS**: escribe **`init jarvis`** en el chat (skill `project-bootstrap-ops`, [PROJECT_ONBOARDING.md](../../../docs/PROJECT_ONBOARDING.md)) antes de planificar features.
 
-Si el repo tiene `.kittify/`, ver `kitty-router` ([docs/SPEC_KITTY_INTEGRATION.md](../../docs/SPEC_KITTY_INTEGRATION.md)) — **no** `speckit-*`.
+Si el repo tiene `.kittify/`, ver `kitty-router` ([docs/SPEC_KITTY_INTEGRATION.md](../../../docs/SPEC_KITTY_INTEGRATION.md)) — **no** `speckit-*`.
 
-Si el repo tiene `openspec/` (sin otros marcadores SDD), ver `openspec-router` ([docs/AWESOME_SPEC_KITS.md](../../docs/AWESOME_SPEC_KITS.md)) — **no** `speckit-*`.
+Si el repo tiene `openspec/` (sin otros marcadores SDD), ver `openspec-router` ([docs/AWESOME_SPEC_KITS.md](../../../docs/AWESOME_SPEC_KITS.md)) — **no** `speckit-*`.
 
-Si el repo tiene `.specify/` (sin `.kittify/` ni `openspec/`), ver `sdd-router` y cadena `speckit-*` ([docs/SDD_SPECKIT_INTEGRATION.md](../../docs/SDD_SPECKIT_INTEGRATION.md)).
+Si el repo tiene `.specify/` (sin `.kittify/` ni `openspec/`), ver `sdd-router` y cadena `speckit-*` ([docs/SDD_SPECKIT_INTEGRATION.md](../../../docs/SDD_SPECKIT_INTEGRATION.md)).
 
-Para UI/UX en código, ver `ui-router` ([docs/UI_UX_PRO_MAX_INTEGRATION.md](../../docs/UI_UX_PRO_MAX_INTEGRATION.md)).
+Para UI/UX en código, ver `ui-router` ([docs/UI_UX_PRO_MAX_INTEGRATION.md](../../../docs/UI_UX_PRO_MAX_INTEGRATION.md)).
 
-Para artefactos visuales marketing (carrusel, deck, email HTML), ver `open-design-router` ([docs/OPEN_DESIGN_INTEGRATION.md](../../docs/OPEN_DESIGN_INTEGRATION.md)) — no `speckit-specify`.
+Para artefactos visuales marketing (carrusel, deck, email HTML), ver `open-design-router` ([docs/OPEN_DESIGN_INTEGRATION.md](../../../docs/OPEN_DESIGN_INTEGRATION.md)) — no `speckit-specify`.
 
-Para prototipos web en Google Stitch (MCP, DESIGN.md, stitch-loop), ver `stitch-router` ([docs/STITCH_UPSTREAM.md](../../docs/STITCH_UPSTREAM.md)) — no sustituye `ui-router` en Flutter/Blade del producto.
+Para prototipos web en Google Stitch (MCP, DESIGN.md, stitch-loop), ver `stitch-router` ([docs/STITCH_UPSTREAM.md](../../../docs/STITCH_UPSTREAM.md)) — no sustituye `ui-router` en Flutter/Blade del producto.
 
 Para landings con media generativa IA (cadena Claude → Nano Banana → Veo/Kling → Claude Design → Claude Code, video hero en loop), ver `ai-media-landing-ops` — no sustituye `ui-router` (UI en repo) ni `open-design-router` (artefacto standalone).
 
-Para what-if estratégico y simulación multi-agente, ver `scenario-router` ([docs/STRANGEVERSE_INTEGRATION.md](../../docs/STRANGEVERSE_INTEGRATION.md), [docs/MIROFISH_UPSTREAM.md](../../docs/MIROFISH_UPSTREAM.md)) — no `speckit-specify` salvo que el escenario derive en feature.
+Para what-if estratégico y simulación multi-agente, ver `scenario-router` ([docs/STRANGEVERSE_INTEGRATION.md](../../../docs/STRANGEVERSE_INTEGRATION.md), [docs/MIROFISH_UPSTREAM.md](../../../docs/MIROFISH_UPSTREAM.md)) — no `speckit-specify` salvo que el escenario derive en feature.
 
 Para briefing estratégico / estado general del proyecto, ver `strategic-briefing-ops` — no `scenario-analysis-ops` ni `speckit-specify`.
 
-Para harness ECC (hooks, instincts, rules idioma, `ecc consult`), ver `ecc-router` ([docs/ECC_INTEGRATION.md](../../docs/ECC_INTEGRATION.md)) — no sustituye este workflow.
+Para harness ECC (hooks, instincts, rules idioma, `ecc consult`), ver `ecc-router` ([docs/ECC_INTEGRATION.md](../../../docs/ECC_INTEGRATION.md)) — no sustituye este workflow.
 
-Para auditoría de seguridad profunda read-only (Cyber Neo, 11 dominios, reporte OWASP 2025), ver `cyber-neo-router` ([docs/CYBER_NEO_INTEGRATION.md](../../docs/CYBER_NEO_INTEGRATION.md)) — no sustituye `security` ni este workflow.
+Para auditoría de seguridad profunda read-only (Cyber Neo, 11 dominios, reporte OWASP 2025), ver `cyber-neo-router` ([docs/CYBER_NEO_INTEGRATION.md](../../../docs/CYBER_NEO_INTEGRATION.md)) — no sustituye `security` ni este workflow.
 
-Para detección runtime y política escalonada ante spikes (Kalman + agente), ver `kalman-anomaly-router` ([docs/KALMAN_ANOMALY_INTEGRATION.md](../../docs/KALMAN_ANOMALY_INTEGRATION.md)) — no sustituye `cyber-neo` ni este workflow.
+Para detección runtime y política escalonada ante spikes (Kalman + agente), ver `kalman-anomaly-router` ([docs/KALMAN_ANOMALY_INTEGRATION.md](../../../docs/KALMAN_ANOMALY_INTEGRATION.md)) — no sustituye `cyber-neo` ni este workflow.
 
-Para captura/consolidación de aprendizajes de sesión (scan/wrap-up), ver `learning-loop-router` ([docs/LEARNING_LOOP_INTEGRATION.md](../../docs/LEARNING_LOOP_INTEGRATION.md)) — complemento de `session-learner-ops`, no sustituto.
+Para captura/consolidación de aprendizajes de sesión (scan/wrap-up), ver `learning-loop-router` ([docs/LEARNING_LOOP_INTEGRATION.md](../../../docs/LEARNING_LOOP_INTEGRATION.md)) — complemento de `session-learner-ops`, no sustituto.
 
-Para orquestación automática de loops multi-skill (`skill-loop.yml` + CLI), ver `skill-loop-router` ([docs/SKILL_LOOP_INTEGRATION.md](../../docs/SKILL_LOOP_INTEGRATION.md)) — no sustituye `jarvis-core` ni `learning-loop`.
+Para orquestación automática de loops multi-skill (`skill-loop.yml` + CLI), ver `skill-loop-router` ([docs/SKILL_LOOP_INTEGRATION.md](../../../docs/SKILL_LOOP_INTEGRATION.md)) — no sustituye `jarvis-core` ni `learning-loop`.
 
-Para pack Addy Osmani (doubt-driven in-flight vs canónico JARVIS), ver `agent-skills-router` ([docs/AGENT_SKILLS_ADDY_INTEGRATION.md](../../docs/AGENT_SKILLS_ADDY_INTEGRATION.md)) — solo `doubt-driven-development` curado; no sustituye `speckit-*`.
+Para pack Addy Osmani (doubt-driven in-flight vs canónico JARVIS), ver `agent-skills-router` ([docs/AGENT_SKILLS_ADDY_INTEGRATION.md](../../../docs/AGENT_SKILLS_ADDY_INTEGRATION.md)) — solo `doubt-driven-development` curado; no sustituye `speckit-*`.
 
-Para pack Rezvani/claude-skills (auditoría pre-install vs megapack), ver `claude-skills-router` ([docs/CLAUDE_SKILLS_REZVANI_INTEGRATION.md](../../docs/CLAUDE_SKILLS_REZVANI_INTEGRATION.md)) — solo `skill-security-auditor` curado.
+Para pack Rezvani/claude-skills (auditoría pre-install vs megapack), ver `claude-skills-router` ([docs/CLAUDE_SKILLS_REZVANI_INTEGRATION.md](../../../docs/CLAUDE_SKILLS_REZVANI_INTEGRATION.md)) — solo `skill-security-auditor` curado.
 
-Para gobernanza humana en bucles agénticos (HITL/HOTL, umbrales, terminación), ver `human-in-the-loop-ops` ([docs/LOOP_AI_ECOSYSTEM.md](../../docs/LOOP_AI_ECOSYSTEM.md)) — complementa `git-guardrails-ops` y `skill-loop-router`.
+Para gobernanza humana en bucles agénticos (HITL/HOTL, umbrales, terminación), ver `human-in-the-loop-ops` ([docs/LOOP_AI_ECOSYSTEM.md](../../../docs/LOOP_AI_ECOSYSTEM.md)) — complementa `git-guardrails-ops` y `skill-loop-router`.
 
-Para SD-X (dev + diseño + docs + validate), ver `sdd-x-index` ([docs/SDX_ECOSYSTEM.md](../../docs/SDX_ECOSYSTEM.md)).
+Para orquestación por defecto (Map-Reduce agentico / Fan-out-and-synthesize: N workers paralelos → orquestador sintetiza), ver `fan-out-synthesize-ops` — **obligatorio** en tareas no triviales salvo exenciones documentadas en esa skill.
+
+Para SD-X (dev + diseño + docs + validate), ver `sdd-x-index` ([docs/SDX_ECOSYSTEM.md](../../../docs/SDX_ECOSYSTEM.md)).
 
 ## Protocolo de calidad
 
@@ -114,8 +120,11 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 
 | Fase | Cadena |
 |------|--------|
-| Integrar / diagnosticar JARVIS (`init jarvis`) | `project-bootstrap-ops` → [PROJECT_ONBOARDING.md](../../docs/PROJECT_ONBOARDING.md) → OK usuario → Paso A/B/C |
-| Cualquier tarea no trivial | `jarvis-experts` → (resto según fase) |
+| Integrar / diagnosticar JARVIS (`init jarvis`) | `project-bootstrap-ops` → [PROJECT_ONBOARDING.md](../../../docs/PROJECT_ONBOARDING.md) → OK usuario → Paso A/B/C |
+| Iniciar / retomar sesión | `session-startup-ops` → (Roles/Skills) → resto según tarea |
+| Modo research / produce / review | `context-packs-ops` (declarar `> Context pack: …`) |
+| Compactar o traspasar sesión | `strategic-compact-ops` → `handoff` |
+| Cualquier tarea no trivial | `jarvis-experts` → **`fan-out-synthesize-ops`** → (resto según fase) |
 | Nueva feature de producto (con `.kittify/`) | `kitty-router` → charter/specify/plan/tasks (Cursor) → `spec-kitty next` → review/accept/merge (OK usuario) |
 | Nueva feature de producto (con `openspec/`) | `openspec-router` → `/opsx:propose` → `/opsx:apply` (OK usuario) → `/opsx:archive` |
 | Nueva feature de producto (con `.specify/`) | `sdd-router` → `speckit-constitution` → `speckit-specify` → `speckit-clarify` (opc.) → `speckit-plan` → `speckit-tasks` → `speckit-taskstoissues` (opc.) → `speckit-analyze` → `speckit-implement` (OK usuario) → `speckit-converge` (opc.) |
@@ -140,7 +149,7 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 | Auditar skill externa antes de instalar | `claude-skills-router` → `skill-security-auditor` (+ `validate-skills.sh`) |
 | UI/UX en código, landing en repo, a11y, layout | `ui-router` → skill dominio `{producto}-ui-design` / `zonix-web-design` → `ui-ux-pro-max` → `responsive-design` (opc.) |
 | Carrusel, deck, email HTML, prototipo standalone | `open-design-router` → `open-design` (daemon OD) |
-| Prototipo web Stitch (MCP, stitch::generate-design, stitch-loop) | `stitch-router` → skills upstream ([STITCH_UPSTREAM.md](../../docs/STITCH_UPSTREAM.md)) |
+| Prototipo web Stitch (MCP, stitch::generate-design, stitch-loop) | `stitch-router` → skills upstream ([STITCH_UPSTREAM.md](../../../docs/STITCH_UPSTREAM.md)) |
 | Landing con media generativa IA (video hero loop, Nano Banana + Veo + Claude Design/Code) | `ai-media-landing-ops` → checkpoints HITL → `verification-before-completion` |
 | Briefing estratégico / estado general | `strategic-briefing-ops` |
 | What-if / escenarios estratégicos | `scenario-router` → `scenario-analysis-ops` o `{producto}-scenario-analysis` |
@@ -150,7 +159,8 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 | Diseño defensa runtime / spikes / política DDoS | `kalman-anomaly-router` → `kalman-anomaly-defense` |
 | Diseñar loop de agente (loop vs prompt, anatomía, conciso/controlado) | `agent-loop-engineering` → `skill-loop-router` / `human-in-the-loop-ops` |
 | Loop automático impl→review→verify (YAML) | `skill-loop-router` → skill `skill-loop` + `skill-loop run` (OK usuario) |
-| Verificación adversarial paralela / "día del juicio" | `parallel-judge-ops` (Task readonly en paralelo) |
+| Orquestación fan-out (explore, audit, implement, debug) | `fan-out-synthesize-ops` (N Task paralelos → síntesis → writer único) |
+| Verificación adversarial paralela / "día del juicio" | `parallel-judge-ops` (fase Verify de `fan-out-synthesize-ops`; Task readonly en paralelo) |
 | Auditoría automática pre-gate (LLM-as-judge) | `llm-as-judge-ops` |
 | Loop autónomo / decisión alta stakes con gate humano | `human-in-the-loop-ops` → `git-guardrails-ops` / `approval-gate` según acción |
 | SD-X ambiguo / multi-arte (dev+UI+docs) | `sdd-x-index` → `sdd-router` o `ui-router` según tabla SD-X |
@@ -159,7 +169,7 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 
 1. **Honestidad:** Si cometes un error o una petición no es óptima, dilo.
 2. **Proactividad:** Mejoras de negocio, UX o arquitectura aplicables al flujo en curso.
-3. **Memoria:** Consultar `AGENTS.md` y `docs/active_context.md` del proyecto.
+3. **Memoria:** Al arrancar → `session-startup-ops`. En cierre → consultar/actualizar `AGENTS.md` y `docs/active_context.md` del proyecto.
 4. **Panel de expertos:** Declarar `> Roles: <rol1> + <rol2>` en tareas no triviales. Ver `jarvis-experts`.
 
 ## Flujo modular obligatorio
@@ -167,6 +177,10 @@ Cuando `AGENTS.md` lista varias skills para la misma acción, aplicar esta secue
 ### 0. Panel de expertos
 
 Identificar roles y declarar en una línea antes de planificar.
+
+### 0.5. Fan-out (orquestación paralela)
+
+Antes de explorar o implementar en el hilo principal, aplicar `fan-out-synthesize-ops`: slice → N≥2 Task en paralelo → síntesis → (writer único) → verify. Exento solo en tareas triviales o si el usuario pide respuesta directa.
 
 ### 1. Planificación
 
@@ -189,6 +203,7 @@ Identificar roles y declarar en una línea antes de planificar.
 
 ### 4. Testing
 
+- Fase Verify: fan-out de reviewers o `parallel-judge-ops` si el diff es no trivial.
 - Ejecutar comandos de verificación del stack (ver `verification-before-completion`).
 - Invocar `verification-before-completion` con evidencia fresca.
 
@@ -275,6 +290,6 @@ Features de **producto** siguen Spec Kit en hub Backend (`specs/`). Front es esp
 4. Testing — `flutter analyze`, `flutter test`.
 5. Memoria — `docs/active_context.md`.
 
-**Canon workspace:** [../ZonixPharma-Backend/docs/ZONIX_WORKSPACE.md](../ZonixPharma-Backend/docs/ZONIX_WORKSPACE.md).
+**Canon workspace:** [../ZonixPharma-Backend/docs/zonix/ZONIX_WORKSPACE.md](../ZonixPharma-Backend/docs/zonix/ZONIX_WORKSPACE.md).
 
 **Stitch/React skills:** capa 5/6 local — no en manifest global (igual que CorralX Front).
