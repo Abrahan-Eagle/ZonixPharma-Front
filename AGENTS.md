@@ -471,7 +471,7 @@ Mostrar advertencia en checkout si `cartService.coldChainRequired`. Restringir U
 - **[../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md](../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md)**
 - **[../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md](../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md)**
 - **[../ZonixPharma-Backend/docs/Lanzamiento/README.md](../ZonixPharma-Backend/docs/Lanzamiento/README.md)** — pack inversor
-- **[../ZonixPharma-Backend/docs/zonix/research_links.md](../ZonixPharma-Backend/docs/zonix/research_links.md)** — skills GitHub
+- **[../ZonixPharma-Backend/docs/zonix/roles_matrix.json](../ZonixPharma-Backend/docs/zonix/roles_matrix.json)** — routing JARVIS / skills
 
 ---
 
