@@ -50,7 +50,7 @@ Guía: [../ZonixPharma-Backend/docs/zonix/SPEC_KIT_ZONIX.md](../ZonixPharma-Back
   - `commerce_api_errors.dart` + rollout en 9 servicios; tab **Receta Rx** en órdenes; sin fake success en writes.
   - `CommerceContext`: `X-Commerce-Id` en panel; sync sede en lista/Ver/set-primary.
   - Brand commerce: `AppColors.*` en 22 pantallas; `Colors.transparent` residual eliminado.
-  - Docs: [../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/AUDIT_commerce_8fases_2026-06-10.md).
+  - Docs: [../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md](../ZonixPharma-Backend/docs/audits/AUDIT_commerce_8fases_2026-06-10.md).
 - **10 jun 2026 — Remediación módulo pharmacist (lote 2 — historial).**
   - Tab **Historial** → `PrescriptionsHistoryPage` con filtros por estado.
 - **10 jun 2026 — Remediación módulo pharmacist (lote 1).**
@@ -286,6 +286,7 @@ Todos los skills se auto-generan con `python3 .agents/skills/sync.sh`.
 | **`zonix-design-enforcer`** | **Enforcer de calidad visual Flutter Zonix Pharma — grid 8pt, WCAG, un CTA primario, tokens brand* obligatorios, M3/HIG, badges Rx. Complementa zonix-ui-design.** | [.agents/skills/zonix-design-enforcer/SKILL.md](.agents/skills/zonix-design-enforcer/SKILL.md) |
 | **`zonix-empresa-ve`** | **Empresa VE (C.A., SAFE, laboral) — referencia Backend.** | [.agents/skills/zonix-empresa-ve/SKILL.md](.agents/skills/zonix-empresa-ve/SKILL.md) |
 | **`zonix-founder-ops-index`** | **Índice founder CEO/CTO — referencia Backend.** | [.agents/skills/zonix-founder-ops-index/SKILL.md](.agents/skills/zonix-founder-ops-index/SKILL.md) |
+| **`zonix-inversionistas-crm`** | **CRM candidatos a capital Zonix — referencia Backend. Canon en ZonixPharma-Backend/docs/Inversionistas.** | [.agents/skills/zonix-inversionistas-crm/SKILL.md](.agents/skills/zonix-inversionistas-crm/SKILL.md) |
 | **`zonix-investor-materials`** | **Materiales inversor Zonix — referencia Backend. Data room en docs/Lanzamiento.** | [.agents/skills/zonix-investor-materials/SKILL.md](.agents/skills/zonix-investor-materials/SKILL.md) |
 | **`zonix-jarvis-subagents-map`** | **Mapeo JARVIS — referencia Backend.** | [.agents/skills/zonix-jarvis-subagents-map/SKILL.md](.agents/skills/zonix-jarvis-subagents-map/SKILL.md) |
 | **`zonix-lanzamiento-roles`** | **Panel roles pack Lanzamiento — referencia Backend.** | [.agents/skills/zonix-lanzamiento-roles/SKILL.md](.agents/skills/zonix-lanzamiento-roles/SKILL.md) |
