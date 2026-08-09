@@ -28,7 +28,7 @@ bash $JARVIS_SKILLS_LIBRARY/scripts/init-jarvis.sh --min c
 ```
 
 - **`ui-ux-pro-max`:** editar [.agents/skills/ui-ux-pro-max/OVERLAY.md](.agents/skills/ui-ux-pro-max/OVERLAY.md) (canon marca en Backend `docs/BRAND_ZONIX_PHARMA.md`).
-- **Spec Kit:** core en `~/.cursor/skills/` (`install.sh --all`); git hooks en `.agents/skills/speckit-git-*`. `.cursor/skills/` gitignored — ver [../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/ZONIX_JARVIS_INTEGRATION.md).
+- **Spec Kit:** core en `~/.cursor/skills/` (`install.sh --all`); git hooks en `.agents/skills/speckit-git-*`. `.cursor/skills/` gitignored — ver [../ZonixPharma-Backend/docs/zonix/ZONIX_JARVIS_INTEGRATION.md](../ZonixPharma-Backend/docs/zonix/ZONIX_JARVIS_INTEGRATION.md).
 
 ---
 

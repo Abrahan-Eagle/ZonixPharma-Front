@@ -137,7 +137,7 @@
 - `../ZonixPharma-Backend/docs/BRAND_ZONIX_PHARMA.md`
 - `../ZonixPharma-Backend/docs/PLAN_RX_VALIDATION.md`
 - `../ZonixPharma-Backend/docs/PLAN_REGULATORIO_PHARMA_VE.md`
-- `../ZonixPharma-Backend/docs/MIGRACION_EATS_PHARMA.md`
+- `../ZonixPharma-Backend/docs/audits/MIGRACION_EATS_PHARMA.md`
 
 ---
 

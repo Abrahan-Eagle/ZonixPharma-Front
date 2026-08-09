@@ -290,6 +290,6 @@ Features de **producto** siguen Spec Kit en hub Backend (`specs/`). Front es esp
 4. Testing — `flutter analyze`, `flutter test`.
 5. Memoria — `docs/active_context.md`.
 
-**Canon workspace:** [../ZonixPharma-Backend/docs/ZONIX_WORKSPACE.md](../ZonixPharma-Backend/docs/ZONIX_WORKSPACE.md).
+**Canon workspace:** [../ZonixPharma-Backend/docs/zonix/ZONIX_WORKSPACE.md](../ZonixPharma-Backend/docs/zonix/ZONIX_WORKSPACE.md).
 
 **Stitch/React skills:** capa 5/6 local — no en manifest global (igual que CorralX Front).
